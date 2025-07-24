@@ -57,7 +57,7 @@ function config($key)
  * @param int $status Status code for redirection. Default is 302
  * @return Response
  */
-function redirect(string $url, int $status = 302)
+function redirect(string $url, int $status = 302): Response
 {
     return Response::redirect($url, $status);
 }
