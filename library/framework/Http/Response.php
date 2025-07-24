@@ -39,4 +39,11 @@ class Response
         }
         echo $this->content;
     }
+
+    public static function redirect(string $url, int $status = 302)
+    {
+        $response = new self('', $status);
+        $response->header('Location', $url);
+        return $response;
+    }
 }
