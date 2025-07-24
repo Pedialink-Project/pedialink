@@ -2,6 +2,7 @@
 
 use Library\Framework\Core\Application;
 use Library\Framework\Core\Env;
+use Library\Framework\Http\Response;
 
 /**
  * Global helper to retrieve application instance
@@ -47,4 +48,16 @@ function config($key)
     $config = app('config');
     [$file, $subkey] = explode('.', $key);
     return $config[$file][$subkey] ?? null;
+}
+
+/**
+ * Global helper that wraps the static redirect method
+ * of Response class
+ * @param string $url Url to redirect to
+ * @param int $status Status code for redirection. Default is 302
+ * @return Response
+ */
+function redirect(string $url, int $status = 302)
+{
+    return Response::redirect($url, $status);
 }
