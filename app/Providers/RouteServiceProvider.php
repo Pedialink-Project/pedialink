@@ -57,7 +57,7 @@ class RouteServiceProvider extends Provider
     public function register()
     {
         $this->app->singleton(Router::class, function () {
-            return new Router;
+            return new Router($this->app);
         });
 
         // $this->app->bind('router', Router::class);
@@ -69,6 +69,9 @@ class RouteServiceProvider extends Provider
      */
     public function boot()
     {
+        /**
+         * @var Router
+         */
         $router = $this->app->make(Router::class);
 
         // register middlewares
@@ -82,9 +85,15 @@ class RouteServiceProvider extends Provider
 
         // Boot all web routes
         foreach ($routes as $route) {
-            list($method, $uri, $action, $middleware) = array_pad($route, 4, []);            
+            list($method, $uri, $action, $name, $middleware) = array_pad($route, 5, null);
+            
+            // reset middleware to empty array if no optional
+            // middlewares are available for this route
+            if (!isset($route[4])) {
+                $middleware = [];
+            }
 
-            $router->addRoute($method, $uri, $action, $middleware);
+            $router->addRoute($method, $uri, $action, $name, $middleware);
         }
     }
 }
