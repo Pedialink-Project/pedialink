@@ -15,7 +15,7 @@ foreach ($routeFiles as $file) {
  */
 
 // $commonRoutes = [
-//     ['METHOD', 'URI', '<ControllerName>@<method>']
+//     ['METHOD', 'URI', [Controller::class, 'method'], 'name', ['middlewares']]
 // ];
 
 // $allRoutes = array_merge($allRoutes, $commonRoutes);
