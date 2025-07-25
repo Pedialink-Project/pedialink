@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Library\Framework\Core\Application;
+use Library\Framework\Core\Provider;
 use Library\Framework\Session\SessionManager;
 
 /**

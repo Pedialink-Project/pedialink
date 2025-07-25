@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Middleware\StartSessionMiddleware;
 use Library\Framework\Core\Application;
+use Library\Framework\Core\Provider;
 use Library\Framework\Routing\Router;
 
 /**
