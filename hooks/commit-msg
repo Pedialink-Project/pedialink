@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# File: .git/hooks/commit-msg
+
+MSG_FILE="$1"
+MSG=$(<"$MSG_FILE")
+
+# 1) Allowed prefixes
+PREFIXES="feat|doc|chore|update|fix|remove|refactor"
+
+# 2) Detect current branch name
+BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+# 3) Extract the JIRA key from the branch (first TASK-<digits>)
+if [[ $BRANCH =~ (TASK-[0-9]+) ]]; then
+  BRANCH_KEY="${BASH_REMATCH[1]}"
+else
+  echo "🛑 ERROR: could not detect a JIRA key in your branch name:"
+  echo "   '$BRANCH'"
+  echo "   Please use a branch name like 'TASK-123-my-feature'."
+  exit 1
+fi
+
+# 4) Regex breakdown:
+#    ^                        start of line
+#    ($PREFIXES)              one of feat|doc|chore|update|fix|remove
+#    (\([^)]+\))?             optional scope in parentheses, e.g. (ui)
+#    [[:space:]]*             optional spaces
+#    :                        a literal colon
+#    [[:space:]]*             optional spaces
+#    .+                       at least one character of description
+#    [[:space:]]+             at least one space before the brackets
+#    \[${BRANCH_KEY}\]        exact same TASK-<number> inside [ ]
+#    $                        end of line
+REGEX="^($PREFIXES)(\([^)]+\))?[[:space:]]*:[[:space:]]*.+[[:space:]]+\[${BRANCH_KEY}\]$"
+
+if ! grep -Eq "$REGEX" <<< "$MSG"; then
+  echo "🚫 INVALID COMMIT MESSAGE FORMAT"
+  echo
+  echo "Your commit must look like one of these:"
+  echo "  feat:add new login flow [${BRANCH_KEY}]"
+  echo "  feat : add new login flow [${BRANCH_KEY}]"
+  echo "  feat(ui):tweak button styles [${BRANCH_KEY}]"
+  echo "  fix (api) : handle edge cases [${BRANCH_KEY}]"
+  echo "  chore : bump deps [${BRANCH_KEY}]"
+  echo
+  echo "Key rules:"
+  echo " • Prefix ∈ {feat, doc, chore, update, fix, remove}"
+  echo " • Optional scope: parentheses immediately after prefix"
+  echo " • Colon may have any amount of spaces around it"
+  echo " • Description text"
+  echo " • Ends with [${BRANCH_KEY}] exactly (including brackets)"
+  exit 1
+fi
+
+exit 0
