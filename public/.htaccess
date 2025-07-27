@@ -14,7 +14,7 @@
 # Prevent directory listings
 Options -Indexes
 
-# Security headers (optional, adjust as needed)
+# Security headers
 <IfModule mod_headers.c>
     Header set X-Frame-Options "SAMEORIGIN"
     Header set X-XSS-Protection "1; mode=block"
