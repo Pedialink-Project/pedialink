@@ -79,3 +79,4 @@ docker compose down
 - By default the project runs under `localhost:8080`
 - By default, you can connect to the database through external services or 3rd party front-end client under the following host: `localhost:5432`
 - Note that the web app container may not be able to access the database through the above host name and port! Use docker's internal network name! This entry is `db` by default.
+- Remember to copy the github hooks in `hooks/commit-msg` to `.git/hooks`. Make sure to set appropriate permissions
