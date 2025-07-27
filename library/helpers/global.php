@@ -4,6 +4,7 @@ use Library\Framework\Core\Application;
 use Library\Framework\Core\Env;
 use Library\Framework\Http\Response;
 use Library\Framework\Routing\Router;
+use Library\Framework\View\View;
 
 /**
  * Global helper to retrieve application instance
@@ -66,4 +67,19 @@ function redirect(string $url, int $status = 302): Response
 function route(string $name, array $params = [], array $query = [], array $defaults = [])
 {
     return app(Router::class)->url($name, $params, $query, $defaults);
+}
+
+function view(string $template, array $data = [], bool $htmlOnly = false)
+{
+    /**
+     * @var string|null
+     */
+    $html = app(View::class)->make('pages/' . $template, $data);
+
+    if ($htmlOnly) {
+        return $html;
+    }
+
+    return new Response($html);
+
 }
