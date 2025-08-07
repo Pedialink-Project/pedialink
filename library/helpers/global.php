@@ -64,11 +64,25 @@ function redirect(string $url, int $status = 302): Response
     return Response::redirect($url, $status);
 }
 
+/**
+ * Global helper to access route urls from named routes.
+ * @param string $name Name of the route
+ * @param array $params Route parameters
+ * @param array $query Query string parameters
+ * @param array $defaults Default values
+ */
 function route(string $name, array $params = [], array $query = [], array $defaults = [])
 {
     return app(Router::class)->url($name, $params, $query, $defaults);
 }
 
+/**
+ * Global helper to render the compiled output of view files
+ * @param string $template
+ * @param array $data
+ * @param bool $htmlOnly
+ * @return Response|string|null
+ */
 function view(string $template, array $data = [], bool $htmlOnly = false)
 {
     /**
@@ -81,5 +95,4 @@ function view(string $template, array $data = [], bool $htmlOnly = false)
     }
 
     return new Response($html);
-
 }
