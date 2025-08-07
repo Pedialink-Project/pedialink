@@ -268,7 +268,7 @@ class View
 
         // Handles @if, @elseif, @else, @endif directives
         $php = preg_replace('/@if\((.+?)\)/', '<?php if ($1): ?>', $php);
-        $php = str_replace('@elseif', '<?php elseif; ?>', $php);
+        $php = preg_replace('/@elseif\((.+?)\)/', '<?php elseif ($1): ?>', $php);
         $php = str_replace('@else', '<?php else: ?>', $php);
         $php = str_replace('@endif', '<?php endif; ?>', $php);
 
