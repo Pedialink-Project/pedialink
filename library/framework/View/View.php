@@ -233,6 +233,39 @@ class View
             $php
         );
 
+        // Handle component directives
+        $php = preg_replace_callback(
+            '/<c-([a-zA-Z0-9_.\-]+)\s*([^>]*)>([\s\S]*?)<\/c-\1>/',
+            function($m) {
+                $tag = $m[1];
+                
+                // replace nested folder with appropriate slashes
+                $path = str_replace('.', '/', $tag);
+                
+                $attrString = trim($m[2]);
+
+                // parse attributes into PHP array syntax
+                $pairs = [];
+                if (preg_match_all('/([a-zA-Z0-9_\\-]+)="([^"]*)"/', $attrString, $a)) {
+                    foreach ($a[1] as $i => $key) {
+                        $pairs[] = "'" . $key . "'=>'" . addslashes($a[2][$i]) . "'";
+                    }
+                }
+                $attrArray = '[' . implode(',', $pairs) . ']';
+                
+                // compile inner slot recursively
+                $inner = $this->compile($m[3]);
+                return "<?php ob_start(); ?>\n" 
+                    . $inner 
+                    . "\n<?php \$__slot = ob_get_clean(); echo \$this->make('components." 
+                    . $path 
+                    . "', array_merge(" . $attrArray 
+                    . ", ['slot'=>\$__slot])); ?>";
+            },
+            $php
+        );
+
+
         // Handles @if, @elseif, @else, @endif directives
         $php = preg_replace('/@if\((.+?)\)/', '<?php if ($1): ?>', $php);
         $php = str_replace('@elseif', '<?php elseif; ?>', $php);
