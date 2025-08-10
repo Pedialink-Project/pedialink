@@ -25,6 +25,8 @@ namespace Library\Framework\View;
  */
 class View
 {
+    use Parser;
+
     /**
      * Path of view.php files
      * @var string
@@ -382,13 +384,19 @@ class View
 
 
         // Handles @if, @elseif, @else, @endif directives
-        $php = preg_replace('/@if\((.+?)\)/', '<?php if ($1): ?>', $php);
-        $php = preg_replace('/@elseif\((.+?)\)/', '<?php elseif ($1): ?>', $php);
+        $php = $this->replaceDirectiveWithBalancedParens($php, 'if', function ($expr) {
+            return "<?php if ({$expr}): ?>";
+        });
+        $php = $this->replaceDirectiveWithBalancedParens($php, 'elseif', function ($expr) {
+            return "<?php elseif ({$expr}): ?>";
+        });
         $php = str_replace('@else', '<?php else: ?>', $php);
         $php = str_replace('@endif', '<?php endif; ?>', $php);
 
         // Handles @foreach, @endforeach directives
-        $php = preg_replace('/@foreach\((.+?)\)/', '<?php foreach ($1): ?>', $php);
+        $php = $this->replaceDirectiveWithBalancedParens($php, 'foreach', function ($expr) {
+            return "<?php foreach ({$expr}): ?>";
+        });
         $php = str_replace('@endforeach', '<?php endforeach; ?>', $php);
 
         // Converts {{ }} syntax to proper echo format. Used for printing php variables in html code
