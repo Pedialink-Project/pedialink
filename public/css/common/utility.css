@@ -1,0 +1,55 @@
+/* ---------- Small semantic utility classes ---------- */
+/* Text */
+.text-primary {
+    color: var(--text-primary) !important;
+}
+
+.text-strong {
+    color: var(--text-strong) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Backgrounds */
+.bg-base {
+    background: var(--bg) !important;
+}
+
+.bg-surface {
+    background: var(--surface) !important;
+}
+
+.bg-panel {
+    background: var(--panel) !important;
+}
+
+/* Borders */
+.border {
+    border: 1px solid var(--border) !important;
+}
+
+.border-muted {
+    border: 1px solid var(--muted-border) !important;
+}
+
+/* Accent / links */
+.link {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.link:hover {
+    color: var(--accent-600);
+    text-decoration: underline;
+}
+
+/* Simple utility spacing (if you use sparingly) */
+.p-2 {
+    padding: calc(var(--spacing) * 2);
+}
+
+.p-1 {
+    padding: var(--spacing);
+}
