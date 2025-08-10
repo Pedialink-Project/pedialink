@@ -1,0 +1,63 @@
+:root {
+  /** Typography & spacing kept from your theme above **/
+
+  /* semantic colors (light theme) */
+  --text-primary: var(--color-gray-900);
+  --text-strong: var(--color-gray-900);
+  --text-muted: var(--color-gray-600);
+  --text-inverted: var(--color-white);
+
+  --bg: var(--color-white);
+  --surface: var(--color-gray-50);
+  --panel: var(--color-white);
+
+  --border: var(--color-gray-200);
+  --muted-border: var(--color-gray-300);
+
+  /* accent (interactive) - pick a neutral/black accent for black & white aesthetic */
+  --accent: var(--color-slate-900);
+  --accent-600: var(--color-slate-700);
+  --accent-400: var(--color-slate-500);
+
+  /* primary palette (for primary actions) — choose a subtle dark slate */
+  --primary-50: var(--color-slate-50);
+  --primary-100: var(--color-slate-100);
+  --primary-300: var(--color-slate-300);
+  --primary-500: var(--color-slate-600);
+  /* main primary */
+  --primary-700: var(--color-slate-800);
+
+  /* semantic for states */
+  --success: var(--color-green-600);
+  --danger: var(--color-red-600);
+  --info: var(--color-blue-600);
+
+  /* utility shadows (map to existing tokens) */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+}
+
+/* Dark theme: flip semantic values */
+[data-theme="dark"] {
+  --text-primary: var(--color-gray-50);
+  --text-strong: var(--color-white);
+  --text-muted: var(--color-gray-300);
+  --text-inverted: var(--color-black);
+
+  --bg: var(--color-neutral-900);
+  --surface: var(--color-neutral-800);
+  --panel: var(--color-neutral-800);
+
+  --border: var(--color-neutral-700);
+  --muted-border: var(--color-neutral-600);
+
+  --accent: var(--color-neutral-50);
+  --accent-600: var(--color-slate-300);
+  --accent-400: var(--color-slate-400);
+
+  --primary-50: var(--color-slate-950);
+  --primary-100: var(--color-slate-900);
+  --primary-300: var(--color-slate-800);
+  --primary-500: var(--color-slate-700);
+  --primary-700: var(--color-slate-600);
+}
