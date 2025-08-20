@@ -66,6 +66,20 @@ function redirect(string $url, int $status = 302): Response
 }
 
 /**
+ * Global helper to correctly parse the path to files in public/ folder
+ * @param string $path
+ * @return string
+ */
+function asset(string $path)
+{
+    if (!str_starts_with($path, '/')) {
+        $path = '/' . $path;
+    }
+
+    return $path;
+}
+
+/**
  * Global helper to access route urls from named routes.
  * @param string|null $name Name of the route
  * @param array $params Route parameters
@@ -77,7 +91,7 @@ function route(string|null $name = null, array $params = [], array $query = [], 
     if ($name === null) {
         return app(Router::class);
     }
-    
+
     return app(Router::class)->url($name, $params, $query, $defaults);
 }
 
