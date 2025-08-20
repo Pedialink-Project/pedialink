@@ -67,13 +67,17 @@ function redirect(string $url, int $status = 302): Response
 
 /**
  * Global helper to access route urls from named routes.
- * @param string $name Name of the route
+ * @param string|null $name Name of the route
  * @param array $params Route parameters
  * @param array $query Query string parameters
  * @param array $defaults Default values
  */
-function route(string $name, array $params = [], array $query = [], array $defaults = [])
+function route(string|null $name = null, array $params = [], array $query = [], array $defaults = [])
 {
+    if ($name === null) {
+        return app(Router::class);
+    }
+    
     return app(Router::class)->url($name, $params, $query, $defaults);
 }
 
