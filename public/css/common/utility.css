@@ -35,12 +35,12 @@
 }
 
 /* Accent / links */
-.link {
+.link-accent {
     color: var(--accent);
     text-decoration: none;
 }
 
-.link:hover {
+.link-accent:hover {
     color: var(--accent-600);
     text-decoration: underline;
 }
