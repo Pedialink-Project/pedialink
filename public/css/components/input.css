@@ -1,0 +1,138 @@
+:root {
+  --input-radius: 10px;
+  --input-padding-y: .5rem;
+  --input-padding-x: .75rem;
+  --input-gap: .5rem;
+  --input-focus-ring: 0 0 0 4px rgba(99,102,241,0.08);
+  --input-border-width: 1px;
+}
+
+/* Wrapper to support prefix/suffix / label / helper */
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing)*3);
+  width: 100%;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+/* Inline container holding prefix / field / suffix */
+.input-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--input-gap);
+  width: 100%;
+  border-radius: var(--input-radius);
+  background: var(--panel);
+  border: var(--input-border-width) solid var(--border);
+  padding: 0.125rem; /* for neat ring on focus */
+  transition: box-shadow .14s ease, transform .08s ease, border-color .12s ease;
+}
+
+/* Field itself */
+.input-field,
+.input-textarea {
+  display: inline-block;
+  background: transparent;
+  border: none;
+  padding: var(--input-padding-y) var(--input-padding-x);
+  font-size: 1rem;
+  color: var(--text-primary);
+  outline: none;
+  width: 100%;
+  border-radius: calc(var(--input-radius) - 2px);
+  caret-color: var(--accent);
+}
+
+/* Textarea specifics */
+.input-textarea {
+  min-height: 8rem;
+  resize: vertical;
+  line-height: 1.4;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+/* Prefix / suffix */
+.input-prefix,
+.input-suffix {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 .5rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Focus state on wrapper so border + ring stay consistent */
+.input-row:focus-within {
+  box-shadow: var(--input-focus-ring);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* Disabled state */
+.input-row[aria-disabled="true"],
+.input-row.disabled {
+  opacity: .6;
+  pointer-events: none;
+  background: var(--muted-border);
+}
+
+/* Error state */
+.input-row.input--error {
+  border-color: var(--danger);
+  box-shadow: 0 6px 18px rgba(220,38,38,0.05);
+}
+
+.input-row.input--error:focus-within {
+  box-shadow: 0 0 0 4px rgba(220,38,38,0.08);
+}
+
+/* Sizes */
+.input-row.input--sm { font-size: .9rem; }
+.input-row.input--sm .input-field { padding: .25rem .5rem; border-radius: 8px; }
+.input-row.input--lg { font-size: 1.02rem; }
+.input-row.input--lg .input-field { padding: .75rem 1rem; border-radius: 12px; }
+
+/* Label + helper/error text */
+.input-label {
+  font-size: .9rem;
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.input-help {
+  font-size: .85rem;
+  color: var(--text-muted);
+}
+
+.input-error-text {
+  font-size: .85rem;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Icon inside prefix/suffix */
+.input-prefix .icon,
+.input-suffix .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Autofill neutralization */
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--panel) inset;
+  box-shadow: 0 0 0px 1000px var(--panel) inset;
+  -webkit-text-fill-color: var(--text-primary);
+}
+
+/* Small responsive tweak */
+@media (max-width: 480px) {
+  .input-field { font-size: .95rem; }
+  .input-textarea { min-height: 6rem; }
+}
