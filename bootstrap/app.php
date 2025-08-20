@@ -33,6 +33,7 @@ $providers = [
     App\Providers\DatabaseServiceProvider::class,
     App\Providers\SessionManagerProvider::class,
     App\Providers\ViewServiceProvider::class,
+    App\Providers\AuthServiceProvider::class,
 ];
 
 foreach ($providers as $providerClass)
