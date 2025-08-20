@@ -1,5 +1,6 @@
 <?php
 
+use App\Auth\Auth;
 use Library\Framework\Core\Application;
 use Library\Framework\Core\Env;
 use Library\Framework\Http\Response;
@@ -95,4 +96,13 @@ function view(string $template, array $data = [], bool $htmlOnly = false)
     }
 
     return new Response($html);
+}
+
+/**
+ * GLobal helper to get the auth instance
+ * @return App\Auth\Auth
+ */
+function auth(): Auth
+{
+    return app(Auth::class);
 }
