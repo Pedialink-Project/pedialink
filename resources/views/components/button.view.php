@@ -1,34 +1,24 @@
 <?php
+$id = !empty($id) ? "id='{$id}'" : "";
+
 $classes = 'btn';
 
 if (!empty($class)) {
     $classes .= ' ' . $class;
 }
 
-$type = $type ?? '';
-if ($type === 'primary') {
-    $classes .= ' btn-primary';
-} elseif ($type === 'secondary') {
-    $classes .= ' btn-secondary';
-}else if ($type === 'ghost') {
-    $classes .= ' btn-ghost';
-} else if ($type === 'outline'){
-    $classes .= ' btn-outline';
-} else if ($type === 'subtle') {
-    $classes .= ' btn-subtle';
+if (!empty($type)) {
+    $classes .= " btn-{$type}";
 }
 
-$size = $size ?? '';
-if ($size === 'sm') {
-    $classes .= ' btn-sm';
-} else if ($size === 'lg') {
-    $classes .= ' btn-lg';
+if (!empty($size)) {
+    $classes .= " btn-{$size}";
 }
 
 // if icon-only
 if (!empty($icon_only)) $classes .= ' btn-icon';
 ?>
 
-<button class="{{ $classes }}">
+<button {{ $id }} class="{{ $classes }}">
   {{ $slot }}
 </button>
