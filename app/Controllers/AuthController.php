@@ -22,4 +22,9 @@ class AuthController
     {
         return view('auth/staff-login');
     }
+
+    public function forgotPassword(Request $request)
+    {
+        return view('auth/forgot-password');
+    }
 }
