@@ -161,4 +161,16 @@ class Router
         $queryString = http_build_query($query);
         return $uri . ($queryString ? '?' . $queryString : '');
     }
+
+    public function current(string $routeName)
+    {
+        if (isset($this->routeNames[$routeName])) {
+            $currentUrl = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+            if ($currentUrl === $this->routeNames[$routeName]['uri']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

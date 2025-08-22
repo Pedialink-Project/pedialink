@@ -1,0 +1,10 @@
+#staff-login {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+#sign-in {
+    display: inline-flex;
+    justify-content: center;
+}

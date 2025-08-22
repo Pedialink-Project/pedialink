@@ -1,0 +1,15 @@
+#parent-register {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+#sign-in, #next-page {
+    display: inline-flex;
+    justify-content: center;
+    margin-top: calc(var(--spacing)*5);
+}
+
+.terms-conditions-group {
+    display: flex;
+}

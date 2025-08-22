@@ -1,5 +1,6 @@
 <?php
 
+use App\Auth\Auth;
 use Library\Framework\Core\Application;
 use Library\Framework\Core\Env;
 use Library\Framework\Http\Response;
@@ -65,14 +66,32 @@ function redirect(string $url, int $status = 302): Response
 }
 
 /**
+ * Global helper to correctly parse the path to files in public/ folder
+ * @param string $path
+ * @return string
+ */
+function asset(string $path)
+{
+    if (!str_starts_with($path, '/')) {
+        $path = '/' . $path;
+    }
+
+    return $path;
+}
+
+/**
  * Global helper to access route urls from named routes.
- * @param string $name Name of the route
+ * @param string|null $name Name of the route
  * @param array $params Route parameters
  * @param array $query Query string parameters
  * @param array $defaults Default values
  */
-function route(string $name, array $params = [], array $query = [], array $defaults = [])
+function route(string|null $name = null, array $params = [], array $query = [], array $defaults = [])
 {
+    if ($name === null) {
+        return app(Router::class);
+    }
+
     return app(Router::class)->url($name, $params, $query, $defaults);
 }
 
@@ -95,4 +114,13 @@ function view(string $template, array $data = [], bool $htmlOnly = false)
     }
 
     return new Response($html);
+}
+
+/**
+ * GLobal helper to get the auth instance
+ * @return App\Auth\Auth
+ */
+function auth(): Auth
+{
+    return app(Auth::class);
 }

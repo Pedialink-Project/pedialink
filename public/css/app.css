@@ -8,4 +8,9 @@
 @import "./components/button.css";
 @import "./components/card.css";
 @import "./components/badge.css";
+@import "./components/link.css";
+@import "./components/input.css";
+@import "./components/textarea.css";
 
+/* helper/additional css for components */
+@import "./components/password-icon.css";

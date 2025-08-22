@@ -4,6 +4,7 @@ $allRoutes = [];
 
 $routeFiles = [
     'home.php',
+    'auth.php',
 ];
 
 foreach ($routeFiles as $file) {

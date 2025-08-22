@@ -1,0 +1,88 @@
+/* public/css/components/textarea.css
+   Standalone textarea component using theme tokens from theme.css.
+*/
+
+:root{
+  --textarea-radius: 10px;
+  --textarea-padding-y: .6rem;
+  --textarea-padding-x: .75rem;
+  --textarea-focus-ring: 0 0 0 4px rgba(99,102,241,0.08);
+  --textarea-min-height: 8rem;
+}
+
+/* Wrapper */
+.textarea-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+/* Row container to show border/ring */
+.textarea-row {
+  display: block;
+  border-radius: var(--textarea-radius);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 0.125rem; /* room for focus ring */
+  transition: box-shadow .14s ease, border-color .12s ease, transform .08s ease;
+}
+
+/* Actual textarea element */
+.textarea-field {
+  width: 100%;
+  min-height: var(--textarea-min-height);
+  padding: var(--textarea-padding-y) var(--textarea-padding-x);
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.45;
+  outline: none;
+  resize: vertical;
+  border-radius: calc(var(--textarea-radius) - 2px);
+  box-sizing: border-box;
+}
+
+/* Reduce min-height for smaller size */
+.textarea-row.textarea--sm .textarea-field { min-height: 5.5rem; padding: .375rem .5rem; }
+.textarea-row.textarea--lg .textarea-field { min-height: 10rem; padding: .85rem 1rem; }
+
+/* Focus ring on wrapper for consistent look */
+.textarea-row:focus-within {
+  box-shadow: var(--textarea-focus-ring);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* Disabled */
+.textarea-row[aria-disabled="true"],
+.textarea-row.disabled {
+  opacity: .6;
+  pointer-events: none;
+  background: var(--muted-border);
+}
+
+/* Error state */
+.textarea-row.textarea--error {
+  border-color: var(--danger);
+  box-shadow: 0 6px 18px rgba(220,38,38,0.05);
+}
+.textarea-row.textarea--error:focus-within {
+  box-shadow: 0 0 0 4px rgba(220,38,38,0.08);
+}
+
+/* Label/help/error text */
+.textarea-label { font-size: .9rem; color: var(--text-strong); font-weight: 600; }
+.textarea-help { font-size: .85rem; color: var(--text-muted); }
+.textarea-error-text { font-size: .85rem; color: var(--danger); font-weight: 600; }
+
+/* Autofill / browser quirks */
+textarea:-webkit-autofill { -webkit-text-fill-color: var(--text-primary); -webkit-box-shadow: 0 0 0px 1000px var(--panel) inset; }
+
+/* small viewport tweak */
+@media (max-width: 480px) {
+  .textarea-field { font-size: .95rem; }
+}

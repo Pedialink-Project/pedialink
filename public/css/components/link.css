@@ -1,0 +1,213 @@
+:root {
+  --link-radius: 8px;
+  --link-padding-y: .5rem;
+  --link-padding-x: .75rem;
+  --link-gap: 0.5rem;
+  --link-focus-ring: 0 0 0 4px rgba(99,102,241,0.08); /* soft focus */
+}
+
+/* Prevent blue "tap" highlight on mobile and browser-specific appearance artifacts */
+.link,
+.link-plain,
+.link-primary,
+.link-outline,
+.link-subtle {
+  -webkit-tap-highlight-color: transparent; /* mobile tap color */
+  -webkit-touch-callout: none;              /* iOS callout */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Make visited/active/hover colors explicit per variant so UA styles don't leak in */
+.link-plain,
+.link-plain:visited,
+.link-plain:hover,
+.link-plain:active,
+.link-plain:focus {
+  color: var(--accent);
+  background: transparent;
+  text-decoration: none; /* we add underline only on hover below */
+}
+
+.link-plain:hover,
+.link-plain:focus {
+  color: var(--accent-600);
+  text-decoration: underline;
+}
+
+/* Primary (button-like) — keep text color pinned to inverted so it never turns blue */
+.link-primary,
+.link-primary:visited {
+  color: var(--text-inverted);
+}
+.link-primary:hover,
+.link-primary:focus,
+.link-primary:active {
+  background: var(--primary-hover);
+  color: var(--text-inverted);
+  text-decoration: none;
+}
+
+/* Outline */
+.link-outline,
+.link-outline:visited {
+  color: var(--accent);
+}
+.link-outline:hover,
+.link-outline:focus,
+.link-outline:active {
+  background: var(--surface);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Subtle */
+.link-subtle,
+.link-subtle:visited {
+  color: var(--text-primary);
+}
+.link-subtle:hover,
+.link-subtle:focus,
+.link-subtle:active {
+  background: var(--surface);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+/* Ensure focus only uses our soft ring (no default outline) */
+.link:focus,
+.link-plain:focus,
+.link-primary:focus,
+.link-outline:focus,
+.link-subtle:focus {
+  outline: none;
+  box-shadow: var(--link-focus-ring);
+}
+
+/* Base component wrapper for the link component.
+   The component's view will output this class by default: .link-component
+*/
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--link-gap);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  vertical-align: middle;
+  transition: transform .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease;
+  color: var(--accent);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Plain / inline link variant — looks like a normal text link */
+.link-plain {
+  padding: 0;
+  font-weight: 600;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.link-plain:hover,
+.link-plain:focus {
+  color: var(--accent-600);
+  text-decoration: underline;
+}
+
+/* Button-like default (primary) */
+.link-primary {
+  padding: var(--link-padding-y) var(--link-padding-x);
+  border-radius: var(--link-radius);
+  color: var(--text-inverted);
+  background: var(--primary, var(--accent));
+  box-shadow: var(--shadow-sm);
+  border: 1px solid transparent;
+}
+
+.link-primary:hover,
+.link-primary:focus {
+  transform: translateY(-1px);
+  background: var(--primary-hover);
+}
+
+/* Outline / ghost button */
+.link-outline {
+  padding: var(--link-padding-y) var(--link-padding-x);
+  border-radius: var(--link-radius);
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+
+.link-outline:hover,
+.link-outline:focus {
+  background: var(--surface);
+}
+
+/* Subtle / ghost low-emphasis */
+.link-subtle {
+  padding: var(--link-padding-y) var(--link-padding-x);
+  border-radius: var(--link-radius);
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  opacity: 0.95;
+}
+
+.link-subtle:hover,
+.link-subtle:focus {
+  background: var(--surface);
+}
+
+/* Size modifiers */
+.link-sm { padding: .25rem .5rem; font-size: .875rem; border-radius: 6px; }
+.link-lg { padding: .75rem 1rem; font-size: 1.05rem; border-radius: 10px; }
+
+/* Disabled / aria-disabled */
+.link[aria-disabled="true"],
+.link.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Icon slot inside link */
+.link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+/* When icon-only (no visible text) make it square */
+.link-icon-only {
+  padding: .5rem;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  justify-content: center;
+  border-radius: 9999px;
+}
+
+/* Focus styles (keyboard accessible) */
+.link:focus {
+  outline: none;
+  box-shadow: var(--link-focus-ring);
+  border-radius: var(--link-radius);
+}
+
+/* Helper: treat .link (utility) gracefully if used on the same element */
+.link.link {
+  font-weight: 600;
+}
+
+/* small responsive tweak */
+@media (max-width: 480px) {
+  .link-lg { padding: .5rem .75rem; }
+  .link-component { gap: .375rem; }
+}

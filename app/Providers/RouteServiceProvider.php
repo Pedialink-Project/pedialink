@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Middleware\AuthMiddleware;
+use App\Middleware\GuestMiddleware;
 use App\Middleware\StartSessionMiddleware;
 use Library\Framework\Core\Application;
 use Library\Framework\Core\Provider;
@@ -78,6 +80,8 @@ class RouteServiceProvider extends Provider
         // register middlewares
         $this->setup($router, [
             'session' => StartSessionMiddleware::class,
+            'auth' => AuthMiddleware::class,
+            'guest' => GuestMiddleware::class,
         ], [
             'session',
         ]);
