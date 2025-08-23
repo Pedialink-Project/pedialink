@@ -5,6 +5,7 @@ use Library\Framework\Core\Application;
 use Library\Framework\Core\Env;
 use Library\Framework\Http\Response;
 use Library\Framework\Routing\Router;
+use Library\Framework\Session\SessionManager;
 use Library\Framework\View\View;
 
 /**
@@ -123,4 +124,13 @@ function view(string $template, array $data = [], bool $htmlOnly = false)
 function auth(): Auth
 {
     return app(Auth::class);
+}
+
+/**
+ * Global helper class to retrieve session class
+ * @return Library\Framework\Session\SessionManager
+ */
+function session(): SessionManager
+{
+    return app(SessionManager::class);
 }
