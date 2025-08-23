@@ -60,7 +60,8 @@ class AuthController
 
     public function parentRegisterFinal(Request $request)
     {
-        if (session()->get("register_form", null)) {
+        $registerSessionForm = session()->get("register_form", null);
+        if ($registerSessionForm && $registerSessionForm["passwordHash"] !== null) {
             return view('auth/parent-register', [
                 "final" => true,
             ]);
