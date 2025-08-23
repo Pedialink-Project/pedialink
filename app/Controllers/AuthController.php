@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\Area;
+use App\Models\ParentM;
 use App\Models\User;
 use App\Services\AuthService;
 use Library\Framework\Http\Request;
@@ -19,14 +21,12 @@ class AuthController
 
     public function parentRegisterInitial(Request $request)
     {
+        // this if condition resets previous password hash if user goes back to initial form
         if ($registerFormSession = session()->get("register_form", null)) {
             $registerFormSession["passwordHash"] = null;
             session()->set("register_form", $registerFormSession);
-
-            return view('auth/parent-register', [
-                "data" => $registerFormSession,
-            ]);
         }
+
         return view('auth/parent-register');
     }
 
@@ -43,31 +43,76 @@ class AuthController
             "confirmPassword" => $request->input("confirmPassword"),
         ]));
 
-        if (count($errors) !== 0) {
+        if (count($errors) === 0) {
             session()->set("register_form", array_merge($data, [
                 "passwordHash" => password_hash(
                     $request->input("password"), PASSWORD_DEFAULT
                 ),
             ]));
-            return redirect(route("parent.register.final"));
+            return redirect(route("parent.register.final")); // redirect user to next form on success
         }
 
-        return redirect(route("parent.register", [
-            "data" => $data,
-            "errors" => $errors,
-        ]));
+        // redirect user to current form with errors on failure
+        return redirect(route("parent.register"))
+            ->withInput($data)
+            ->withErrors($errors);
     }
 
     public function parentRegisterFinal(Request $request)
     {
         $registerSessionForm = session()->get("register_form", null);
+
+        $areas = Area::all();
+
         if ($registerSessionForm && $registerSessionForm["passwordHash"] !== null) {
             return view('auth/parent-register', [
                 "final" => true,
+                "areas" => $areas,
             ]);
         }
 
         return redirect(route("parent.register"));
+    }
+
+    public function parentVerifyFinal(Request $request)
+    {
+        $data = [
+            "type" => htmlspecialchars(trim($request->input("type"))),
+            "nic" => htmlspecialchars(trim($request->input("nic"))),
+            "address" => htmlspecialchars(trim($request->input("address"))),
+            "division" => htmlspecialchars(trim($request->input("division"))),
+        ];
+
+        $errors = $this->authService->validateFinalForm($data);
+
+        // NOTE: If possible refactor this to AuthService class if you have the time!
+        // Otherwise Focus on frontend work exclusively until interim!
+        if (count($errors) === 0) {
+            $data = array_merge($data, session()->get("register_form"));
+
+            $user = new User();
+            $user->name = $data["firstName"] . " " . $data["lastName"];
+            $user->email = $data["email"];
+            $user->password_hash = $data["passwordHash"];
+            $user->role = "parent";
+            $userId = $user->save();
+
+            $parent = new ParentM();
+            $parent->id = $userId;
+            $parent->type = $data["type"];
+            $parent->address = $data["address"];
+            $parent->nic = $data["nic"];
+            $parent->area_id = (int)$data["division"];
+            $parent->save();
+
+            auth()->login($user);
+
+            return redirect(route("parent.dashboard"));
+        }
+
+        return redirect(route("parent.register.final"))
+            ->withInput($data)
+            ->withErrors($errors);
     }
 
     public function parentLogin(Request $request)
@@ -83,5 +128,11 @@ class AuthController
     public function forgotPassword(Request $request)
     {
         return view('auth/forgot-password');
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->logout();
+        return redirect(route('home'));
     }
 }
