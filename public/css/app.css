@@ -11,6 +11,7 @@
 @import "./components/link.css";
 @import "./components/input.css";
 @import "./components/textarea.css";
+@import "./components/select.css";
 
 /* helper/additional css for components */
 @import "./components/password-icon.css";
