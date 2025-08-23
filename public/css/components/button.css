@@ -129,7 +129,6 @@
 /* Focus ring - accessible and subtle */
 .btn:focus {
     outline: none;
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary-500) 10%, transparent 90%), 0 6px 20px rgba(0, 0, 0, 0.04);
 }
 
 /* Small helper for icons inside */
