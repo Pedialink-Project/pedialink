@@ -12,6 +12,7 @@
 @import "./components/input.css";
 @import "./components/textarea.css";
 @import "./components/select.css";
+@import "./components/sidebar.css";
 
 /* helper/additional css for components */
 @import "./components/password-icon.css";
