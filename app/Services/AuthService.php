@@ -224,7 +224,7 @@ class AuthService
     }
 
     /**
-     * Final encapsulated form to validate the second form
+     * Final encapsulated steps to validate the second form
      * 
      * @param array $data
      * @return string[]
