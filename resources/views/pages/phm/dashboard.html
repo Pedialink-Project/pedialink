@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PediaLink - PHM Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="1.jpg" alt="PediaLink Logo" width = "40" height = "40">
+                </div>
+                <span class="logo-text">PediaLink</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <span class="nav-label">Main</span>
+                    <ul>
+                        <li class="nav-item active">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Dashboard</span>
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-child"></i>
+                            <span>Child Profiles</span>
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-female"></i>
+                            <span>Maternal Profiles</span>
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Growth Monitoring</span>
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-syringe"></i>
+                            <span>Vaccination</span>
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Appointments</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <span class="nav-label">Settings</span>
+                    <ul>
+                        <li class="nav-item">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <div class="theme-toggle">
+                <button class="theme-btn light-btn active">
+                    <i class="fas fa-sun"></i>
+                    <span>Light</span>
+                </button>
+                <button class="theme-btn dark-btn">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search" class="search-input">
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="user-profile">
+                        <img src="2.webp" alt="Eva Mendes" class="user-avatar">
+                        <div class="user-info">
+                            <span class="user-name">Eva Mendes</span>
+                            <span class="user-role">Public Health Midwife</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h2 class="welcome-title">Good Evening,Harry !</h2>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-info">
+                                <span class="stat-label">Assigned Children</span>
+                                <span class="stat-value">03</span>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-child"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-info">
+                                <span class="stat-label">Assigned Mothers</span>
+                                <span class="stat-value">04</span>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-female"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-info">
+                                <span class="stat-label">Vaccinations Due</span>
+                                <span class="stat-value">04</span>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Data Section -->
+                <div class="charts-grid">
+                    <!-- Antenatal Risk Cases Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Antenatal Risk Cases</h3>
+                            <p>Antenatal risk rates grouped by age group</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="riskChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Vaccinations Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Monthly Vaccinations Completed</h3>
+                            <p>Tracking vaccination completion rates over time</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="vaccinationChart"></canvas>
+                            <div class="chart-center-text">
+                                <span class="center-number">254</span>
+                                <span class="center-label">children</span>
+                            </div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color completed"></span>
+                                <span>Completed</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color pending"></span>
+                                <span>Pending</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color missed"></span>
+                                <span>Missed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments and Vaccinations Section -->
+                <div class="appointments-grid">
+                    <!-- Upcoming Appointments -->
+                    <div class="appointments-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Upcoming Appointments</h3>
+                                <p>Upcoming appointments to attend</p>
+                            </div>
+                            <button class="view-all-btn">View Schedule</button>
+                        </div>
+                        
+                        <div class="appointments-list">
+                            <div class="appointment-item">
+                                <div class="appointment-info">
+                                    <span class="appointment-name">Sara Nancy - Routine Checkup</span>
+                                    <div class="appointment-meta">
+                                        <i class="fas fa-baby"></i>
+                                        <span>Baby</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-time">
+                                    <span class="appointment-date">2025-06-06</span>
+                                    <span class="appointment-hour">09:30 AM</span>
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-item">
+                                <div class="appointment-info">
+                                    <span class="appointment-name">Nancy Parker - Routine Checkup</span>
+                                    <div class="appointment-meta">
+                                        <i class="fas fa-female"></i>
+                                        <span>Mother</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-time">
+                                    <span class="appointment-date">2025-06-06</span>
+                                    <span class="appointment-hour">09:30 AM</span>
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-item">
+                                <div class="appointment-info">
+                                    <span class="appointment-name">Lara Peter - Counseling Session</span>
+                                    <div class="appointment-meta">
+                                        <i class="fas fa-female"></i>
+                                        <span>Mother</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-time">
+                                    <span class="appointment-date">2025-06-06</span>
+                                    <span class="appointment-hour">09:30 AM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Vaccinations -->
+                    <div class="vaccinations-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Upcoming Vaccination</h3>
+                                <p>Vaccines due for assigned children</p>
+                            </div>
+                            <button class="view-all-btn">View All</button>
+                        </div>
+                        
+                        <div class="vaccinations-list">
+                            <div class="vaccination-item">
+                                <div class="vaccination-info">
+                                    <span class="vaccination-name">Baby Sara</span>
+                                    <div class="vaccination-meta">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>RHU Center A</span>
+                                    </div>
+                                </div>
+                                <div class="vaccination-details">
+                                    <span class="vaccine-type">BCG</span>
+                                    <span class="vaccination-date">2025-06-01</span>
+                                </div>
+                            </div>
+                            
+                            <div class="vaccination-item">
+                                <div class="vaccination-info">
+                                    <span class="vaccination-name">Baby Mike</span>
+                                    <div class="vaccination-meta">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>RHU Center A</span>
+                                    </div>
+                                </div>
+                                <div class="vaccination-details">
+                                    <span class="vaccine-type">OPV</span>
+                                    <span class="vaccination-date">2025-06-01</span>
+                                </div>
+                            </div>
+                            
+                            <div class="vaccination-item">
+                                <div class="vaccination-info">
+                                    <span class="vaccination-name">Baby Sara</span>
+                                    <div class="vaccination-meta">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>RHU Center A</span>
+                                    </div>
+                                </div>
+                                <div class="vaccination-details">
+                                    <span class="vaccine-type">MMR</span>
+                                    <span class="vaccination-date">2025-06-01</span>
+                                </div>
+                            </div>
+                            
+                            <div class="vaccination-item">
+                                <div class="vaccination-info">
+                                    <span class="vaccination-name">Baby Sara</span>
+                                    <div class="vaccination-meta">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>RHU Center A</span>
+                                    </div>
+                                </div>
+                                <div class="vaccination-details">
+                                    <span class="vaccine-type">MMR</span>
+                                    <span class="vaccination-date">2025-06-01</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
