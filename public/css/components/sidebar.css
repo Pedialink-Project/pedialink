@@ -1,0 +1,120 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 16rem;
+    height: 100vh;
+    background: var(--primary-50);
+    border-right: 1px solid var(--border);
+
+}
+
+.sidebar-header {
+    padding: 1.125rem 1.5rem;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid var(--border);
+
+
+}
+
+.sidebar-section {
+    width: 100%;
+    padding: 1.125rem 1.5rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+
+
+}
+
+.sidebar-subtitle {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 .75rem;
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+a {
+    all: unset;
+}
+
+
+.tab {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+}
+
+.menu-link {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: var(--text-md);
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex;
+    align-items: center;
+    border-radius: var(--radius-lg);
+    padding: .625rem .75rem;
+
+
+}
+
+.menu-link:hover {
+    background-color: #f1f1f1;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.menu-link.active {
+    background-color: #eeeeee;
+    color: var(--text-primary);
+}
+
+.arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.submenu {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    margin-left: 1rem;
+    gap: .25rem;
+    border-left: 2.5px solid var(--border);
+
+    
+}
+
+.submenu-link {
+    padding: 0.5rem .75rem;
+    margin-left: .5rem;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    border-radius: var(--radius-md);
+}
+
+.submenu-link:hover {
+    background: #f1f1f1;
+}
+
+.submenu-link.active {
+    background: #eeeeee;
+    color: var(--text-primary);
+}
+
+.tab.open>.submenu {
+    display: flex;
+}
+
+.tab.open .arrow {
+    transform: rotate(180deg);
+}

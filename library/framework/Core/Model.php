@@ -123,23 +123,49 @@ abstract class Model
 
     /**
      * Save changes to the model in the table
-     * @return bool
+     * 
+     * NOTE: This method needs to be further tested.
+     * Behavior of this method can be unpredictable.
+     * 
+     * @return int primary key of the inserted row
      */
-    public function save(): bool
+    public function save(): int
     {
-        if (isset($this->attributes[static::$primaryKey])) {
-            // update the model values
-            $id = $this->attributes[static::$primaryKey];
-            unset($this->attributes[static::$primaryKey]);
-            return static::query()
-                ->where(static::$primaryKey, '=', $id)
-                ->update($this->attributes);
+        $primaryKey = static::$primaryKey;
+
+        // If primary key value present, decide update vs insert by checking existence
+        if (isset($this->attributes[$primaryKey])) {
+            $id = $this->attributes[$primaryKey];
+
+            // check if record exists
+            $existing = static::query()
+                ->where($primaryKey, '=', $id)
+                ->first();
+
+            if ($existing) {
+                // existing -> update (don't try to insert)
+                // remove the pk from update payload
+                unset($this->attributes[$primaryKey]);
+                $affected = static::query()
+                    ->where($primaryKey, '=', $id)
+                    ->update($this->attributes);
+
+                return (int)$id;
+            }
+
+            // PK is provided but row does not exist -> treat as insert including the supplied pk
+            $newId = static::query()->insert($this->attributes);
+
+            // insert() for Postgres should return the inserted id (see QueryBuilder)
+            // If insert returns 0 (unknown), fall back to the supplied id
+            $this->attributes[$primaryKey] = $newId ?: $id;
+            return (int)$this->attributes[$primaryKey];
         }
 
-        // insert
+        // No primary key provided - normal insert
         $newId = static::query()->insert($this->attributes);
-        $this->attributes[static::$primaryKey] = $newId;
-        return (bool)$newId;
+        $this->attributes[$primaryKey] = $newId;
+        return (int)$newId;
     }
 
     /**

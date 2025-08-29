@@ -5,6 +5,10 @@ $allRoutes = [];
 $routeFiles = [
     'home.php',
     'auth.php',
+    'parent.php',
+    'phm.php',
+    'doctor.php',
+    'admin.php',
 ];
 
 foreach ($routeFiles as $file) {

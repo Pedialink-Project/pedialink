@@ -52,8 +52,8 @@ class QueryBuilder
 
     public function __construct(PDO $pdo, string $table, string $modelClass)
     {
-        $this->pdo        = $pdo;
-        $this->table      = $table;
+        $this->pdo = $pdo;
+        $this->table = $table;
         $this->modelClass = $modelClass;
     }
 
@@ -77,8 +77,8 @@ class QueryBuilder
         }
 
         // Use placeholder
-        $placeholder      = ':' . $column . count($this->bindings);
-        $this->wheres[]   = "{$column} {$operator} {$placeholder}";
+        $placeholder = ':' . $column . count($this->bindings);
+        $this->wheres[] = "{$column} {$operator} {$placeholder}";
         $this->bindings[$placeholder] = $value;
 
         return $this;
@@ -93,7 +93,7 @@ class QueryBuilder
     {
         $sql = "SELECT * FROM {$this->table}";
         if ($this->wheres) {
-            $sql   .= ' WHERE ' . implode(' AND ', $this->wheres);
+            $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
         }
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($this->bindings);
@@ -119,12 +119,12 @@ class QueryBuilder
         if ($this->wheres) {
             $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
         }
-        $sql   .= ' LIMIT 1';
-        $stmt  = $this->pdo->prepare($sql);
+        $sql .= ' LIMIT 1';
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute($this->bindings);
-        $row   = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (! $row) {
+        if (!$row) {
             return null;
         }
 
@@ -140,11 +140,11 @@ class QueryBuilder
      */
     public function insert(array $data): int
     {
-        $cols         = array_keys($data);
+        $cols = array_keys($data);
         $placeholders = [];
 
         foreach ($cols as $col) {
-            $placeholders[]               = ':' . $col;
+            $placeholders[] = ':' . $col;
             $this->bindings[':' . $col] = $data[$col];
         }
 
@@ -172,8 +172,8 @@ class QueryBuilder
     {
         $sets = [];
         foreach ($data as $col => $val) {
-            $placeholder                = ':' . $col . count($this->bindings);
-            $sets[]                     = "{$col} = {$placeholder}";
+            $placeholder = ':' . $col . count($this->bindings);
+            $sets[] = "{$col} = {$placeholder}";
             $this->bindings[$placeholder] = $val;
         }
 
@@ -198,7 +198,8 @@ class QueryBuilder
      */
     public function delete(): bool
     {
-        $sql  = sprintf("DELETE FROM %s" .
+        $sql = sprintf(
+            "DELETE FROM %s" .
             ($this->wheres ? ' WHERE ' . implode(' AND ', $this->wheres) : ''),
             $this->table
         );

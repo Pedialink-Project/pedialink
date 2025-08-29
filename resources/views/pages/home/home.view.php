@@ -1,14 +1,21 @@
-@extends('layout/main')
+@extends('layout/portal')
 
 @section('title')
 Home
 @endsection
 
-@section('content')
-  <h1>Home page</h1>
+@section('sidebar')
+<c-sidebar></c-sidebar>
 
- <c-badge $type="primary" $size="lg">
+@endsection
+
+@section('content')
+<h1>Home page</h1>
+
+<c-badge $type="primary" $size="lg">
   HI
- </c-badge>
+</c-badge>
+
+
 
 @endsection

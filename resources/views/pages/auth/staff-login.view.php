@@ -34,9 +34,23 @@
                     </c-link>
                 </div>
                 <div>
-                    <form id="staff-login" action="">
-                        <c-input label="Email:" placeholder="Enter your email" type="email" />
-                        <c-input label="Password:" placeholder="Enter your password" type="password" />
+                    <form id="staff-login" method="POST" action="{{ route('staff.login.submit') }}">
+                        <c-input
+                            label="Email:"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            type="email"
+                            value="{{ old('email') ?? '' }}"
+                            error="{{ errors('email') ?? '' }}"
+                        />
+                        <c-input
+                            label="Password:"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            type="password"
+                        />
                     </form>
                     <div class="forgot-password-group">
                         <c-link href="{{ route('forgot.password') }}" size="sm">
