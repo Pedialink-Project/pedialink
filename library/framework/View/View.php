@@ -246,7 +246,7 @@ class View
 
         // Handles self closing component tags
         $php = preg_replace_callback(
-            '/<c-([a-zA-Z0-9_.\-]+)\s*([^>]*)\/>/',
+            '/<c-([a-zA-Z0-9_.\-]+)\s*((?:[^"\'>]|"[^"]*"|\'[^\']*\')*)\/>/',
             function ($m) {
                 $id = $this->componentUid++;
                 $attrsVar = "__attrs_{$id}";
@@ -255,7 +255,7 @@ class View
                 $path = str_replace(['.', '-'], '/', $tag);
                 $attrString = isset($m[2]) ? trim($m[2]) : '';
 
-                // parse attributes
+                // parse attributes (same robust inner parser)
                 $pairs = [];
                 if (preg_match_all(
                     '/([a-zA-Z0-9_\-:]+)(?:\s*=\s*(?:"([^"]*)"|\'([^\']*)\'))?/',
@@ -268,21 +268,32 @@ class View
                         $val = null;
                         if (isset($p[2]) && $p[2] !== '') $val = $p[2];
                         elseif (isset($p[3]) && $p[3] !== '') $val = $p[3];
-
                         $pairs[] = ['key' => $key, 'val' => $val];
                     }
                 }
 
-                // Build code that initialises the attrs array and fills entries (literal vs compiled)
+                // Build code that initialises the attrs array and fills entries (literal vs compiled vs bound)
                 $code = "<?php \${$attrsVar} = []; ?>\n";
 
                 foreach ($pairs as $p) {
-                    $k = addslashes($p['key']);
+                    $rawKey = $p['key'];
+                    $isBound = (substr($rawKey,0,1) === ':');
+                    $key = $isBound ? addslashes(substr($rawKey, 1)) : addslashes($rawKey);
                     $v = $p['val'];
 
                     if ($v === null) {
                         // boolean attribute
-                        $code .= "<?php \${$attrsVar}['{$k}'] = true; ?>\n";
+                        $code .= "<?php \${$attrsVar}['{$key}'] = true; ?>\n";
+                        continue;
+                    }
+
+                    if ($isBound) {
+                        // Bound attribute: evaluate expression as PHP and normalize numeric-ish strings
+                        $expr = $v;
+                        $code .= "<?php \${$attrsVar}['{$key}'] = ({$expr}); ";
+                        $code .= "if (is_string(\${$attrsVar}['{$key}']) && is_numeric(\${$attrsVar}['{$key}'])) { ";
+                        $code .= " \${$attrsVar}['{$key}'] = (strpos(\${$attrsVar}['{$key}'], '.') !== false) ? (float)\${$attrsVar}['{$key}'] : (int)\${$attrsVar}['{$key}']; ";
+                        $code .= "} ?>\n";
                         continue;
                     }
 
@@ -290,14 +301,13 @@ class View
                     if (preg_match('/\{\{|\@|<c-|<\/c-|<\?php/s', $v)) {
                         // compile the attribute fragment so directives are evaluated
                         $compiled = $this->compile($v);
-                        $attrTmp = "__attr_{$id}_" . md5($k);
                         $code .= "<?php ob_start(); ?>\n";
                         $code .= $compiled . "\n";
-                        $code .= "<?php \${$attrsVar}['{$k}'] = ob_get_clean(); ?>\n";
+                        $code .= "<?php \${$attrsVar}['{$key}'] = ob_get_clean(); ?>\n";
                     } else {
                         // simple literal -> safe quoted string
                         $literal = addslashes($v);
-                        $code .= "<?php \${$attrsVar}['{$k}'] = '{$literal}'; ?>\n";
+                        $code .= "<?php \${$attrsVar}['{$key}'] = '{$literal}'; ?>\n";
                     }
                 }
 
@@ -312,7 +322,7 @@ class View
 
         // Handles component tags along with support for slots and named slots
         $php = preg_replace_callback(
-            '/<c-([a-zA-Z0-9_.\-]+)\s*([^>]*)>([\s\S]*?)<\/c-\\1>/',
+            '/<c-([a-zA-Z0-9_.\-]+)\s*((?:[^"\'>]|"[^"]*"|\'[^\']*\')*)>([\s\S]*?)<\/c-\\1>/',
             function ($m) {
                 $id = $this->componentUid++;
 
@@ -352,7 +362,7 @@ class View
                         if (preg_match('/\bname\s*=\s*(["\'])(.*?)\1/i', $slotAttrs, $nameMatch)) {
                             $slotName = addslashes($nameMatch[2]);
                             $compiledSlot = $this->compile($slotContent);
-                            // wrap slot content into HtmlString (if you already use it)
+                            // wrap slot content into HtmlString
                             $slotsCode .= "<?php ob_start(); ?>\n" . $compiledSlot . "\n<?php \${$slotsVar}['{$slotName}'] = new \\Library\\Framework\\View\\HtmlString(ob_get_clean()); ?>\n";
                         }
                     }
@@ -371,11 +381,23 @@ class View
                 $code .= "<?php \${$attrsVar} = []; ?>\n";
 
                 foreach ($pairs as $p) {
-                    $k = addslashes($p['key']);
+                    $rawKey = $p['key'];
+                    $isBound = (substr($rawKey,0,1) === ':');
+                    $key = $isBound ? addslashes(substr($rawKey, 1)) : addslashes($rawKey);
                     $v = $p['val'];
 
                     if ($v === null) {
-                        $code .= "<?php \${$attrsVar}['{$k}'] = true; ?>\n";
+                        $code .= "<?php \${$attrsVar}['{$key}'] = true; ?>\n";
+                        continue;
+                    }
+
+                    if ($isBound) {
+                        // Bound attribute: evaluate expression as PHP and normalize numeric-ish strings
+                        $expr = $v;
+                        $code .= "<?php \${$attrsVar}['{$key}'] = ({$expr}); ";
+                        $code .= "if (is_string(\${$attrsVar}['{$key}']) && is_numeric(\${$attrsVar}['{$key}'])) { ";
+                        $code .= " \${$attrsVar}['{$key}'] = (strpos(\${$attrsVar}['{$key}'], '.') !== false) ? (float)\${$attrsVar}['{$key}'] : (int)\${$attrsVar}['{$key}']; ";
+                        $code .= "} ?>\n";
                         continue;
                     }
 
@@ -384,14 +406,14 @@ class View
                         $compiled = $this->compile($v);
                         $code .= "<?php ob_start(); ?>\n";
                         $code .= $compiled . "\n";
-                        $code .= "<?php \${$attrsVar}['{$k}'] = ob_get_clean(); ?>\n";
+                        $code .= "<?php \${$attrsVar}['{$key}'] = ob_get_clean(); ?>\n";
                     } else {
                         $literal = addslashes($v);
-                        $code .= "<?php \${$attrsVar}['{$k}'] = '{$literal}'; ?>\n";
+                        $code .= "<?php \${$attrsVar}['{$key}'] = '{$literal}'; ?>\n";
                     }
                 }
 
-                // Now buffer default slot and wrap as HtmlString if desired
+                // Now buffer default slot and wrap as HtmlString
                 $code .= "<?php ob_start(); ?>\n";
                 $code .= $compiledInner;
                 $code .= "\n<?php \${$slotVar} = new \\Library\\Framework\\View\\HtmlString(ob_get_clean()); ";
