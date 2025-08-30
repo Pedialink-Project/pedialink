@@ -1,0 +1,146 @@
+/* table.base.css — refined shadcn-like table visual language */
+
+/* tokens (fall back to theme variables already in your theme.css) */
+:root{
+  --tbl-radius: 12px;
+  --tbl-gap: 0.75rem;
+  --tbl-padding-y: 0.75rem;
+  --tbl-padding-x: 0.9rem;
+  --tbl-header-bg: var(--surface);
+  --tbl-card-bg: var(--panel);
+  --tbl-border: var(--muted-border);
+  --tbl-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  --tbl-hover: rgba(2,6,23,0.03);
+  --tbl-muted: var(--text-muted);
+  --tbl-radius-sm: 8px;
+  --tbl-focus-ring: 0 0 0 4px rgba(99,102,241,0.06);
+}
+
+/* wrapper & card */
+.table-wrapper { width:100%; overflow-x:auto; border-radius: var(--tbl-radius); }
+.table-card {
+  background: var(--tbl-card-bg);
+  border: 1px solid var(--tbl-border);
+  border-radius: var(--tbl-radius);
+  box-shadow: var(--tbl-shadow);
+  overflow: hidden;
+}
+
+/* table base */
+.table {
+  width:100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: inherit;
+  color: var(--text-primary);
+  min-width: 640px; /* override as needed */
+}
+
+/* header */
+.table thead {
+  background: var(--tbl-header-bg);
+  border-bottom: 1px solid var(--tbl-border);
+}
+.table__th {
+  padding: var(--tbl-padding-y) var(--tbl-padding-x);
+  font-weight: 600;
+  font-size: .95rem;
+  color: var(--text-strong);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* header sort affordance */
+.table__th .th-label {
+  display:inline-flex;
+  gap: .6rem;
+  align-items: center;
+  cursor: default;
+  user-select: none;
+}
+.table__th .th-label[aria-sortable="true"] { cursor: pointer; }
+.table__th .sort-icon { opacity: .6; transition: transform .12s ease, opacity .12s ease; }
+.table__th .sorted-asc .sort-icon { transform: rotate(180deg); opacity:1; }
+.table__th .sorted-desc .sort-icon { transform: rotate(0); opacity:1; }
+
+/* body */
+.table__td {
+  padding: var(--tbl-padding-y) var(--tbl-padding-x);
+  font-size: .95rem;
+  border-bottom: 1px solid var(--tbl-border);
+  vertical-align: middle;
+  color: var(--text-primary);
+}
+
+/* subtle hover and zebra */
+.table__tr:hover { background: var(--tbl-hover); }
+.table--striped tbody tr:nth-child(even) { background: rgba(2,6,23,0.02); }
+
+/* sizes */
+.table--compact .table__th, .table--compact .table__td { padding: .45rem .6rem; font-size:.88rem; }
+.table--comfortable .table__th, .table--comfortable .table__td { padding: 1rem 1.1rem; font-size:1rem; }
+
+/* alignment classes (no 'align' attribute) */
+.table__td--left, .table__th--left { text-align: left;}
+.table__td--center, .table__th--center { text-align:center; }
+.table__td--right,  .table__th--right  { text-align:right; }
+
+/* actions column helper */
+.table__actions { white-space:nowrap; padding-right: calc(var(--tbl-padding-x)); }
+
+/* sticky header */
+.table--sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  backdrop-filter: blur(6px);
+}
+
+/* search input (modern style) */
+.table-search-input {
+  display:inline-flex;
+  align-items:center;
+  gap: .5rem;
+  background: var(--panel);
+  border: 1px solid var(--muted-border);
+  padding: .25rem .5rem;
+  border-radius: 999px;
+  min-width: 240px;
+  box-shadow: none;
+}
+.table-search-input input[type="search"] {
+  border: none;
+  outline: none;
+  padding: .45rem .5rem;
+  background: transparent;
+  font-size: .95rem;
+  color: var(--text-primary);
+  width: 12rem;
+}
+.table-search-input .search-icon {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  opacity: .7;
+}
+.table-search-input .search-clear {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding: .25rem;
+  border-radius: 6px;
+  color: var(--tbl-muted);
+  opacity: .9;
+}
+.table-search-input .search-clear:hover { background: var(--surface); color: var(--accent); }
+
+/* focus */
+.table-search-input:focus-within { box-shadow: var(--tbl-focus-ring); border-color: var(--accent); }
+
+/* small screens */
+@media (max-width:640px) {
+  .table { min-width: 0; }
+  .table-search-input { min-width: 160px; }
+  .table__th, .table__td { padding: .5rem .6rem; }
+}
