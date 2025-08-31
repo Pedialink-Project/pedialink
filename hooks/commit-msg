@@ -5,7 +5,7 @@ MSG_FILE="$1"
 MSG=$(<"$MSG_FILE")
 
 # 1) Allowed prefixes
-PREFIXES="feat|doc|chore|update|fix|remove|refactor"
+PREFIXES="feat|doc|chore|update|fix|remove|refactor|test"
 
 # 2) Detect current branch name
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
