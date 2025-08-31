@@ -1,0 +1,188 @@
+/* portal-navbar.css - top bar visuals & small layout helpers */
+:root {
+  --nav-height: 64px;
+  --nav-bg: var(--panel);
+  --nav-border: var(--border);
+  --nav-shadow: 0 6px 18px rgba(2, 6, 23, 0.04);
+}
+
+/* top navbar */
+.app-navbar {
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  box-shadow: var(--nav-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+/* left area (brand + sidebar toggle) */
+.app-navbar__left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+/* hamburger / toggle button */
+.nav-toggle-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: .4rem .5rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.nav-toggle-btn:hover {
+  background: var(--surface);
+}
+
+.nav-toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.06);
+}
+
+/* brand/logo */
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  white-space: nowrap;
+}
+
+.app-brand img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+/* center search area */
+.app-navbar__center {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  gap: 1rem;
+  min-width: 0;
+}
+
+/* search (reuse your table-search style) */
+.nav-search {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--panel);
+  border: 1px solid var(--muted-border);
+  padding: .25rem .5rem;
+  border-radius: 999px;
+  min-width: 240px;
+  max-width: 640px;
+  width: 40%;
+}
+
+.nav-search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: .45rem .5rem;
+  font-size: .95rem;
+  width: 100%;
+}
+
+/* right user area */
+.app-navbar__right {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin-left: auto;
+}
+
+.nav-user {
+  display: inline-flex;
+  gap: .6rem;
+  align-items: center;
+}
+
+.nav-user .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  overflow: hidden;
+  display: inline-block;
+  background: var(--surface);
+}
+
+.nav-user .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.user-meta > .user-name {
+  color: var(--text-primary);
+  max-width: 10rem;
+  font-weight: 600;
+  white-space: nowrap;       /* prevent wrapping */
+  overflow: hidden;         /* hide overflow */
+  text-overflow: ellipsis;  /* show ... */
+}
+
+.user-meta > .user-role {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* layout helper: small icon button */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--surface);
+}
+
+/* small responsive tweaks */
+@media (max-width: 920px) {
+  .nav-search {
+    width: 55%;
+    min-width: 140px;
+  }
+
+  .app-navbar__center {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-search {
+    display: none;
+  }
+
+  /* hide search on small screens to save space */
+}

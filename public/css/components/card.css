@@ -3,9 +3,9 @@
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: calc(var(--radius-lg) - 2px);
+  border-radius: 0.75rem;
   box-shadow: 0 6px 18px rgba(0,0,0,0.03);
-  padding: 1rem;
+  padding: 1.5rem;
   overflow: hidden;
 }
 

@@ -9,6 +9,7 @@ $routeFiles = [
     'phm.php',
     'doctor.php',
     'admin.php',
+    'test.php', // testing routes
 ];
 
 foreach ($routeFiles as $file) {

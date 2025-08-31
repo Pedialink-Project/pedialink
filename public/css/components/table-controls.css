@@ -1,0 +1,100 @@
+/* table.controls.css
+   Lightweight, composable table controls (search | filters | extra buttons | columns)
+   Relies on theme variables: --spacing, --radius-lg, --muted-border, --panel, --text-muted, --text-primary, --accent
+*/
+
+.table-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing, 1rem) * 0.75);
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: calc(var(--spacing, 1rem) * 2);
+}
+
+/* sections */
+.table-controls__left,
+.table-controls__right {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing, 1rem) * 0.5);
+    min-width: 0;
+}
+
+/* left area: search */
+.table-controls__left {
+    flex: 0 1 60%;
+}
+
+.table-controls__right {
+    flex: 0 1 auto;
+    margin-left: auto;
+}
+
+/* filter chips (center): small pills */
+.tc-filters {
+    display: flex;
+    flex-direction: row;
+    gap: .375rem;
+    justify-content: center;
+}
+
+.tc-filter:hover {
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+/* right area: buttons and dropdown */
+.tc-actions {
+    display: inline-flex;
+    gap: .5rem;
+    align-items: center;
+}
+
+/* compact icon only helper (for extra small buttons) */
+.tc-icon-only {
+    padding: .35rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+/* responsive: wrap vertically on small screens */
+@media (max-width: 860px) {
+    .table-controls__left {
+        flex: 1 1 50%;
+
+    }
+
+    .column-dropdown {
+        display: none;
+    }
+}
+
+@media (max-width: 760px) {
+    .table-controls {
+        gap: .5rem;
+    }
+
+    .table-controls__left {
+        flex: 1 1 60%;
+
+    }
+
+    .tc-filters {
+        display: none;
+    }
+
+    .column-dropdown {
+        display: none;
+    }
+}
+
+/* focus states */
+.table-controls :focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.06);
+    border-radius: 8px;
+}

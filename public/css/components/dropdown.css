@@ -1,0 +1,130 @@
+/* public/css/components/dropdown.css
+   Shadcn-like dropdown styles: compact, subtle shadows, rounded, good spacing.
+*/
+
+:root {
+    --dd-radius: 8px;
+    --dd-padding: 0.5rem;
+    --dd-gap: 0.375rem;
+    --dd-bg: var(--panel);
+    --dd-border: var(--muted-border);
+    --dd-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+    --dd-item-hover: rgba(2, 6, 23, 0.04);
+    --dd-text: var(--text-primary);
+    --dd-muted: var(--text-muted);
+}
+
+/* wrapper (position: relative) */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* trigger button */
+.dropdown-trigger:hover {
+    background: var(--surface);
+}
+
+/* menu */
+.dropdown-menu {
+    position: absolute;
+    min-width: 12rem;
+    max-width: 28rem;
+    background: var(--dd-bg);
+    border: 1px solid var(--dd-border);
+    border-radius: var(--dd-radius);
+    box-shadow: var(--dd-shadow);
+    padding: .375rem;
+    margin-top: .5rem;
+    z-index: 120;
+    transform-origin: top right;
+}
+
+/* align variants */
+.dropdown-menu[data-placement="right"] {
+    right: 0;
+    left: auto;
+}
+
+.dropdown-menu[data-placement="left"] {
+    left: 0;
+    right: auto;
+}
+
+/* menu hidden helper */
+.dropdown-menu[aria-hidden="true"] {
+    display: none;
+}
+
+/* menu items */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .475rem .6rem;
+    border-radius: 6px;
+    color: var(--dd-text);
+    text-decoration: none;
+    background: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: .95rem;
+    cursor: pointer;
+    border: none;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background: var(--dd-item-hover);
+    outline: none;
+    color: var(--text-strong);
+}
+
+/* item variants */
+.dropdown-item--danger {
+    color: var(--danger);
+}
+
+.dropdown-item--muted {
+    color: var(--dd-muted);
+}
+
+/* item icon */
+.dropdown-item__icon {
+    display: inline-flex;
+    width: 1.25rem;
+    justify-content: center;
+    align-items: center;
+    opacity: .9;
+}
+
+/* separator */
+.dropdown-sep {
+    height: 1px;
+    background: var(--dd-border);
+    margin: .25rem 0;
+    border-radius: 1px;
+}
+
+/* item as anchor default style (reset) */
+.dropdown-item[href] {
+    text-align: left;
+}
+
+/* small tweak for icon-only items (square) */
+.dropdown-trigger.icon-only {
+    padding: .45rem;
+    border-radius: 9999px;
+}
+
+/* responsive */
+@media (max-width:480px) {
+    .dropdown-menu {
+        min-width: 10.5rem;
+    }
+
+    .dropdown-item {
+        padding: .45rem .5rem;
+        font-size: .92rem;
+    }
+}

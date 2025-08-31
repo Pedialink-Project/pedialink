@@ -1,11 +1,18 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    width: 16rem;
+    position: relative;
+    transform: none;
+    transition: transform .18s ease, width .18s ease;
+    z-index: 50;
+    width: 20rem;
     height: 100vh;
     background: var(--primary-50);
     border-right: 1px solid var(--border);
+}
 
+.sidebar-overlay {
+    display: none;
 }
 
 .sidebar-header {
@@ -91,7 +98,7 @@ a {
     gap: .25rem;
     border-left: 2.5px solid var(--border);
 
-    
+
 }
 
 .submenu-link {
@@ -118,3 +125,64 @@ a {
 .tab.open .arrow {
     transform: rotate(180deg);
 }
+
+@media (max-width:640px) {
+    .sidebar {
+        width: 18rem;
+    }
+}
+
+/* MOBILE / NARROW: convert sidebar into an overlay that slides in/out */
+@media (max-width: 920px) {
+
+    /* Sidebar: start hidden (off-canvas) and be positioned UNDER the navbar */
+    .sidebar {
+        position: fixed;
+        top: var(--nav-height);
+        /* START BELOW NAVBAR */
+        left: 0;
+        bottom: 0;
+        width: 20rem;
+        transform: translateX(-110%);
+        /* hidden by default (off-canvas) */
+        box-shadow: 0 20px 40px rgba(2, 6, 23, 0.16);
+        background: var(--primary-50);
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        z-index: 80;
+        /* above overlay, below navbar */
+        height: calc(100vh - var(--nav-height));
+    }
+
+    /* Reveal the sidebar when the body has the class (toggled by your nav button) */
+    body.show-sidebar .sidebar {
+        transform: translateX(0);
+    }
+
+    /* overlay backdrop to darken page behind sidebar
+     Hidden by default; appears only when body.show-sidebar is set */
+    .sidebar-overlay {
+        display: none;
+        /* KEEP HIDDEN when not active */
+    }
+
+    body.show-sidebar .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: var(--nav-height) 0 0 0;
+        /* don't cover the navbar */
+        background: rgba(0, 0, 0, 0.36);
+        z-index: 75;
+        /* under sidebar (80), under navbar */
+        pointer-events: auto;
+        opacity: 1;
+        transition: opacity .16s ease;
+    }
+
+    /* ensure page behind doesn't scroll while menu open (mobile only) */
+    body.show-sidebar {
+        overflow: hidden;
+    }
+}
+

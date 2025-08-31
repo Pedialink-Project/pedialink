@@ -53,3 +53,7 @@
 .p-1 {
     padding: var(--spacing);
 }
+
+.hidden {
+    display: none;
+}

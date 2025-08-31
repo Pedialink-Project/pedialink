@@ -1,0 +1,12 @@
+.table-pagination-footer {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: calc(var(--spacing, 1rem) * 10);
+}
+
+.table-pagination-footer > .table-pagination-btn-group {
+    display: flex;
+    flex-direction: row;
+    gap: calc(var(--spacing, 1rem) * 0.75);
+}

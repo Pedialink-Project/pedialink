@@ -1,12 +1,7 @@
-@extends('layout/portal')
+@extends('layout/main')
 
 @section('title')
 Home
-@endsection
-
-@section('sidebar')
-<c-sidebar></c-sidebar>
-
 @endsection
 
 @section('content')
@@ -15,6 +10,18 @@ Home
 <c-badge $type="primary" $size="lg">
   HI
 </c-badge>
+
+<c-link type="primary" href="{{ route('parent.login') }}">
+  Parent Login
+</c-link>
+
+<c-link type="primary" href="{{ route('staff.login') }}">
+  Staff Login
+</c-link>
+
+<c-link type="primary" href="{{ route('test.portal') }}">
+  Test Portal
+</c-link>
 
 
 
