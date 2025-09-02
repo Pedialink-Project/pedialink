@@ -11,19 +11,20 @@ Parent Dashboard
 
 
 @section('content')
-<section class="pill-container">
-    <div class="pill">
-        <div class="title-section">
-            <span class="pill-title">Linked Children</span>
-            <span class="pill-number">03</span>
-        </div>
+<div class="top-section">
 
-        <img src="{{asset('assets/icons/baby-01.svg')}}" alt="">
-    </div>
-
-
+<section class="greet">
+    <h1>Good Moring, <br>
+    [Parent's Name]!</h1>
 </section>
-
+<section class="pill-container">
+    <c-pill>
+        <c-slot name="title"></c-slot>
+        <c-slot name="number"></c-slot>
+        <c-slot name="icon"></c-slot>
+    </c-pill>
+</section>
+</div>
 <main class="container">
     <c-card class="card">
         <div class="header">
@@ -46,9 +47,9 @@ Parent Dashboard
                 <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
             </div>
             <c-select name='child' class="child-select" placeholder="Select Child">
-                 <li class="select-item" data-value="baby-sara">Baby Sara</li>
-                 <li class="select-item" data-value="baby-john">Baby John</li>
-                 </c-select>
+                <li class="select-item" data-value="baby-sara">Baby Sara</li>
+                <li class="select-item" data-value="baby-john">Baby John</li>
+            </c-select>
         </div>
         <div class="card-body">
             <div class="tab events-campaigns">
