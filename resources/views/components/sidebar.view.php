@@ -1,5 +1,5 @@
 <?php
-$type = $type ?? 'admin';
+$role = $role ?? 'admin';
 $class = $class ?? '';
 $slots = $slots ?? [];
 
@@ -93,21 +93,54 @@ $menuItems = [
     ],
     'parent' => [
         'Main' => [
-            ['name' => 'Dashboard', 'link' => '/dashboard'],
             [
-                'name' => 'Posts',
-                'link' => '#',
-                'children' => [
-                    ['name' => 'All Posts', 'link' => '#'],
-                    ['name' => 'Create New', 'link' => '#'],
-                ]
+                'name' => 'Dashboard',
+                'link' => route('parent.dashboard'),
+                'icon' => asset('/assets/icons/dashboard-square-02.svg'),
+
             ],
+            [
+                'name' => 'My Children',
+                'link' => route('parent.my.children'),
+                'icon' => asset('/assets/icons/baby-01.svg'),
+               
+            ],
+            [
+                'name' => 'Vaccination',
+                'link' => route('parent.vaccination'),
+                'icon' => asset('/assets/icons/vaccine.svg'),
+               
+            ],
+            [
+                'name' => 'Nutrition Tracking',
+                'link' => route('parent.nutrition.tracking'),
+                'icon' => asset('/assets/icons/chart-evaluation.svg'),
+               
+            ],
+            [
+                'name' => 'Appointments',
+                'link' => route('parent.appointments'),
+                'icon' => asset('/assets/icons/profile.svg'),
+            ],
+            [
+                'name' => 'Events & Campaigns',
+                'link' => route('parent.events.campaigns'),
+                'icon' => asset('/assets/icons/megaphone-02.svg'),
+            ],
+             
         ],
         'Settings' => [
-            ['name' => 'Profile', 'link' => '#'],
-            ['name' => 'Settings', 'link' => '#'],
-        ]
-    ],
+            [
+                'name' => 'Notifications',
+                'link' => route('parent.notifications'),
+                'icon' => asset('/assets/icons/notification-02.svg'),
+            ],
+            [
+                'name' => 'Settings',
+                'link' => route('parent.settings'),
+                'icon' => asset('/assets/icons/setting-07.svg'),
+            ],
+        ],],
     'guest' => [
         'Main' => [
             ['name' => 'Home', 'link' => '#'],
@@ -119,7 +152,7 @@ $menuItems = [
     ],
 ];
 
-$menus = $menuItems[$type] ?? $menuItems['admin'];
+$menus = $menuItems[$role] ?? $menuItems['admin'];
 $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
 ?>
 

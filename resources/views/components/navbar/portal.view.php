@@ -8,7 +8,7 @@ $class = $class ?? '';
   <div class="app-navbar__left">
     <button class="nav-toggle-btn" id="{{ $uid }}_toggle" aria-label="Toggle sidebar" title="Toggle sidebar">
       <!-- hamburger -->
-      <img src="{{ asset('assets/icons/profile.svg') }}" />
+      <img src="{{ asset('assets/icons/sidebar-left.svg') }}" />
     </button>
   </div>
 
@@ -18,7 +18,8 @@ $class = $class ?? '';
     @else
       <div class="nav-search" role="search">
         <span class="search-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M8.5 14a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zM13.5 13.5L18 18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <img src="{{ asset('assets/icons/search.svg') }}" />
+
         </span>
         <input type="search" name="q" placeholder="Search" />
       </div>
