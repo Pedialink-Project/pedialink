@@ -9,10 +9,40 @@ body {
     color: var(--text-primary);
 }
 
+.pill-container{
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+}
+
+.pill{
+   width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1rem;
+
+}
+
+.pill-title{
+    font-size: var(--text-md);
+    font-weight: var(--font-weight-normal);
+    color: var(--text-primary);
+}
+ .pill-number{
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+ }
+
 .container{
     width: 100%;
     margin: auto;
     display: grid;
+
+}
+.card{
+    padding: 1.25rem 1rem;
 
 }
 .header{
@@ -20,7 +50,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
 }
 
 .title-section{
@@ -30,7 +59,6 @@ body {
     align-items: flex-start;
     justify-content: space-between;
     gap: .25rem;
-    padding: 20px 0;
 }
 .card-title{
     font-size: var(--text-lg);
