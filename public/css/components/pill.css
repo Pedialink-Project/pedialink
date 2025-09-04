@@ -1,0 +1,36 @@
+.pill {
+    width: 13.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.25rem 1rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+
+
+}
+.text-section{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pill-title {
+    font-size: var(--text-md);
+    font-weight: var(--font-weight-md);
+    color: var(--text-primary);
+}
+
+.pill-number {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.pill-icon img{
+    width: 2rem;
+    height: 2rem;
+}
