@@ -1,0 +1,95 @@
+name: Sync main into role branches
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write           # needed to read repo contents and create branches/commits if required
+  pull-requests: write      # needed to create/update and merge PRs
+
+jobs:
+  sync-role-branches:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        portal-branch:
+          - TASK-81-phm-portal
+          - TASK-82-parent-portal
+          - TASK-83-doctor-portal
+          - TASK-90-admin-portal
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or update PR (main → role branch) and try auto-merge
+        uses: actions/github-script@v7
+        env:
+          TARGET_BRANCH: ${{ matrix.portal-branch }}
+        with:
+          github-token: ${{ secrets.SYNC_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const base = process.env.TARGET_BRANCH;
+            const head = 'main';
+            const title = `Sync main → ${base}`;
+            const body = `Automated sync: keeping ${base} up-to-date with \`main\`.\n\nIf this PR has conflicts, please resolve them manually in the ${base} branch.`;
+
+            // 1) Look for an existing open PR with head=main and base=<role-branch>
+            const listResp = await github.rest.pulls.list({
+              owner, repo, state: 'open', head: `${owner}:${head}`, base: base, per_page: 100
+            });
+
+            let pr;
+            if (listResp.data && listResp.data.length > 0) {
+              pr = listResp.data[0];
+              // update title/body to keep message fresh
+              await github.rest.pulls.update({ owner, repo, pull_number: pr.number, title, body });
+              console.log(`Found existing PR #${pr.number} (main → ${base}).`);
+            } else {
+              // 2) Create the PR (head: main, base: role branch)
+              try {
+                const createResp = await github.rest.pulls.create({
+                  owner, repo, title, head, base, body
+                });
+                pr = createResp.data;
+                console.log(`Created PR #${pr.number} (main → ${base}).`);
+              } catch (err) {
+                // If creation fails (e.g., base branch doesn't exist) surface a helpful message
+                console.log(`Failed to create PR for base=${base}: ${err.message}`);
+                throw err;
+              }
+            }
+
+            // 3) Wait a short while for GitHub to compute mergeability (repeat a few times)
+            let checks = 0;
+            while ((pr.mergeable === null || pr.mergeable_state === 'unknown') && checks < 10) {
+              await new Promise(r => setTimeout(r, 2000));
+              const refreshed = await github.rest.pulls.get({ owner, repo, pull_number: pr.number });
+              pr = refreshed.data;
+              checks++;
+            }
+
+            console.log(`PR #${pr.number} mergeable=${pr.mergeable} state=${pr.mergeable_state}`);
+
+            // 4) Auto-merge only if GitHub says it is mergeable and clean (no conflicts)
+            //    You can adjust allowed states here if you want to be more permissive.
+            const allowedStates = ['clean']; // keep conservative: only auto-merge when "clean"
+            if (pr.mergeable && allowedStates.includes(pr.mergeable_state)) {
+              try {
+                await github.rest.pulls.merge({
+                  owner, repo, pull_number: pr.number, merge_method: 'merge'
+                });
+                console.log(`Auto-merged PR #${pr.number} into ${base}.`);
+              } catch (err) {
+                console.log(`Auto-merge failed for PR #${pr.number}: ${err.message}`);
+              }
+            } else {
+              console.log(`PR #${pr.number} is not auto-mergeable (state=${pr.mergeable_state}). Please resolve manually if needed.`);
+            }
