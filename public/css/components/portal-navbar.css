@@ -134,6 +134,7 @@
 
 .user-meta > .user-name {
   color: var(--text-primary);
+  min-width: 4rem;
   max-width: 10rem;
   font-weight: 600;
   white-space: nowrap;       /* prevent wrapping */
