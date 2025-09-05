@@ -162,15 +162,18 @@ class Router
         return $uri . ($queryString ? '?' . $queryString : '');
     }
 
-    public function current(string $routeName)
+    public function current(?string $routeName = null)
     {
-        if (isset($this->routeNames[$routeName])) {
-            $currentUrl = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        $currentUrl = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+
+        if (isset($this->routeNames[$routeName]) && $routeName !== null) {
             if ($currentUrl === $this->routeNames[$routeName]['uri']) {
                 return true;
+            } else {
+                return false;
             }
         }
 
-        return false;
+        return $currentUrl;
     }
 }
