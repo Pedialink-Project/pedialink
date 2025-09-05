@@ -120,7 +120,19 @@ $menuItems = [
 ];
 
 $menus = $menuItems[$type] ?? $menuItems['admin'];
-$currentPage = $_SERVER['REQUEST_URI'] ?? '/';
+
+function isCurrentParentItemOpen(array $item)
+{
+    if ($item['link'] === '#' && !empty($item['children'])) {
+        foreach ($item['children'] as $child) {
+            if ($child['link'] === route()->current()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
 ?>
 
 <div class="sidebar <?= $class ?>">
@@ -134,7 +146,7 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
     <div class="sidebar-section">
         <div class="sidebar-subtitle">{{ $section }}</div>
         @foreach ($items as $item)
-            <div class="tab {{ $currentPage === $item['link'] ? 'active' : ''}} {{ !empty($item['children']) ? 'has-children' : '' }}">
+            <div class="tab {{ isCurrentParentItemOpen($item) ? 'active open' : (route()->current() === $item['link'] ? 'active' : '') }} {{ !empty($item['children']) ? 'has-children' : '' }}">
                 <a href="{{ $item['link'] }}" class="menu-link">
                     <img src="{{ asset($item['icon'] ?? '') }}" /> 
                     {{ $item['name'] }}
@@ -146,7 +158,7 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
                     <div class="submenu">
                         @foreach ($item['children'] as $child)
                             <a href="{{ $child['link'] }}"
-                                class="submenu-link {{ $currentPage === $child['link'] ? 'active' : '' }}">
+                                class="submenu-link {{ route()->current() === $child['link'] ? 'active' : '' }}">
                                 {{ $child['name'] }}
                             </a>
                         @endforeach
