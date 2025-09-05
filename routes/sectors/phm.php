@@ -1,16 +1,18 @@
 <?php
 
-use App\Controllers\phmchildprofileController;
-use App\Controllers\PublicHealthMidwifeController;
+
+use App\Controllers\PublicHealthMidwife\ChildProfileController;
+use App\Controllers\PublicHealthMidwife\DashboardController;
+use App\Controllers\TestController;
 
 return [
-    ['GET', '/phm/dashboard', [PublicHealthMidwifeController::class, 'dashboard'], 'phm.dashboard', ['phm']],
-    ['GET', '/phm/child-profiles', [phmchildprofileController::class, 'index'], 'phm.child.profiles', ['phm']],
-    ['GET', '/phm/maternal-profiles', [PublicHealthMidwifeController::class, 'maternalProfiles'], 'phm.maternal.profiles', ['phm']],
-    ['GET', '/phm/growth-monitoring', [PublicHealthMidwifeController::class, 'growthMonitoring'], 'phm.growth.monitoring', ['phm']],
-    ['GET', '/phm/vaccination', [PublicHealthMidwifeController::class, 'vaccination'], 'phm.vaccination', ['phm']],
-    ['GET', '/phm/nutrition-tracking', [PublicHealthMidwifeController::class, 'nutritionTracking'], 'phm.nutrition.tracking', ['phm']],
-    ['GET', '/phm/appointments', [PublicHealthMidwifeController::class, 'appointments'], 'phm.appointments', ['phm']],
-    ['GET', '/phm/notifications', [PublicHealthMidwifeController::class, 'notifications'], 'phm.notifications', ['phm']],
-    ['GET', '/phm/settings', [PublicHealthMidwifeController::class, 'settings'], 'phm.settings', ['phm']],
+    ['GET', '/phm/dashboard', [DashboardController::class, 'index'], 'phm.dashboard', ['phm']],
+    ['GET', '/phm/child-profiles', [ChildProfileController::class, 'index'], 'phm.child.profiles', ['phm']],
+    ['GET', '/phm/maternal-profiles', [TestController::class, 'maternalProfiles'], 'phm.maternal.profiles', ['phm']],
+    ['GET', '/phm/growth-monitoring', [TestController::class, 'growthMonitoring'], 'phm.growth.monitoring', ['phm']],
+    ['GET', '/phm/vaccination', [TestController::class, 'vaccination'], 'phm.vaccination', ['phm']],
+    ['GET', '/phm/nutrition-tracking', [TestController::class, 'nutritionTracking'], 'phm.nutrition.tracking', ['phm']],
+    ['GET', '/phm/appointments', [TestController::class, 'appointments'], 'phm.appointments', ['phm']],
+    ['GET', '/phm/notifications', [TestController::class, 'notifications'], 'phm.notifications', ['phm']],
+    ['GET', '/phm/settings', [TestController::class, 'settings'], 'phm.settings', ['phm']],
 ];
