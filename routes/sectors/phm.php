@@ -1,10 +1,11 @@
 <?php
 
+use App\Controllers\phmchildprofileController;
 use App\Controllers\PublicHealthMidwifeController;
 
 return [
     ['GET', '/phm/dashboard', [PublicHealthMidwifeController::class, 'dashboard'], 'phm.dashboard', ['phm']],
-    ['GET', '/phm/child-profiles', [PublicHealthMidwifeController::class, 'childProfiles'], 'phm.child.profiles', ['phm']],
+    ['GET', '/phm/child-profiles', [phmchildprofileController::class, 'index'], 'phm.child.profiles', ['phm']],
     ['GET', '/phm/maternal-profiles', [PublicHealthMidwifeController::class, 'maternalProfiles'], 'phm.maternal.profiles', ['phm']],
     ['GET', '/phm/growth-monitoring', [PublicHealthMidwifeController::class, 'growthMonitoring'], 'phm.growth.monitoring', ['phm']],
     ['GET', '/phm/vaccination', [PublicHealthMidwifeController::class, 'vaccination'], 'phm.vaccination', ['phm']],
