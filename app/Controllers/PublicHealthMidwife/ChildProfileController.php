@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\PublicHealthMidwife;
 
 use Library\Framework\Http\Request;
 
-class phmchildprofileController
+class ChildProfileController
 {
     public function index(Request $request)
     {
