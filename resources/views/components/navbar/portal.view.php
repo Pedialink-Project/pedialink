@@ -36,8 +36,8 @@ $class = $class ?? '';
         <img src="{{ asset('assets/avatar-placeholder.png') }}" alt="User avatar">
       </div>
       <div class="user-meta">
-        <div class="user-name">Eva Mendes</div>
-        <div class="user-role">Doctor</div>
+        <div class="user-name">{{ auth()->check() ? auth()->user()->name : 'Test Name'}}</div>
+        <div class="user-role">{{ auth()->check() ? auth()->user()->role : 'Test role' }}</div>
       </div>
     </div>
   </div>

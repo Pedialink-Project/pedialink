@@ -114,12 +114,17 @@ a {
 }
 
 .submenu-link.active {
-    background: #eeeeee;
     color: var(--text-primary);
 }
 
 .tab.open>.submenu {
     display: flex;
+}
+
+.tab.active > .menu-link {
+    background: #eeeeee;
+    color: var(--text-primary);
+
 }
 
 .tab.open .arrow {
