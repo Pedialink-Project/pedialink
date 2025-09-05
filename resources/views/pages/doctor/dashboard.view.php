@@ -1,4 +1,4 @@
-@extends('layout/doctor')
+@extends('layout/portal')
 
 @section('content')
     You are logged in as doctor
