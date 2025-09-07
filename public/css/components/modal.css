@@ -1,0 +1,189 @@
+/* modal.css
+   Minimal, composable modal/dialog styles.
+   Uses theme tokens where available; keep internal styles light for easy overrides.
+*/
+
+:root {
+    --modal-backdrop: rgba(2, 6, 23, 0.36);
+    --modal-bg: var(--panel);
+    --modal-radius: 12px;
+    --modal-padding: 1.25rem;
+    --modal-max-w: 720px;
+    --modal-sm-w: 420px;
+    --modal-lg-w: 960px;
+    --modal-shadow: 0 20px 50px rgba(2, 6, 23, 0.12);
+    --modal-z: 1100;
+}
+
+/* Backdrop covers viewport */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--modal-backdrop);
+    display: none;
+    z-index: calc(var(--modal-z) - 1);
+    transition: opacity .18s ease;
+    opacity: 0;
+}
+
+/* visible backdrop */
+.modal-backdrop.open {
+    display: block;
+    opacity: 1;
+}
+
+/* Portal root: fixed positioned container centered */
+.modal-portal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--modal-z);
+    pointer-events: none;
+    /* disabled until open */
+}
+
+/* dialog element */
+.modal {
+    pointer-events: auto;
+    width: 100%;
+    max-width: var(--modal-max-w);
+    max-height: calc(100vh - 4rem);
+    background: var(--modal-bg);
+    border-radius: var(--modal-radius);
+    box-shadow: var(--modal-shadow);
+    overflow: hidden;
+    transform-origin: center;
+    transition: transform .18s cubic-bezier(.2, .9, .2, 1), opacity .12s ease;
+    opacity: 0;
+    transform: translateY(8px) scale(.995);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* sizes */
+.modal--sm {
+    max-width: var(--modal-sm-w);
+}
+
+.modal--md {
+    max-width: var(--modal-max-w);
+}
+
+.modal--lg {
+    max-width: var(--modal-lg-w);
+}
+
+/* open state */
+.modal.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* header */
+.modal-header {
+    padding: .9rem 1rem;
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0;
+    color: var(--text-strong);
+}
+
+/* close button top-right */
+.modal-close {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: .25rem .5rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background: var(--surface);
+}
+
+/* body — optionally scrollable; default is flexible scroll */
+.modal-body {
+    padding: var(--modal-padding);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* to force no internal scroll (let body extend, page will scroll) */
+.modal-body.no-scroll {
+    overflow: visible;
+    max-height: none;
+}
+
+/* footer */
+.modal-footer {
+    padding: .75rem 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: .5rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* small layout helpers */
+.modal-row {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+}
+
+.modal-col {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+/* helper to visually constrain content inside form groups */
+.modal-form .form-row {
+    margin-bottom: .75rem;
+}
+
+/* responsive: on small screens use full bleed with inset margin */
+@media (max-width: 640px) {
+    .modal {
+        margin: 1rem;
+        width: auto;
+        max-width: calc(100% - 2rem);
+        max-height: calc(100vh - 2rem);
+        border-radius: 10px;
+    }
+
+    .modal-body {
+        padding: .75rem;
+    }
+
+    .modal-header,
+    .modal-footer {
+        padding: .5rem .75rem;
+    }
+}
+
+/* focus outlines (accessible) */
+.modal [tabindex]:focus,
+.modal button:focus,
+.modal a:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.06);
+    border-radius: 6px;
+}
+
+/* small utility classes for consumers */
+.modal-centered {
+    align-items: center;
+    justify-content: center;
+}
