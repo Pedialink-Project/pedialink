@@ -19,6 +19,7 @@
 @import "./components/dropdown.css";
 @import "./components/portal-navbar.css";
 @import "./components/pill.css";
+@import "./components/modal.css";
 
 /* helper/additional css for components */
 @import "./components/password-icon.css";

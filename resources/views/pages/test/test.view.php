@@ -61,7 +61,7 @@ Test Portal
                 </c-table.thead>
 
                 <c-table.tbody>
-                    @foreach ($items as $item)
+                    @foreach ($items as $key => $item)
                         <c-table.tr>
                             <c-table.td col="id">{{ $item['id'] }}</c-table.td>
                             <c-table.td col="name">{{ $item['name'] }}</c-table.td>
@@ -76,7 +76,23 @@ Test Portal
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Export</c-dropdown.item>
+                                        <c-modal id="test-{{ $key }}" size="sm" :initOpen="false">
+                                            <c-slot name="trigger">
+                                               <c-dropdown.item>Export</c-dropdown.item>
+                                            </c-slot>
+
+                                            <c-slot name="header">
+                                                <div>Event Details</div>
+                                            </c-slot>
+
+                                            <p>Here goes the modal body — images, form, whatever.</p>
+
+                                            <c-slot name="footer">
+                                                <c-button type="button" variant="outline" data-modal-close="eventDetails">Cancel</c-button>
+                                                <c-button type="button" variant="primary" class="tc-btn tc-btn--primary" data-modal-confirm="eventDetails">Save</c-button>
+                                            </c-slot>
+                                        </c-modal>
+                                        
                                         <c-dropdown.sep />
                                         <c-dropdown.item>Export</c-dropdown.item>
                                         <c-dropdown.item>Settings</c-dropdown.item>

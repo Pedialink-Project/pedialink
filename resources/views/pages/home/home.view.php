@@ -23,6 +23,23 @@ Home
   Test Portal
 </c-link>
 
+<c-modal id="eventDetails" size="sm" :initOpen="false">
+    <c-slot name="trigger">
+        <c-button variant="primary">Open details</c-button>
+    </c-slot>
+
+    <c-slot name="header">
+        <div>Event Details</div>
+    </c-slot>
+
+    <p>Here goes the modal body — images, form, whatever.</p>
+
+    <c-slot name="footer">
+        <c-button type="button" variant="outline" data-modal-close="eventDetails">Cancel</c-button>
+        <c-button type="button" variant="primary" data-modal-confirm="eventDetails">Save</c-button>
+    </c-slot>
+</c-modal>
+
 
 
 @endsection
