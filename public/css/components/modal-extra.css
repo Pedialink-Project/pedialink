@@ -1,0 +1,39 @@
+/* View card in modal styling */
+.view-slot {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem; /* spacing between items */
+}
+
+.view-slot-item {
+    display: flex;
+    flex-direction: row;
+    gap: calc(var(--spacing) * 1.5)
+
+}
+
+.view-slot-item > .slot-icon {
+    padding: var(--spacing);
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--surface);
+    height: 100%;
+}
+
+.view-slot-item > .slot-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.slot-content span:first-child {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+}
+
+.slot-content span:last-child {
+    color: var(--text-strong);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-md);
+}

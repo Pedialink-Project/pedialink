@@ -23,3 +23,4 @@
 
 /* helper/additional css for components */
 @import "./components/password-icon.css";
+@import "./components/modal-extra.css";

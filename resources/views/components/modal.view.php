@@ -39,12 +39,24 @@ $initAttr = $initOpen ? 'true' : 'false';
     <div class="modal-src" style="display:none;">
         <div class="modal" role="dialog" aria-modal="true" aria-labelledby="{{ $id }}_title" aria-describedby="{{ $id }}_desc" data-size="{{ $size }}" data-modal-class="{{ $class }}">
             <div class="modal-header">
+                @if (!empty($slots['headerPrefix']))
+                    <div class="modal-header-icon">
+                        {{ $slots['headerPrefix']}}
+                    </div>
+                @endif
+
                 @if (!empty($slots['header']))
                     <div class="modal-title" id="{{ $id }}_title">
                         {{ $slots['header'] }}
                     </div>
                 @else
                     <div class="modal-title" id="{{ $id }}_title"></div>
+                @endif
+
+                @if (!empty($slots['headerSuffix']))
+                    <div class="modal-header-icon">
+                        {{ $slots['headerSuffix']}}
+                    </div>
                 @endif
 
                 <button type="button" class="modal-close" aria-label="Close" data-modal-close="{{ $id }}">
