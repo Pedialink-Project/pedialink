@@ -146,37 +146,40 @@ $initAttr = $initOpen ? 'true' : 'false';
         }
         createPortalNodes();
 
-        // append to body
+        // append backdrop first
         document.body.appendChild(portalBackdrop);
-        const cloned = modalSrc.cloneNode(true);
-        // ensure cloned modal has unique ids replaced (aria-labeledby/desc should still match id)
-        portalRoot.appendChild(cloned);
+
+        // Instead of cloning, MOVE the original modal element into the portal.
+        // modalSrc references the original .modal inside the component's .modal-src.
+        const original = modalSrc; 
+        if (!original) {
+            return;
+        }
+
+        // Create a placeholder so we can restore later
+        const placeholder = document.createComment('modal-placeholder-' + id);
+        original._modal_placeholder = placeholder;
+        original.parentNode.insertBefore(placeholder, original);
+
+        // Append the original node into our portalRoot and append portalRoot to body
+        portalRoot.appendChild(original);
         document.body.appendChild(portalRoot);
 
-        // show backdrop + dialog
+        // show backdrop + dialog (use RAF for smooth transition)
         requestAnimationFrame(() => {
             portalBackdrop.classList.add('open');
-            cloned.classList.add('open');
+            original.classList.add('open');
             portalRoot.style.pointerEvents = 'auto';
         });
 
-        // remember focus
+        // remember previously focused element
         previouslyFocused = document.activeElement;
 
-        // focus first focusable inside modal (or close btn)
-        const firstFocusable = cloned.querySelector(FOCUSABLE) || cloned.querySelector('.modal-close');
-        if (firstFocusable) {
-            firstFocusable.focus();
-        }
+        // focus first focusable element inside modal (or close btn)
+        const firstFocusable = original.querySelector(FOCUSABLE) || original.querySelector('.modal-close');
+        if (firstFocusable) firstFocusable.focus();
 
-        // attach handlers
-        portalBackdrop.addEventListener('click', (ev) => {
-            if (!closeOnOverlay) {
-                return;
-            }
-            closeModal();
-        });
-
+        // Backdrop click handler (fallback)
         const onBackdropClick = (ev) => {
             if (!closeOnOverlay) return;
             closeModal(true);
@@ -184,44 +187,27 @@ $initAttr = $initOpen ? 'true' : 'false';
         portalBackdrop.addEventListener('click', onBackdropClick);
         portalBackdrop._onBackdropClick = onBackdropClick;
 
-        // handle clicks on the portal root: if click target is portalRoot (i.e. outside dialog), close
+        // Portal root click: if user clicks on the portal root itself (outside dialog), close.
         const onPortalClick = (ev) => {
-            if (!closeOnOverlay) return;
-            // If the click target is the portal root itself (not inside dialog), close.
-            // This handles cases where portalRoot sits above the backdrop and intercepts clicks.
+            if (!closeOnOverlay) {
+                return;
+            }
             if (ev.target === portalRoot) {
-            closeModal(true);
+                closeModal(true);
             }
         };
 
         portalRoot.addEventListener('click', onPortalClick);
         portalRoot._onPortalClick = onPortalClick;
 
-        cloned.querySelectorAll('[data-modal-close]').forEach(btn => {
-            btn.addEventListener('click', (ev) => {
-                ev.preventDefault();
-                closeModal(true);
-            });
-        });
-
-        cloned.querySelectorAll('[data-modal-confirm]').forEach(btn => {
-            btn.addEventListener('click', (ev) => {
-                // emit a custom event for consumer to handle (eg. submit)
-                const evt = new CustomEvent('modal:confirm', { detail: { id } });
-                document.dispatchEvent(evt);
-            });
-        });
-
-        // keyboard: Escape closes
+        // keyboard handler (Escape + rudimentary focus trap)
         function onKey(e) {
             if (e.key === 'Escape') {
                 if (closeOnOverlay) {
                     closeModal(true);
                 }
             } else if (e.key === 'Tab') {
-                // rudimentary focus trap
-                const focusables = Array
-                    .from(cloned.querySelectorAll(FOCUSABLE))
+                const focusables = Array.from(original.querySelectorAll(FOCUSABLE))
                     .filter(el => el.offsetParent !== null && !el.hasAttribute('disabled'));
 
                 if (!focusables.length) {
@@ -240,16 +226,32 @@ $initAttr = $initOpen ? 'true' : 'false';
                 }
             }
         }
-
         document.addEventListener('keydown', onKey);
-
-        // store handlers for cleanup
         portalRoot._modal_onKey = onKey;
+
+        // Wire up internal close/confirm buttons inside the original (moved) modal.
+        // Store handlers on the buttons so we can remove them on close to avoid duplicates.
+        original.querySelectorAll('[data-modal-close]').forEach(btn => {
+            const fn = (ev) => { ev.preventDefault(); closeModal(true); };
+            btn.addEventListener('click', fn);
+            btn._modal_close_handler = fn;
+        });
+
+        original.querySelectorAll('[data-modal-confirm]').forEach(btn => {
+            const fn = (ev) => {
+            // emit a custom event for consumer to handle (eg. submit)
+            const evt = new CustomEvent('modal:confirm', { detail: { id } });
+            document.dispatchEvent(evt);
+            };
+            btn.addEventListener('click', fn);
+            btn._modal_confirm_handler = fn;
+        });
+
+        // mark open state
         open = true;
-        // add body class for styling if desired
         document.body.classList.add('modal-open');
 
-        // dispatch event
+        // dispatch open event
         document.dispatchEvent(new CustomEvent('modal:open', { detail: { id } }));
     }
 
@@ -258,59 +260,96 @@ $initAttr = $initOpen ? 'true' : 'false';
             return;
         }
 
+        // Find current portal/backdrop nodes
         const currentBackdrop = document.querySelector(`[data-modal-backdrop="${id}"]`);
         const currentPortal = document.querySelector(`[data-modal-portal="${id}"]`);
 
-        if (currentPortal) {
-            const dialog = currentPortal.querySelector('.modal');
-            if (dialog) {
-                dialog.classList.remove('open');
-            }
+        // If the original modal was moved into the portal, retrieve it
+        const movedDialog = currentPortal ? currentPortal.querySelector('.modal') : null;
+
+        // Remove 'open' classes to start CSS transitions
+        if (movedDialog) {
+            movedDialog.classList.remove('open');
         }
 
         if (currentBackdrop) {
             currentBackdrop.classList.remove('open');
         }
 
-        // cleanup after transition frame
+        // cleanup after a short delay to allow transitions to finish
         setTimeout(() => {
+            // Remove portalRoot handlers & keyboard handler
             if (currentPortal) {
+            // remove portal click handler
                 if (currentPortal._onPortalClick) {
                     currentPortal.removeEventListener('click', currentPortal._onPortalClick);
                     delete currentPortal._onPortalClick;
                 }
-                // remove keyboard handler if stored
+                // remove key handler
                 if (currentPortal._modal_onKey) {
                     document.removeEventListener('keydown', currentPortal._modal_onKey);
                     delete currentPortal._modal_onKey;
                 }
-                // finally remove the portal node
-                if (currentPortal.parentNode) {
-                    currentPortal.parentNode.removeChild(currentPortal);
-                }
             }
 
-            // remove backdrop and its handler
+            // Remove backdrop and its handler
             if (currentBackdrop) {
                 if (currentBackdrop._onBackdropClick) {
                     currentBackdrop.removeEventListener('click', currentBackdrop._onBackdropClick);
                     delete currentBackdrop._onBackdropClick;
                 }
-                if (currentBackdrop.parentNode) {
-                    currentBackdrop.parentNode.removeChild(currentBackdrop);
-                }
             }
 
+            // If we moved the original dialog, move it back to its placeholder in the original DOM
+            if (movedDialog) {
+                const placeholder = movedDialog._modal_placeholder;
+                if (placeholder && placeholder.parentNode) {
+                    // insert before placeholder and then remove placeholder
+                    placeholder.parentNode.insertBefore(movedDialog, placeholder);
+                    placeholder.parentNode.removeChild(placeholder);
+                    delete movedDialog._modal_placeholder;
+                } else {
+                    // fallback: if no placeholder, append back to original container if available
+                    const origContainer = component.querySelector('.modal-src');
+                    if (origContainer) {
+                        origContainer.appendChild(movedDialog);
+                    }
+                }
+
+                // remove the click handlers we attached to internal buttons
+                movedDialog.querySelectorAll('[data-modal-close]').forEach(btn => {
+                    if (btn._modal_close_handler) {
+                        btn.removeEventListener('click', btn._modal_close_handler);
+                        delete btn._modal_close_handler;
+                    }
+                });
+                movedDialog.querySelectorAll('[data-modal-confirm]').forEach(btn => {
+                    if (btn._modal_confirm_handler) {
+                        btn.removeEventListener('click', btn._modal_confirm_handler);
+                        delete btn._modal_confirm_handler;
+                    }
+                });
+            }
+
+            // finally remove the portal DOM nodes if they still exist
+            if (currentPortal && currentPortal.parentNode) {
+                currentPortal.parentNode.removeChild(currentPortal);
+            }
+
+            if (currentBackdrop && currentBackdrop.parentNode) {
+                currentBackdrop.parentNode.removeChild(currentBackdrop);
+            }
+
+            // restore body state & focus
             document.body.classList.remove('modal-open');
             open = false;
-
-            // restore focus
             if (refocus && previouslyFocused && previouslyFocused.focus) {
                 previouslyFocused.focus();
             }
 
+            // dispatch closed event
             document.dispatchEvent(new CustomEvent('modal:close', { detail: { id } }));
-        }, 160);
+        }, 160); // allow CSS transition to finish
     }
 
     // Wire triggers
