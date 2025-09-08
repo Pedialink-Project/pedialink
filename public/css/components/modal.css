@@ -91,6 +91,10 @@
     border-bottom: 1px solid var(--border);
 }
 
+.modal-header > .modal-title {
+    flex: 1;
+}
+
 .modal-title {
     font-weight: 700;
     font-size: 1.05rem;
