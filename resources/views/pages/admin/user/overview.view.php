@@ -21,9 +21,10 @@
         ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'phm', 'status' => 'Pending Approval',],
         ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'parent', 'status' => 'Pending Approval',],
         ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'admin', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'test', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'test', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'test', 'status' => 'Pending Approval',],
+        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'admin', 'status' => 'Pending Approval',],
+        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'doctor', 'status' => 'Pending Approval',],
+        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'admin', 'status' => 'Pending Approval',],
+        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'phm', 'status' => 'Pending Approval',],
     ];
     ?>
 
