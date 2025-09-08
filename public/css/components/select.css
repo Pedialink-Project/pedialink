@@ -2,6 +2,13 @@
    Dropdown/select styles using project theme tokens.
 */
 
+.select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing)*3);
+  width: 100%;
+}
+
 .select {
   position: relative;
   display: inline-block;
