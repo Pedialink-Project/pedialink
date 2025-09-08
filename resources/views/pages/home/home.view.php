@@ -40,6 +40,10 @@ Home
     </c-slot>
 </c-modal>
 
+<form action="{{ route('logout')}}" method="post">
+  <c-button type="submit">Logout</c-button>
+</form>
+
 
 
 @endsection
