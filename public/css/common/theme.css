@@ -14,6 +14,13 @@
   --border: var(--color-zinc-200);
   --muted-border: var(--color-zinc-100);
 
+  --destructive: var(--color-red-600);
+  --destructive-foreground: var(--color-white);
+
+  /* small supporting tokens you may find useful */
+  --destructive-hover: var(--color-red-700);
+  --destructive-soft: var(--color-red-100);
+
   /* accent (interactive) - pick a neutral/black accent for black & white aesthetic */
   --accent: var(--color-slate-900);
   --accent-600: var(--color-slate-700);
