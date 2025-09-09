@@ -62,9 +62,12 @@
                     <c-textarea label="Message" placeholder="Enter invitation message"></c-textarea>
                 </form>
 
+                <c-slot name="close">
+                    Close
+                </c-slot>
+
                 <c-slot name="footer">
-                    <c-button type="button" variant="outline" data-modal-close="registerStaff">Cancel</c-button>
-                    <c-button type="submit" form="staff-register-form" variant="primary" data-modal-confirm="eventDetails">Create Account</c-button>
+                    <c-button type="submit" form="staff-register-form" variant="primary">Create Account</c-button>
                 </c-slot>
             </c-modal>
         </c-slot>
@@ -292,8 +295,8 @@
                                                 Error
                                             @endif                                          
 
-                                            <c-slot name="footer">
-                                                <c-button type="button" variant="outline" data-modal-close="view-account-{{ $key }}">Close</c-button>
+                                            <c-slot name="close">
+                                                Close
                                             </c-slot>
                                         </c-modal>                                        
                                     </c-slot>

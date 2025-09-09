@@ -68,8 +68,11 @@
                     </c-select>
                 </form>
 
+                <c-slot name="close">
+                    Close
+                </c-slot>
+
                 <c-slot name="footer">
-                    <c-button type="button" variant="outline" data-modal-close="registerAdmin">Cancel</c-button>
                     <c-button type="submit" form="admin-register-form" variant="primary">Create Account</c-button>
                 </c-slot>
             </c-modal>
@@ -181,8 +184,8 @@
                                                 />
                                             </c-modal.viewcard>                                        
 
-                                            <c-slot name="footer">
-                                                <c-button type="button" variant="outline" data-modal-close="view-account-{{ $key }}">Close</c-button>
+                                            <c-slot name="close">
+                                                Close
                                             </c-slot>
                                         </c-modal>
                                         
@@ -199,10 +202,11 @@
                                                 <div>Edit Account</div>
                                             </c-slot>
 
-                                                                                 
+                                            <c-slot name="close">
+                                                Cancel
+                                            </c-slot>                                     
 
                                             <c-slot name="footer">
-                                                <c-button type="button" variant="outline" data-modal-close="edit-account-{{ $key }}">Close</c-button>
                                                 <c-button type="submit" variant="primary">Save Changes</c-button>
                                             </c-slot>
                                         </c-modal>
@@ -222,10 +226,13 @@
 
                                             <p class="delete-content">
                                                 Do you want to delete <span class="admin-type">{{ ucfirst($item['type']) }} Admin</span> account of user <span class="admin-id">A-1023</span>?
-                                            </p>                              
+                                            </p>
+                                            
+                                            <c-slot name="close">
+                                                Cancel
+                                            </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="button" variant="outline" data-modal-close="delete-account-{{ $key }}">Cancel</c-button>
                                                 <c-button type="submit" variant="primary">Delete Account</c-button>
 
                                             </c-slot>
