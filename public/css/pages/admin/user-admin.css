@@ -1,0 +1,15 @@
+.role-badge {
+    width: 5rem;
+    justify-content: center;
+}
+
+#admin-register-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+#admin-register-form > * {
+    gap: calc(var(--spacing) * 2);
+
+}
