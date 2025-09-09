@@ -202,12 +202,27 @@
                                                 <div>Edit Account</div>
                                             </c-slot>
 
+                                            <form id="admin-edit-form" action="">
+                                                <c-input type="email" name="email" label="Email:" placeholder="Enter email" value="{{ $item['email'] }}" />
+                                                <c-select label="Role:" name="role" value="{{ $item['type'] }}">
+                                                    <li class="select-item" data-value="super">Super Admin</li>
+                                                    <li class="select-item" data-value="data">Data Admin</li>
+                                                    <li class="select-item" data-value="user">User Admin</li>
+                                                </c-select>
+                                                <c-select label="Permissions:" name="permissions" value="child,maternal" multiple="1" searchable="1">
+                                                    <li class="select-item" data-value="child">Child</li>
+                                                    <li class="select-item" data-value="maternal">Maternal</li>
+                                                    <li class="select-item" data-value="events">Events</li>
+                                                    <li class="select-item" data-value="appointments">Appointments</li>
+                                                </c-select>
+                                            </form>
+
                                             <c-slot name="close">
                                                 Cancel
                                             </c-slot>                                     
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="primary">Save Changes</c-button>
+                                                <c-button type="submit" for="admin-edit-form" variant="primary">Save Changes</c-button>
                                             </c-slot>
                                         </c-modal>
 
@@ -228,12 +243,13 @@
                                                 Do you want to delete <span class="admin-type">{{ ucfirst($item['type']) }} Admin</span> account of user <span class="admin-id">A-1023</span>?
                                             </p>
                                             
+                                            <form id="admin-delete-form" action="" class="hidden"></form>
                                             <c-slot name="close">
                                                 Cancel
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="primary">Delete Account</c-button>
+                                                <c-button type="submit" form="admin-delete-from" variant="primary">Delete Account</c-button>
 
                                             </c-slot>
                                         </c-modal>
