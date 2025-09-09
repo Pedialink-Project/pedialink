@@ -70,15 +70,14 @@ $initAttr = $initOpen ? 'true' : 'false';
             </div>
 
             <div class="modal-footer">
+                @if (isset($slots["close"]))
+                    <button type="button" class="btn btn-outline" data-modal-close="{{ $id }}">
+                        {{ $slots["close"] }}
+                    </button>
+                @endif
+
                 @if (!empty($slots['footer']))
                     {{ $slots['footer'] }}
-                @else
-                    <button type="button" class="tc-btn tc-btn--outline" data-modal-close="{{ $id }}">
-                        Cancel
-                    </button>
-                    <button type="button" class="tc-btn tc-btn--primary" data-modal-confirm="{{ $id }}">
-                        OK
-                    </button>
                 @endif
             </div>
         </div>
