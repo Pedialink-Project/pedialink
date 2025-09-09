@@ -195,7 +195,7 @@
                                             </c-slot>
 
                                             <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/profile-02.svg' )}}" />
+                                                <img src="{{ asset('assets/icons/edit-01.svg' )}}" />
                                             </c-slot>
 
                                             <c-slot name="header">
@@ -232,7 +232,7 @@
                                             </c-slot>
 
                                             <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/profile-02.svg' )}}" />
+                                                <img src="{{ asset('assets/icons/Trash.svg' )}}" />
                                             </c-slot>
 
                                             <c-slot name="header">
