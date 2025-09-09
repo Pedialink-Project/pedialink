@@ -167,7 +167,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                                     title="Account Type"
-                                                    info="Super Admin"
+                                                    info="{{ ucfirst($item['type']) }} Admin"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/payment-success-01.svg') }}"
