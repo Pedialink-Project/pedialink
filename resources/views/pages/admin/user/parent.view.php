@@ -110,14 +110,66 @@
                 <p class="approval-card-content">Parent Account P-{{ $parent["id"] }} is pending approval</p>
                 <c-slot name="footer">
                     <div class="approval-card-btn-grp">
-                        <c-button variant="primary">
-                            <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                            Approve
-                        </c-button>
-                        <c-button variant="destructive">
-                            <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                            Deny
-                        </c-button>
+                        <c-modal size="sm">
+                            <c-slot name="trigger">
+                                <c-button variant="primary">
+                                    <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
+                                    Approve
+                                </c-button>
+                            </c-slot>
+
+                            <c-slot name="headerPrefix">
+                                <img src="{{ asset('assets/icons/checkmark-circle-02-dark.svg') }}" />
+                            </c-slot>
+
+                            <c-slot name="header">
+                                Approve Account
+                            </c-slot>
+
+                            <p>Approve parent <span class="parent-name-approve">"{{ $parent["name"] }}"</span> of id <span class="parent-id-approve">P-{{ $parent["id"] }}</span>?</p>
+
+                            <form id="approve-account-{{ $key }}" action="" class="hidden"></form>
+
+                            <c-slot name="close">
+                                Cancel
+                            </c-slot>
+
+                            <c-slot name="footer">
+                                <c-button type="submit" variant="primary" form="approve-account-{{ $key }}">
+                                    Approve Account
+                                </c-button>
+                            </c-slot>
+                        </c-modal>
+                        <c-modal size="sm">
+                            <c-slot name="trigger">
+                                <c-button variant="destructive">
+                                    <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
+                                    Deny
+                                </c-button>
+                            </c-slot>
+
+                            <c-slot name="headerPrefix">
+                                <img src="{{ asset('assets/icons/cancel-circle-dark.svg') }}" />
+                            </c-slot>
+                            
+                            <c-slot name="header">
+                                Deny Account
+                            </c-slot>
+
+                            <p>Deny parent <span class="parent-name-deny">"{{ $parent["name"] }}"</span> of id <span class="parent-id-deny">P-{{ $parent["id"] }}</span>?</p>
+
+                            <form id="deny-account-{{ $key }}" action="" class="hidden"></form>
+
+                            <c-slot name="close">
+                                Cancel
+                            </c-slot>
+
+                            <c-slot name="footer">
+                                <c-button type="submit" variant="destructive" form="deny-account-{{ $key }}">
+                                    Deny Account
+                                </c-button>
+                            </c-slot>
+                        </c-modal>
                         <c-modal hideClass="lg-modal">
                             <c-slot name="trigger">
                                 <c-button variant="secondary" class="view-approval-lg-btn">
