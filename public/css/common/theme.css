@@ -39,7 +39,7 @@
 
    /* main secondary */
    --secondary: var(--color-zinc-100);
-   --secondary-hover: var(--color-zinc-100-80);
+   --secondary-hover: var(--color-zinc-300);
 
   /* semantic for states */
   --success: var(--color-green-600);
