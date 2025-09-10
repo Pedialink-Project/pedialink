@@ -7,6 +7,10 @@
   @if(!empty($slots['header']))
     <div class="card-header">
       <div class="card-title">{{ $slots['header'] }}</div>
+
+      @if (isset($slots["headerSuffix"]))
+        {{ $slots["headerSuffix"]}}
+      @endif
     </div>
   @endif
 

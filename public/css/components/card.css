@@ -15,8 +15,6 @@
   align-items:center;
   justify-content:space-between;
   gap: .75rem;
-  margin-bottom: .5rem;
-  padding-bottom: .25rem;
   border-bottom: 1px solid transparent;
   color: var(--text-strong);
   font-weight: var(--font-weight-semibold);
@@ -33,14 +31,9 @@
 
 .card-body {
   color: var(--text-primary);
-  padding-top: .6rem;
-  padding-bottom: .6rem;
 }
 
 .card-footer {
-  display:flex;
-  justify-content:flex-end;
-  gap: .5rem;
   padding-top: .6rem;
   border-top: 1px solid transparent;
 }
