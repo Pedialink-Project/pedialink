@@ -38,9 +38,9 @@ $initAttr = $initOpen ? 'true' : 'false';
 @endif
 
 <!-- Modal DOM (kept in place but portaled to body on open) -->
-<div id="{{ $id }}" class="modal-component {{ $hideClass }}" data-modal-id="{{ $id }}" data-init-open="{{ $initAttr }}" data-close-on-overlay="{{ $closeOnOverlay ? 'true' : 'false' }}">
+<div id="{{ $id }}" class="modal-src-hidden {{ $hideClass }}" style="display: none;" aria-hidden="true" data-modal-id="{{ $id }}" data-init-open="{{ $initAttr }}" data-close-on-overlay="{{ $closeOnOverlay ? 'true' : 'false' }}">
   <!-- backdrop and portal container are created/managed by JS on open -->
-    <div class="modal-src" style="display:none;">
+    
         <div class="modal" role="dialog" aria-modal="true" aria-labelledby="{{ $id }}_title" aria-describedby="{{ $id }}_desc" data-size="{{ $size }}" data-modal-class="{{ $class }}">
             <div class="modal-header">
                 @if (!empty($slots['headerPrefix']))
@@ -85,7 +85,7 @@ $initAttr = $initOpen ? 'true' : 'false';
                 @endif
             </div>
         </div>
-    </div>
+    
 </div>
 
 <script>
@@ -107,7 +107,7 @@ $initAttr = $initOpen ? 'true' : 'false';
     const inlineWrapper = document.querySelector(`[data-modal-trigger-wrapper="${id}"]`);
     const externalTriggers = Array.from(document.querySelectorAll(`[data-modal-trigger="${id}"]`));
 
-    const modalSrc = component.querySelector('.modal-src .modal');
+    const modalSrc = component ? component.querySelector('.modal') : null;
     if (!modalSrc) {
         return;
     }
