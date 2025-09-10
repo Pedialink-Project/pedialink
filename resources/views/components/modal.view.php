@@ -16,6 +16,10 @@ $scrollable = isset($scrollable) ? (bool)$scrollable : true;
 $closeOnOverlay = isset($closeOnOverlay) ? (bool)$closeOnOverlay : true;
 $initOpen = isset($initOpen) ? (bool)$initOpen : false;
 
+// Special class specifically meant to hiding modal and trigger
+$hideClass = isset($hideClass) ? $hideClass : "";
+
+
 // allow opening by query param ?modal=<id>
 if (isset($_GET['modal']) && $_GET['modal'] === $id) {
   $initOpen = true;
@@ -28,13 +32,13 @@ $initAttr = $initOpen ? 'true' : 'false';
 <!-- Optional inline trigger slot. If provided it will be bound to open the modal.
      If you want an external trigger (button elsewhere), give that element data-modal-trigger="{{ $id }}" -->
 @if (!empty($slots['trigger']))
-  <div class="modal-trigger-wrapper" data-modal-trigger-wrapper="{{ $id }}">
+  <div class="modal-trigger-wrapper {{ $hideClass }}" data-modal-trigger-wrapper="{{ $id }}">
     {{ $slots['trigger'] }}
   </div>
 @endif
 
 <!-- Modal DOM (kept in place but portaled to body on open) -->
-<div id="{{ $id }}" class="modal-component" data-modal-id="{{ $id }}" data-init-open="{{ $initAttr }}" data-close-on-overlay="{{ $closeOnOverlay ? 'true' : 'false' }}">
+<div id="{{ $id }}" class="modal-component {{ $hideClass }}" data-modal-id="{{ $id }}" data-init-open="{{ $initAttr }}" data-close-on-overlay="{{ $closeOnOverlay ? 'true' : 'false' }}">
   <!-- backdrop and portal container are created/managed by JS on open -->
     <div class="modal-src" style="display:none;">
         <div class="modal" role="dialog" aria-modal="true" aria-labelledby="{{ $id }}_title" aria-describedby="{{ $id }}_desc" data-size="{{ $size }}" data-modal-class="{{ $class }}">
