@@ -104,6 +104,10 @@
   font-weight: 600;
 }
 
+.input-label > .asterik {
+  color: var(--destructive);
+}
+
 .input-help {
   font-size: .85rem;
   color: var(--text-muted);
