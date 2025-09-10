@@ -184,4 +184,6 @@
             </c-card>
         @endforeach
     </div>
+
+    <c-table.pagination />
 @endsection
