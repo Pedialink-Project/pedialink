@@ -1,7 +1,7 @@
 * {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -9,41 +9,64 @@ body {
     color: var(--text-primary);
 }
 
-.top-section{
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+
+}
+
+.left-col {
+    flex: .48;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.right-col {
+    flex: .52;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.top-section {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.pill-container{
+.greet {
+    width: fit-content;
+}
+
+.pill-container {
     width: 100%;
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
 
-
-.container{
+.card {
     width: 100%;
-    margin: auto;
-    display: grid;
-
-}
-.card{
     padding: 1.25rem 1rem;
 }
 
-.header{
+.header {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.title-section{
+.title-section {
     width: fit-content;
     display: flex;
     flex-direction: column;
@@ -51,7 +74,8 @@ body {
     justify-content: space-between;
     gap: .25rem;
 }
-.card-title{
+
+.card-title {
     font-size: var(--text-lg);
     font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
@@ -59,20 +83,20 @@ body {
 
 }
 
-.card-subtitle{
+.card-subtitle {
     font-size: var(--text-sm);
     font-weight: var(--font-weight-normal);
     color: var(--text-muted);
 }
 
-.card-body{
+.card-body {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.row{
+.row {
     width: 100%;
     display: flex;
     align-items: center;
@@ -84,62 +108,68 @@ body {
 
 }
 
-.primary-details{
+.primary-details {
     display: flex;
     flex-direction: column;
     gap: .25rem;
 }
 
-.name{
+.name {
     font-size: var(--text-md);
     font-weight: var(--font-weight-medium);
     color: var(--text-primary);
 }
 
-.sub-details{
+.sub-details {
     display: flex;
     align-items: center;
     gap: .3rem;
 }
 
-.sub-name{
+.sub-name {
     font-size: var(--text-sm);
     font-weight: var(--font-weight-normal);
     color: var(--text-muted);
 }
-.secondary-details{
+
+.secondary-details {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: .25rem;
 }
 
-.date{
+.date {
     font-size: var(--text-md);
     font-weight: var(--font-weight-normal);
     color: var(--text-primary);
 }
 
-.child-select{
+.child-select {
     width: fit-content;
 }
 
-.divider{
+.divider {
     border: 0.8px solid var(--border);
 }
 
-.vaccine-card{
- max-width: 32rem ;
-}
+@media (max-width: 900px) {
 
-.appoinment-card{
-    max-width: 32rem ;
-}
+    .top-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 
-.event-card{
-    max-width: 38rem ;
-}
+    .pill-container {
+        justify-content: space-between;
+    }
 
-.growth-card{
-    max-width: 38rem ;
+    .container {
+        flex-direction: column;
+    }
+
+    .left-col, .right-col {
+        flex: 1;
+    }
 }
