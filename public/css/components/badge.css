@@ -40,6 +40,31 @@
     color: var(--text-inverted);
 }
 
+.badge-green{
+    background-color: #85E59466;
+    color: #329340;
+}
+.badge-red{
+    background-color: #E4878766;
+    color: #ED4A4A;
+}
+
+.badge-purple{
+    background-color: #D885E54d;
+    color: #A962A8;
+}
+
+.badge-yellow{
+    background-color: #F8FD6A66;
+    color: #CEA92E;
+}
+
+.badge-blue{
+    background-color: #6CB9DA66;
+    color: #327E93;
+}
+
+
 .icon-only{
     padding: 0;
     width: 1.5rem;
