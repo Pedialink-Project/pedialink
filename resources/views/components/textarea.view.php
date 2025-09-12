@@ -23,6 +23,9 @@ if (!empty($error)) {
             @endif
         >
             {{ $label }}
+            @if (isset($required))
+                <span class="asterik">*</span>
+            @endif
         </label>
     @endif
 

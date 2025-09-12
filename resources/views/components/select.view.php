@@ -15,62 +15,6 @@
  *  5. Default select values
  *  6. Label (optional)
  * 
- * Single select example:
- * 
- * <c-select name='country'>
- *    <li class="select-item" data-value="LK">Sri Lanka</li>
- *    <li class="select-item" data-value="UK">United Kingdom</li>
- * </c-select>
- * 
- * Multi select example:
- * 
- * <c-select name='countries' multiple='1'>
- *    <li class="select-item" data-value="LK">Sri Lanka</li>
- *    <li class="select-item" data-value="UK">United Kingdom</li>
- * </c-select>
- * 
- * Built-in Search bar example:
- * 
- * <c-select name='country' searchable='1'>
- *    <li class="select-item" data-value="LK">Sri Lanka</li>
- *    <li class="select-item" data-value="UK">United Kingdom</li>
- * </c-select>
- * 
- * Component option parsing:
- * 
- * Use the li tag with class 'select-item' and unique data-value
- * for each options for a
- * particular select group
- * 
- * <c-select name='country'>
- *    <li class="select-item" data-value="LK">Sri Lanka</li>
- *    <li class="select-item" data-value="UK">United Kingdom</li>
- * </c-select>
- * 
- * Default select values:
- * 
- * 1. For single select: A value attribute that passes the default selected value
- *  Ex:
- *  <c-select name='country'value='LK'>
- *    <li class="select-item" data-value="LK">Sri Lanka</li>
- *    <li class="select-item" data-value="UK">United Kingdom</li>
- * </c-select>
- * 
- * 2. For multi : A value attribute that passes the default set of values in CSV format
- * 
- * <c-select name='countries' multiple='1' value='LK,UK'>
- *    <li class="select-item" data-value="LK">Sri Lanka</li>
- *    <li class="select-item" data-value="UK">United Kingdom</li>
- * </c-select>
- * 
- * Label:
- * 
- * Add a label attribute
- * 
- * <c-select name='country' label='Country'>
- *    <li class="select-item" data-value="LK">Sri Lanka</li>
- *    <li class="select-item" data-value="UK">United Kingdom</li>
- * </c-select>
 */
 
 $uid = 'select_' . bin2hex(random_bytes(6)); // unique id per component
@@ -149,105 +93,111 @@ if (!empty($error) && trim($error) !== '') {
 
 ?>
 
-@if (!empty($label))
-  <label
-    id="{{ $uid . '_label' }}"
-    class="select-field-label"
-    for="{{ $uid . '_trigger' }}"
-  >
-    {{ $label }}
-  </label>
-@endif
-
-<div 
-  id="{{ $uid }}" 
-  class="{{ $classes }}"
-  @if (!empty($disabled))
-    aria-disabled="true"
-  @endif
->
-  <input
-    type="hidden"
-
-    @if (!empty($name))
-      name="{{ $name }}"
-    @endif
-
-    @if (!empty($value))
-      value="{{ $value }}"
-    @endif
-  />
-
-  <button
-    id="{{ $uid . '_trigger'}}"
-    type="button"
-    class="select-trigger"
-    aria-haspopup="listbox"
-    aria-expanded="false"
-    aria-controls="{{ $uid . '_list'}}"
-    @if (!empty($error) && trim($error) !== '')
-      aria-invalid="true"
-      aria-describedby="{{ $uid . '_error'}}"
-    @endif
-    @if (!empty($disabled))
-      disabled
-    @endif
-  >
-    <span class="select-label">
-      @if (count($selectedValues) === 0)
-        <span class="select-placeholder">{{ !empty($placeholder) ? $placeholder : 'Select..' }}</span>
-      @elseif (!empty($multiple) && $multiple)
-        <span class="select-pills">
-          @foreach ($selectedValues as $sv)
-            <span class="select-pill">{{ $valueLabelMap[$sv] ?? $sv }}</span>
-          @endforeach
-        </span>
-      @else
-        {{ $valueLabelMap[$selectedValues[0]] ?? $selectedValues[0] }}
-      @endif
-    </span>
-
-    <span class="select-chevron" aria-hidden="true">
-      <!-- simple chevron -->
-      <svg width="25px" height="25px" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </span>
-  </button>
-
-  <div class="select-panel" style="display:none;" role="dialog" aria-modal="false" aria-hidden="true">
-    @if (!empty($searchable))
-      <input type="search" class="select-search" placeholder="Search..." aria-label="Search options" />
-    @endif
-
-    <ul 
-      id="{{ $uid . '_list' }}"
-      class="select-list"
-      role="listbox"
-      tabindex="-1"
-      aria-multiselectable="{{ !empty($multiple) && $multiple ? 'true' : 'false' }}"
+<div class="select-wrapper">
+  @if (!empty($label))
+    <label
+      id="{{ $uid . '_label' }}"
+      class="select-field-label"
+      for="{{ $uid . '_trigger' }}"
     >
-      @if (!empty($optionsList))
-        @foreach($optionsList as $opt)
-          <li
-            class="select-item"
-            role="option"
-            data-value="{{ $opt['value'] }}"
-            aria-selected="{{ in_array($opt['value'], $selectedValues) ? 'true' : 'false' }}">
-            {{ $opt['label'] }}
-          </li>
-        @endforeach
-      @else 
-        {{ $slot }}
+      {{ $label }}
+      @if (isset($required))
+        <span class="asterik">*</span>
       @endif
-    </ul>
+    </label>
+  @endif
 
-    <div class="select-empty" style="display:none;">No options</div>
+  <div 
+    id="{{ $uid }}" 
+    class="{{ $classes }}"
+    @if (!empty($disabled))
+      aria-disabled="true"
+    @endif
+  >
+    <input
+      type="hidden"
+
+      @if (!empty($name))
+        name="{{ $name }}"
+      @endif
+
+      @if (!empty($value))
+        value="{{ $value }}"
+      @endif
+    />
+
+    <button
+      id="{{ $uid . '_trigger'}}"
+      type="button"
+      class="select-trigger"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+      aria-controls="{{ $uid . '_list'}}"
+      @if (!empty($error) && trim($error) !== '')
+        aria-invalid="true"
+        aria-describedby="{{ $uid . '_error'}}"
+      @endif
+      @if (!empty($disabled))
+        disabled
+      @endif
+    >
+      <span class="select-label">
+        @if (count($selectedValues) === 0)
+          <span class="select-placeholder">{{ !empty($placeholder) ? $placeholder : 'Select..' }}</span>
+        @elseif (!empty($multiple) && $multiple)
+          <span class="select-pills">
+            @foreach ($selectedValues as $sv)
+              <span class="select-pill">{{ $valueLabelMap[$sv] ?? $sv }}</span>
+            @endforeach
+          </span>
+        @else
+          {{ $valueLabelMap[$selectedValues[0]] ?? $selectedValues[0] }}
+        @endif
+      </span>
+
+      <span class="select-chevron" aria-hidden="true">
+        <!-- simple chevron -->
+        <svg width="25px" height="25px" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>
+
+    <div class="select-panel" style="display:none;" role="dialog" aria-modal="false" aria-hidden="true">
+      @if (!empty($searchable))
+        <input type="search" class="select-search" placeholder="Search..." aria-label="Search options" />
+      @endif
+
+      <ul 
+        id="{{ $uid . '_list' }}"
+        class="select-list"
+        role="listbox"
+        tabindex="-1"
+        aria-multiselectable="{{ !empty($multiple) && $multiple ? 'true' : 'false' }}"
+      >
+        @if (!empty($optionsList))
+          @foreach($optionsList as $opt)
+            <li
+              class="select-item"
+              role="option"
+              data-value="{{ $opt['value'] }}"
+              aria-selected="{{ in_array($opt['value'], $selectedValues) ? 'true' : 'false' }}">
+              {{ $opt['label'] }}
+            </li>
+          @endforeach
+        @else 
+          {{ $slot }}
+        @endif
+      </ul>
+
+      <div class="select-empty" style="display:none;">No options</div>
+    </div>
+
+    @if (!empty($error) && trim($error) !== '')
+      <div id="{{ $uid . '_error' }}" class="select-error-text">
+        {{ $error }}
+      </div>
+    @endif
   </div>
 
-  @if (!empty($error) && trim($error) !== '')
-    <div id="{{ $uid . '_error' }}" class="select-error-text">
-      {{ $error }}
-    </div>
-  @endif
 </div>
 
 <script>

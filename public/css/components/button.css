@@ -99,7 +99,7 @@
 }
 
 .btn-outline:hover {
-    background: color-mix(in srgb, var(--panel) 90%, var(--bg) 10%);
+    background: color-mix(in srgb, var(--panel) 70%, black 10%);
 }
 
 /* Subtle (low-contrast filled) */
@@ -107,6 +107,15 @@
     background: color-mix(in srgb, var(--panel) 94%, var(--bg) 6%);
     color: var(--text-primary);
     border-color: var(--border);
+}
+
+.btn-destructive {
+    background: var(--destructive);
+    color: var(--destructive-foreground);
+}
+
+.btn-destructive:hover {
+    background: var(--destructive-hover);
 }
 
 /* Icon-only */

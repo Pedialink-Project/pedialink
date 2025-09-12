@@ -79,6 +79,10 @@
 .textarea-help { font-size: .85rem; color: var(--text-muted); }
 .textarea-error-text { font-size: .85rem; color: var(--danger); font-weight: 600; }
 
+.textarea-label > .asterik {
+  color: var(--destructive);
+}
+
 /* Autofill / browser quirks */
 textarea:-webkit-autofill { -webkit-text-fill-color: var(--text-primary); -webkit-box-shadow: 0 0 0px 1000px var(--panel) inset; }
 

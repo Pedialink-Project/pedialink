@@ -8,9 +8,10 @@
     --modal-bg: var(--panel);
     --modal-radius: 12px;
     --modal-padding: 1.25rem;
-    --modal-max-w: 720px;
-    --modal-sm-w: 420px;
-    --modal-lg-w: 960px;
+    --modal-max-w: 620px;
+    --modal-xs-w: 420px;
+    --modal-sm-w: 520px;
+    --modal-lg-w: 820px;
     --modal-shadow: 0 20px 50px rgba(2, 6, 23, 0.12);
     --modal-z: 1100;
 }
@@ -64,6 +65,10 @@
 }
 
 /* sizes */
+.modal--xs {
+    max-width: var(--modal-xs-w);
+}
+
 .modal--sm {
     max-width: var(--modal-sm-w);
 }
@@ -89,6 +94,10 @@
     gap: .75rem;
     align-items: center;
     border-bottom: 1px solid var(--border);
+}
+
+.modal-header > .modal-title {
+    flex: 1;
 }
 
 .modal-title {
