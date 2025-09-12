@@ -51,6 +51,18 @@ $childDetails = [
       "appointments" => 1,
       "vaccinations" => 0
    ],
+
+   [
+      "image" => "",
+      "name" => "Sara Johnson",
+      "nickname" => "Baby Sara",
+      "status" => "Critical",
+      "dob" => "22-10-2023",
+      "age" => "2 Years old",
+      "phm" => "Dr. Smith",
+      "appointments" => 1,
+      "vaccinations" => 0
+   ],
 ];
 ?>
 
