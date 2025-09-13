@@ -33,6 +33,46 @@ $appointments = [
             'Fasting required for blood test.'
         ]
     ],
+    [
+        'id' => 'APT002',
+        'name' => 'Jane Doe',
+        'date' => '2024-06-20',
+        'time' => '02:00 PM',
+        'location' => 'Downtown Hospital',
+        'doctor' => 'Dr. Adams',
+        'status' => 'Completed',
+        'purpose' => 'Dental Cleaning',
+        'notes'=>[
+            'No special preparation needed.'
+        ]
+    ],
+    [
+        'id' => 'APT003',
+        'name' => 'Sam Doe',
+        'date' => '2024-08-05',
+        'time' => '11:30 AM',
+        'location' => 'HealthCare Center',
+        'doctor' => 'Dr. Lee',
+        'status' => 'Pending',
+        'purpose' => 'Eye Examination',
+        'notes'=>[
+            'Avoid wearing contact lenses on the day of the appointment.'
+        ]
+    ],
+     [
+        'id' => 'APT004',
+        'name' => 'Sam Doe',
+        'date' => '2024-08-05',
+        'time' => '11:30 AM',
+        'location' => 'MOH Center',
+        'doctor' => 'Dr. Lee',
+        'status' => 'Overdue',
+        'purpose' => 'Eye Examination',
+        'notes'=>[
+            'Avoid wearing contact lenses on the day of the appointment.'
+        ]
+    ],
+
     
 ];
 
@@ -72,10 +112,24 @@ $appointments = [
                     <c-table.td col="date-time" width="200px">{{$appointmnet['date']}} at {{$appointmnet['time']}}</c-table.td>
                     <c-table.td col="location" width="200px">{{$appointmnet['location']}}</c-table.td>
                     <c-table.td col="doctor">{{$appointmnet['doctor']}}</c-table.td>
-                    <c-table.td col="status">
-                        <c-badge>
-                            {{$appointmnet['status']}}
-                        </c-badge>
+        <c-table.td col="status">
+            {{
+         $badgeType = '';
+            if(strtolower($appointmnet['status']) == 'completed') {
+                $badgeType = 'green';
+            } elseif (strtolower($appointmnet['status']) == 'upcoming') {
+                $badgeType = 'purple';
+            } elseif (strtolower($appointmnet['status']) == 'pending') {
+                $badgeType = 'yellow';
+            }
+            else {
+                $badgeType = 'red';
+            }
+                
+          }}
+          <c-badge type="{{ $badgeType }}">
+            {{$appointmnet['status']}}
+          </c-badge>
                     </c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
