@@ -278,7 +278,7 @@ $appointments = [
                                     </c-slot>
                                 </c-modal>
                                 <c-dropdown.sep />
-                                <c-modal size="md" :initOpen="true">
+                                <c-modal size="md" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item> Reschedule Appointment </c-dropdown.item>
                                     </c-slot>
@@ -291,6 +291,32 @@ $appointments = [
                                         <div>Reschedule Appointment</div>
                                     </c-slot>
 
+                                    <c-card class="info-card">
+                                        <c-slot name="header">
+                                            <span class="title">
+                                                Current Appointment
+                                            </span>
+                                        </c-slot>
+                                        <c-modal.viewcard>
+
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                                title="Requester Name" info="{{ $appointmnet['name'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
+                                                title="Date" info="{{ $appointmnet['date'] }} " />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}"
+                                                title="Time" info="{{ $appointmnet['time'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
+                                                title="Location" info="{{ $appointmnet['location'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
+                                                title="Doctor" info="{{ $appointmnet['doctor'] }}" />
+
+
+
+                                        </c-modal.viewcard>
+
+
+                                    </c-card>
+
                                     <form id="reschedule-appointment-form" action="">
                                         <c-input type="date" label="New Date" name="date" placeholder="Select Date"
                                             required />
@@ -300,8 +326,8 @@ $appointments = [
                                             <li class="select-item" data-value=" ">11.00 AM</li>
                                             <li class="select-item" data-value=" ">12.00 PM</li>
                                         </c-select>
-                                        <c-input type="text" name="purpose" label="Reason for Rescheduling"
-                                            placeholder="Eanter your reason" required />
+                                        <c-input type="text" name="reason" label="Reason for Rescheduling"
+                                            placeholder="Enter your reason" required />
                                         <c-input type="text" name="notes" label="Additional Notes"
                                             placeholder="Any additional notes or others" />
                                     </form>
@@ -311,15 +337,97 @@ $appointments = [
                                     </c-slot>
 
                                     <c-slot name="footer">
-                                        <c-button type="submit" from="reschedule-appointment-form" varient="primary">
-                                            Reschedule Appointment
+                                        <c-button type="submit" form="reschedule-appointment-form" variant="primary">
+                                            Submit Request
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
 
-                                <c-dropdown.item>
-                                    Cancel Appointment
-                                </c-dropdown.item>
+                                <c-modal size="sm" :initOpen="false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item> Cancel Appointment </c-dropdown.item>
+                                    </c-slot>
+
+                                    <c-slot name="headerPrefix">
+                                        <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
+                                                stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
+                                            <path
+                                                d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
+                                                stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
+                                            <path
+                                                d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
+                                                stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                            <path
+                                                d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
+                                                stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <span class="cancel">Cancel Appointment</span>
+
+                                    </c-slot>
+                                    <div class="msg">
+                                        Are you sure you want to cancel this appointment? This action cannot be undone.
+                                    </div>
+
+
+                                    <c-card class="info-card">
+                                        <c-slot name="header">
+                                            <span class="title ">
+                                                Current Appointment
+                                            </span>
+                                        </c-slot>
+                                        <c-modal.viewcard>
+
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                                title="Requester Name" info="{{ $appointmnet['name'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
+                                                title="Date" info="{{ $appointmnet['date'] }} " />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}"
+                                                title="Time" info="{{ $appointmnet['time'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
+                                                title="Location" info="{{ $appointmnet['location'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
+                                                title="Doctor" info="{{ $appointmnet['doctor'] }}" />
+
+
+
+                                        </c-modal.viewcard>
+
+
+                                    </c-card>
+
+                                    <form id="cancel-appointment-form" action="">
+                                        <c-input type="text" name="reason" label="Reason for Cancellation"
+                                            placeholder="Enter your reason" required />
+                                        <c-input type="text" name="notes" label="Additional Notes"
+                                            placeholder="Any additional notes or others" />
+                                    </form>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="cancel-appointment-form" variant="destructive">
+                                            Cancel Appointment
+                                        </c-button>
+
+
+
+                                    </c-slot>
+                                </c-modal>
+
 
                             </c-slot>
                         </c-dropdown.main>
