@@ -145,15 +145,17 @@ $appointments = [
                     <li class="select-item" data-value="D002">Dr.John</li>
                     <li class="select-item" data-value="D003">Dr.Alex</li>
                 </c-select>
-                <c-input type="date" label="Preferred Date" placeholder="Select Date" required />
+                <c-input type="date" label="Preferred Date" name="date" placeholder="Select Date" required />
                 <c-select label="Preferred Time" name="time" multiple="1" searchable="1" required>
                     <li class="select-item" data-value=" ">09.00 AM</li>
                     <li class="select-item" data-value=" ">10.00 AM</li>
                     <li class="select-item" data-value=" ">11.00 AM</li>
                     <li class="select-item" data-value=" ">12.00 PM</li>
                 </c-select>
-                <c-input type="text" label="Appointment Purpose" placeholder="Eanter your visit purpose" />
-                <c-input type="text" label="Additional Notes" placeholder="Any additional notes or others" />
+                <c-input type="text" name="purpose" label="Appointment Purpose"
+                    placeholder="Eanter your visit purpose" />
+                <c-input type="text" name="notes" label="Additional Notes"
+                    placeholder="Any additional notes or others" />
 
 
 
@@ -276,10 +278,45 @@ $appointments = [
                                     </c-slot>
                                 </c-modal>
                                 <c-dropdown.sep />
+                                <c-modal size="md" :initOpen="true">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item> Reschedule Appointment </c-dropdown.item>
+                                    </c-slot>
 
-                                <c-dropdown.item>
-                                    Reschedule Appointment
-                                </c-dropdown.item>
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Reschedule Appointment</div>
+                                    </c-slot>
+
+                                    <form id="reschedule-appointment-form" action="">
+                                        <c-input type="date" label="New Date" name="date" placeholder="Select Date"
+                                            required />
+                                        <c-select label="New Time" name="time" multiple="1" searchable="1" required>
+                                            <li class="select-item" data-value=" ">09.00 AM</li>
+                                            <li class="select-item" data-value=" ">10.00 AM</li>
+                                            <li class="select-item" data-value=" ">11.00 AM</li>
+                                            <li class="select-item" data-value=" ">12.00 PM</li>
+                                        </c-select>
+                                        <c-input type="text" name="purpose" label="Reason for Rescheduling"
+                                            placeholder="Eanter your reason" required />
+                                        <c-input type="text" name="notes" label="Additional Notes"
+                                            placeholder="Any additional notes or others" />
+                                    </form>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button type="submit" from="reschedule-appointment-form" varient="primary">
+                                            Reschedule Appointment
+                                        </c-button>
+                                    </c-slot>
+                                </c-modal>
+
                                 <c-dropdown.item>
                                     Cancel Appointment
                                 </c-dropdown.item>
