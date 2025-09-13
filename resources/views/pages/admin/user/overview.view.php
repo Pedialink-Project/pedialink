@@ -93,19 +93,19 @@
                             <c-table.td col="email">{{ $item['email'] }}</c-table.td>
                             <c-table.td col="role">
                                 @if (strtolower($item["role"]) === "parent")
-                                    <c-badge class="role-badge" type="parent">
+                                    <c-badge class="role-badge" type="purple">
                                         {{ ucfirst($item['role']) }}
                                     </c-badge>
                                 @elseif (strtolower($item["role"]) === "doctor")
-                                    <c-badge class="role-badge" type="doctor">
+                                    <c-badge class="role-badge" type="grenn">
                                         {{ ucfirst($item['role']) }}
                                     </c-badge>
                                 @elseif (strtolower($item["role"]) === "phm")
-                                    <c-badge class="role-badge" type="phm">
+                                    <c-badge class="role-badge" type="blue">
                                         {{ strtoupper($item['role']) }}
                                     </c-badge>
                                 @elseif (strtolower($item["role"]) === "admin")
-                                    <c-badge class="role-badge" type="admin">
+                                    <c-badge class="role-badge" type="red">
                                         {{ ucfirst($item['role']) }}
                                     </c-badge>
                                 @else
