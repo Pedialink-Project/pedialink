@@ -9,9 +9,20 @@ Parent - Appointments
 @endsection
 
 @section('header')
-
-Appointments
-
+<div class="title-section">
+    <svg width="26" height="26" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M2.08337 10C2.08337 6.26806 2.08337 4.40208 3.24274 3.24271C4.40211 2.08334 6.26809 2.08334 10 2.08334C13.732 2.08334 15.598 2.08334 16.7573 3.24271C17.9167 4.40208 17.9167 6.26806 17.9167 10C17.9167 13.732 17.9167 15.5979 16.7573 16.7573C15.598 17.9167 13.732 17.9167 10 17.9167C6.26809 17.9167 4.40211 17.9167 3.24274 16.7573C2.08337 15.5979 2.08337 13.732 2.08337 10Z"
+            stroke="#18181B" stroke-width="1.5" />
+        <path d="M9.16663 5.83334L14.1666 5.83334" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M5.83337 5.83334L6.66671 5.83334" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M5.83337 10L6.66671 10" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M5.83337 14.1667L6.66671 14.1667" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M9.16663 10L14.1666 10" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
+    </svg>
+    <span>Appointments</span>
+</div>
 
 @endsection
 
@@ -28,7 +39,7 @@ $appointments = [
         'doctor' => 'Dr. Smith',
         'status' => 'Upcoming',
         'purpose' => 'Regular Checkup',
-        'notes'=>[
+        'notes' => [
             'Bring previous medical records.',
             'Fasting required for blood test.'
         ]
@@ -42,7 +53,7 @@ $appointments = [
         'doctor' => 'Dr. Adams',
         'status' => 'Completed',
         'purpose' => 'Dental Cleaning',
-        'notes'=>[
+        'notes' => [
             'No special preparation needed.'
         ]
     ],
@@ -55,11 +66,11 @@ $appointments = [
         'doctor' => 'Dr. Lee',
         'status' => 'Pending',
         'purpose' => 'Eye Examination',
-        'notes'=>[
+        'notes' => [
             'Avoid wearing contact lenses on the day of the appointment.'
         ]
     ],
-     [
+    [
         'id' => 'APT004',
         'name' => 'Sam Doe',
         'date' => '2024-08-05',
@@ -68,12 +79,12 @@ $appointments = [
         'doctor' => 'Dr. Lee',
         'status' => 'Overdue',
         'purpose' => 'Eye Examination',
-        'notes'=>[
+        'notes' => [
             'Avoid wearing contact lenses on the day of the appointment.'
         ]
     ],
 
-    
+
 ];
 
 ?>
@@ -83,8 +94,17 @@ $appointments = [
     <c-slot name="extrabtn">
         <c-link type="primary">
             <c-slot name="icon">
-                <img src="{{ asset('assets/icons/profile.svg') }}" alt="">
-            </c-slot>
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M2.08337 10C2.08337 6.26806 2.08337 4.40208 3.24274 3.24271C4.40211 2.08334 6.26809 2.08334 10 2.08334C13.732 2.08334 15.598 2.08334 16.7573 3.24271C17.9167 4.40208 17.9167 6.26806 17.9167 10C17.9167 13.732 17.9167 15.5979 16.7573 16.7573C15.598 17.9167 13.732 17.9167 10 17.9167C6.26809 17.9167 4.40211 17.9167 3.24274 16.7573C2.08337 15.5979 2.08337 13.732 2.08337 10Z"
+            stroke="#FAFAFA" stroke-width="1.5" />
+        <path d="M9.16663 5.83334L14.1666 5.83334" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M5.83337 5.83334L6.66671 5.83334" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M5.83337 10L6.66671 10" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M5.83337 14.1667L6.66671 14.1667" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M9.16663 10L14.1666 10" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" />
+    </svg>            </c-slot>
             Requset Appointment </c-link>
 
     </c-slot>
@@ -109,27 +129,28 @@ $appointments = [
                 @foreach ($appointments as $appointmnet)
                 <c-table.tr>
                     <c-table.td col="name">{{$appointmnet['name']}}</c-table.td>
-                    <c-table.td col="date-time" width="200px">{{$appointmnet['date']}} at {{$appointmnet['time']}}</c-table.td>
+                    <c-table.td col="date-time" width="200px">{{$appointmnet['date']}} at
+                        {{$appointmnet['time']}}</c-table.td>
                     <c-table.td col="location" width="200px">{{$appointmnet['location']}}</c-table.td>
                     <c-table.td col="doctor">{{$appointmnet['doctor']}}</c-table.td>
-        <c-table.td col="status">
-            {{
-         $badgeType = '';
-            if(strtolower($appointmnet['status']) == 'completed') {
-                $badgeType = 'green';
-            } elseif (strtolower($appointmnet['status']) == 'upcoming') {
-                $badgeType = 'purple';
-            } elseif (strtolower($appointmnet['status']) == 'pending') {
-                $badgeType = 'yellow';
-            }
-            else {
-                $badgeType = 'red';
-            }
-                
-          }}
-          <c-badge type="{{ $badgeType }}">
-            {{$appointmnet['status']}}
-          </c-badge>
+                    <c-table.td col="status">
+                        {{
+                        $badgeType = '';
+                        if(strtolower($appointmnet['status']) == 'completed') {
+                        $badgeType = 'green';
+                        } elseif (strtolower($appointmnet['status']) == 'upcoming') {
+                        $badgeType = 'purple';
+                        } elseif (strtolower($appointmnet['status']) == 'pending') {
+                        $badgeType = 'yellow';
+                        }
+                        else {
+                        $badgeType = 'red';
+                        }
+
+                        }}
+                        <c-badge type="{{ $badgeType }}">
+                            {{$appointmnet['status']}}
+                        </c-badge>
                     </c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
