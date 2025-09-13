@@ -191,21 +191,21 @@ $appointments = [
             </c-table.thead>
 
             <c-table.tbody>
-                @foreach ($appointments as $appointmnet)
+                @foreach ($appointments as $key => $appointment)
                 <c-table.tr>
-                    <c-table.td col="name">{{$appointmnet['name']}}</c-table.td>
-                    <c-table.td col="date-time" width="200px">{{$appointmnet['date']}} at
-                        {{$appointmnet['time']}}</c-table.td>
-                    <c-table.td col="location" width="200px">{{$appointmnet['location']}}</c-table.td>
-                    <c-table.td col="doctor">{{$appointmnet['doctor']}}</c-table.td>
+                    <c-table.td col="name">{{$appointment['name']}}</c-table.td>
+                    <c-table.td col="date-time" width="200px">{{$appointment['date']}} at
+                        {{$appointment['time']}}</c-table.td>
+                    <c-table.td col="location" width="200px">{{$appointment['location']}}</c-table.td>
+                    <c-table.td col="doctor">{{$appointment['doctor']}}</c-table.td>
                     <c-table.td col="status">
                         {{
                         $badgeType = '';
-                        if(strtolower($appointmnet['status']) == 'completed') {
+                        if(strtolower($appointment['status']) == 'completed') {
                         $badgeType = 'green';
-                        } elseif (strtolower($appointmnet['status']) == 'upcoming') {
+                        } elseif (strtolower($appointment['status']) == 'upcoming') {
                         $badgeType = 'purple';
-                        } elseif (strtolower($appointmnet['status']) == 'pending') {
+                        } elseif (strtolower($appointment['status']) == 'pending') {
                         $badgeType = 'yellow';
                         }
                         else {
@@ -214,7 +214,7 @@ $appointments = [
 
                         }}
                         <c-badge type="{{ $badgeType }}">
-                            {{$appointmnet['status']}}
+                            {{$appointment['status']}}
                         </c-badge>
                     </c-table.td>
                     <c-table.td class="table-actions" align="center">
@@ -225,7 +225,7 @@ $appointments = [
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-modal size="md" :initOpen="false">
+                                <c-modal id="view-appointmant-{{$key}}" size="md" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>View Details</c-dropdown.item>
                                     </c-slot>
@@ -241,7 +241,7 @@ $appointments = [
                                     <c-slot name="headerSuffix">
 
                                         <c-badge type="{{ $badgeType }}">
-                                            {{$appointmnet['status']}}
+                                            {{$appointment['status']}}
                                         </c-badge>
                                     </c-slot>
 
@@ -249,17 +249,17 @@ $appointments = [
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Appointment ID" info="{{ $appointmnet['id'] }}" />
+                                            title="Appointment ID" info="{{ $appointment['id'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
-                                            title="Requester Name" info="{{ $appointmnet['name'] }}" />
+                                            title="Requester Name" info="{{ $appointment['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
-                                            title="Date" info="{{ $appointmnet['date'] }} " />
+                                            title="Date" info="{{ $appointment['date'] }} " />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                                            info="{{ $appointmnet['time'] }}" />
+                                            info="{{ $appointment['time'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="Location" info="{{ $appointmnet['location'] }}" />
+                                            title="Location" info="{{ $appointment['location'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="Doctor"
-                                            info="{{ $appointmnet['doctor'] }}" />
+                                            info="{{ $appointment['doctor'] }}" />
 
 
 
@@ -278,7 +278,7 @@ $appointments = [
                                     </c-slot>
                                 </c-modal>
                                 <c-dropdown.sep />
-                                <c-modal size="md" :initOpen="false">
+                                <c-modal id="reschedule-appointmant-{{$key}}" size="md" :initOpen="false" >
                                     <c-slot name="trigger">
                                         <c-dropdown.item> Reschedule Appointment </c-dropdown.item>
                                     </c-slot>
@@ -300,15 +300,15 @@ $appointments = [
                                         <c-modal.viewcard>
 
                                             <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
-                                                title="Requester Name" info="{{ $appointmnet['name'] }}" />
+                                                title="Requester Name" info="{{ $appointment['name'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
-                                                title="Date" info="{{ $appointmnet['date'] }} " />
+                                                title="Date" info="{{ $appointment['date'] }} " />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}"
-                                                title="Time" info="{{ $appointmnet['time'] }}" />
+                                                title="Time" info="{{ $appointment['time'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                                title="Location" info="{{ $appointmnet['location'] }}" />
+                                                title="Location" info="{{ $appointment['location'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
-                                                title="Doctor" info="{{ $appointmnet['doctor'] }}" />
+                                                title="Doctor" info="{{ $appointment['doctor'] }}" />
 
 
 
@@ -343,7 +343,7 @@ $appointments = [
                                     </c-slot>
                                 </c-modal>
 
-                                <c-modal size="sm" :initOpen="false">
+                                <c-modal id="cancel-appointmant-{{$key}}" size="sm" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item> Cancel Appointment </c-dropdown.item>
                                     </c-slot>
@@ -390,15 +390,15 @@ $appointments = [
                                         <c-modal.viewcard>
 
                                             <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
-                                                title="Requester Name" info="{{ $appointmnet['name'] }}" />
+                                                title="Requester Name" info="{{ $appointment['name'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
-                                                title="Date" info="{{ $appointmnet['date'] }} " />
+                                                title="Date" info="{{ $appointment['date'] }} " />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}"
-                                                title="Time" info="{{ $appointmnet['time'] }}" />
+                                                title="Time" info="{{ $appointment['time'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                                title="Location" info="{{ $appointmnet['location'] }}" />
+                                                title="Location" info="{{ $appointment['location'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
-                                                title="Doctor" info="{{ $appointmnet['doctor'] }}" />
+                                                title="Doctor" info="{{ $appointment['doctor'] }}" />
 
 
 
@@ -434,7 +434,7 @@ $appointments = [
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
-                @if(count($appointmnet) === 0)
+                @if(count($appointment) === 0)
                 <tr>
                     <td colspan="6">
                         <div class="table-empty">No items found</div>
