@@ -44,7 +44,7 @@ $notifications = auth()->user()->notifications ?? [
   <div class="app-navbar__right">
     <c-dropdown.main>
       <c-slot name="trigger">
-        <c-button class="icon-btn" aria-label="Notifications" title="Notifications">
+        <c-button vareint="outline" class="icon-btn" aria-label="Notifications" title="Notifications">
           <img src="{{ asset('assets/icons/notification-02.svg') }}" />
         </c-button>
       </c-slot>
@@ -84,7 +84,7 @@ $notifications = auth()->user()->notifications ?? [
               <div class="row__right">
 
                 <c-button varient="primary" size="sm"> Mark as Read</c-button>
-                
+
 
               </div>
             </div>
@@ -95,16 +95,61 @@ $notifications = auth()->user()->notifications ?? [
 
     </c-dropdown.main>
 
+    <c-dropdown.main>
+      <c-slot name="trigger" class="nav-user-trigger">
+        <div class="nav-user" role="button" aria-haspopup="true">
+          <div class="avatar">
+            <img src="{{ asset('assets/avatar-placeholder.png') }}" alt="User avatar">
+          </div>
+          <div class="user-meta">
+            <div class="user-name">{{ auth()->check() ? auth()->user()->name : 'Test Name'}}</div>
+            <div class="user-role">{{ auth()->check() ? auth()->user()->role : 'Test role' }}</div>
+          </div>
+        </div>
+      </c-slot>
 
-    <div class="nav-user" role="button" aria-haspopup="true">
-      <div class="avatar">
-        <img src="{{ asset('assets/avatar-placeholder.png') }}" alt="User avatar">
-      </div>
-      <div class="user-meta">
-        <div class="user-name">{{ auth()->check() ? auth()->user()->name : 'Test Name'}}</div>
-        <div class="user-role">{{ auth()->check() ? auth()->user()->role : 'Test role' }}</div>
-      </div>
-    </div>
+      <c-slot name="menu">
+        <c-dropdown.item>
+
+
+          My Account
+
+        </c-dropdown.item>
+        <c-dropdown.sep />
+        <c-dropdown.item>
+          Settings
+        </c-dropdown.item>
+        <c-modal size="md" :initOpen="false">
+          <c-slot name="trigger">
+            <c-dropdown.item>
+
+              <div class="item">
+                Logout
+              </div>
+            </c-dropdown.item>
+
+          </c-slot>
+          <c-slot name="title">
+            Confirm Logout
+          </c-slot>
+          <c-slot name="body">
+            Are you sure you want to logout?
+          </c-slot>
+          <c-slot name="footer">
+            <form action="{{ route('logout') }}" method="post">
+
+              <c-button varient="destructive" type="submit">Logout</c-button>
+            </form>
+          </c-slot>
+        </c-modal>
+
+
+      </c-slot>
+
+    </c-dropdown.main>
+
+
+
   </div>
 </nav>
 

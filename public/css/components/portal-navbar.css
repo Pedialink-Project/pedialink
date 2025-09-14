@@ -219,6 +219,14 @@
   align-items: center;
   gap: .5rem;
 }
+.dropdown-trigger:hover {
+    background: var(--panel);
+    cursor: pointer;
+}
+
+.item{
+  color: var(--destructive);
+}
 
 /* small responsive tweaks */
 @media (max-width: 920px) {
