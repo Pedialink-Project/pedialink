@@ -2,6 +2,7 @@
 
 use App\Controllers\Parent\AppointmentController;
 use App\Controllers\Parent\DashboardController;
+use App\Controllers\Parent\EventController;
 use App\Controllers\Parent\MyChildrenController;
 use App\Controllers\ParentController;
 
@@ -12,8 +13,7 @@ return [
     ['GET', '/parent/nutrition-tracking', [ParentController::class, 'nutritionTracking'], 'parent.nutrition.tracking', ['parent']],
     ['GET', '/parent/appointments', [AppointmentController::class, 'index'], 'parent.appointments', ['parent']],
     ['POST', '/parent/request-appointment', [AppointmentController::class, 'requestAppointment'], 'parent.request.appointment', ['parent']],
-
-    ['GET', '/parent/events-campaigns', [ParentController::class, 'eventsCampaigns'], 'parent.events.campaigns', ['parent']],
+    ['GET', '/parent/events-campaigns', [EventController::class, 'index'], 'parent.events.campaigns', ['parent']],
     ['GET', '/parent/notifications', [ParentController::class, 'notifications'], 'parent.notifications', ['parent']],
     ['GET', '/parent/settings', [ParentController::class, 'settings'], 'parent.settings', ['parent']],
 ];
