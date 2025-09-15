@@ -15,7 +15,6 @@
     border-radius: 999px;
     min-width: 15rem;
     max-width: 40rem;
-    width: 60%
 }
 
 .search-box input {
@@ -25,4 +24,16 @@
     padding: .45rem .5rem;
     font-size: .95rem;
     width: 100%;
+}
+
+.filters {
+    display: flex;
+    flex-direction: row;
+    gap: .375rem;
+    justify-content: center;
+}
+
+.filters:hover {
+    background: var(--surface);
+    color: var(--text-primary);
 }
