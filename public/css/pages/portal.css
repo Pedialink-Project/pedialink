@@ -79,9 +79,16 @@ body.sidebar-collapsed .sidebar {
 .page-header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: .75rem;
   margin-bottom: 1rem;
+}
+.header__right {
+  display: flex;
+  align-items: center;
+flex-wrap: wrap;
+  gap: .75rem;
 }
 
 /* ---------- Mobile: sidebar becomes off-canvas under the navbar ----------
