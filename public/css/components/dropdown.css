@@ -29,7 +29,8 @@
 .dropdown-menu {
     position: absolute;
     min-width: 12rem;
-    max-width: 15rem;
+    width: fit-content;
+    max-width: 25rem;
     background: var(--dd-bg);
     border: 1px solid var(--dd-border);
     border-radius: var(--dd-radius);

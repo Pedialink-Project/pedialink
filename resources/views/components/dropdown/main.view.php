@@ -14,7 +14,7 @@ if (!empty($class)) {
 $closeOnSelect = isset($closeOnSelect) ? (bool)$closeOnSelect : true; // true by default
 ?>
 <div id="{{ $uid }}" class="{{ $classes }}" data-dd-uid="{{ $uid }}">
-  <div class="dropdown-trigger-wrapper">
+  <div class="dropdown-trigger-wrapper dropdown-trigger">
     @if (!empty($slots['trigger']))
       {{ $slots['trigger'] }}
     @else
