@@ -226,30 +226,44 @@ $eventDetails = [
                </c-badge>
             </c-slot>
 
+            <div class="info-card">
+               <span class="title">
+                  Current Event
+               </span>
+
+               <c-modal.viewcard>
+
+                  <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
+                     info="{{ $event['title'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
+                     info="{{ $event['date'] }} " />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
+                     info="{{ $event['time'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
+                     info="{{ $event['location'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organzer"
+                     info="{{ $event['organizer'] }}" />
+
+
+
+               </c-modal.viewcard>
+
+
+            </div>
 
 
 
 
-            <c-modal.viewcard>
-               <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event ID"
-                  info="{{ $event['id'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-                  info="{{ $event['date'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                  info="{{ $event['time'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
-                  info="{{ $event['registeredParticipants'] .'/' .$event['totalParticipants'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
-                  info="{{ $event['location'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
-                  info="{{ $event['organizer'] }}" />
-            </c-modal.viewcard>
-
-
-
-
-
-
+            <form id="book-event-form" action="">
+               <c-input type="text" label="Name " name="name" placeholder="Enter Participant Name" required />
+               <c-input type="email" label="Email " name="email" placeholder="Enter Email" required />
+               <c-input type="text" label="Phone Number " name="phone" placeholder="Enter Phone number" required>
+                  <c-slot name="prefix">
+                     +94
+                  </c-slot>
+               </c-input>
+               <c-textarea name="notes" label="Addtional Notes" placeholder="Any additional notes or others" />
+            </form>
 
 
             <c-slot name="close">
@@ -258,79 +272,93 @@ $eventDetails = [
 
             <c-slot name="footer">
 
-               <c-button variant="{{ $buttonType }}">
+               <c-button variant="{{ $buttonType }}" type="submit" form="book-event-form">
                   {{ $buttonText }}
                </c-button>
             </c-slot>
          </c-modal>
          @elseif ($event['isRegistered'] && !$event['isFinished'])
-         <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="false">
+         <c-modal id="cancel-event-{{$key}}" size="sm" :initOpen="false">
             <c-slot name="trigger">
                <c-button variant="{{ $buttonType }}">
                   {{ $buttonText }}
-               </c-button>
-            </c-slot>
+               </c-button> </c-slot>
 
             <c-slot name="headerPrefix">
-               <img src="{{ asset('assets/icons/megaphone-02.svg' )}}" />
+               <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                     d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
+                     stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
+                  <path
+                     d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
+                     stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
+                  <path
+                     d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
+                     stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" stroke-linecap="round"
+                     stroke-linejoin="round" />
+                  <path
+                     d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
+                     stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" stroke-linecap="round"
+                     stroke-linejoin="round" />
+                  <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" />
+               </svg>
             </c-slot>
 
             <c-slot name="header">
-               <div>Event Details</div>
+               <span class="cancel">Cancel Event</span>
+
             </c-slot>
 
-            <c-slot name="headerSuffix">
+            <div class="info-card">
+                  <span class="title">
+                     Current Event
+                  </span>
 
-               <c-badge type="{{ $badgeType }}">
-                  {{$event['status']}}
-               </c-badge>
-            </c-slot>
+               <c-modal.viewcard>
 
-
-
-            <c-modal.viewcard>
-               <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event ID"
-                  info="{{ $event['id'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-                  info="{{ $event['date'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                  info="{{ $event['time'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
-                  info="{{ $event['registeredParticipants'] .'/' .$event['totalParticipants'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
-                  info="{{ $event['location'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
-                  info="{{ $event['organizer'] }}" />
-            </c-modal.viewcard>
+                  <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
+                     info="{{ $event['title'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
+                     info="{{ $event['date'] }} " />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
+                     info="{{ $event['time'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
+                     info="{{ $event['location'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organzer"
+                     info="{{ $event['organizer'] }}" />
 
 
 
+               </c-modal.viewcard>
+
+
+            </div>
+
+            <div class="msg">
+               Are you sure you want to cancel booking of this Evenr? This action cannot be undone.
+            </div>
 
 
 
-            <c-modal.viewlist title="Purpose">
-               <c-slot name="list">
-                  <li>{{ $event['purpose'] }}</li>
-               </c-slot>
-            </c-modal.viewlist>
-
-            <c-modal.viewlist title="Notes">
-               <c-slot name="list">
-                  @foreach($event['notes'] as $note)
-                  <li>{{ $note }}</li>
-                  @endforeach
-               </c-slot>
-            </c-modal.viewlist>
+            <form id="cancel-event-form" action="">
+               <c-input type="text" name="reason" label="Reason for Cancellation" placeholder="Enter your reason"
+                  required />
+               <c-textarea name="notes" label="Additional Notes" placeholder="Any additional notes or others" />
+            </form>
 
             <c-slot name="close">
                Cancel
             </c-slot>
 
             <c-slot name="footer">
-
-               <c-button variant="{{ $buttonType }}">
+               <c-button variant="{{ $buttonType }}" type="submit" form="cancel-event-form">
                   {{ $buttonText }}
                </c-button>
+
+
             </c-slot>
          </c-modal>
          @else
