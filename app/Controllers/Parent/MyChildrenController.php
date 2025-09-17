@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Controllers\Parent;
-
+use Library\Framework\Http\Request;
+use Library\Framework\Http\RedirectResponse;
 
 
 class MyChildrenController
@@ -65,16 +66,17 @@ class MyChildrenController
         return view("parent/my-children",['childDetails' => $childDetails]);
     }
 
-    public function childViewDetails($id)
+    public function viewChildDetails(Request $request, $id)
     {
         $child = current(array_filter($this->childDetails, function ($child) use ($id) {
             return $child['id'] === $id;
         }));
+        
         if (empty($child)) {
             // Handle case where child with given ID is not found
-            return redirect('/parent/my-children')->with('error', 'Child not found.');
+            return redirect('/parent/my-children')->withErrors(['error' => 'Child not found.']);
         }
-        return view("parent/child-details", ['child' => $child]);
+        return view("parent/my-child-details", data: ['child' => $child]);
 
     }
 }

@@ -9,6 +9,7 @@ use App\Controllers\ParentController;
 return [
     ['GET', '/parent/dashboard', [DashboardController::class, 'index'], 'parent.dashboard', ['parent']],
     ['GET', '/parent/my-children', [MyChildrenController::class, 'index'], 'parent.my.children', ['parent']],
+    ['GET', '/parent/my-children/{id}', [MyChildrenController::class, 'viewChildDetails'], 'parent.child.details', ['parent']],
     ['GET', '/parent/vaccination', [ParentController::class, 'vaccination'], 'parent.vaccination', ['parent']],
     ['GET', '/parent/nutrition-tracking', [ParentController::class, 'nutritionTracking'], 'parent.nutrition.tracking', ['parent']],
     ['GET', '/parent/appointments', [AppointmentController::class, 'index'], 'parent.appointments', ['parent']],
