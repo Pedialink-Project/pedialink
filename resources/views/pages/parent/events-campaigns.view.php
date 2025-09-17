@@ -190,21 +190,165 @@ $eventDetails = [
                </c-slot>
             </c-modal.viewlist>
 
-             <c-slot name="close">
-                     Cancel 
-               </c-slot>
+            <c-slot name="close">
+               Cancel
+            </c-slot>
 
             <c-slot name="footer">
-              
+
                <c-button variant="{{ $buttonType }}">
                   {{ $buttonText }}
                </c-button>
             </c-slot>
          </c-modal>
 
-         <c-button variant="{{ $buttonType }}">
-            {{ $buttonText }}
-         </c-button>
+
+         @if(!$event['isRegistered'] && !$event['isFinished'])
+         <c-modal id="book-event-{{$key}}" size="md" :initOpen="false">
+            <c-slot name="trigger">
+               <c-button variant="{{ $buttonType }}">
+                  {{ $buttonText }}
+               </c-button>
+
+            </c-slot>
+
+            <c-slot name="headerPrefix">
+               <img src="{{ asset('assets/icons/megaphone-02.svg' )}}" />
+            </c-slot>
+
+            <c-slot name="header">
+               <div>Event Details</div>
+            </c-slot>
+
+            <c-slot name="headerSuffix">
+
+               <c-badge type="{{ $badgeType }}">
+                  {{$event['status']}}
+               </c-badge>
+            </c-slot>
+
+
+
+            <c-modal.viewcard>
+               <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event ID"
+                  info="{{ $event['id'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
+                  info="{{ $event['date'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
+                  info="{{ $event['time'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
+                  info="{{ $event['registeredParticipants'] .'/' .$event['totalParticipants'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
+                  info="{{ $event['location'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
+                  info="{{ $event['organizer'] }}" />
+            </c-modal.viewcard>
+
+
+
+
+
+
+            <c-modal.viewlist title="Purpose">
+               <c-slot name="list">
+                  <li>{{ $event['purpose'] }}</li>
+               </c-slot>
+            </c-modal.viewlist>
+
+            <c-modal.viewlist title="Notes">
+               <c-slot name="list">
+                  @foreach($event['notes'] as $note)
+                  <li>{{ $note }}</li>
+                  @endforeach
+               </c-slot>
+            </c-modal.viewlist>
+
+            <c-slot name="close">
+               Cancel
+            </c-slot>
+
+            <c-slot name="footer">
+
+               <c-button variant="{{ $buttonType }}">
+                  {{ $buttonText }}
+               </c-button>
+            </c-slot>
+         </c-modal>
+         @elseif ($event['isRegistered'] && !$event['isFinished'])
+         <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="false">
+            <c-slot name="trigger">
+                <c-button variant="{{ $buttonType }}">
+                  {{ $buttonText }}
+               </c-button>
+            </c-slot>
+
+            <c-slot name="headerPrefix">
+               <img src="{{ asset('assets/icons/megaphone-02.svg' )}}" />
+            </c-slot>
+
+            <c-slot name="header">
+               <div>Event Details</div>
+            </c-slot>
+
+            <c-slot name="headerSuffix">
+
+               <c-badge type="{{ $badgeType }}">
+                  {{$event['status']}}
+               </c-badge>
+            </c-slot>
+
+
+
+            <c-modal.viewcard>
+               <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event ID"
+                  info="{{ $event['id'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
+                  info="{{ $event['date'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
+                  info="{{ $event['time'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
+                  info="{{ $event['registeredParticipants'] .'/' .$event['totalParticipants'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
+                  info="{{ $event['location'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
+                  info="{{ $event['organizer'] }}" />
+            </c-modal.viewcard>
+
+
+
+
+
+
+            <c-modal.viewlist title="Purpose">
+               <c-slot name="list">
+                  <li>{{ $event['purpose'] }}</li>
+               </c-slot>
+            </c-modal.viewlist>
+
+            <c-modal.viewlist title="Notes">
+               <c-slot name="list">
+                  @foreach($event['notes'] as $note)
+                  <li>{{ $note }}</li>
+                  @endforeach
+               </c-slot>
+            </c-modal.viewlist>
+
+            <c-slot name="close">
+               Cancel
+            </c-slot>
+
+            <c-slot name="footer">
+
+               <c-button variant="{{ $buttonType }}">
+                  {{ $buttonText }}
+               </c-button>
+            </c-slot>
+         </c-modal>
+
+
+
+         @endif
+
 
       </div>
 
