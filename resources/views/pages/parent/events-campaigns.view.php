@@ -202,7 +202,6 @@ $eventDetails = [
             </c-slot>
          </c-modal>
 
-
          @if(!$event['isRegistered'] && !$event['isFinished'])
          <c-modal id="book-event-{{$key}}" size="md" :initOpen="false">
             <c-slot name="trigger">
@@ -217,7 +216,7 @@ $eventDetails = [
             </c-slot>
 
             <c-slot name="header">
-               <div>Event Details</div>
+               <div>Book Event </div>
             </c-slot>
 
             <c-slot name="headerSuffix">
@@ -226,6 +225,8 @@ $eventDetails = [
                   {{$event['status']}}
                </c-badge>
             </c-slot>
+
+
 
 
 
@@ -249,19 +250,7 @@ $eventDetails = [
 
 
 
-            <c-modal.viewlist title="Purpose">
-               <c-slot name="list">
-                  <li>{{ $event['purpose'] }}</li>
-               </c-slot>
-            </c-modal.viewlist>
 
-            <c-modal.viewlist title="Notes">
-               <c-slot name="list">
-                  @foreach($event['notes'] as $note)
-                  <li>{{ $note }}</li>
-                  @endforeach
-               </c-slot>
-            </c-modal.viewlist>
 
             <c-slot name="close">
                Cancel
@@ -277,7 +266,7 @@ $eventDetails = [
          @elseif ($event['isRegistered'] && !$event['isFinished'])
          <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="false">
             <c-slot name="trigger">
-                <c-button variant="{{ $buttonType }}">
+               <c-button variant="{{ $buttonType }}">
                   {{ $buttonText }}
                </c-button>
             </c-slot>
@@ -344,6 +333,10 @@ $eventDetails = [
                </c-button>
             </c-slot>
          </c-modal>
+         @else
+         <c-button variant="{{ $buttonType }}">
+            {{ $buttonText }}
+         </c-button>
 
 
 
