@@ -48,55 +48,7 @@ Parent - My Childern
 @endsection
 
 @section('content')
-<?php
-$childDetails = [
-   [
-      "image" => "",
-      "name" => "Sara Johnson",
-      "nickname" => "Baby Sara",
-      "status" => "Good",
-      "dob" => "22-10-2023",
-      "age" => "2 Years old",
-      "phm" => "Dr. Smith",
-      "appointments" => 1,
-      "vaccinations" => 0
-   ],
-   [
-      "image" => "",
-      "name" => "Sara Johnson",
-      "nickname" => "Baby Sara",
-      "status" => "Critical",
-      "dob" => "22-10-2023",
-      "age" => "2 Years old",
-      "phm" => "Dr. Smith",
-      "appointments" => 1,
-      "vaccinations" => 0
-   ],
-   [
-      "image" => "",
-      "name" => "Sara Johnson",
-      "nickname" => "Baby Sara",
-      "status" => "Good",
-      "dob" => "22-10-2023",
-      "age" => "2 Years old",
-      "phm" => "Dr. Smith",
-      "appointments" => 1,
-      "vaccinations" => 0
-   ],
 
-   [
-      "image" => "",
-      "name" => "Sara Johnson",
-      "nickname" => "Baby Sara",
-      "status" => "Critical",
-      "dob" => "22-10-2023",
-      "age" => "2 Years old",
-      "phm" => "Dr. Smith",
-      "appointments" => 1,
-      "vaccinations" => 0
-   ],
-];
-?>
 
 <div class="card-container">
    @foreach ($childDetails as $child)
