@@ -9,61 +9,87 @@ class MyChildrenController
 {
     private
     $childDetails = [
-        [
-            'id' => "CHD001",
-            "image" => "",
-            "name" => "Sara Johnson",
-            "nickname" => "Baby Sara",
-            "height" => "85",
-            "weight" => "1.25",
-            "bmi" => "",
-            "blood" => "O+",
-            "status" => "Good",
-            "dob" => "22-10-2023",
-            "age" => "2 Years old",
-            "phm" => "Dr. Smith",
-            "appointments" => 1,
-            "vaccinations" => 0
-        ],
-        [
-            "id" => "CHD002",
-            "image" => "",
-            "name" => "Sara Johnson",
-            "nickname" => "Baby Sara",
+    [
+        'id' => "CHD001",
+        "image" => "",
+        "name" => "Sara Johnson",
+        "nickname" => "Baby Sara",
+        "height" => "85",
+        "weight" => "1.25",
+        "bmi" => "",
+        "blood" => "O+",
+        "status" => "Good",
+        "dob" => "22-10-2023",
+        "age" => "2 Years old",
+        "phm" => "Dr. Smith",
+        "appointments" => 1,
+        "vaccinations" => 0,
+        "parent_name" => "Johnson Alex",
+        "parent_phone" => "+945678987",
+        "parent_email" => "johnson@gmail.com"
+    ],
+    [
+        "id" => "CHD002",
+        "image" => "",
+        "name" => "Sara Johnson",
+        "nickname" => "Baby Sara",
+        "height" => "90",
+        "weight" => "1.30",
+        "bmi" => "",
+        "blood" => "A+",
+        "status" => "Critical",
+        "dob" => "22-10-2023",
+        "age" => "2 Years old",
+        "phm" => "Dr. Smith",
+        "appointments" => 1,
+        "vaccinations" => 0,
+        "parent_name" => "Ajay Hales",
+        "parent_phone" => "+945678987",
+        "parent_email" => "abc@gmail.com"
+    ],
+    [
+        "id" => "CHD003",
+        "image" => "",
+        "name" => "Sara Johnson",
+        "nickname" => "Baby Sara",
+        "height" => "82",
+        "weight" => "1.20",
+        "bmi" => "",
+        "blood" => "B+",
+        "status" => "Good",
+        "dob" => "22-10-2023",
+        "age" => "2 Years old",
+        "phm" => "Dr. Smith",
+        "appointments" => 1,
+        "vaccinations" => 0,
+         "parent_name" => "Ajay Hales",
+        "parent_phone" => "+945678987",
+        "parent_email" => "abc@gmail.com"
+    ],
 
-            "status" => "Critical",
-            "dob" => "22-10-2023",
-            "age" => "2 Years old",
-            "phm" => "Dr. Smith",
-            "appointments" => 1,
-            "vaccinations" => 0
-        ],
-        [
-            "id" => "CHD003",
-            "image" => "",
-            "name" => "Sara Johnson",
-            "nickname" => "Baby Sara",
-            "status" => "Good",
-            "dob" => "22-10-2023",
-            "age" => "2 Years old",
-            "phm" => "Dr. Smith",
-            "appointments" => 1,
-            "vaccinations" => 0
-        ],
+    
+    [
+        "id" => "CHD004",
+        "image" => "",
+        "name" => "Sara Johnson",
+        "nickname" => "Baby Sara",
+        "height" => "88",
+        "weight" => "1.35",
+        "bmi" => "",
+        "blood" => "AB+",
+        "status" => "Critical",
+        "dob" => "22-10-2023",
+        "age" => "2 Years old",
+        "phm" => "Dr. Smith",
+        "appointments" => 1,
+        "vaccinations" => 0,
+         "parent_name" => "Ajay Hales",
+        "parent_phone" => "+945678987",
+        "parent_email" => "abc@gmail.com"
+    ],
 
-        [
-            "id" => "CHD004",
-            "image" => "",
-            "name" => "Sara Johnson",
-            "nickname" => "Baby Sara",
-            "status" => "Critical",
-            "dob" => "22-10-2023",
-            "age" => "2 Years old",
-            "phm" => "Dr. Smith",
-            "appointments" => 1,
-            "vaccinations" => 0
-        ],
-    ];
+];
+
 
     public function index()
     {

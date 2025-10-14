@@ -187,3 +187,23 @@ body {
     font-weight: var(--font-weight-normal);
     color: var(--text-muted);
 }
+
+.info-body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 20rem;       
+    gap: 1rem;
+}
+
+.section-title{
+    font-size: var(--text-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}

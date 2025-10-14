@@ -15,53 +15,81 @@
 
     <div class="left-col">
 
-     <c-card class="card info-card">
+        <c-card class="card info-card">
 
-     <?php $words = explode(" ", $child["name"]);
-   $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-   ?>
+            <?php $words = explode(" ", $child["name"]);
+            $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+            ?>
 
-    <div class="card-header">
-         <div class="header__left">
-            <div class="profile-pic">
-               @if ($child['image'])
-               <img src="{{ asset('images/' . $child['image']) }}" alt="Profile Picture">
-               @else
-               <div class="initials">{{ $initials }}</div>
-               @endif
+            <div class="card-header">
+                <div class="header__left">
+                    <div class="profile-pic">
+                        @if ($child['image'])
+                        <img src="{{ asset('images/' . $child['image']) }}" alt="Profile Picture">
+                        @else
+                        <div class="initials">{{ $initials }}</div>
+                        @endif
+                    </div>
+                    <div class="child-info">
+                        <h3 class="child-name">{{ $child['name'] }}</h3>
+                        <p class="nickname">{{ $child['nickname'] }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="child-info">
-               <h3 class="child-name">{{ $child['name'] }}</h3>
-               <p class="nickname">{{ $child['nickname'] }}</p>
+
+            <div class="card-body info-body">
+
+            <div class="section">
+
+            <span class="section-title">Quick Stats</span>
+
+            
+                <c-modal.viewcard>
+
+                    <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Blood Type"
+                        info="{{ $child['blood'] }}" />
+                    <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Weight"
+                        info="{{ $child['weight'] }} kg" />
+                    <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Height"
+                        info="{{ $child['height'] }} cm" />
+                    <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="BMI"
+                        info="{{ $child['bmi'] }}" />
+                    <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="PHM"
+                        info="{{ $child['phm'] }}" />
+
+
+
+                </c-modal.viewcard>
+
+                </div>
+                 <div class="section">
+
+            <span class="section-title">Emergency Contact</span>
+
+            
+                <c-modal.viewcard>
+
+                    <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Blood Type"
+                        info="{{ $child['parent_name'] }}" />
+                    <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Weight"
+                        info="{{ $child['parent_phone'] }}" />
+                    <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Height"
+                        info="{{ $child['parent_email'] }}" />
+                    
+
+
+
+                </c-modal.viewcard>
+
+                </div>
+
             </div>
-         </div>
-      </div>
-
-      <div class="card-body info-body">
-         <c-modal.viewcard>
-
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
-                                                title="Blood Type" info="{{ $child['blood'] }}" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
-                                                title="Weight" info="{{ $child['weight'] }} kg" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}"
-                                                title="Height" info="{{ $child['height'] }} cm" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                                title="BMI" info="{{ $child['bmi'] }}" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
-                                                title="PHM" info="{{ $child['phm'] }}" />
 
 
-
-                                        </c-modal.viewcard>
-
-      </div>
-
-           
         </c-card>
 
 
-       
+
         <c-card class="card vaccine-card">
             <div class="header">
                 <div class="title-section">
@@ -89,7 +117,7 @@
 
                 </div>
                 <!-- Repeatable rows for other vaccines -->
-                   <div class="row vaccine">
+                <div class="row vaccine">
                     <div class="primary-details">
                         <div class="name">MMR</div>
                         <div class="sub-details">
