@@ -98,6 +98,7 @@ body {
     font-size: var(--text-md);
     font-weight: var(--font-weight-medium);
     color: var(--text-primary);
+    min-width: 6rem;
 }
 
 .sub-details {
@@ -124,7 +125,7 @@ body {
     font-weight: var(--font-weight-normal);
     color: var(--text-primary);
 }
+
 .divider {
     border: 0.8px solid var(--border);
 }
-

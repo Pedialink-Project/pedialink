@@ -13,8 +13,101 @@
 
 <main class="container">
 
-<div class="left-col">
-      <!-- Height Chart Card -->
+    <div class="left-col">
+
+       
+        <c-card class="card vaccine-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Vaccination Timeline</span>
+                    <span class="card-subtitle">View {{$child['name']}}'s Vaccination timeline</span>
+                </div>
+                <c-button variant="secondary" size="sm">View All</c-button>
+            </div>
+            <hr class="divider">
+            <div class="card-body">
+                <!-- Single vaccine row  -->
+                <div class="row vaccine">
+                    <div class="primary-details">
+                        <div class="name">Hepatitis B</div>
+                        <div class="sub-details">
+                            <div class="sub-name">At Birth</div>
+                        </div>
+                    </div>
+
+                    <c-badge type="green">Completed</c-badge>
+
+                    <div class="secondary-details">
+                        <div class="date">2023-10-22</div>
+                    </div>
+
+                </div>
+                <!-- Repeatable rows for other vaccines -->
+                   <div class="row vaccine">
+                    <div class="primary-details">
+                        <div class="name">MMR</div>
+                        <div class="sub-details">
+                            <div class="sub-name">At Birth</div>
+                        </div>
+                    </div>
+
+                    <c-badge type="green">Completed</c-badge>
+
+                    <div class="secondary-details">
+                        <div class="date">2023-10-22</div>
+                    </div>
+
+                </div>
+                <div class="row vaccine">
+                    <div class="primary-details">
+                        <div class="name">BCG</div>
+                        <div class="sub-details">
+                            <div class="sub-name">At Birth</div>
+                        </div>
+                    </div>
+
+                    <c-badge type="red">Overdue</c-badge>
+
+                    <div class="secondary-details">
+                        <div class="date">2023-10-22</div>
+                    </div>
+                </div>
+                <div class="row vaccine">
+                    <div class="primary-details">
+                        <div class="name">OPV 0</div>
+                        <div class="sub-details">
+                            <div class="sub-name">At 06 Months</div>
+                        </div>
+                    </div>
+
+                    <c-badge type="purple">Upcoming</c-badge>
+
+                    <div class="secondary-details">
+                        <div class="date">2023-10-22</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row vaccine">
+                <div class="primary-details">
+                    <div class="name">OPV 1</div>
+                    <div class="sub-details">
+                        <div class="sub-name">At 09 Months</div>
+                    </div>
+                </div>
+
+                <c-badge type="purple">Upcoming</c-badge>
+
+                <div class="secondary-details">
+                    <div class="date">2023-10-22</div>
+                </div>
+            </div>
+
+
+
+        </c-card>
+
+        <!-- Height Chart Card -->
         <c-card class="card height-card">
             <div class="header">
                 <div class="title-section">
@@ -27,14 +120,17 @@
             <hr class="divider">
             <div class="card-body">
                 <canvas>
-                    
+
                 </canvas>
             </div>
         </c-card>
 
 
 
-</div>
+    </div>
+
+
+
     <div class="right-col">
         <c-card class="card appoinment-card">
             <div class="header">
@@ -157,7 +253,7 @@
             <hr class="divider">
             <div class="card-body">
                 <canvas>
-                    
+
                 </canvas>
             </div>
         </c-card>
