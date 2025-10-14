@@ -80,7 +80,7 @@ Parent Dashboard
                     </div>
                     <!-- Vaccine Type -->
                     <c-badge type="primary">BCG</c-badge>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <div class="date">2025-06-01</div>
                     </div>
                 </div>
@@ -104,7 +104,7 @@ Parent Dashboard
                         </div>
                     </div>
                     <c-badge type="primary">OPV</c-badge>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <div class="date">2025-06-08</div>
                     </div>
 
@@ -128,7 +128,7 @@ Parent Dashboard
                         </div>
                     </div>
                     <c-badge type="primary">MMR</c-badge>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <div class="date">2025-06-10</div>
                     </div>
 
@@ -165,7 +165,7 @@ Parent Dashboard
                             <div class="sub-name">Dr.Smith</div>
                         </div>
                     </div>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <div class="date">2025-06-01</div>
                         <c-badge type="primary">09.30 AM</c-badge>
                     </div>
@@ -187,7 +187,7 @@ Parent Dashboard
                             <div class="sub-name">Dr.John</div>
                         </div>
                     </div>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <div class="date">2025-06-08</div>
                         <c-badge type="primary">11.30 AM</c-badge>
                     </div>
@@ -209,7 +209,7 @@ Parent Dashboard
                             <div class="sub-name">Dr.Smith</div>
                         </div>
                     </div>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <div class="date">2025-06-11</div>
                         <c-badge type="primary">10.00 AM</c-badge>
                     </div>
@@ -316,7 +316,7 @@ Parent Dashboard
                             <div class="sub-name">RHU Center A</div>
                         </div>
                     </div>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <c-badge type="primary">Upcoming</c-badge>
                     </div>
 
@@ -379,7 +379,7 @@ Parent Dashboard
                             <div class="sub-name">RHU Center A</div>
                         </div>
                     </div>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <c-badge type="primary">Upcoming</c-badge>
                     </div>
 
@@ -440,7 +440,7 @@ Parent Dashboard
                             <div class="sub-name">RHU Center A</div>
                         </div>
                     </div>
-                    <div class="secondary-deatils">
+                    <div class="secondary-deatails">
                         <c-badge type="secondary">Registerd</c-badge>
                     </div>
 
