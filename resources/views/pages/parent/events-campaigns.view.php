@@ -278,7 +278,7 @@ $eventDetails = [
             </c-slot>
          </c-modal>
          @elseif ($event['isRegistered'] && !$event['isFinished'])
-         <c-modal id="cancel-event-{{$key}}" size="sm" :initOpen="false">
+         <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="false">
             <c-slot name="trigger">
                <c-button variant="{{ $buttonType }}">
                   {{ $buttonText }}
