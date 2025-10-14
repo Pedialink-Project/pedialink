@@ -15,6 +15,32 @@
 
     <div class="left-col">
 
+     <c-card class="card info-card">
+
+     <?php $words = explode(" ", $child["name"]);
+   $initials = strtoupper(substr($words[0], 0, 1) . substr(end($words), 0, 1));
+   ?>
+
+    <div class="card-header">
+         <div class="header__left">
+            <div class="profile-pic">
+               @if ($child['image'])
+               <img src="{{ asset('images/' . $child['image']) }}" alt="Profile Picture">
+               @else
+               <div class="initials">{{ $initials }}</div>
+               @endif
+            </div>
+            <div class="child-info">
+               <h3 class="child-name">{{ $child['name'] }}</h3>
+               <p class="nickname">{{ $child['nickname'] }}</p>
+            </div>
+         </div>
+      </div>
+
+           
+        </c-card>
+
+
        
         <c-card class="card vaccine-card">
             <div class="header">
