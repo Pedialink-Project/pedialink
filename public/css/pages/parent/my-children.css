@@ -83,9 +83,9 @@ body {
 
 }
 
-.intials {
-    font-size: 2rem;
-    font-weight: var(--font-weight-bold);
+.initials {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
 }
 
 .profile-pic img {
