@@ -14,6 +14,10 @@ class MyChildrenController
             "image" => "",
             "name" => "Sara Johnson",
             "nickname" => "Baby Sara",
+            "height" => "85",
+            "weight" => "1.25",
+            "bmi" => "",
+            "blood" => "O+",
             "status" => "Good",
             "dob" => "22-10-2023",
             "age" => "2 Years old",
@@ -26,6 +30,7 @@ class MyChildrenController
             "image" => "",
             "name" => "Sara Johnson",
             "nickname" => "Baby Sara",
+
             "status" => "Critical",
             "dob" => "22-10-2023",
             "age" => "2 Years old",

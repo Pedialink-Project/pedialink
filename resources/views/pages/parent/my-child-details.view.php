@@ -18,7 +18,7 @@
      <c-card class="card info-card">
 
      <?php $words = explode(" ", $child["name"]);
-   $initials = strtoupper(substr($words[0], 0, 1) . substr(end($words), 0, 1));
+   $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
    ?>
 
     <div class="card-header">
@@ -35,6 +35,26 @@
                <p class="nickname">{{ $child['nickname'] }}</p>
             </div>
          </div>
+      </div>
+
+      <div class="card-body info-body">
+         <c-modal.viewcard>
+
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                                title="Blood Type" info="{{ $child['blood'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
+                                                title="Weight" info="{{ $child['weight'] }} kg" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}"
+                                                title="Height" info="{{ $child['height'] }} cm" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
+                                                title="BMI" info="{{ $child['bmi'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
+                                                title="PHM" info="{{ $child['phm'] }}" />
+
+
+
+                                        </c-modal.viewcard>
+
       </div>
 
            
