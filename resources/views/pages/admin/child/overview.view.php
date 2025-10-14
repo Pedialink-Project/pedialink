@@ -26,20 +26,6 @@
 
     <c-table.controls :columns='["ID","Name","Age","Assigned PHM"]'>
 
-        <c-slot name="extrabtn">
-            <c-link type="primary" href="{{ route('admin.child.linkage.requests') }}">
-                <c-slot name="icon">
-                    <img src="{{ asset('assets/icons/link.svg') }}" alt="">
-                </c-slot>
-                Linkage Req
-            </c-link>
-            <c-link type="primary" href="{{ route('admin.child.access.requests') }}">
-                <c-slot name="icon">
-                    <img src="{{ asset('assets/icons/account-setting-02.svg') }}" alt="">
-                </c-slot>
-                Access Req
-            </c-link>
-        </c-slot>
     </c-table.controls>
 
     <c-table.wrapper card="1">
