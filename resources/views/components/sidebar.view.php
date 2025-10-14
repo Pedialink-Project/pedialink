@@ -30,8 +30,8 @@ $menuItems = [
 
                 'children' => [
                     ['name' => 'Overview', 'link' => route('admin.child.overview')],
-                    ['name' => 'Linkage Requests', 'link' => '#'],
-                    ['name' => 'Access Requests', 'link' => '#'],
+                    ['name' => 'Linkage Requests', 'link' => route('admin.child.linkage.requests')],
+                    ['name' => 'Access Requests', 'link' => route('admin.child.access.requests')],
                 ]
             ],
             [
