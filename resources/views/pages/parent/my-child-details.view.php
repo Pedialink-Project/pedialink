@@ -46,6 +46,11 @@
             
                 <c-modal.viewcard>
 
+                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date of Birth"
+                        info="{{ $child['dob'] }}" />
+                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Age"
+                        info="{{ $child['age'] }}" />
+
                     <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}" title="Blood Type"
                         info="{{ $child['blood'] }}" />
                     <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}" title="Weight"
@@ -54,7 +59,7 @@
                         info="{{ $child['height'] }} cm" />
                     <c-modal.viewitem icon="{{ asset('assets/icons/chart.svg') }}" title="BMI"
                         info="{{ $child['bmi'] }}" />
-                    <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="PHM"
+                    <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="Assigned PHM"
                         info="{{ $child['phm'] }}" />
 
 
