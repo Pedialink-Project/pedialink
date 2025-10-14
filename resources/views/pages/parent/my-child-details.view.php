@@ -46,13 +46,13 @@
             
                 <c-modal.viewcard>
 
-                    <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Blood Type"
+                    <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}" title="Blood Type"
                         info="{{ $child['blood'] }}" />
-                    <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Weight"
+                    <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}" title="Weight"
                         info="{{ $child['weight'] }} kg" />
-                    <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Height"
+                    <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}" title="Height"
                         info="{{ $child['height'] }} cm" />
-                    <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="BMI"
+                    <c-modal.viewitem icon="{{ asset('assets/icons/chart.svg') }}" title="BMI"
                         info="{{ $child['bmi'] }}" />
                     <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="PHM"
                         info="{{ $child['phm'] }}" />
@@ -69,11 +69,11 @@
             
                 <c-modal.viewcard>
 
-                    <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Blood Type"
+                    <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Parent"
                         info="{{ $child['parent_name'] }}" />
-                    <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Weight"
+                    <c-modal.viewitem icon="{{ asset('assets/icons/call.svg') }}" title="Phone Number"
                         info="{{ $child['parent_phone'] }}" />
-                    <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Height"
+                    <c-modal.viewitem icon="{{ asset('assets/icons/mail-01.svg') }}" title="Email Address"
                         info="{{ $child['parent_email'] }}" />
                     
 
