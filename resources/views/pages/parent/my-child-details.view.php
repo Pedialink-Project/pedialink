@@ -199,7 +199,7 @@
             </div>
             <hr class="divider">
             <div class="card-body">
-                <canvas>
+                <canvas id="heightChart">
 
                 </canvas>
             </div>
@@ -332,7 +332,7 @@
             </div>
             <hr class="divider">
             <div class="card-body">
-                <canvas>
+                <canvas id="weightChart">
 
                 </canvas>
             </div>
@@ -345,22 +345,22 @@
 </main>
 
 <script>
-    const ctx = document.getElementById('bmiChart').getContext('2d');
+    const bmiCtx = document.getElementById('bmiChart').getContext('2d');
 
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, 'rgba(156, 39, 176, 0.3)');
-    gradient.addColorStop(1, 'rgba(156, 39, 176, 0)');
+    const bmiGradient = bmiCtx.createLinearGradient(0, 0, 0, 300);
+    bmiGradient.addColorStop(0, 'rgba(156, 39, 176, 0.3)');
+    bmiGradient.addColorStop(1, 'rgba(156, 39, 176, 0)');
 
-    new Chart(ctx, {
+    new Chart(bmiCtx, {
         type: 'line',
-        data: {
+        data:{
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             datasets: [{
                 label: 'BMI',
                 data: [70, 80, 65, 75, 90, 85, 30, 20, 95, 100, 60, 90],
                 borderColor: 'rgba(156, 39, 176, 1)',
-                backgroundColor: gradient,
+                backgroundColor: bmiGradient,
                 fill: true,
                 tension: 0.2,
                 pointBackgroundColor: '#fff',
@@ -398,6 +398,54 @@
             }
         }
     });
+
+
+  const weightCtx = document.getElementById('weightChart').getContext('2d');
+
+  const weightGradient = weightCtx.createLinearGradient(0, 0, 0, 300);
+  weightGradient.addColorStop(0, 'rgba(138, 255, 173, 0.3)');
+  weightGradient.addColorStop(1, 'rgba(138, 255, 173, 0)');
+
+  new Chart(weightCtx, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      datasets: [{
+        label: 'Weight',
+        data: [65, 66, 64, 67, 68, 70, 69, 71, 72, 70, 68, 69],
+        borderColor: '#8AFFAD',
+        backgroundColor: weightGradient,
+        fill: true,
+        tension: 0.3, 
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#8AFFAD',
+        pointRadius: 4,
+        pointHoverRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { display: false }
+        },
+        y: {
+          beginAtZero: false,
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          cornerRadius: 6,
+          padding: 8
+        }
+      }
+    }
+  });
+
 
     
 
