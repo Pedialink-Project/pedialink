@@ -141,9 +141,9 @@
                             </c-slot>
 
                             <p>
-                                Approve request of <span class="staff-name-approve">"{{ $request["name"] }}"</span> with 
-                                id <span class="staff-id-approve">D-{{ $request["staff_id"] }}</span> to access child account
-                                <span class="child-name-approve">"{{ $request["child_name"] }}"</span> of id <span class="child-id-approve">C-{{ $request["child_id"] }}</span>?
+                                Approve request of <span class="approve-text">"{{ $request["name"] }}"</span> with 
+                                id <span class="approve-text">D-{{ $request["staff_id"] }}</span> to access child account
+                                <span class="approve-text">"{{ $request["child_name"] }}"</span> of id <span class="approve-text">C-{{ $request["child_id"] }}</span>?
                             </p>
 
                             <form id="approve-account-{{ $key }}" action="" class="hidden"></form>
@@ -175,9 +175,9 @@
                             </c-slot>
 
                             <p>
-                                Deny request of <span class="staff-name-deny">"{{ $request["name"] }}"</span> with 
-                                id <span class="staff-id-deny">D-{{ $request["staff_id"] }}</span> to access child account
-                                <span class="child-name-deny">"{{ $request["child_name"] }}"</span> of id <span class="child-id-deny">C-{{ $request["child_id"] }}</span>?
+                                Deny request of <span class="deny-text">"{{ $request["name"] }}"</span> with 
+                                id <span class="deny-text">D-{{ $request["staff_id"] }}</span> to access child account
+                                <span class="deny-text">"{{ $request["child_name"] }}"</span> of id <span class="deny-text">C-{{ $request["child_id"] }}</span>?
                             </p>
                             
                             <form id="deny-account-{{ $key }}" action="" class="hidden"></form>
