@@ -43,9 +43,42 @@
         </c-slot>
 
         <c-slot name="extrabtn">
-            <c-button variant="primary" >
-                Add Child Profile
-            </c-button>
+            <c-modal id="registerStaff" size="sm" :initOpen="false">
+                <c-slot name="trigger">
+                    <c-button variant="primary">
+                        Add Child Profile
+                    </c-button>
+                </c-slot>
+                <c-slot name="headerPrefix">
+                    <img src="{{ asset('assets/icons/profile-02.svg' )}}"/>
+                </c-slot>
+                <c-slot name="header">
+                    <div>Add Child Profile</div>
+                </c-slot>
+
+                <form id="admin-register-form" action="">
+                    <c-input type="text" label="Child Full Name:" placeholder="Enter Full Name" required /><br>
+                    <c-select label="GS Devision" name="options" multiple="1" searchable="1" required>
+                        <li class="select-item" data-value="option1">Borella</li>
+                        <li class="select-item" data-value="option2">Dehiwala</li>
+                        <li class="select-item" data-value="option3">Moratuwa</li>
+                        <li class="select-item" data-value="option4">Ratmalana</li>
+                        <li class="select-item" data-value="option5">Wellawatta</li>
+                        <li class="select-item" data-value="option6">Other</li>
+                    </c-select><br>
+                    <c-input type="date" label="Date of Birth:" required /><br>
+                    <c-textarea label="Address:" placeholder="Enter Address" rows="4" required></c-textarea><br>
+                    <c-input type="file" label="Birth Certificate" required/><br>
+                    <c-input type="file" label="Additional Documents" /><br>
+                    <c-textarea label="Additional Notes:" placeholder="Enter any additional notes here..." rows="4"></c-textarea>
+                </form>
+                <c-slot name="close">
+                        Close
+                </c-slot>
+                <c-slot name="footer">
+                    <c-button type="submit" form="admin-register-form" variant="primary">Create a Child Profile</c-button>
+                </c-slot>
+            </c-modal>
         </c-slot>
     </c-table.controls>
 
@@ -81,6 +114,9 @@
                                         <c-slot name="menu">
                                          <c-dropdown.item>Copy Child ID</c-dropdown.item>
                                          <c-modal id="View-Child-{{ $key }}" size="sm" :initOpen="false">
+                                            <c-slot name="headerPrefix">
+                                                  <img src="{{ asset('assets/icons/profile.svg' )}}"/>
+                                            </c-slot>
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Child Profile</c-dropdown.item>
                                             </c-slot>
@@ -122,7 +158,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                                     title="Head Circumference"
-                                                    info="xhhj"
+                                                    info="32 cm"
                                                 />
                                             </c-modal.viewcard>
                                             
@@ -142,7 +178,9 @@
                                     <c-slot name="trigger">
                                      <c-dropdown.item>Edit Child Profile</c-dropdown.item>
                                     </c-slot>
-
+                                    <c-slot name="headerPrefix">
+                                           <img src="{{ asset('assets/icons/configuration-02.svg' )}}"/>
+                                     </c-slot>
                                     <c-slot name="header">
                                             <div>Edit Child Profile</div>
                                     </c-slot>
@@ -163,9 +201,9 @@
                                        </c-slot>
                                     </c-modal>
                                         <c-dropdown.sep />
-                                        <c-dropdown.item>View Growth Records</c-dropdown.item>
+                                         <c-dropdown.item href="{{ route('phm.growth.monitoring',['id'=>$key,])}}">View Growth Records</c-dropdown.item>
                                         <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$key,])}}">View Health Records</c-dropdown.item>
-                                        <c-dropdown.item>View Vaccination Records</c-dropdown.item>
+                                        <c-dropdown.item href="{{ route('phm.vaccination',['id'=>$key,])}}">View Vaccination Records</c-dropdown.item>
                                 </c-dropdown.main>
                             </c-table.td>
                         </c-table.tr>
