@@ -40,8 +40,8 @@ $menuItems = [
                 'icon' => asset('/assets/icons/mother.svg'),
 
                 'children' => [
-                    ['name' => 'Overview', 'link' => '#'],
-                    ['name' => 'Access Requests', 'link' => '#'],
+                    ['name' => 'Overview', 'link' => route('admin.maternal.overview')],
+                    ['name' => 'Access Requests', 'link' => route('admin.maternal.access.requests')],
                 ]
             ],
             [
