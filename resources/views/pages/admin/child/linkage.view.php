@@ -31,7 +31,7 @@
         @foreach ($linkRequests as $key => $request)
             <c-card class="linkage-card">
                 <c-slot name="header">
-                    <h3>{{ $request["parent_name"] }} &#8594; {{ $request["child_id"] }}</h3>
+                    <h3>{{ $request["parent_name"] }} &#8594; Child &middot; C-{{ $request["child_id"] }}</h3>
                 </c-slot>
                 <c-slot name="headerSuffix">
                     <span class="linkage-time">30 minutes ago</span>

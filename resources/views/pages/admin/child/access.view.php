@@ -31,7 +31,7 @@
         @foreach ($accessRequests as $key => $request)
             <c-card class="access-card">
                 <c-slot name="header">
-                    <h3>{{ $request["name"] }} &#8594; {{ $request["child_id"] }}</h3>
+                    <h3>{{ $request["name"] }} &#8594; Child &middot; C-{{ $request["child_id"] }}</h3>
                 </c-slot>
                 <c-slot name="headerSuffix">
                     <span class="access-time">30 minutes ago</span>
