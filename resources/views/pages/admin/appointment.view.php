@@ -54,7 +54,7 @@
                     @foreach ($appointments as $key => $appointment)
                         <c-table.tr>
                             <c-table.td class="appointment-tdata" col="name">{{ $appointment['name'] }}</c-table.td>
-                            <c-table.td class="appointment-tdata" col="date">{{ $appointment['date'] }} years</c-table.td>
+                            <c-table.td class="appointment-tdata" col="date">{{ $appointment['date'] }}</c-table.td>
                             <c-table.td class="appointment-tdata" col="location">{{ $appointment['location'] }}</c-table.td>
                             <c-table.td class="appointment-tdata" col="staff">{{ $appointment['staff'] }}</c-table.td>
                             <c-table.td class="appointment-tdata" col="status">
