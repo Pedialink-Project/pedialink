@@ -60,7 +60,7 @@ $menuItems = [
             ],
             [
                 'name' => 'Appointments',
-                'link' => '#',
+                'link' => route('admin.appointment'),
                 'icon' => asset('/assets/icons/profile.svg'),
             ],
             [
