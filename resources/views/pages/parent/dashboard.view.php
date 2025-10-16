@@ -52,8 +52,8 @@ Parent Dashboard
         <c-card class="card vaccine-card">
             <div class="header">
                 <div class="title-section">
-                    <span class="card-title">Upcoming Events</span>
-                    <span class="card-subtitle">Stay updated with upcoming events</span>
+                    <span class="card-title">Upcoming Vaccinations</span>
+                    <span class="card-subtitle">Vaccines due for your children/span>
                 </div>
                 <c-button varient="secondary" size="sm">View All</c-button>
             </div>
