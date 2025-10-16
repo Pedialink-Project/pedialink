@@ -242,20 +242,20 @@
                             </c-modal.viewcard>
 
                             <div class="access-additional-content">
-                                    <h4>Staff Details</h4>
-                                    <ul>
-                                        <li>NIC: 230001045</li>
-                                        <li>Type: {{ ucfirst($request["role"] ) }}</li>
-                                    </ul>
-                                </div>
+                                <h4>Staff Details</h4>
+                                <ul>
+                                    <li>NIC: 230001045</li>
+                                    <li>Type: {{ ucfirst($request["role"] ) }}</li>
+                                </ul>
+                            </div>
 
-                                <div class="access-additional-content">
-                                    <h4>Request Details</h4>
-                                    <ul>
-                                        <li>Requested Info: Clinical notes</li>
-                                        <li>Reason: Review vaccination history prior to specialist consultation</li>
-                                    </ul>
-                                </div>
+                            <div class="access-additional-content">
+                                <h4>Request Details</h4>
+                                <ul>
+                                    <li>Requested Info: Clinical notes</li>
+                                    <li>Reason: Review vaccination history prior to specialist consultation</li>
+                                </ul>
+                            </div>
 
                             <c-slot name="close">
                                 Close
