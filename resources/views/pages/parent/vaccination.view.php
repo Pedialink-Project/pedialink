@@ -43,7 +43,7 @@ Parent - Vaccination
 
 
 <?php
-$appointments = [
+$vaccinations = [
     [
         'id' => 'VAC001',
         'name' => 'Sara Johnson',
@@ -84,7 +84,7 @@ $appointments = [
         'time' => '11:15 AM',
         'location' => 'Downtown Hospital',
         'administered_by' => 'Dr. Lee',
-        'status' => 'Upcoming',
+        'status' => 'Overdue',
         'details' => 'Polio vaccine appointment.',
         'notes' => [
             'Ensure child is well-hydrated before appointment.',
@@ -116,7 +116,7 @@ $appointments = [
         'time' => '1:00 PM',
         'location' => 'Green Valley Hospital',
         'administered_by' => 'Nurse Amelia',
-        'status' => 'Upcoming',
+        'status' => 'Overdue',
         'details' => 'Seasonal flu vaccine appointment.',
         'notes' => [
             'Wear short-sleeved clothing for easy access.',
@@ -205,8 +205,41 @@ $appointments = [
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
+            <c-table.tbody>
+                @foreach ($vaccinations as $vaccination)
+                    <c-table.tr>
+                        <c-table.td col="name">{{ $vaccination['name'] }}</c-table.td>
+                        <c-table.td col="vaccine-type">{{ $vaccination['vaccine_type'] }}</c-table.td>
+                        <c-table.td col="date-time" >{{ $vaccination['date'] }} {{ $vaccination['time'] }}</c-table.td>
+                        <c-table.td col="location" >{{ $vaccination['location'] }}</c-table.td>
+                        <c-table.td col="administered_by">{{ $vaccination['administered_by'] }}</c-table.td>
+                        <c-table.td col="status">
+                            {{
+                            $badgeType = '';
+                            if(strtolower($vaccination['status']) == 'completed') {
+                            $badgeType = 'green';
+                            } elseif (strtolower($vaccination['status']) == 'upcoming') {
+                        $badgeType = 'purple';
+                        } elseif (strtolower($vaccination['status']) == 'pending') {
+                        $badgeType = 'yellow';
+                        }
+                        else {
+                        $badgeType = 'red';
+                        }
 
-            
+                        }}
+                        <c-badge type="{{ $badgeType }}">
+                            {{$vaccination['status']}}
+                        </c-badge>
+                    </c-table.td>
+                        <c-table.th class="table-actions"></c-table.th>
+                    </c-table.tr>
+                @endforeach
+            </c-table.tbody>
+
+
+
+
         </c-table.main>
     </div>
 </c-table.wrapper>
