@@ -8,7 +8,7 @@ $menuItems = [
         'Main' => [
             [
                 'name' => 'Dashboard',
-                'link' => '#',
+                'link' => route('admin.dashboard'),
                 'icon' => asset('/assets/icons/dashboard-square-02.svg'),
 
             ],
@@ -18,8 +18,9 @@ $menuItems = [
                 'icon' => asset('/assets/icons/user.svg'),
 
                 'children' => [
-                    ['name' => 'Overview', 'link' => '#'],
-                    ['name' => 'Admin', 'link' => '#'],
+                    ['name' => 'Overview', 'link' => route('admin.user.overview')],
+                    ['name' => 'Parent Account Approval', 'link' => route('admin.user.parent')],
+                    ['name' => 'Admin', 'link' => route('admin.user.admin')],
                 ]
             ],
             [
@@ -28,9 +29,9 @@ $menuItems = [
                 'icon' => asset('/assets/icons/baby-01.svg'),
 
                 'children' => [
-                    ['name' => 'Overview', 'link' => '#'],
-                    ['name' => 'Linkage Requests', 'link' => '#'],
-                    ['name' => 'Access Requests', 'link' => '#'],
+                    ['name' => 'Overview', 'link' => route('admin.child.overview')],
+                    ['name' => 'Linkage Requests', 'link' => route('admin.child.linkage.requests')],
+                    ['name' => 'Access Requests', 'link' => route('admin.child.access.requests')],
                 ]
             ],
             [
@@ -39,8 +40,8 @@ $menuItems = [
                 'icon' => asset('/assets/icons/mother.svg'),
 
                 'children' => [
-                    ['name' => 'Overview', 'link' => '#'],
-                    ['name' => 'Access Requests', 'link' => '#'],
+                    ['name' => 'Overview', 'link' => route('admin.maternal.overview')],
+                    ['name' => 'Access Requests', 'link' => route('admin.maternal.access.requests')],
                 ]
             ],
             [
@@ -53,18 +54,18 @@ $menuItems = [
                 'link' => '#',
                 'icon' => asset('/assets/icons/vaccine.svg'),
                 'children' => [
-                    ['name' => 'Vaccines', 'link' => '#'],
-                    ['name' => 'Schedule', 'link' => '#'],
+                    ['name' => 'Vaccines', 'link' => route('admin.vaccination.vaccines')],
+                    ['name' => 'Schedule', 'link' => route('admin.vaccination.schedule')],
                 ]
             ],
             [
                 'name' => 'Appointments',
-                'link' => '#',
+                'link' => route('admin.appointment'),
                 'icon' => asset('/assets/icons/profile.svg'),
             ],
             [
                 'name' => 'Events & Campaigns',
-                'link' => '#',
+                'link' => route('admin.event'),
                 'icon' => asset('/assets/icons/megaphone-02.svg'),
             ],
             [

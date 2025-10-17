@@ -1,0 +1,20 @@
+.schedule-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing)*5);
+}
+
+.delete-schedule-highlight {
+    font-weight: var(--font-weight-semibold);
+}
+
+.schedule-warning-highlight {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-red-500);
+}
+
+@media (max-width: 480px) {
+    .add-schedule-btn > span {
+        display: none;
+    }
+}

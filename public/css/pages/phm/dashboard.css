@@ -1,0 +1,280 @@
+/* Dashboard Content */
+.dashboard-content {
+  padding: 1px;
+  flex: 1;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Reduce gap between items */
+}
+
+/* Charts Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.charts-grid-row {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.chart-header {
+  margin-bottom: 24px;
+}
+
+.chart-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.chart-header p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+}
+
+.chart-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.center-number {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.center-label {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-color.completed {
+  background: #10b981;
+}
+
+.legend-color.pending {
+  background: #f59e0b;
+}
+
+.legend-color.missed {
+  background: #ef4444;
+}
+
+/* Appointments Grid */
+.appointments-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.appointments-card,
+.vaccinations-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.card-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.card-header p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.view-all-btn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.appointments-list,
+.vaccinations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.appointment-item,
+.vaccination-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.appointment-item:last-child,
+.vaccination-item:last-child {
+  border-bottom: none;
+}
+
+.appointment-info,
+.vaccination-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.appointment-name,
+.vaccination-name {
+  font-weight: 500;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.appointment-meta,
+.vaccination-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.appointment-time,
+.vaccination-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.appointment-date,
+.vaccination-date {
+  font-size: 14px;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.appointment-hour {
+  font-size: 12px;
+  color: #64748b;
+  background: #1e293b;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.vaccine-type {
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  background: #1e293b;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .charts-grid,
+  .appointments-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .search-input {
+    width: 200px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-content {
+    padding: 16px;
+  }
+
+  .user-info {
+    display: none;
+  }
+}

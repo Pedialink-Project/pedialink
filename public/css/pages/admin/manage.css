@@ -1,0 +1,32 @@
+.manage-schedule-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+.manage-schedule-form > * {
+    gap: calc(var(--spacing) * 2);
+}
+
+.vaccine-schedule-additional-content {
+    margin-top: calc(var(--spacing)*10);
+}
+
+.vaccine-schedule-additional-content h4 {
+    font-size: var(--text-md);
+}
+
+.vaccine-schedule-additional-content li, .vaccine-schedule-additional-content p {
+    color: var(--text-muted);
+    font-weight: var(--font-weight-medium);
+}
+
+.schedule-vaccine-highlight {
+    font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 480px) {
+    .add-vaccine-btn > span {
+        display: none;
+    }
+}
