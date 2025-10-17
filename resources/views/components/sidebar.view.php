@@ -54,8 +54,8 @@ $menuItems = [
                 'link' => '#',
                 'icon' => asset('/assets/icons/vaccine.svg'),
                 'children' => [
-                    ['name' => 'Vaccines', 'link' => '#'],
-                    ['name' => 'Schedule', 'link' => '#'],
+                    ['name' => 'Vaccines', 'link' => route('admin.vaccination.vaccines')],
+                    ['name' => 'Schedule', 'link' => route('admin.vaccination.schedule')],
                 ]
             ],
             [
