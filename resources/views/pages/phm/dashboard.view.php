@@ -85,7 +85,7 @@ PHM Dashboard
                         <h3>Upcoming Appointments</h3>
                         <p>Upcoming appointments to attend</p>
                     </div>
-                    <button class="view-all-btn">View Schedule</button>
+                    <a class="view-all-btn" href="{{ route('phm.appointments') }}">View All Appointments</a>
                 </div>
                 
                 <div class="appointments-list">
@@ -140,7 +140,7 @@ PHM Dashboard
                         <h3>Upcoming Vaccination</h3>
                         <p>Vaccines due for assigned children</p>
                     </div>
-                    <button class="view-all-btn">View All</button>
+                    <a class="view-all-btn" href="{{ route('phm.vaccination') }}">View All Vaccinations</a>
                 </div>
                 
                 <div class="vaccinations-list">
