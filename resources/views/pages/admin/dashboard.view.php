@@ -303,7 +303,7 @@ Admin Dashboard
                         </div>
                     </div>
                     <div class="secondary-details">
-                        <c-badge type="primary">Upcoming</c-badge>
+                        <c-badge type="purple">Upcoming</c-badge>
                     </div>
 
 
@@ -366,7 +366,7 @@ Admin Dashboard
                         </div>
                     </div>
                     <div class="secondary-details">
-                        <c-badge type="primary">Upcoming</c-badge>
+                        <c-badge type="purple">Upcoming</c-badge>
                     </div>
 
                 </div>
@@ -427,7 +427,7 @@ Admin Dashboard
                         </div>
                     </div>
                     <div class="secondary-details">
-                        <c-badge type="success">Completed</c-badge>
+                        <c-badge type="green">Completed</c-badge>
                     </div>
 
                 </div>
