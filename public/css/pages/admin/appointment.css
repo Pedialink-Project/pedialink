@@ -1,0 +1,21 @@
+.appointment-additional-content {
+    margin-top: calc(var(--spacing)*10);
+}
+
+.appointment-additional-content h4 {
+    font-size: var(--text-md);
+}
+
+.appointment-additional-content li {
+    color: var(--text-muted);
+    font-weight: var(--font-weight-medium);
+}
+
+.status-appointment {
+    width: 100px;
+    justify-content: center;
+}
+
+.appointment-tdata {
+    white-space: nowrap;
+}
