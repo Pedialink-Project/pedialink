@@ -191,7 +191,7 @@ elseif (strtolower($item['Health Status']) === "bad")
                                      <c-dropdown.item>Edit Health Records</c-dropdown.item>
                                     </c-slot>
                                      <c-slot name="headerPrefix">
-                                           <img src="{{ asset('assets/icons/configuration-02.svg' )}}"/>
+                                           <img src="{{ asset('assets/icons/profile.svg' )}}"/>
                                      </c-slot>
  
                                     <c-slot name="header">
@@ -213,16 +213,16 @@ elseif (strtolower($item['Health Status']) === "bad")
                         Close
                         </c-slot>
                         <c-slot name="footer">
-                          <c-button type="button" variant="outline" data-modal-close="registerAdmin">Save Changes</c-button>
+                          <c-button type="submit" variant="primary" form="edit-health-record-form">Save Changes</c-button>
                         </c-slot>
                     </c-modal>
                 <c-dropdown.sep />
-                    <c-modal id="mark-as-invalid-{{ $key }}" size="sm" :initOpen="false">
+                    <c-modal id="mark-as-invalid-record-{{ $key }}" size="sm" :initOpen="false">
                                     <c-slot name="trigger">
                                      <c-dropdown.item>Mark as Invalid</c-dropdown.item>
                                     </c-slot>
                                      <c-slot name="headerPrefix">
-                                           <img src="{{ asset('assets/icons/configuration-02.svg' )}}"/>
+                                           <img src="{{ asset('assets/icons/profile.svg' )}}"/>
                                      </c-slot>
  
                                     <c-slot name="header">
@@ -235,7 +235,7 @@ elseif (strtolower($item['Health Status']) === "bad")
                           cancel
                         </c-slot>
                         <c-slot name="footer">
-                          <c-button type="button" variant="destructive" data-modal-close="registerAdmin">Mark</c-button>
+                          <c-button  size="sm" variant="destructive">Mark</c-button>
                         </c-slot>
                     </c-modal>
                 <c-dropdown.sep />
