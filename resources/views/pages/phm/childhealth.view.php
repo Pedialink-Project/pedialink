@@ -44,7 +44,7 @@
         </c-slot>
 
         <c-slot name="extrabtn">
-            <c-modal id="registerStaff" size="sm" :initOpen="false">
+            <c-modal id="add-health-record-modal" size="sm" :initOpen="false">
                 <c-slot name="trigger">
                     <c-button variant="primary">
                         Add Record
@@ -59,7 +59,7 @@
                     <div>Add Health Records</div>
                 </c-slot>
 
-                <form id="admin-register-form" action="">
+                <form id="add-health-record-form" action="">
                     <c-input type="text" label="Height:" placeholder="Enter Height of the Child (in cm)" required /><br>
                     <c-input type="text" label="Weight:" placeholder="Enter Weight of the Child (in kg)" required /><br>
                     <c-input type="text" label="Head Circumference:" placeholder="Enter Head Circumference of the Child (in cm)" required /><br>
@@ -84,10 +84,10 @@
             <c-table.main sticky="1" size="comfortable">
                 <c-table.thead>
                     <c-table.tr>
-                        <c-table.th sortable="1" width="230px">Recorded at</c-table.th>
-                        <c-table.th sortable="1" width="220px">Height</c-table.th>
-                        <c-table.th sortable="1" width="220px">Weight</c-table.th>
-                        <c-table.th align="left" sortable="1" width="220px">Head Circumference</c-table.th>
+                        <c-table.th sortable="1" >Recorded at</c-table.th>
+                        <c-table.th sortable="1">Height</c-table.th>
+                        <c-table.th sortable="1">Weight</c-table.th>
+                        <c-table.th align="left" sortable="1">Head Circumference</c-table.th>
                         <c-table.th align="left">Health Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
@@ -95,12 +95,27 @@
 
                 <c-table.tbody>
                     @foreach ($items as $key=>$item)
+
+                                  <?php
+$badgeType = '';
+if (strtolower($item['Health Status']) === "good")
+    $badgeType = 'green';
+elseif (strtolower($item['Health Status']) === "critical")
+    $badgeType = 'purple';
+elseif (strtolower($item['Health Status']) === "bad")
+    $badgeType = 'red';
+
+?>
                         <c-table.tr>
                             <c-table.td col="Recorded at">{{ $item['Recorded at'] }}</c-table.td>
                             <c-table.td col="Height">{{ $item['Height'] }}</c-table.td>
                             <c-table.td col="Weight">{{ $item['Weight'] }}</c-table.td>
                             <c-table.td col="Head Circumference">{{ $item['Head Circumference'] }}</c-table.td>
-                            <c-table.td col="Health Status">{{ $item['Health Status'] }}</c-table.td>
+                            <c-table.td col="Health Status">
+                                <c-badge type="{{ $badgeType }}">
+                                    {{ $item['Health Status'] }}
+                                </c-badge>
+                            </c-table.td>
                             <c-table.td class="table-actions" align="center">
                                 <c-dropdown.main>
                                     <c-slot name="trigger">
