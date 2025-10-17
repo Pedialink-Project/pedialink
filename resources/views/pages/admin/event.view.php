@@ -120,16 +120,16 @@
                             <c-table.td class="event-tdata" col="location">{{ $event['location'] }}</c-table.td>
                             <c-table.td class="event-tdata" col="visibility">
                                 @if ($event["visibility"])
-                                    <c-badge class="visibility-event" type="success">Visible</c-badge>
+                                    <c-badge class="visibility-event" type="green">Visible</c-badge>
                                 @else 
                                     <c-badge class="visibility-event" type="red">Hidden</c-badge>
                                 @endif
                             </c-table.td>
                             <c-table.td class="event-tdata" col="status">
                                 @if (strtolower($event['status']) === "completed")
-                                    <c-badge class="status-event" type="success">{{ ucfirst($event['status']) }}</c-badge>
+                                    <c-badge class="status-event" type="green">{{ ucfirst($event['status']) }}</c-badge>
                                 @elseif (strtolower($event['status']) === "upcoming")
-                                    <c-badge class="status-event" type="primary">{{ ucfirst($event['status']) }}</c-badge>
+                                    <c-badge class="status-event" type="purple">{{ ucfirst($event['status']) }}</c-badge>
                                 @elseif (strtolower($event['status']) === "cancelled")
                                     <c-badge class="status-event" type="red">{{ ucfirst($event['status']) }}</c-badge>                                  
                                 @endif

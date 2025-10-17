@@ -59,7 +59,7 @@
                             <c-table.td class="appointment-tdata" col="staff">{{ $appointment['staff'] }}</c-table.td>
                             <c-table.td class="appointment-tdata" col="status">
                                 @if (strtolower($appointment['status']) === "completed")
-                                    <c-badge class="status-appointment" type="success">{{ ucfirst($appointment['status']) }}</c-badge>
+                                    <c-badge class="status-appointment" type="green">{{ ucfirst($appointment['status']) }}</c-badge>
                                 @elseif (strtolower($appointment['status']) === "upcoming")
                                     <c-badge class="status-appointment" type="primary">{{ ucfirst($appointment['status']) }}</c-badge>
                                 @elseif (strtolower($appointment['status']) === "overdue")
