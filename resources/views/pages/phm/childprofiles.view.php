@@ -9,7 +9,32 @@ PHM Child Profiles
 @endsection
 
 @section('header')
-Child Profiles - Overview
+
+<svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_474_12888)">
+        <circle cx="9.99996" cy="10" r="8.33333" stroke="#141B34" stroke-width="1.5" />
+        <path
+            d="M11.6667 13.3333C11.1893 13.8599 10.6163 14.1667 10 14.1667C9.3838 14.1667 8.81075 13.8599 8.33337 13.3333"
+            stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" />
+        <path
+            d="M7.50004 9.58333C7.26135 9.32006 6.97483 9.16666 6.66671 9.16666C6.35859 9.16666 6.07206 9.32006 5.83337 9.58333"
+            stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" />
+        <path
+            d="M14.1667 9.58333C13.928 9.32006 13.6415 9.16666 13.3333 9.16666C13.0252 9.16666 12.7387 9.32006 12.5 9.58333"
+            stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" />
+        <path
+            d="M10 1.66667C8.61929 1.66667 7.5 2.78596 7.5 4.16667C7.5 5.54738 8.61929 6.66667 10 6.66667C10.6403 6.66667 11.2244 6.42596 11.6667 6.03009"
+            stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" />
+    </g>
+    <defs>
+        <clipPath id="clip0_474_12888">
+            <rect width="20" height="20" fill="white" />
+        </clipPath>
+    </defs>
+</svg>
+<span>Child Profiles - Overview
+</span>
+
 @endsection
 
 @section('content')
@@ -88,11 +113,11 @@ $items = [
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1" >ID</c-table.th>
+                    <c-table.th sortable="1">ID</c-table.th>
                     <c-table.th sortable="1">Name</c-table.th>
                     <c-table.th sortable="1">Age</c-table.th>
-                    <c-table.th >Vaccination Status</c-table.th>
-                    <c-table.th >GS Devision</c-table.th>
+                    <c-table.th>Vaccination Status</c-table.th>
+                    <c-table.th>GS Devision</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -101,16 +126,16 @@ $items = [
                 @foreach ($items as $key => $item)
 
                 <?php
-$badgeType = '';
-if (strtolower($item['Vaccination Status']) === "completed")
-    $badgeType = 'green';
-elseif (strtolower($item['Vaccination Status']) === "upcoming")
-    $badgeType = 'purple';
-elseif (strtolower($item['Vaccination Status']) === "overdue")
-    $badgeType = 'red';
-elseif (strtolower($item['Vaccination Status']) === "pending")
-    $badgeType = 'yellow';
-?>
+                $badgeType = '';
+                if (strtolower($item['Vaccination Status']) === "completed")
+                    $badgeType = 'green';
+                elseif (strtolower($item['Vaccination Status']) === "upcoming")
+                    $badgeType = 'purple';
+                elseif (strtolower($item['Vaccination Status']) === "overdue")
+                    $badgeType = 'red';
+                elseif (strtolower($item['Vaccination Status']) === "pending")
+                    $badgeType = 'yellow';
+                ?>
                 <c-table.tr>
                     <c-table.td col="id">{{ $item['id'] }}</c-table.td>
                     <c-table.td col="name">{{ $item['name'] }}</c-table.td>
@@ -119,7 +144,7 @@ elseif (strtolower($item['Vaccination Status']) === "pending")
                         <c-badge class="status-vaccination" type="{{ $badgeType }}">{{ ucfirst($item['Vaccination Status']) }}</c-badge>
 
                     </c-table.td>
-                    <c-table.td col="GN Devision" >{{ $item['gs_devision'] }}</c-table.td>
+                    <c-table.td col="GN Devision">{{ $item['gs_devision'] }}</c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
                             <c-slot name="trigger">
@@ -187,8 +212,7 @@ elseif (strtolower($item['Vaccination Status']) === "pending")
                                     <c-input type="text" label="GN Devision:" placeholder="{{ $item['gs_devision'] }}"
                                         required /><br>
                                     <c-input type="date" label="Date of Birth:" value="" required /><br>
-                                    <c-textarea label="Address:" placeholder="132,1/2,Lorem street"
-                                        rows="1">
+                                    <c-textarea label="Address:" placeholder="132,1/2,Lorem street" rows="1">
                                     </c-textarea>
                                     <c-select label="Health Status:" multiple="1"
                                         Default="{{ $item['Health Status'] }}">
