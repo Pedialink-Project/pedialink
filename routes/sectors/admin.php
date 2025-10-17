@@ -6,6 +6,7 @@ use App\Controllers\Admin\DashboardController;
 use App\Controllers\Admin\EventController;
 use App\Controllers\Admin\MaternalController;
 use App\Controllers\Admin\UserController;
+use App\Controllers\Admin\VaccineController;
 
 return [
     ['GET', '/admin/dashboard', [DashboardController::class, 'index'], 'admin.dashboard', ['admin']],
@@ -18,6 +19,8 @@ return [
     ['GET', '/admin/child-profiles/access-requests', [ChildController::class, 'accessRequests'], 'admin.child.access.requests', ['admin']],
     ['GET', '/admin/maternal-profiles/overview', [MaternalController::class, 'overview'], 'admin.maternal.overview', ['admin']],
     ['GET', '/admin/maternal-profiles/access-requests', [MaternalController::class, 'accessRequests'], 'admin.maternal.access.requests', ['admin']],
+    ['GET', '/admin/vaccination/vaccines', [VaccineController::class, 'vaccines'], 'admin.vaccination.vaccines', ['admin']],
+    ['GET', '/admin/vaccination/schedule', [VaccineController::class, 'schedule'], 'admin.vaccination.schedule', ['admin']],
     ['GET', '/admin/appointment', [AppointmentController::class, 'index'], 'admin.appointment', ['admin']],
     ['GET', '/admin/events-and-campaigns', [EventController::class, 'index'], 'admin.event', ['admin']],
 ];
