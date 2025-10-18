@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Models\Admin;
 use App\Models\AdminType;
 use App\Models\User;
 use App\Services\Validator;
@@ -114,5 +115,22 @@ class AdminUserService
         }
 
         return $errors;
+    }
+
+    public function createAdminUser(string $name, string $email, string $type)
+    {
+        $user = new User();
+        $user->name = $name;
+        $user->email = $email;
+        $user->password_hash = password_hash("password", PASSWORD_DEFAULT);
+        $user->role = "admin";
+        $userId = $user->save();
+
+        $adminType = AdminType::query()->where("type", "=", $type)->first();
+
+        $admin = new Admin();
+        $admin->id = $userId;
+        $admin->admin_type_id = $adminType->id;
+        $admin->save();
     }
 }
