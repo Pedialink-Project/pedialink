@@ -117,6 +117,58 @@ class AdminUserService
         return $errors;
     }
 
+    private function validateChangedEmail(int $id, string $email)
+    {
+        $error = null;
+
+        $userHasSameEmail = User::query()->where("email", "=", strtolower($email))
+            ->where("id", "=", $id)
+            ->first() !== NULL ? true : false;
+
+        if ($userHasSameEmail) {
+            return $error;
+        }
+
+        if(!Validator::validateFieldExistence($email)) {
+            $error = "Email field cannot be empty";
+            return $error;
+        }
+
+        if (!Validator::validateEmailFormat($email)) {
+            $error = "Email format is invalid";
+            return $error;
+        }
+
+        if (Validator::validateEmailExists($email)) {
+            $error = "This email is already registered with our system";
+            return $error;
+        }
+
+        return $error;
+    }
+
+    public function validateAdminUserChanges(int $id, string $name, string $email, string $type)
+    {
+        $errors = [];
+
+        $nameError = $this->validateName($name);
+        if ($nameError) {
+            $errors["e_name"] = $nameError;
+        }
+
+        $emailError = $this->validateChangedEmail($id, $email);
+        if ($emailError) {
+            $errors["e_email"] = $emailError;
+        }
+
+        $typeError = $this->validateType($type);
+        if ($typeError) {
+            $errors["e_type"] = $typeError;
+        }
+
+        return $errors;
+    }
+
     public function createAdminUser(string $name, string $email, string $type)
     {
         $user = new User();
