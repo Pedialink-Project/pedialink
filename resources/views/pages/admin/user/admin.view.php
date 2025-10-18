@@ -39,7 +39,7 @@
                     <div>Register Admin</div>
                 </c-slot>
 
-                <form id="admin-register-form" action="{{ route('admin.user.admin.create') }}" method="POST">
+                <form id="admin-register-form" class="admin-form" action="{{ route('admin.user.admin.create') }}" method="POST">
                     <c-input
                         type="text"
                         label="Name"
@@ -174,7 +174,7 @@
                                             </c-slot>
                                         </c-modal>
                                         
-                                        <c-modal id="edit-account-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-modal id="edit-account-{{ $key }}" size="sm" :initOpen="flash('edit') === $admin['id'] ? true : false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>Edit Account</c-dropdown.item>
                                             </c-slot>
@@ -187,10 +187,24 @@
                                                 <div>Edit Account</div>
                                             </c-slot>
 
-                                            <form id="admin-edit-form" action="">
-                                                <c-input type="text" name="name" label="Name" placeholder="Enter name" value="{{ $admin['name'] }}" />
-                                                <c-input type="email" name="email" label="Email" placeholder="Enter email" value="{{ $admin['email'] }}" />
-                                                <c-select label="Role:" name="role" value="{{ $admin['type'] }}">
+                                            <form id="admin-edit-form-{{ $admin['id'] }}" class="admin-form" action="{{ route('admin.user.admin.edit', ['id' => $admin['id']]) }}" method="POST">
+                                                <c-input
+                                                    type="text"
+                                                    name="e_name"
+                                                    label="Name"
+                                                    placeholder="Enter name"
+                                                    value="{{ flash('edit') === $admin['id'] ? (old('e_name') ?? '') : $admin['name'] }}"
+                                                    error="{{ flash('edit') === $admin['id'] ? (errors('e_name') ?? '') : '' }}"
+                                                />
+                                                <c-input
+                                                    type="email"
+                                                    name="e_email"
+                                                    label="Email"
+                                                    placeholder="Enter email"
+                                                    value="{{ flash('edit') === $admin['id'] ? (old('e_email') ?? '') : $admin['email'] }}"
+                                                    error="{{ flash('edit') === $admin['id'] ? (errors('e_email') ?? '') : '' }}"
+                                                />
+                                                <c-select label="Role:" name="e_type" value="{{ $admin['type'] }}" error="{{ flash('edit') === $admin['id'] ? (errors('e_type') ?? '') : '' }}" >
                                                     <li class="select-item" data-value="super">Super Admin</li>
                                                     <li class="select-item" data-value="data">Data Admin</li>
                                                     <li class="select-item" data-value="user">User Admin</li>
@@ -202,7 +216,7 @@
                                             </c-slot>                                     
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" for="admin-edit-form" variant="primary">Save Changes</c-button>
+                                                <c-button type="submit" form="admin-edit-form-{{ $admin['id'] }}" variant="primary">Save Changes</c-button>
                                             </c-slot>
                                         </c-modal>
 
