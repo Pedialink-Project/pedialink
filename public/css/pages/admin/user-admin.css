@@ -3,15 +3,10 @@
     justify-content: center;
 }
 
-#admin-register-form, #admin-edit-form {
+.admin-form {
     display: flex;
     flex-direction: column;
     gap: calc(var(--spacing) * 5);
-}
-
-#admin-register-form > *, #admin-edit-form > * {
-    gap: calc(var(--spacing) * 2);
-
 }
 
 #delete-account .delete-content {
