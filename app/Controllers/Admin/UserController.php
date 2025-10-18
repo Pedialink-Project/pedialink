@@ -48,6 +48,29 @@ class UserController
             ->withMessage("success");
     }
 
+    public function editAdmin(Request $request, int $id)
+    {
+        $name = $request->input("e_name");
+        $email = $request->input("e_email");
+        $type = $request->input("e_type");
+
+        $errors = $this->adminUserService
+            ->validateAdminUserChanges($id, $name, $email, $type);
+
+        if (count($errors) !== 0) {
+            return redirect(route("admin.user.admin"))
+                ->withInput([
+                    "e_name" => $name,
+                    "e_email" => $email
+                ])
+                ->withErrors($errors)
+                ->with("edit", $id);
+        }
+
+        return redirect(route("admin.user.admin"))
+            ->withMessage("success");
+    }
+
     public function admin()
     {
         $admins = $this->adminUserService->getAdminDetails();
