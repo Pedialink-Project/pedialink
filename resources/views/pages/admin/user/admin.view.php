@@ -13,22 +13,8 @@
 @endsection
 
 @section('content')
-    <?php
-    $items = [
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'super', 'status' => 'Active',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'super', 'status' => 'Active',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'data', 'status' => 'Active',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'user', 'status' => 'Active',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'user', 'status' => 'Inactive',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'super', 'status' => 'Active',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'data', 'status' => 'Active',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'data', 'status' => 'Inactive',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'super', 'status' => 'Active',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'type' => 'user', 'status' => 'Active',],        
-    ];
-    ?>
 
-    <c-table.controls :columns='["ID","Name","Category","Date & Time","Status"]'>
+    <c-table.controls :columns='["ID","Name","Email", "Admin Type"]'>
 
         <c-slot name="filter">
             <c-button variant="outline">
@@ -54,17 +40,12 @@
                 </c-slot>
 
                 <form id="admin-register-form" action="">
-                    <c-input type="text" label="Email:" placeholder="Enter email" />
+                    <c-input type="text" label="Name" placeholder="Enter email" required />
+                    <c-input type="email" label="Email" placeholder="Enter email" required />
                     <c-select label="Role:" name="role">
                         <li class="select-item" data-value="super">Super Admin</li>
                         <li class="select-item" data-value="data">Data Admin</li>
                         <li class="select-item" data-value="user">User Admin</li>
-                    </c-select>
-                    <c-select label="Permissions:" name="permissions" multiple="1" searchable="1">
-                        <li class="select-item" data-value="child">Child</li>
-                        <li class="select-item" data-value="maternal">Maternal</li>
-                        <li class="select-item" data-value="events">Events</li>
-                        <li class="select-item" data-value="appointments">Appointments</li>
                     </c-select>
                 </form>
 
@@ -84,31 +65,32 @@
             <c-table.main sticky="1" size="comfortable">
                 <c-table.thead>
                     <c-table.tr>
+                        <c-table.th sortable="1">ID</c-table.th>
                         <c-table.th sortable="1">Name</c-table.th>
                         <c-table.th sortable="1">Email</c-table.th>
                         <c-table.th sortable="1">Admin Type</c-table.th>
-                        <c-table.th>Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
                 <c-table.tbody>
-                    @foreach ($items as $key => $item)
+                    @foreach ($admins as $key => $admin)
                         <c-table.tr>
-                            <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                            <c-table.td col="email">{{ $item['email'] }}</c-table.td>
+                            <c-table.td col="id">A-{{ $admin['id'] }}</c-table.td>
+                            <c-table.td col="name">{{ $admin['name'] }}</c-table.td>
+                            <c-table.td col="email">{{ $admin['email'] }}</c-table.td>
                             <c-table.td col="role">
-                                @if (strtolower($item["type"]) === "super")
+                                @if (strtolower($admin["type"]) === "super")
                                     <c-badge class="role-badge" type="green">
-                                        {{ ucfirst($item['type']) }}
+                                        {{ ucfirst($admin['type']) }}
                                     </c-badge>
-                                @elseif (strtolower($item["type"]) === "data")
+                                @elseif (strtolower($admin["type"]) === "data")
                                     <c-badge class="role-badge" type="purple">
-                                        {{ ucfirst($item['type']) }}
+                                        {{ ucfirst($admin['type']) }}
                                     </c-badge>
-                                @elseif (strtolower($item["type"]) === "user")
+                                @elseif (strtolower($admin["type"]) === "user")
                                     <c-badge class="role-badge" type="blue">
-                                        {{ ucfirst($item['type']) }}
+                                        {{ ucfirst($admin['type']) }}
                                     </c-badge>
                                 @else
                                     <c-badge class="role-badge" type="destructive">
@@ -117,7 +99,6 @@
                                 @endif
                                 
                             </c-table.td>
-                            <c-table.td col="price">{{ $item['status'] }}</c-table.td>
                             <c-table.td class="table-actions" align="center">
                                 <c-dropdown.main>
                                     <c-slot name="trigger">
@@ -145,22 +126,12 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Profile"
-                                                    info="A-1234"
+                                                    info="A-{{ $admin['id'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"
                                                     title="Full Name"
-                                                    info="{{ $item['name'] }}"
-                                                />
-                                                <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/calendar-02.svg') }}"
-                                                    title="Created On"
-                                                    info="Monday, January 15, 2023"
-                                                />
-                                                <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/user-add--01.svg') }}"
-                                                    title="Created By"
-                                                    info="None (Default)"
+                                                    info="{{ $admin['name'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/security-validation.svg') }}"
@@ -170,17 +141,17 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                                     title="Account Type"
-                                                    info="{{ ucfirst($item['type']) }} Admin"
+                                                    info="{{ ucfirst($admin['type']) }} Admin"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/payment-success-01.svg') }}"
                                                     title="Permissions"
-                                                    info="Full Access"
+                                                    info="{{ $admin['type'] === 'super' ? 'Full' : 'Partial'}} Access"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/delete-02.svg') }}"
                                                     title="Removable"
-                                                    info="False"
+                                                    info="{{ $admin['type'] !== 'super' ? 'True' : 'False' }}"
                                                 />
                                             </c-modal.viewcard>                                        
 
@@ -203,17 +174,12 @@
                                             </c-slot>
 
                                             <form id="admin-edit-form" action="">
-                                                <c-input type="email" name="email" label="Email:" placeholder="Enter email" value="{{ $item['email'] }}" />
-                                                <c-select label="Role:" name="role" value="{{ $item['type'] }}">
+                                                <c-input type="text" name="name" label="Name" placeholder="Enter name" value="{{ $admin['name'] }}" />
+                                                <c-input type="email" name="email" label="Email" placeholder="Enter email" value="{{ $admin['email'] }}" />
+                                                <c-select label="Role:" name="role" value="{{ $admin['type'] }}">
                                                     <li class="select-item" data-value="super">Super Admin</li>
                                                     <li class="select-item" data-value="data">Data Admin</li>
                                                     <li class="select-item" data-value="user">User Admin</li>
-                                                </c-select>
-                                                <c-select label="Permissions:" name="permissions" value="child,maternal" multiple="1" searchable="1">
-                                                    <li class="select-item" data-value="child">Child</li>
-                                                    <li class="select-item" data-value="maternal">Maternal</li>
-                                                    <li class="select-item" data-value="events">Events</li>
-                                                    <li class="select-item" data-value="appointments">Appointments</li>
                                                 </c-select>
                                             </form>
 
@@ -240,7 +206,7 @@
                                             </c-slot>
 
                                             <p class="delete-content">
-                                                Do you want to delete <span class="admin-type">{{ ucfirst($item['type']) }} Admin</span> account of user <span class="admin-id">A-1023</span>?
+                                                Do you want to delete <span class="admin-type">{{ ucfirst($admin['type']) }} Admin</span> account of user <span class="admin-id">A-{{ $admin['id'] }}</span>?
                                             </p>
                                             
                                             <form id="admin-delete-form" action="" class="hidden"></form>
@@ -258,7 +224,7 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($items) === 0)
+                    @if(count($admin) === 0)
                         <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
                     @endif
                 </c-table.tbody>
