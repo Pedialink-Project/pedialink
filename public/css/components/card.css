@@ -21,12 +21,13 @@
 }
 
 .card-title {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .card-subtitle {
   color: var(--text-muted);
   font-size: .9rem;
+  font-weight: var(--font-weight-medium);
 }
 
 .card-body {

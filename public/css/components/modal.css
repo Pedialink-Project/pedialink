@@ -123,6 +123,9 @@
 
 /* body — optionally scrollable; default is flexible scroll */
 .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
     padding: var(--modal-padding);
     overflow: auto;
     -webkit-overflow-scrolling: touch;

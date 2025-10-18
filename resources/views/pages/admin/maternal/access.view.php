@@ -1,0 +1,273 @@
+@extends('layout/portal')
+
+@section('title')
+    Maternal Profile - Access Requests
+@endsection
+
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/pages/admin/access.css') }}">
+@endsection
+
+@section('header')
+    Maternal Profile - Access Requests
+@endsection
+
+@section('content')
+    <?php
+
+    $accessRequests = [
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+        ["staff_id" => 1234, "role" => "doctor", "name" => "Dr Nirmal Perara", "mother_id" => 1234, "mother_name" => "Nancy William"],
+    ];
+    ?>
+    <div class="access-content">
+
+        @foreach ($accessRequests as $key => $request)
+            <c-card class="access-card">
+                <c-slot name="header">
+                    <h3>{{ $request["name"] }} &#8594; Mother &middot; P-{{ $request["mother_id"] }}</h3>
+                </c-slot>
+                <c-slot name="headerSuffix">
+                    <span class="access-time">30 minutes ago</span>
+                    <c-dropdown.main class="view-access-sm-btn">
+                        <c-slot name="trigger">
+                            <c-button variant="ghost" class="dropdown-trigger">
+                                <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                            </c-button>
+                        </c-slot>
+                        <c-slot name="menu">
+                            <c-modal>
+                                <c-slot name="trigger">
+                                    <c-dropdown.item>
+                                        <c-slot name="icon">
+                                            <img src="{{ asset('assets/icons/document-validation.svg')}}">
+                                        </c-slot>
+                                        View Details
+                                    </c-dropdown.item>
+                                </c-slot>
+
+                                <c-slot name="headerPrefix">
+                                    <img src="{{ asset('assets/icons/profile-02.svg' )}}" />
+                                </c-slot>
+
+                                <c-slot name="header">
+                                    <div>Access Request Info</div>
+                                </c-slot>
+
+                                <c-modal.viewcard>
+                                    <c-modal.viewitem
+                                        icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                        title="Staff ID"
+                                        info="D-{{ $request['staff_id'] }}"
+                                    />
+                                    <c-modal.viewitem
+                                        icon="{{ asset('assets/icons/user.svg') }}"
+                                        title="Staff Full Name"
+                                        info="{{ $request['staff_name'] }}"
+                                    />
+                                    <c-modal.viewitem
+                                        icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                        title="Mother ID"
+                                        info="P-{{ $request['mother_id'] }}"
+                                    />
+                                    <c-modal.viewitem
+                                        icon="{{ asset('assets/icons/user.svg') }}"
+                                        title="Mother Full Name"
+                                        info="{{ $request['mother_name'] }}"
+                                    />
+                                    <c-modal.viewitem
+                                        icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                        title="Requested On"
+                                        info="Monday, January 15, 2023"
+                                    />
+                                    <c-modal.viewitem
+                                        icon="{{ asset('assets/icons/student-card.svg') }}"
+                                        title="Staff Role"
+                                        info="{{ ucfirst($request['role']) }}"
+                                    />
+                                </c-modal.viewcard>
+
+                                <div class="access-additional-content">
+                                    <h4>Staff Details</h4>
+                                    <ul>
+                                        <li>NIC: 230001045</li>
+                                        <li>Type: {{ ucfirst($request["role"] ) }}</li>
+                                    </ul>
+                                </div>
+
+                                <div class="access-additional-content">
+                                    <h4>Request Details</h4>
+                                    <ul>
+                                        <li>Requested Info: Clinical notes</li>
+                                        <li>Reason: Review vaccination history prior to specialist consultation</li>
+                                    </ul>
+                                </div>
+
+                                <c-slot name="close">
+                                    Close
+                                </c-slot>
+                            </c-modal>
+                        </c-slot>
+                    </c-dropdown.main>
+                </c-slot>
+                <p class="access-card-content">
+                    D-{{ $request["staff_id"] }} Requested access: Read only clinical notes
+                </p>
+                <p class="access-card-content">
+                    Reason: Review vaccination history prior to specialist consultation
+                </p>
+                <c-slot name="footer">
+                    <div class="access-card-btn-grp">
+                        <c-modal size="sm">
+                            <c-slot name="trigger">
+                                <c-button variant="primary">
+                                    <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
+                                    Approve
+                                </c-button>
+                            </c-slot>
+
+                            <c-slot name="headerPrefix">
+                                <img src="{{ asset('assets/icons/checkmark-circle-02-dark.svg') }}" />
+                            </c-slot>
+
+                            <c-slot name="header">
+                                Approve Request
+                            </c-slot>
+
+                            <p>
+                                Approve request of <span class="approve-text">"{{ $request["name"] }}"</span> with 
+                                id <span class="approve-text">D-{{ $request["staff_id"] }}</span> to access maternal account
+                                <span class="approve-text">"{{ $request["mother_name"] }}"</span> of id <span class="approve-text">P-{{ $request["mother_id"] }}</span>?
+                            </p>
+
+                            <form id="approve-account-{{ $key }}" action="" class="hidden"></form>
+
+                            <c-slot name="close">
+                                Cancel
+                            </c-slot>
+
+                            <c-slot name="footer">
+                                <c-button type="submit" variant="primary" form="approve-account-{{ $key }}">
+                                    Approve Request
+                                </c-button>
+                            </c-slot>
+                        </c-modal>
+                        <c-modal size="sm">
+                            <c-slot name="trigger">
+                                <c-button variant="destructive">
+                                    <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
+                                    Deny
+                                </c-button>
+                            </c-slot>
+
+                            <c-slot name="headerPrefix">
+                                <img src="{{ asset('assets/icons/cancel-circle-dark.svg') }}" />
+                            </c-slot>
+                            
+                            <c-slot name="header">
+                                Deny Request
+                            </c-slot>
+
+                            <p>
+                                Deny request of <span class="deny-text">"{{ $request["name"] }}"</span> with 
+                                id <span class="deny-text">D-{{ $request["staff_id"] }}</span> to access maternal account
+                                <span class="deny-text">"{{ $request["mother_name"] }}"</span> of id <span class="deny-text">P-{{ $request["mother_id"] }}</span>?
+                            </p>
+                            
+                            <form id="deny-account-{{ $key }}" action="" class="hidden"></form>
+
+                            <c-slot name="close">
+                                Cancel
+                            </c-slot>
+
+                            <c-slot name="footer">
+                                <c-button type="submit" variant="destructive" form="deny-account-{{ $key }}">
+                                    Deny Request
+                                </c-button>
+                            </c-slot>
+                        </c-modal>
+                        <c-modal hideClass="lg-modal">
+                            <c-slot name="trigger">
+                                <c-button variant="secondary" class="view-approval-lg-btn">
+                                    <img src="{{ asset('assets/icons/document-validation.svg')}}">
+                                    View Details
+                                </c-button>
+                            </c-slot>
+
+                            <c-slot name="headerPrefix">
+                                <img src="{{ asset('assets/icons/profile-02.svg' )}}" />
+                            </c-slot>
+
+                            <c-slot name="header">
+                                <div>Access Request Info</div>
+                            </c-slot>
+
+                            <c-modal.viewcard>
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                    title="Staff ID"
+                                    info="D-{{ $request['staff_id'] }}"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/user.svg') }}"
+                                    title="Staff Full Name"
+                                    info="{{ $request['name'] }}"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                    title="Mother ID"
+                                    info="P-{{ $request['mother_id'] }}"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/user.svg') }}"
+                                    title="Mother Full Name"
+                                    info="{{ $request['mother_name'] }}"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                    title="Requested On"
+                                    info="Monday, January 15, 2023"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/student-card.svg') }}"
+                                    title="Staff Role"
+                                    info="{{ ucfirst($request['role']) }}"
+                                />
+                            </c-modal.viewcard>
+
+                            <div class="access-additional-content">
+                                    <h4>Staff Details</h4>
+                                    <ul>
+                                        <li>NIC: 230001045</li>
+                                        <li>Type: {{ ucfirst($request["role"] ) }}</li>
+                                    </ul>
+                                </div>
+
+                                <div class="access-additional-content">
+                                    <h4>Request Details</h4>
+                                    <ul>
+                                        <li>Requested Info: Clinical notes</li>
+                                        <li>Reason: Review vaccination history prior to specialist consultation</li>
+                                    </ul>
+                                </div>
+
+                            <c-slot name="close">
+                                Close
+                            </c-slot>
+                        </c-modal>
+                    </div>
+                </c-slot>
+            </c-card>
+        @endforeach
+    </div>
+
+    <c-table.pagination />
+@endsection
