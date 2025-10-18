@@ -169,6 +169,30 @@ class AdminUserService
         return $errors;
     }
 
+    public function validateDeleteAdminUser(int $id)
+    {
+        $error = null;
+
+        if (auth()->id() === $id) {
+            $error = "Cannot delete your own account";
+            return $error;
+        }
+
+        $admin = Admin::find($id);
+
+        if ($admin->getAdminType() === "super") {
+            $superAdminType = AdminType::query()->where("type", "=", "super")->first();
+            $otherSuperAdmins = Admin::query()->where("admin_type_id", "=", $superAdminType->id);
+
+            if (count($otherSuperAdmins) <= 1) {
+                $error = "Cannot delete default super admin";
+                return $error;
+            }
+        }
+
+        return $error;
+    }
+
     public function createAdminUser(string $name, string $email, string $type)
     {
         $user = new User();
