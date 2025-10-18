@@ -57,7 +57,6 @@ Good Evening Harry!
                 <span class="card-subtitle">Antenatal risk rates grouped by age group</span>
             </div>
         </div>
-        <hr class="divider">
 
         <div class="card-body">
             <canvas id="riskChart"></canvas>
@@ -73,7 +72,6 @@ Good Evening Harry!
                 <span class="card-subtitle">Tracking vaccination completion rates over time</span>
             </div>
         </div>
-        <hr class="divider">
 
         <div class="card-body">
             <canvas id="vaccChart"></canvas>
@@ -93,7 +91,6 @@ Good Evening Harry!
             </div>
             <c-button varient="secondary" size="sm">View Schedule</c-button>
         </div>
-        <hr class="divider">
         <div class="card-body">
             <!-- Single appointment row  -->
             <div class="row appoinment">
@@ -168,11 +165,11 @@ Good Evening Harry!
         <div class="header">
             <div class="title-section">
                 <span class="card-title">Upcoming Vaccinations</span>
-                <span class="card-subtitle">Vaccines due for your children/span>
+                <span class="card-subtitle">Vaccines due for your children</span>
             </div>
             <c-button varient="secondary" size="sm">View All</c-button>
         </div>
-        <hr class="divider">
+
 
         <div class="card-body">
             <!-- Single vaccination row -->
