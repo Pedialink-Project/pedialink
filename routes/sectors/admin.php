@@ -13,6 +13,7 @@ return [
     ['GET', '/admin/user/overview', [UserController::class, 'overview'], 'admin.user.overview', ['admin']],
     ['GET', '/admin/user/parent', [UserController::class, 'parentAccountApproval'], 'admin.user.parent', ['admin']],
     ['GET', '/admin/user/admin', [UserController::class, 'admin'], 'admin.user.admin', ['admin']],
+    ['POST', '/admin/user/admin/create', [UserController::class, 'createAdmin'], 'admin.user.admin.create', ['admin']],
     ['GET', '/admin/child-profiles/overview', [ChildController::class, 'overview'], 'admin.child.overview', ['admin']],
     ['GET', '/admin/child/{id}/access-control', [ChildController::class, 'accessControl'], 'admin.child.access.control', ['admin']],
     ['GET', '/admin/child-profiles/linkage-requests', [ChildController::class, 'linkageRequests'], 'admin.child.linkage.requests', ['admin']],
