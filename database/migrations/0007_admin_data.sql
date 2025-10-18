@@ -4,4 +4,4 @@ VALUES
 
 INSERT INTO admins (id, admin_type_id)
 VALUES
-((SELECT id FROM users WHERE email = 'mani@gmail.com'), (SELECT id FROM admin_types WHERE type = 'super'));
+((SELECT id FROM users WHERE email = 'manimehalan400@gmail.com'), (SELECT id FROM admin_types WHERE type = 'super'));
