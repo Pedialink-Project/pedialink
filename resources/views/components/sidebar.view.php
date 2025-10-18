@@ -92,6 +92,58 @@ $menuItems = [
             ],
         ]
     ],
+    'phm' => [
+        'Main' => [
+            [
+                'name' => 'Dashboard',
+                'link' => route('phm.dashboard'),
+                'icon' => asset('/assets/icons/dashboard-square-02.svg'),
+
+            ],
+            [
+                'name' => 'Child Profiles',
+                'link' => route('phm.child.profiles'),
+                'icon' => asset('/assets/icons/baby-01.svg'),
+               
+            ],
+            [
+                'name' => 'Maternal Profiles',
+                'link' => route('phm.maternal.profiles'),
+                'icon' => asset('/assets/icons/mother.svg'),
+               
+            ],
+            [
+                'name' => 'Growth Monitoring',
+                'link' => route('phm.growth.monitoring'),
+                'icon' => asset('/assets/icons/chart-evaluation.svg'),
+               
+            ],
+            [
+                'name' => 'Vaccination',
+                'link' => route('phm.vaccination'),
+                'icon' => asset('/assets/icons/vaccine.svg'),
+               
+            ],
+            [
+                'name' => 'Appointments',
+                'link' => route('phm.appointments'),
+                'icon' => asset('/assets/icons/profile.svg'),
+            ],
+           
+             
+        ],
+        'Settings' => [
+            [
+                'name' => 'Notifications',
+                'link' => route('phm.notifications'),
+                'icon' => asset('/assets/icons/notification-02.svg'),
+            ],
+            [
+                'name' => 'Settings',
+                'link' => route('phm.settings'),
+                'icon' => asset('/assets/icons/setting-07.svg'),
+            ],
+        ],],
     'parent' => [
         'Main' => [
             [
