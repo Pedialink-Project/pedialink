@@ -5,7 +5,7 @@ PHM - Growth Monitorinng
 @endsection
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/pages/parent/nutrition-tracking.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/phm/growthmonitoring.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 @endsection
