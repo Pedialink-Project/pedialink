@@ -73,6 +73,23 @@ class UserController
             ->withMessage("success");
     }
 
+    public function deleteAdmin(Request $request, int $id)
+    {
+        $error = $this->adminUserService->validateDeleteAdminUser($id);
+
+        if ($error !== NULL) {
+            return redirect(route("admin.user.admin"))
+                ->with("delete", false)
+                ->withMessage($error);
+        }
+
+        $this->adminUserService->deleteAdminUser($id);
+        
+        return redirect(route("admin.user.admin"))
+            ->with("delete", true)
+            ->withMessage("Successfully deleted");
+    }
+
     public function admin()
     {
         $admins = $this->adminUserService->getAdminDetails();
