@@ -1,172 +1,288 @@
 @extends('layout/portal')
 
 @section('title')
-    PHM  Growth Monitoring
+PHM - Growth Monitorinng
 @endsection
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('/css/pages/phm/dashboard.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/parent/nutrition-tracking.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 @endsection
 
 @section('header')
-<svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M17.5 17.5H8.33333C5.58347 17.5 4.20854 17.5 3.35427 16.6457C2.5 15.7915 2.5 14.4165 2.5 11.6667V2.5" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M17.5 17.5H8.33333C5.58347 17.5 4.20854 17.5 3.35427 16.6457C2.5 15.7915 2.5 14.4165 2.5 11.6667V2.5" stroke="black" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M14.7541 7.77745L12.3593 11.6535C12.0104 12.2182 11.6141 13.0713 10.8958 12.945C10.051 12.7963 9.64527 11.5371 8.91894 11.1201C8.32746 10.7806 7.89984 11.1898 7.55404 11.6663M17.5001 3.33301L15.9555 5.83301M4.16675 16.6663L6.27201 13.5552" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14.7541 7.77745L12.3593 11.6535C12.0104 12.2182 11.6141 13.0713 10.8958 12.945C10.051 12.7963 9.64527 11.5371 8.91894 11.1201C8.32746 10.7806 7.89984 11.1898 7.55404 11.6663M17.5001 3.33301L15.9555 5.83301M4.16675 16.6663L6.27201 13.5552" stroke="black" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<div class="top-section">
 
-   Growth Monitoring - Overview
+    <svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.5 17.5H8.33333C5.58347 17.5 4.20854 17.5 3.35427 16.6457C2.5 15.7915 2.5 14.4165 2.5 11.6667V2.5"
+            stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M17.5 17.5H8.33333C5.58347 17.5 4.20854 17.5 3.35427 16.6457C2.5 15.7915 2.5 14.4165 2.5 11.6667V2.5"
+            stroke="#18181B" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round" />
+        <path
+            d="M14.7541 7.77745L12.3593 11.6535C12.0104 12.2182 11.6141 13.0713 10.8958 12.945C10.051 12.7963 9.64527 11.5371 8.91894 11.1201C8.32746 10.7806 7.89984 11.1898 7.55404 11.6663M17.5001 3.33301L15.9555 5.83301M4.16675 16.6663L6.27201 13.5552"
+            stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path
+            d="M14.7541 7.77745L12.3593 11.6535C12.0104 12.2182 11.6141 13.0713 10.8958 12.945C10.051 12.7963 9.64527 11.5371 8.91894 11.1201C8.32746 10.7806 7.89984 11.1898 7.55404 11.6663M17.5001 3.33301L15.9555 5.83301M4.16675 16.6663L6.27201 13.5552"
+            stroke="#18181B" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+
+    <span>Growth Monitoring</span>
+</div>
 @endsection
 
 @section('content')
-        <div class="charts-grid-row">   
-            <!-- Antenatal Risk Cases Chart -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Child Weight Tracking</h3>
-                    <p>Track Child's Weight Over Time</p>
-                    
-                </div>
-                <div class="chart-container">
-                    <canvas id="weightChart"></canvas>
-                </div>
-            </div>     
 
-<!-- Monthly Vaccinations Chart -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Child Height Tracking</h3>
-                    <p>Track Child's Height Over Time</p>
-                </div>
-                <div class="chart-container">
-                    <canvas id="weightChart2"></canvas>
-                </div>
+<main class="container">
+
+    <!-- BMI Chart -->
+    <c-card class="card bmi-card">
+        <div class="header">
+            <div class="title-section">
+                <span class="card-title">Child BMI Tracking</span>
+                <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
             </div>
-            
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Child BMI Tracking</h3>
-                    <p>Track Child's Height Over Time</p>
-                </div>
-                <div class="chart-container">
-                    <canvas id="weightChart3"></canvas>
-                </div>
-            </div>  
+            <!-- Child Selector -->
+            <c-select name='child' class="child-select" placeholder="Select Child">
+                <li class="select-item" data-value="all-children">All Children</li>
+                <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                <li class="select-item" data-value="baby-john">Baby John</li>
+            </c-select>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <hr class="divider">
+        <div class="card-body">
+            <canvas id="bmiChart">
 
-        <script>
-            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            </canvas>
+        </div>
+    </c-card>
 
-            // sample weights (matches the visual behaviour of the image)
-            const weights = [1.6, 1.9, 2.4, 2.1, 1.0, 3.0, 5.6, 6.6, 10.0, 9.6, 8.2, 8.1];
+    <!-- Height Chart -->
+    <c-card class="card height-card">
+        <div class="header">
+            <div class="title-section">
+                <span class="card-title">Child Height Tracking</span>
+                <span class="card-subtitle">Track Baby Sarah's Height over time</span>
+            </div>
+            <!-- Child Selector -->
+            <c-select name='child' class="child-select" placeholder="Select Child">
+                <li class="select-item" data-value="all-children">All Children</li>
+                <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                <li class="select-item" data-value="baby-john">Baby John</li>
+            </c-select>
+        </div>
+        <hr class="divider">
+        <div class="card-body">
+            <canvas id="heightChart">
 
-            const ctxList = [
-                document.getElementById('weightChart').getContext('2d'),
-                document.getElementById('weightChart2').getContext('2d'),
-                document.getElementById('weightChart3').getContext('2d'),
+            </canvas>
+        </div>
+    </c-card>
 
-            ];
+    <!-- Weight Chart -->
+    <c-card class="card weight-card">
+        <div class="header">
+            <div class="title-section">
+                <span class="card-title">Child Weight Tracking</span>
+                <span class="card-subtitle">Track Baby Sarah's Weight over time</span>
+            </div>
+            <!-- Child Selector -->
+            <c-select name='child' class="child-select" placeholder="Select Child">
+                <li class="select-item" data-value="all-children">All Children</li>
+                <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                <li class="select-item" data-value="baby-john">Baby John</li>
+            </c-select>
+        </div>
+        <hr class="divider">
+        <div class="card-body">
+            <canvas id="weightChart">
 
-            // Use a scriptable backgroundColor that creates a vertical gradient based on chart area
-            const gradientBg = (context) => {
-            const chart = context.chart;
-            const {ctx, chartArea} = chart;
-            if (!chartArea) {
-                return 'rgba(99,102,241,0.12)';
-            } // fallback before layout
-            const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                g.addColorStop(0, 'rgba(99,102,241,0.18)'); // denser near the line
-                g.addColorStop(0.45, 'rgba(99,102,241,0.10)');
-                g.addColorStop(1, 'rgba(99,102,241,0.02)');
-                return g;
-            };
+            </canvas>
+        </div>
+    </c-card>
 
-            for (const ctx of ctxList) {
-                const chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: months,
-                        datasets: [{
-                            label: 'Sara John · C-1234',
-                            data: weights,
-                            borderColor: '#6366F1',         // line color
-                            borderWidth: 2.5,
-                            tension: 0.35,                 // smooth curve
-                            fill: true,
-                            backgroundColor: gradientBg,   // scriptable gradient
-                            pointStyle: 'circle',
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
-                            pointBackgroundColor: '#fff',  // circle interior white
-                            pointBorderColor: '#6366F1',   // circle border same color as line
-                            pointBorderWidth: 2,
-                            showLine: true
-                        }]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                backgroundColor: 'rgba(17,24,39,0.95)',
-                                titleColor: '#fff',
-                                bodyColor: '#fff',
-                                padding: 10,
-                                cornerRadius: 8
-                            }
-                        },
-                        interaction: {
-                        mode: 'nearest',
-                        intersect: true
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    display: true,
-                                    drawBorder: false,
-                                    color: 'rgba(15,23,42,0.06)',
-                                    borderDash: [4, 6]
-                                    },
-                                    ticks: {
-                                    color: '#6b7280',
-                                    padding: 10,
-                                    maxRotation: 0,
-                                    font: { size: 12 }
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                suggestedMax: 10,
-                                ticks: {
-                                    stepSize: 2,
-                                    color: '#6b7280',
-                                    padding: 6,
-                                    font: { size: 12 }
-                                },
-                                grid: {
-                                    display: true,
-                                    drawBorder: false,
-                                    color: 'rgba(15,23,42,0.06)',
-                                    borderDash: [4, 6]
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            
+</main>
 
-            // Optional: update legend label if user selects another child
-            // document.getElementById('childSelect').addEventListener('change', (e) => {
-            // const name = e.target.value;
-            // const label = `${name} · C-1234`;
-            // chart.data.datasets[0].label = label;
-            // document.getElementById('legendLabel').textContent = label;
-            // chart.update();
-            // });
-        </script>      
-@endsection            
+
+<script>
+
+    function createGradient(color, chart) {
+        const gradient = chart.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, color.replace("1)", "0.1)"));
+        gradient.addColorStop(1, color.replace("1)", "0)"));
+        return gradient;
+    }
+
+    const bmiCtx = document.getElementById("bmiChart").getContext("2d");
+
+
+    const bmiData = [
+        { name: "Sara", values: [0, 2, 1, 0, 0, 1, 10, 20, 15, 13, 11, 14], color: "rgba(168,85,247,1)" },
+        { name: "John", values: [10, 15, 28, 40, 33, 36, 42, 39, 45, 50, 48, 49], color: "rgba(239,68,68,1)" },
+        { name: "Alex", values: [0, 1, 0, 10, 15, 13, 12, 8, 4, 1, 0, 3], color: "rgba(6,182,212,1)" },
+    ];
+
+    const bmiDatasets = bmiData.map(item => ({
+        label: item.name,
+        data: item.values,
+        borderColor: item.color,
+        backgroundColor: createGradient(item.color, bmiCtx),
+        tension: 0.4,
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+    }));
+
+    new Chart(bmiCtx, {
+        type: "line",
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: bmiDatasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "bottom",
+                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    ticks: { stepSize: 10 },
+                },
+                x: {
+                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                },
+            },
+        },
+    });
+
+
+    const heightCtx = document.getElementById("heightChart").getContext("2d");
+
+    const heightData = [
+        {
+            name: "Sara",
+            values: [75, 76, 77, 78, 78.5, 79, 79.5, 80, 80.5, 81, 81.5, 82],
+            color: "rgba(59,130,246,1)",
+        },
+        {
+            name: "John",
+            values: [95, 95.5, 96, 96.5, 97, 97.5, 98, 98.5, 99, 99.5, 100, 100.5],
+            color: "rgba(236,72,153,1)",
+        },
+        {
+            name: "Alex",
+            values: [120, 120.5, 121, 121.5, 122, 122.5, 123, 123.5, 124, 124.5, 125, 125.5],
+            color: "rgba(34,197,94,1)",
+        }
+    ];
+
+
+    const heightDatasets = heightData.map(item => ({
+        label: item.name,
+        data: item.values,
+        borderColor: item.color,
+        backgroundColor: createGradient(item.color, heightCtx),
+        tension: 0.4,
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+    }));
+
+    new Chart(heightCtx, {
+        type: "line",
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: heightDatasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "bottom",
+                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                }
+            },
+            scales: {
+                y: {
+                    min: 70,
+                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    ticks: { stepSize: 5 },
+                },
+                x: {
+                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                },
+            },
+        },
+    });
+
+    const weightCtx = document.getElementById("weightChart").getContext("2d");
+
+
+    const weightData = [
+        {
+            name: "Sara",
+            values: [10, 10.2, 10.4, 10.6, 10.8, 11, 11.2, 11.4, 11.6, 11.8, 12, 12.2],
+            color: "rgba(59,130,246,1)",
+        },
+        {
+            name: "John",
+            values: [14, 14.2, 14.5, 14.8, 15, 15.3, 15.5, 15.8, 16, 16.2, 16.5, 16.7],
+            color: "rgba(236,72,153,1)",
+        },
+        {
+            name: "Alex",
+            values: [22, 22.3, 22.6, 23, 23.3, 23.6, 24, 24.3, 24.6, 25, 25.3, 25.6],
+            color: "rgba(34,197,94,1)",
+        }
+    ];
+
+    const weightDatasets = weightData.map(item => ({
+        label: item.name,
+        data: item.values,
+        borderColor: item.color,
+        backgroundColor: createGradient(item.color, weightCtx),
+        tension: 0.4,
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+    }));
+
+    new Chart(weightCtx, {
+        type: "line",
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: weightDatasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "bottom",
+                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                }
+            },
+            scales: {
+                y: {
+                    min: 8,
+                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    ticks: { stepSize: 10 },
+                },
+                x: {
+                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                },
+            },
+        },
+    });
+
+
+</script>
+
+
+@endsection
