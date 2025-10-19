@@ -5,7 +5,7 @@
 @endsection
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/pages/phm/childprofiles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/phm/child-health.css') }}">
 @endsection
 
 @section('header')
@@ -74,14 +74,14 @@
                 </c-slot>
 
                 <c-slot name="headerPrefix">
-                    <img src="{{ asset('assets/icons/profile-02.svg' )}}"/>
+                    <img src="{{ asset('assets/icons/profile.svg' )}}"/>
                 </c-slot>
 
                 <c-slot name="header">
                     <div>Add Health Records</div>
                 </c-slot>
 
-                <form id="add-health-record-form" action="">
+                <form id="add-health-record-form" class="child-health-form" action="">
                     <c-input type="text" label="Height:" placeholder="Enter Height of the Child (in cm)" required />
                     <c-input type="text" label="Weight:" placeholder="Enter Weight of the Child (in kg)" required />
                     <c-input type="text" label="Head Circumference:" placeholder="Enter Head Circumference of the Child (in cm)" required />
@@ -195,11 +195,13 @@
                                                 />
                                             </c-modal.viewcard>
                                             
-                                            <h4>Additional Information</h4>
-                                             <ul>
-                                              <li>Nutrition Facts: Good</li>
-                                              <li>Lorem Ipsum</li>
-                                            </ul>  
+                                            <div class="child-health-content">
+                                                <h4>Additional Information</h4>
+                                                 <ul>
+                                                  <li>Nutrition Facts: Good</li>
+                                                  <li>Lorem Ipsum</li>
+                                                </ul>
+                                            </div>
                                             
                                             <c-slot name="close">
                                                 Close
@@ -219,22 +221,22 @@
                                                 <div>Edit Health Records</div>
                                         </c-slot>
 
-                                        <form id="edit-health-record-form" action="">
-                                            <c-input type="text" label="Height:" placeholder="{{ $item['Height'] }}" required />
-                                            <c-input type="text" label="Weight:" placeholder="{{ $item['Weight'] }}" required />
-                                            <c-input type="text" label="Head Circumference:" placeholder="{{ $item['Head Circumference'] }}" required />
-                                            <c-select label="Health Status:" multiple="1" Default="{{ $item['Health Status'] }}">
-                                            <option class="select-item" data-value="child">Good</option>
-                                            <option class="select-item" data-value="child">Bad</option>
+                                        <form id="edit-health-record-form" class="child-health-form" action="">
+                                            <c-input type="text" label="Height:" placeholder="Enter height" required />
+                                            <c-input type="text" label="Weight:" placeholder="Enter weight" required />
+                                            <c-input type="text" label="Head Circumference:" placeholder="Enter head circumference" required />
+                                            <c-select label="Health Status:" value="{{ strtolower($item['Health Status']) }}">
+                                                <option class="select-item" data-value="good">Good</option>
+                                                <option class="select-item" data-value="bad">Bad</option>
                                             </c-select>
                                             <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." rows="4"></c-textarea>
                                         </form>
 
                                         <c-slot name="close">
-                                        Close
+                                            Cancel
                                         </c-slot>
                                         <c-slot name="footer">
-                                        <c-button type="submit" variant="primary" form="edit-health-record-form">Save Changes</c-button>
+                                            <c-button type="submit" variant="primary">Save Changes</c-button>
                                         </c-slot>
                                     </c-modal>
                                     <c-dropdown.sep />
