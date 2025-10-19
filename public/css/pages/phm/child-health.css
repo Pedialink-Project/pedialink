@@ -13,12 +13,3 @@
 .child-col {
     white-space: nowrap;
 }
-
-.child-health-content h4 {
-    font-size: var(--text-md);
-}
-
-.child-health-content li {
-    color: var(--text-muted);
-    font-weight: var(--font-weight-medium);
-}
