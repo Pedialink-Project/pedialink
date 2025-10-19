@@ -134,16 +134,14 @@ $appointments = [
                 Request Appointment
             </c-slot>
 
-            <form id="request-appointment-form" action="">
-                <c-select label="Appointment For" name="requester" placeholder="Select Child or Parent" required>
-                    <li class="select-item" data-value="P001">John - Parent</li>
-                    <li class="select-item" data-value="C001">Sara - Child</li>
-                    <li class="select-item" data-value="C002">Doe - Child</li>
+            <form id="request-appointment-form" action="{{route("parent.appointment.request")}}">
+                <c-select label="Appointment For" name="patient" placeholder="Select Child or Parent" required>
+                    <li class="select-item" data-value="3">Keeththi</li>
+ 
                 </c-select>
-                <c-select label="Doctor Preference" name="doctor" multiple="1" searchable="1">
-                    <li class="select-item" data-value="D001">Dr.Smith</li>
-                    <li class="select-item" data-value="D002">Dr.John</li>
-                    <li class="select-item" data-value="D003">Dr.Alex</li>
+                <c-select label="Staff Preference" name="staff" multiple="1" searchable="1">
+                    <li class="select-item" data-value="2">Dr.Smith</li>
+                    
                 </c-select>
                 <c-input type="date" label="Preferred Date" name="date" placeholder="Select Date" required />
                 <c-select label="Preferred Time" name="time" multiple="1" searchable="1" required>
