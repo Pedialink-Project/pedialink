@@ -17,6 +17,10 @@
    Appointments Details
 @endsection
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/pages/phm/appointment.css') }}">
+@endsection
+
 @section('content')
     <?php
     $items = [
