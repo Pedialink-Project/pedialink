@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Appointment;
 use App\Models\Staff;
 use App\Models\Patient;
+use App\Models\ParentM;
 
 
 
@@ -154,9 +155,10 @@ class AppointmentService
         return $error;
     }
 
-    public function validateAppointment($date, $time, $staff, $patient){
+    public function validateAppointment($date, $time, $staff, $patient)
+    {
 
-        $errors =[];
+        $errors = [];
 
         $dateError = $this->validateDate($date);
         if ($dateError) {
@@ -180,6 +182,29 @@ class AppointmentService
 
         return $errors;
     }
+
+    public function createAppointment($patient, $staff, $time, $date, $purpose, $notes)
+    {
+
+        $parent_id = ParentM::query()->where("name", "=", $patient)->first()->id;
+        $patient_id = Patient::query()->where("parent_id", "=", $parent_id)->first()->id;
+
+        $staff_id = Staff::query()->where("name","=", $staff)->first()->id;
+
+        $appointment = new Appointment();
+        $appointment->patient_id = $patient_id;
+        $appointment->staff_id = $staff_id;
+        $appointment->time = $time;
+        $appointment->date = $date;
+        $appointment->purpose = $purpose;
+        $appointment->notes = $notes;
+        $appointment->save();
+
+
+
+
+    }
 }
+
 
 ?>
