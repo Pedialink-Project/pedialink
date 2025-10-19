@@ -123,128 +123,136 @@ $items = [
 
             <c-table.tbody>
                 @foreach ($items as $key => $item)
+                    <c-table.tr>
+                        <c-table.td col="id">{{ $item['id'] }}</c-table.td>
+                        <c-table.td col="name">{{ $item['name'] }}</c-table.td>
+                        <c-table.td col="Age">{{ $item['Age'] }}</c-table.td>
+                        <c-table.td col="Vaccination Status">
+                            @if (strtolower($item['Vaccination Status']) === "completed")
+                                <c-badge class="status-vaccination" type="green">
+                                    {{ ucfirst($item['Vaccination Status']) }}
+                                </c-badge>
+                            @elseif (strtolower($item['Vaccination Status']) === "upcoming")
+                                <c-badge class="status-vaccination" type="purple">
+                                    {{ ucfirst($item['Vaccination Status']) }}
+                                </c-badge>
+                            @elseif (strtolower($item['Vaccination Status']) === "overdue")
+                                <c-badge class="status-vaccination" type="red">
+                                    {{ ucfirst($item['Vaccination Status']) }}
+                                </c-badge>
+                            @elseif (strtolower($item['Vaccination Status']) === "pending")
+                                <c-badge class="status-vaccination" type="yellow">
+                                    {{ ucfirst($item['Vaccination Status']) }}
+                                </c-badge>
+                            @endif
 
-                <?php
-                $badgeType = '';
-                if (strtolower($item['Vaccination Status']) === "completed")
-                    $badgeType = 'green';
-                elseif (strtolower($item['Vaccination Status']) === "upcoming")
-                    $badgeType = 'purple';
-                elseif (strtolower($item['Vaccination Status']) === "overdue")
-                    $badgeType = 'red';
-                elseif (strtolower($item['Vaccination Status']) === "pending")
-                    $badgeType = 'yellow';
-                ?>
-                <c-table.tr>
-                    <c-table.td col="id">{{ $item['id'] }}</c-table.td>
-                    <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                    <c-table.td col="Age">{{ $item['Age'] }}</c-table.td>
-                    <c-table.td col="Vaccination Status">
-                        <c-badge class="status-vaccination" type="{{ $badgeType }}">{{ ucfirst($item['Vaccination Status']) }}</c-badge>
+                        </c-table.td>
+                        <c-table.td col="GN Devision">{{ $item['gs_devision'] }}</c-table.td>
+                        <c-table.td class="table-actions" align="center">
+                            <c-dropdown.main>
+                                <c-slot name="trigger">
+                                    <c-button variant="ghost" class="dropdown-trigger">
+                                        <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                    </c-button>
+                                </c-slot>
+                                <c-slot name="menu">
+                                    <c-dropdown.item>Copy Child ID</c-dropdown.item>
+                                    <c-modal id="View-Child-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-slot name="headerPrefix">
+                                            <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
+                                        </c-slot>
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>View Child Profile</c-dropdown.item>
+                                        </c-slot>
 
-                    </c-table.td>
-                    <c-table.td col="GN Devision">{{ $item['gs_devision'] }}</c-table.td>
-                    <c-table.td class="table-actions" align="center">
-                        <c-dropdown.main>
-                            <c-slot name="trigger">
-                                <c-button variant="ghost" class="dropdown-trigger">
-                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
-                                </c-button>
-                            </c-slot>
-                            <c-slot name="menu">
-                                <c-dropdown.item>Copy Child ID</c-dropdown.item>
-                                <c-modal id="View-Child-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-slot name="headerSuffix">
+                                            <c-badge type="{{ $badgeType }}">Good</c-badge>
+                                        </c-slot>
+
+                                        <c-slot name="header">
+                                            <div>Child Profile Details</div>
+                                        </c-slot>
+
+                                        <c-modal.viewcard>
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
+                                                title="Child ID" info="{{ $item['id'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Name"
+                                                info="{{ $item['name'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
+                                                title="Total Vaccinations" info="2" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
+                                                title="Age" info="{{ $item['Age'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
+                                                title="GS Devision" info="{{ $item['gs_devision'] }}" />
+                                        </c-modal.viewcard>
+
+                                        <h4>Additional Information</h4>
+                                        <ul>
+                                            <li>Nutrition Facts: Good</li>
+                                            <li>Lorem Ipsum</li>
+                                        </ul>
+
+                                        <c-slot name="close">
+                                            Close
+                                        </c-slot>
+                                    </c-modal>
+                                </c-slot>
+                                <c-dropdown.sep />
+                                <c-modal id="edit-child-profile-{{ $key }}" size="md" :initOpen="false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Edit Child Profile</c-dropdown.item>
+                                    </c-slot>
                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
                                     </c-slot>
-                                    <c-slot name="trigger">
-                                        <c-dropdown.item>View Child Profile</c-dropdown.item>
-                                    </c-slot>
-
-                                    <c-slot name="headerSuffix">
-                                        <c-badge type="{{ $badgeType }}">Good</c-badge>
-                                    </c-slot>
-
                                     <c-slot name="header">
-                                        <div>Child Profile Details</div>
+                                        <div>Edit Child Profile</div>
                                     </c-slot>
 
-                                    <c-modal.viewcard>
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Child ID" info="{{ $item['id'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Name"
-                                            info="{{ $item['name'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Total Vaccinations" info="2" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                            title="Age" info="{{ $item['Age'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="GS Devision" info="{{ $item['gs_devision'] }}" />
-                                    </c-modal.viewcard>
-
-                                    <h4>Additional Information</h4>
-                                    <ul>
-                                        <li>Nutrition Facts: Good</li>
-                                        <li>Lorem Ipsum</li>
-                                    </ul>
-
+                                    <form id="edit-child-profile-form" action="">
+                                        <c-input type="text" label="Child Full Name:" placeholder="{{ $item['name'] }}"
+                                            required /><br>
+                                        <c-input type="text" label="GN Devision:" placeholder="{{ $item['gs_devision'] }}"
+                                            required /><br>
+                                        <c-input type="date" label="Date of Birth:" value="" required /><br>
+                                        <c-textarea label="Address:" placeholder="132,1/2,Lorem street" rows="1">
+                                        </c-textarea>
+                                        <c-select label="Health Status:" multiple="1" default="{{ $item['Health Status'] }}">
+                                            <option class="select-item" data-value="child">Good</option>
+                                            <option class="select-item" data-value="child">Crtical</option>
+                                        </c-select>
+                                        <br>
+                                        <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." rows="4"></c-textarea>
+                                    </form>
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="button" variant="outline" data-modal-close="registerAdmin">
+                                            Save Changes
+                                        </c-button>
+                                    </c-slot>
                                 </c-modal>
-                            </c-slot>
-                            <c-dropdown.sep />
-                            <c-modal id="edit-child-profile-{{ $key }}" size="md" :initOpen="false">
-                                <c-slot name="trigger">
-                                    <c-dropdown.item>Edit Child Profile</c-dropdown.item>
-                                </c-slot>
-                                <c-slot name="headerPrefix">
-                                    <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
-                                </c-slot>
-                                <c-slot name="header">
-                                    <div>Edit Child Profile</div>
-                                </c-slot>
-
-                                <form id="edit-child-profile-form" action="">
-                                    <c-input type="text" label="Child Full Name:" placeholder="{{ $item['name'] }}"
-                                        required /><br>
-                                    <c-input type="text" label="GN Devision:" placeholder="{{ $item['gs_devision'] }}"
-                                        required /><br>
-                                    <c-input type="date" label="Date of Birth:" value="" required /><br>
-                                    <c-textarea label="Address:" placeholder="132,1/2,Lorem street" rows="1">
-                                    </c-textarea>
-                                    <c-select label="Health Status:" multiple="1" default="{{ $item['Health Status'] }}">
-                                        <option class="select-item" data-value="child">Good</option>
-                                        <option class="select-item" data-value="child">Crtical</option>
-                                    </c-select>
-                                    <br>
-                                    <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." rows="4"></c-textarea>
-                                </form>
-                                <c-slot name="close">
-                                    Close
-                                </c-slot>
-                                <c-slot name="footer">
-                                    <c-button type="button" variant="outline" data-modal-close="registerAdmin">Save
-                                        Changes</c-button>
-                                </c-slot>
-                            </c-modal>
-                            <c-dropdown.sep />
-                            <c-dropdown.item href="{{ route('phm.growth.monitoring',['id'=>$key,])}}">View Growth
-                                Records</c-dropdown.item>
-                            <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$key,])}}">View Health
-                                Records</c-dropdown.item>
-                            <c-dropdown.item href="{{ route('phm.vaccination',['id'=>$key,])}}">View Vaccination
-                                Records</c-dropdown.item>
-                        </c-dropdown.main>
-                    </c-table.td>
-                </c-table.tr>
+                                <c-dropdown.sep />
+                                <c-dropdown.item href="{{ route('phm.growth.monitoring',['id'=>$key,])}}">
+                                    View Growth Records
+                                </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$key,])}}">
+                                    View Health Records
+                                </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('phm.vaccination',['id'=>$key,])}}">
+                                    View Vaccination Records
+                                </c-dropdown.item>
+                            </c-dropdown.main>
+                        </c-table.td>
+                    </c-table.tr>
                 @endforeach
                 @if(count($items) === 0)
-                <tr>
-                    <td colspan="6">
-                        <div class="table-empty">No items found</div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="6">
+                            <div class="table-empty">No items found</div>
+                        </td>
+                    </tr>
                 @endif
             </c-table.tbody>
         </c-table.main>
