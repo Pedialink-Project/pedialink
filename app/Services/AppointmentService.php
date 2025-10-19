@@ -155,7 +155,7 @@ class AppointmentService
         return $error;
     }
 
-    public function validateAppointment($date, $time, $staff, $patient)
+    public function validateAppointment($patient,$staff,$date, $time)
     {
 
         $errors = [];
