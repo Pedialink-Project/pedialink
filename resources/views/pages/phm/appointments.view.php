@@ -61,7 +61,7 @@
                 </c-slot>
 
                 <c-slot name="headerPrefix">
-                    <img src="{{ asset('assets/icons/profile-02.svg' )}}"/>
+                    <img src="{{ asset('assets/icons/profile.svg' )}}"/>
                 </c-slot>
 
                 <c-slot name="header">
