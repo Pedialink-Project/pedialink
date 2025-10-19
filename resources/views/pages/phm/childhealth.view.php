@@ -117,26 +117,25 @@
 
                 <c-table.tbody>
                     @foreach ($items as $key=>$item)
-
-                                  <?php
-$badgeType = '';
-if (strtolower($item['Health Status']) === "good")
-    $badgeType = 'green';
-elseif (strtolower($item['Health Status']) === "critical")
-    $badgeType = 'purple';
-elseif (strtolower($item['Health Status']) === "bad")
-    $badgeType = 'red';
-
-?>
                         <c-table.tr>
                             <c-table.td col="Recorded at">{{ $item['Recorded at'] }}</c-table.td>
                             <c-table.td col="Height">{{ $item['Height'] }}</c-table.td>
                             <c-table.td col="Weight">{{ $item['Weight'] }}</c-table.td>
                             <c-table.td col="Head Circumference">{{ $item['Head Circumference'] }}</c-table.td>
                             <c-table.td col="Health Status">
-                                <c-badge type="{{ $badgeType }}">
-                                    {{ $item['Health Status'] }}
-                                </c-badge>
+                                @if (strtolower($item['Health Status']) === "good")
+                                    <c-badge type="green">
+                                        {{ $item['Health Status'] }}
+                                    </c-badge>
+                                @elseif (strtolower($item['Health Status']) === "critical")
+                                    <c-badge type="purple">
+                                        {{ $item['Health Status'] }}
+                                    </c-badge>
+                                @elseif (strtolower($item['Health Status']) === "bad")
+                                    <c-badge type="red">
+                                        {{ $item['Health Status'] }}
+                                    </c-badge>
+                                @endif
                             </c-table.td>
                             <c-table.td class="table-actions" align="center">
                                 <c-dropdown.main>
