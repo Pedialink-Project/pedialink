@@ -5,13 +5,16 @@ use App\Models\Appointment;
 use App\Models\Staff;
 use App\Models\Patient;
 use App\Models\ParentM;
+use Library\Framework\Database\QueryBuilder;
+use App\Models\Maternal;
+use App\Models\Child;
 
 
 
 class AppointmentService
 {
 
-    public function getAppointmentDetails()
+    public function getAllAppointmentDetails()
     {
         $appointments = Appointment::query()->get();
 
@@ -34,6 +37,39 @@ class AppointmentService
 
         return $resource;
     }
+
+    public function getParentAppointmentDetails($parentId)
+    {
+        $maternalIds = Maternal::query()->where('parent_id', '=', $parentId)->pluck('id');
+        $childIds = Child::query()->where('parent_id', '=', $parentId)->pluck('id');
+
+
+        $patientIds = array_merge($maternalIds, $childIds);
+
+        $appointments = Appointment::query()->whereIn('patient_id', $patientIds)->get();
+
+        $resource = [];
+        foreach ($appointments as $appointment) {
+            $resource[] = [
+                "id" => $appointment->id,
+                "patient_id" => $appointment->patient_id,
+                "staff_id" => $appointment->staff_id,
+                "requested_by" => $appointment->requested_by,
+                "datetime" => $appointment->datetime,
+                "location" => $appointment->location,
+                "status" => $appointment->status,
+                "purpose" => $appointment->purpose,
+                "notes" => json_decode($appointment->notes),
+                "cancled_by" => $appointment->cancled_by,
+            ];
+        }
+
+
+        return $resource;
+    }
+
+
+
     public function validateDate($date)
     {
         $error = null;
@@ -182,10 +218,10 @@ class AppointmentService
         return $errors;
     }
 
-    public function createAppointment($patient, $staff, $date, $time, $purpose, $notes,$requester)
+    public function createAppointment($patient, $staff, $date, $time, $purpose, $notes, $requester)
     {
 
-        $appointmentDateTime = $date.' '.$time;
+        $appointmentDateTime = $date . ' ' . $time;
 
         $appointment = new Appointment();
         $appointment->patient_id = $patient;
