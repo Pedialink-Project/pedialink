@@ -68,7 +68,7 @@
 
 /* Focus state on wrapper so border + ring stay consistent */
 .input-row:focus-within {
-  box-shadow: var(--input-focus-ring);
+  /* box-shadow: var(--input-focus-ring); */
   border-color: var(--accent);
   transform: translateY(-1px);
 }
