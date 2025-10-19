@@ -121,8 +121,8 @@ $items = [
                 @foreach ($items as $key => $item)
                     <c-table.tr>
                         <c-table.td col="id">{{ $item['id'] }}</c-table.td>
-                        <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                        <c-table.td col="Age">{{ $item['Age'] }}</c-table.td>
+                        <c-table.td col="name" class="child-col">{{ $item['name'] }}</c-table.td>
+                        <c-table.td col="Age" class="child-col">{{ $item['Age'] }}</c-table.td>
                         <c-table.td col="Vaccination Status">
                             @if (strtolower($item['Vaccination Status']) === "completed")
                                 <c-badge class="status-vaccination" type="green">
@@ -153,7 +153,7 @@ $items = [
                                 </c-slot>
                                 <c-slot name="menu">
                                     <c-dropdown.item>Copy Child ID</c-dropdown.item>
-                                    <c-modal id="View-Child-{{ $key }}" size="sm" :initOpen="false">
+                                    <c-modal id="View-Child-{{ $key }}" size="md" :initOpen="false">
                                         <c-slot name="headerPrefix">
                                             <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
                                         </c-slot>
@@ -170,26 +170,90 @@ $items = [
                                         </c-slot>
 
                                         <c-modal.viewcard>
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                                title="Child ID" info="{{ $item['id'] }}" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Name"
-                                                info="{{ $item['name'] }}" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                                title="Total Vaccinations" info="2" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                                title="Age" info="{{ $item['Age'] }}" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                                title="GS Devision" info="{{ $item['gs_devision'] }}" />
+                                            <c-modal.viewitem
+                                                icon="{{ asset('assets/icons/profile.svg') }}"
+                                                title="Child ID"
+                                                info="{{ $item['id'] }}"
+                                            />
+                                            <c-modal.viewitem
+                                                icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                                title="Name"
+                                                info="{{ $item['name'] }}"
+                                            />
+                                            <c-modal.viewitem
+                                                icon="{{ asset('assets/icons/vaccine.svg') }}"
+                                                title="Total Vaccinations"
+                                                info="2"
+                                            />
+                                            <c-modal.viewitem
+                                                icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
+                                                title="Age"
+                                                info="{{ $item['Age'] }}"
+                                            />
+                                            <c-modal.viewitem
+                                                icon="{{ asset('assets/icons/location-05.svg') }}"
+                                                title="GS Division"
+                                                info="{{ $item['gs_devision'] }}"
+                                            />
+                                             <c-modal.viewitem
+                                                icon="{{ asset('assets/icons/location-05.svg') }}"
+                                                title="Address"
+                                                info="N0 21,Yoak Road,Melburne"
+                                            />
                                         </c-modal.viewcard>
 
-                                        <h4>Additional Information</h4>
-                                        <ul>
-                                            <li>Nutrition Facts: Good</li>
-                                            <li>Lorem Ipsum</li>
-                                        </ul>
+                                        <div class="parent-link-group">
+                                            <div class="parent-link-card">
+                                                <div class="name-group">
+                                                    <span class="parent-title">Nicole Sanders</span>
+                                                    <span class="parent-type">Mother</span>
+                                                </div>
+                                                <c-badge type="green">
+                                                    Linked
+                                                </c-badge>
+                                            </div>
+                                            <div class="parent-link-card">
+                                                <div class="name-group">
+                                                    <span class="parent-title">John Michael</span>
+                                                    <span class="parent-type">Father</span>
+                                                </div>
+                                                <c-badge type="green">
+                                                    Linked
+                                                </c-badge>
+                                            </div>
+                                        </div>
+
+                                        <c-modal.viewlist title="Medical Records">
+                                            <c-slot name="list">
+                                                <li>Height: 49.5 cm</li>
+                                                <li>Weight: 3.4 kg</li>
+                                                <li>BMI Value: 3.5</li>
+                                            </c-slot>
+                                        </c-modal.viewlist>
+
+                                        <c-modal.viewlist title="Recent Vaccinations">
+                                            <c-slot name="list">
+                                                <li>BCG - Dose 1 at 13th of July 2023</li>
+                                                <li>BCG - Dose 2 at 28th of September 2023</li>
+                                            </c-slot>
+                                        </c-modal.viewlist>
+
+                                        <c-modal.viewlist title="Other Information">
+                                            <c-slot name="list">
+                                                <li>Nutrition facts: Lorem Ipsum</li>
+                                                <li>Lorem Ipsum</li>
+                                            </c-slot>
+                                        </c-modal.viewlist>
 
                                         <c-slot name="close">
                                             Close
+                                        </c-slot>
+
+                                        <c-slot name="footer">
+                                            <c-button variant="primary">
+                                                <img src="{{ asset('assets/icons/download-04.svg')}}" />
+                                                Download documents
+                                            </c-button>
                                         </c-slot>
                                     </c-modal>
                                 </c-slot>
