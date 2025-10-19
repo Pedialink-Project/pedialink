@@ -18,15 +18,10 @@ Home
   <img src="assets/logo.png" alt="PediaLink Logo">
   <!-- Navigation Menu -->
   <div class="navmenu">
-    <a href="#about">About</a>
-    <a href="#for-parents">For Parents</a>
-    <a href="#for-doctors">For PHM Doctors</a>
-    <a href="#hiw">How It Works</a>
-    <a href="#testimo">Testimonials</a>
-
-    <c-button $type="primary">
+    
+    <c-link $type="primary">
       Get Started
-    </c-button>
+    </c-link>
   </div>
 </div>
 <!-- Body -->
@@ -126,32 +121,7 @@ Home
       </div>
     </div>
 
-    <!-- Communication & Support Section -->
-    <div class="section">
-      <h2> Communication & Support</h2>
-      <p>Stay connected with your PHM doctor and access the resources you need.</p>
-      <!-- Card Container -->
-      <div class="cards-container">
-        <!-- Card-1 -->
-        <div class="card">
-          <img src="assets/icons/bubble-chat.svg" class="icon" alt="">
-          <h3>Secure Messaging</h3>
-          <p>Communicate with your PHM doctor securely and conveniently.</p>
-        </div>
-        <!-- Card-2 -->
-        <div class="card">
-          <img src="assets/icons/calendar-01.svg" class="icon" alt="">
-          <h3>Appointment Scheduling</h3>
-          <p>Schedule and manage appointments with your PHM doctor.</p>
-        </div>
-        <!-- Card-3 -->
-        <div class="card">
-          <img src="assets/icons/help-circle.svg" class="icon" alt="">
-          <h3>Support Resources</h3>
-          <p>Access a library of articles, FAQs, and other helpful resources.</p>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- How It Works-->
     <div id="hiw" class="section">
@@ -180,35 +150,7 @@ Home
       </div>
     </div>
 
-    <!-- Testimonials -->
-    <div id="testimo" class="section">
-      <h2>Testimonials</h2>
-      <!-- Card Container -->
-      <div class="cards-container">
-        <!-- Card-1 -->
-        <div class="testimonial-card">
-          <img src="assets/home/testimo-01.png" alt="">
-          <h3>"PediaLink has been a lifesaver! I feel so much more confident as a new parent with the support of my PHM
-            doctor and the monitoring tools."</h3>
-          <p>Sara, Parent</p>
-        </div>
-        <!-- Card-2 -->
-        <div class="testimonial-card">
-          <img src="assets/home/testimo-02.png" alt="">
-          <h3>"The ability to connect with my patients virtually has made my practice so much more efficient. I can
-            provide timely care and support without the need for frequent in-person visits."</h3>
-          <p>Dr. Emily Carter, PHM Doctor</p>
-        </div>
-        <!-- Card-3 -->
-        <div class="testimonial-card">
-          <img src="assets/home/testimo-03.png" alt="">
-          <h3>"I love the personalized support and resources available on PediaLink. It's like having a virtual
-            parenting coach!"</h3>
-          <p>Jessica, Parent</p>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- Call to Action -->
     <div class="section cta">
       <h2>Ready to Get Started?</h2>
