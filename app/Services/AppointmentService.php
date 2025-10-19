@@ -5,7 +5,7 @@ use App\Models\Appointment;
 use App\Models\Staff;
 use App\Models\Patient;
 use App\Models\ParentM;
-use Library\Framework\Database\QueryBuilder;
+use App\Models\User;
 use App\Models\Maternal;
 use App\Models\Child;
 
@@ -48,15 +48,41 @@ class AppointmentService
 
         $appointments = Appointment::query()->whereIn('patient_id', $patientIds)->get();
 
+
+
         $resource = [];
         foreach ($appointments as $appointment) {
+
+            $parentName = User::query()->where('id', '=', $parentId)->first()->name;
+            $maternal = Maternal::query()->where('id', '=', $appointment->patient_id)->first();
+            $child = Child::query()->where('id', '=', $appointment->patient_id)->first();
+
+            $patientName = null;
+
+            if ($maternal) {
+                $patientName = $parentName;
+            } elseif ($child) {
+                $patientName = trim(($child->first_name ?? '') . ' ' . ($child->last_name ?? ''));
+            } else {
+                $patientName = 'Unknown Patient';
+            }
+
+            $staffName = User::query()->where('id', '=', $appointment->staff_id)->first()->name;
+
+            $time = date('H:i', strtotime($appointment->datetime));
+            $date = date('Y-m-d', strtotime($appointment->datetime));
+
             $resource[] = [
                 "id" => $appointment->id,
                 "patient_id" => $appointment->patient_id,
                 "staff_id" => $appointment->staff_id,
+                "patient_name" => $patientName,
+                "staff_name" => $staffName,
                 "requested_by" => $appointment->requested_by,
+                "date" => $date,
+                "time" => $time,
                 "datetime" => $appointment->datetime,
-                "location" => $appointment->location,
+                "location" => $appointment->location ?? "Not Allocated",
                 "status" => $appointment->status,
                 "purpose" => $appointment->purpose,
                 "notes" => json_decode($appointment->notes),
