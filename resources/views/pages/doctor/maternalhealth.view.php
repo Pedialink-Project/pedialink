@@ -2,11 +2,7 @@
 @extends('layout/portal')
 
 @section('title')
-PHM Maternal Health
-@endsection
-
-@section('css')
-<link rel="stylesheet" href="{{ asset('css/pages/phm/childprofiles.css') }}">
+Doctor Maternal Health
 @endsection
 
 @section('header')
