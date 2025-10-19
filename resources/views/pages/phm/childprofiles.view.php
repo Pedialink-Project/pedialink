@@ -166,7 +166,7 @@ $items = [
                                         </c-slot>
 
                                         <c-slot name="headerSuffix">
-                                            <c-badge type="{{ $badgeType }}">Good</c-badge>
+                                            <c-badge type="green">Good</c-badge>
                                         </c-slot>
 
                                         <c-slot name="header">
@@ -228,7 +228,7 @@ $items = [
                                         Close
                                     </c-slot>
                                     <c-slot name="footer">
-                                        <c-button type="button" variant="outline" data-modal-close="registerAdmin">
+                                        <c-button type="button" variant="primary">
                                             Save Changes
                                         </c-button>
                                     </c-slot>
