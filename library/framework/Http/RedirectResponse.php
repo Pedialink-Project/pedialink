@@ -79,9 +79,26 @@ class RedirectResponse extends Response
      * @param string $type
      * @return RedirectResponse
      */
-    public function withMessage(string $message, string $type = 'info'): self
+    public function withMessage(
+        string $message,
+        string $title = '',
+        string $type = 'info',
+        array $action = ["link" => NULL, "text" => "Ok"],
+        int $duration = 4000
+    ): self
     {
-        $this->session->flash('_message', ['type' => $type, 'text' => $message]);
+        $toastMessage = [
+            'type' => $type,
+            'text' => $message,
+            'title' => $title,
+            'duration' => $duration,
+        ];
+
+        if ($action["link"] !== NULL && $action["text"] !== NULL) {
+            $toastMessage['action'] = $action;
+        }
+
+        $this->session->flash('_message', $toastMessage);
         return $this;
     }
 }
