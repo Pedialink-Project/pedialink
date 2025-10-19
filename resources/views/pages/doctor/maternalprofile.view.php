@@ -4,10 +4,6 @@
 Doctor Maternal Profiles
 @endsection
 
-@section('css') 
-<link rel="stylesheet" href="{{ asset('css/pages/phm/childprofiles.css') }}">
-@endsection
-
 @section('header')
 <svg width="30" height="27" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_474_8661)">
@@ -155,7 +151,7 @@ $items = [
                                 </c-modal>
                             </c-slot>
                             <c-dropdown.sep />
-                            <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$key,])}}">View Health
+                            <c-dropdown.item href="{{ route('doctor.maternal.health',['id'=>$key,])}}">View Health
                                 Records</c-dropdown.item>
                         </c-dropdown.main>
                     </c-table.td>
