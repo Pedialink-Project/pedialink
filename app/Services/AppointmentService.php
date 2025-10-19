@@ -153,6 +153,33 @@ class AppointmentService
 
         return $error;
     }
+
+    public function validateAppointment($date, $time, $staff, $patient){
+
+        $errors =[];
+
+        $dateError = $this->validateDate($date);
+        if ($dateError) {
+            $errors["date"] = $dateError;
+        }
+
+        $timeError = $this->validateTime($time);
+        if ($timeError) {
+            $errors["time"] = $timeError;
+        }
+
+        $staffError = $this->validateStaff($staff);
+        if ($staffError) {
+            $errors["staff"] = $staffError;
+        }
+
+        $patientError = $this->validatePatient($patient);
+        if ($patientError) {
+            $errors["patient"] = $patientError;
+        }
+
+        return $errors;
+    }
 }
 
 ?>
