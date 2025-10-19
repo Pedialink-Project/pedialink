@@ -21,13 +21,13 @@ class AppointmentController
         return view("parent/appointments", ['appointments' => $appointments]);
     }
 
-     public function requestAppointment(Request $request)
+    public function requestAppointment(Request $request)
     {
         $patient = $request->input("patient");
         $staff = $request->input("staff");
         $time = $request->input("time");
         $date = $request->input("date");
-        $purpose =$request->input("purpose");
+        $purpose = $request->input("purpose");
         $notes = $request->input("notes");
 
         $errors = $this->appointmentService
@@ -45,15 +45,19 @@ class AppointmentController
                 ->with("create", true);
         }
 
-        $this->appointmentService->requestAppointment($patient,$staff,$date,$time,$purpose,$notes);
+        $this->appointmentService->requestAppointment($patient, $staff, $date, $time, $purpose, $notes);
 
         return redirect(route("parent.appointments"))
-            ->withMessage("success");
+            ->withMessage(
+                "Appointment request was successfully created",
+                "Appointment Requested",
+                "success",
+            );
     }
 
-    public function requestRescheduleAppointment(Request $request,$appointment)
+    public function requestRescheduleAppointment(Request $request, $appointment)
     {
-       
+
         $time = $request->input("time");
         $date = $request->input("date");
         $reason = $request->input("reason");
@@ -75,20 +79,27 @@ class AppointmentController
         $this->appointmentService->requestRescheduleAppointment($appointment, $date, $time, $reason, $notes);
 
         return redirect(route("parent.appointments"))
-            ->withMessage("success");
+            ->withMessage(
+                "Appointment reschedule request was successfully requested",
+                "Appointment reschedule requested",
+                "success",
+            );
     }
 
-    public function requestCancelAppointment(Request $request,$appointment)
+    public function requestCancelAppointment(Request $request, $appointment)
     {
-       
+
         $reason = $request->input("reason");
         $notes = $request->input("notes");
 
         $this->appointmentService->requestCancelAppointment($appointment, $reason, $notes);
 
         return redirect(route("parent.appointments"))
-            ->withMessage("success")
-            ->with("cancel", $appointment);
+            ->withMessage(
+                "Appointment cancel request was successfully requested",
+                "Appointment Cancel Requested",
+                "error",
+            )->with("cancel", $appointment);
 
     }
 
@@ -96,6 +107,6 @@ class AppointmentController
 
 
 
-   
- 
+
+
 }
