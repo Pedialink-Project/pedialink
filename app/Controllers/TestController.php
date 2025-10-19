@@ -11,6 +11,11 @@ class TestController
         return view('test/test');
     }
 
+    public function testCalendar(Request $request)
+    {
+        return view('test/calendartest');
+    }
+
     public function testMessage(Request $request)
     {
         return redirect(route("home"))
