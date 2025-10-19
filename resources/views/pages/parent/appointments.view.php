@@ -278,13 +278,15 @@ Parent - Appointments
 
 
 
-
+                                    @if($appointment['purpose'])
                                     <c-modal.viewlist title="Purpose">
                                         <c-slot name="list">
                                             <li>{{ $appointment['purpose'] }}</li>
                                         </c-slot>
                                     </c-modal.viewlist>
+                                    @endif
 
+                                    @if($appointment['notes'])
                                     <c-modal.viewlist title="Notes">
                                         <c-slot name="list">
                                             @foreach($appointment['notes'] as $note)
@@ -293,6 +295,7 @@ Parent - Appointments
 
                                         </c-slot>
                                     </c-modal.viewlist>
+                                    @endif
 
                                     <c-slot name="footer">
                                         <c-button variant="secondary">
