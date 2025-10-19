@@ -243,6 +243,26 @@ class AppointmentService
 
         return $errors;
     }
+
+     public function validateRescheduleAppointment($date, $time)
+    {
+
+        $errors = [];
+
+        $dateError = $this->validateDate($date);
+        if ($dateError) {
+            $errors["date"] = $dateError;
+        }
+
+        $timeError = $this->validateTime($time);
+        if ($timeError) {
+            $errors["time"] = $timeError;
+        }
+
+      
+
+        return $errors;
+    }
 private function formatNotes(string $notes)
 {
     // Split the string by new lines (\r\n, \r, or \n)
@@ -255,7 +275,7 @@ private function formatNotes(string $notes)
     return json_encode($notesArray, JSON_UNESCAPED_UNICODE);
 }
 
-       public function createAppointment($patient, $staff, $date, $time,$location, $purpose, $notes, $requester)
+       public function createAppointment($patient, $staff, $date, $time,$location, $purpose, $notes)
     {
 
         $appointmentDateTime = $date . ' ' . $time;

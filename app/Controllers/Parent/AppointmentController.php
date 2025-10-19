@@ -45,11 +45,40 @@ class AppointmentController
                 ->with("create", true);
         }
 
-        $this->appointmentService->requestAppointment($patient,$staff,$date,$time,$purpose,$notes,$requester = "parent");
+        $this->appointmentService->requestAppointment($patient,$staff,$date,$time,$purpose,$notes);
 
         return redirect(route("parent.appointments"))
             ->withMessage("success");
     }
+
+    public function requestRescheduleAppointment(Request $request,$appointment)
+    {
+       
+        $time = $request->input("time");
+        $date = $request->input("date");
+        $reason = $request->input("reason");
+        $notes = $request->input("notes");
+
+        $errors = $this->appointmentService
+            ->validateRescheduleAppointment($date, $time);
+
+        if (count($errors) !== 0) {
+            return redirect(route("parent.appointments"))
+                ->withInput([
+                    "date" => $date,
+                    "time" => $time
+                ])
+                ->withErrors($errors)
+                ->with("create", true);
+        }
+
+        $this->appointmentService->requestRescheduleAppointment($appointment, $date, $time, $reason, $notes);
+
+        return redirect(route("parent.appointments"))
+            ->withMessage("success");
+    }
+
+
 
 
 
