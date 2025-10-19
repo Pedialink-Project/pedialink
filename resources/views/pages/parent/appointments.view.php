@@ -347,7 +347,7 @@ Parent - Appointments
 
                                     </c-card>
 
-                                    <form id="reschedule-appointment-form" action="">
+                                    <form id="reschedule-appointment-form-{{$appointment['id']}}" action="{{ route('parent.appointment.reschedule', ['id' => $appointment['id']]) }}" method="POST">
                                         <c-input type="date" label="New Date" name="date" placeholder="Select Date"
                                             value="{{$appointment['date']}}" required />
                                         <c-select label="New Time" name="time" multiple="1" searchable="1"
@@ -368,7 +368,7 @@ Parent - Appointments
                                     </c-slot>
 
                                     <c-slot name="footer">
-                                        <c-button type="submit" form="reschedule-appointment-form" variant="primary">
+                                        <c-button type="submit" form="reschedule-appointment-form-{{$appointment['id']}}" variant="primary">
                                             Submit Request
                                         </c-button>
                                     </c-slot>
