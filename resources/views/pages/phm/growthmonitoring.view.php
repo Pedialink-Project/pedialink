@@ -32,7 +32,7 @@ PHM - Growth Monitorinng
 
 @section('content')
 
-<main class="container">
+<div class="container">
 
     <!-- BMI Chart -->
     <c-card class="card bmi-card">
@@ -100,7 +100,7 @@ PHM - Growth Monitorinng
         </div>
     </c-card>
 
-</main>
+</div>
 
 
 <script>
