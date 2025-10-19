@@ -38,3 +38,27 @@
     font-weight: var(--font-weight-semibold);
     font-size: var(--text-md);
 }
+
+.view-list{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.view-list .area-title{
+    font-size: var(--text-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.view-list .area-list ul{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    list-style-type: disc;
+    padding-left: 1.5rem;
+}
+.view-list .area-list ul li{
+    font-size: var(--text-md);
+    color: var(--text-muted);
+}

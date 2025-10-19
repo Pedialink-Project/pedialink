@@ -35,6 +35,10 @@ Home
   Test Portal
 </c-link>
 
+<c-link type="primary" href="{{ route('test.message') }}">
+  Test message
+</c-link>
+
 <c-modal id="eventDetails" size="sm" :initOpen="false">
     <c-slot name="trigger">
         <c-button variant="primary">Open details</c-button>

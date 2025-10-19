@@ -12,5 +12,6 @@
     @yield('scripts')
 
     <script src="{{ asset('js/password-box.js') }}"></script>
+    <c-toast :initToasts="flash('_message') ?? null"></c-toast>
 </body>
 </html>

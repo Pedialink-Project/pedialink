@@ -9,5 +9,6 @@
 <body>
     @yield('content')
     @yield('scripts')
+    <c-toast :initToasts="flash('_message') ?? null"></c-toast>
 </body>
 </html>

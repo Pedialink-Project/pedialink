@@ -1,0 +1,125 @@
+/* toast.css - minimal, shadcn-like toasts (stacked top-right) */
+
+:root{
+  --toast-gap: 0.5rem;
+  --toast-width: 320px;
+  --toast-radius: 10px;
+  --toast-padding: .75rem;
+  --toast-shadow: 0 10px 30px rgba(2,6,23,0.12);
+  --toast-z: 1200;
+  --toast-success-bg: color-mix(in srgb, var(--color-green-600) 10%, var(--panel) 90%);
+  --toast-error-bg: color-mix(in srgb, var(--color-red-600) 10%, var(--panel) 90%);
+  --toast-info-bg: color-mix(in srgb, var(--color-blue-600) 8%, var(--panel) 92%);
+  --toast-text: var(--text-primary);
+  --toast-accent: var(--accent);
+}
+
+/* container (portaled to body) */
+.toast-root {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: var(--toast-z);
+  display: flex;
+  flex-direction: column;
+  gap: var(--toast-gap);
+  pointer-events: none; /* allow clicks to pass through empty space */
+  max-width: calc(100% - 2rem);
+}
+
+/* each toast */
+.toast {
+  pointer-events: auto; /* make toast interactive */
+  width: var(--toast-width);
+  max-width: calc(100vw - 2.5rem);
+  background: var(--panel);
+  color: var(--toast-text);
+  border-radius: var(--toast-radius);
+  padding: var(--toast-padding);
+  box-shadow: var(--toast-shadow);
+  display: flex;
+  gap: .5rem;
+  align-items: flex-start;
+  box-sizing: border-box;
+  transform-origin: top right;
+  transition: transform .12s ease, opacity .12s ease;
+  opacity: 0;
+  transform: translateY(-8px) scale(.995);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* show state */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* variants */
+.toast--success { background: var(--toast-success-bg); }
+.toast--error   { background: var(--toast-error-bg); }
+.toast--info    { background: var(--toast-info-bg); }
+
+/* content layout */
+.toast-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.toast-title {
+  font-weight: 700;
+  font-size: .95rem;
+  color: var(--text-strong);
+  line-height: 1;
+}
+
+.toast-message {
+  font-size: .92rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* actions area (right side) */
+.toast-actions {
+  display: flex;
+  gap: .5rem;
+  align-items: start;
+  margin-left: .25rem;
+}
+
+/* action button */
+.toast-action {
+  background: transparent;
+  border: 1px solid black;
+  padding: .35rem .55rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.toast-action:hover { background: var(--surface); }
+
+/* close button */
+.toast-close {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: .25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  line-height: 0;
+}
+.toast-close svg { display:block; }
+
+/* small responsive */
+@media (max-width: 520px) {
+  .toast { width: 100%; padding: .6rem; }
+  .toast-root { left: 1rem; right: 1rem; top: .8rem; }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .toast { transition: none; transform: none; }
+}

@@ -10,4 +10,15 @@ class TestController
     {
         return view('test/test');
     }
+
+    public function testMessage(Request $request)
+    {
+        return redirect(route("home"))
+            ->withMessage(
+                "hello", 
+                'Hello Bro', 
+                'info', 
+                ['link' => route('test.portal'), 'text' => 'Go to portal']
+            );
+    }
 }

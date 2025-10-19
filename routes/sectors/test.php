@@ -6,4 +6,5 @@ use App\Controllers\TestController;
 
 return [
     ['GET', '/test', [TestController::class, 'testPortal'], 'test.portal'],
+    ['GET', '/test/message', [TestController::class, 'testMessage'], 'test.message'],
 ];
