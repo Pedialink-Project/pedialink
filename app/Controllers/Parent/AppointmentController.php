@@ -18,7 +18,7 @@ class AppointmentController
         return view("parent/appointments");
     }
 
-     public function createAppointment(Request $request)
+     public function requestAppoinment(Request $request)
     {
         $patient = $request->input("patient");
         $staff = $request->input("staff");
@@ -31,7 +31,7 @@ class AppointmentController
             ->validateAppointment($patient, $staff, $date, $time);
 
         if (count($errors) !== 0) {
-            return redirect(route(""))
+            return redirect(route("parent.appointments"))
                 ->withInput([
                     "patient" => $patient,
                     "staff" => $staff,
@@ -44,7 +44,7 @@ class AppointmentController
 
         $this->appointmentService->createAppointment($patient,$staff,$date,$time,$purpose,$notes);
 
-        return redirect(route(""))
+        return redirect(route("parent.appointments"))
             ->withMessage("success");
     }
 
