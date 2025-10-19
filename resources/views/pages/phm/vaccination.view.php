@@ -63,125 +63,127 @@ $items = [
 
             <c-table.tbody>
                 @foreach ($items as $key => $item)
+                    <c-table.tr>
+                        <c-table.td col="id">{{ $item['id'] }}</c-table.td>
+                        <c-table.td col="name">{{ $item['name'] }}</c-table.td>
+                        <c-table.td col="Age">{{ $item['Age'] }}</c-table.td>
+                        <c-table.td col="Vaccination Satus">
+                            @if (strtolower($item['Vaccination Status']) === "completed")
+                                <c-badge type="green">
+                                    {{ ucfirst($item['Vaccination Status'] )}}
+                                </c-badge>
+                            @elseif (strtolower($item['Vaccination Status']) === "upcoming")
+                                <c-badge type="purple">
+                                    {{ ucfirst($item['Vaccination Status'] )}}
+                                </c-badge>
+                            @elseif (strtolower($item['Vaccination Status']) === "overdue")
+                                <c-badge type="red">
+                                    {{ ucfirst($item['Vaccination Status'] )}}
+                                </c-badge>
+                            @elseif (strtolower($item['Vaccination Status']) === "pending")
+                                <c-badge type="yellow">
+                                    {{ ucfirst($item['Vaccination Status'] )}}
+                                </c-badge>
+                            @endif
+                        </c-table.td>
+                        <c-table.td col="Vaccination Date">{{ $item['Vaccination Date'] }}</c-table.td>
+                        <c-table.td class="table-actions" align="center">
+                            <c-dropdown.main>
+                                <c-slot name="trigger">
+                                    <c-button variant="ghost" class="dropdown-trigger">
+                                        <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                    </c-button>
+                                </c-slot>
+                                <c-slot name="menu">
+                                    <c-modal id="view-vaccination-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>View Vaccination Details</c-dropdown.item>
+                                        </c-slot>
 
-                <?php
-                $badgeType = '';
-                if (strtolower($item['Vaccination Status']) === "completed")
-                    $badgeType = 'green';
-                elseif (strtolower($item['Vaccination Status']) === "upcoming")
-                    $badgeType = 'purple';
-                elseif (strtolower($item['Vaccination Status']) === "overdue")
-                    $badgeType = 'red';
-                elseif (strtolower($item['Vaccination Status']) === "pending")
-                    $badgeType = 'yellow';
-                ?>
-                <c-table.tr>
-                    <c-table.td col="id">{{ $item['id'] }}</c-table.td>
-                    <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                    <c-table.td col="Age">{{ $item['Age'] }}</c-table.td>
-                    <c-table.td col="Vaccination Satus"> <c-badge type="{{$badgeType}}">
-                            {{ ucfirst($item['Vaccination Status'] )}}
-                        </c-badge>
-                    </c-table.td>
-                    <c-table.td col="Vaccination Date">{{ $item['Vaccination Date'] }}</c-table.td>
-                    <c-table.td class="table-actions" align="center">
-                        <c-dropdown.main>
-                            <c-slot name="trigger">
-                                <c-button variant="ghost" class="dropdown-trigger">
-                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
-                                </c-button>
-                            </c-slot>
-                            <c-slot name="menu">
-                                <c-modal id="view-vaccination-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-slot name="headerPrefix">
+                                            <img src="{{ asset('assets/icons/vaccine.svg' )}}" />
+                                        </c-slot>
+
+
+                                        <c-slot name="headerSuffix">
+                                            <c-badge type="{{$badgeType}}">
+                                                {{ ucfirst($item['Vaccination Status'] )}}
+                                            </c-badge>
+
+                                        </c-slot>
+
+                                        <c-slot name="header">
+                                            <div>Vaccination Details</div>
+                                        </c-slot>
+
+                                        <c-modal.viewcard>
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="ID"
+                                                info="{{ $item['id'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Name"
+                                                info="{{ $item['name'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
+                                                title="Age" info="{{ $item['Age'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
+                                                title="Type of Vaccine" info="Rubella Vaccine" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
+                                                title="Vaccination Status" info="{{ $item['Vaccination Status'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                                title="Vaccination Date" info="{{ $item['Vaccination Date'] }}" />
+                                        </c-modal.viewcard>
+
+                                        <h4>Additional Information</h4>
+                                        <ul>
+                                            <li>Alargies: None</li>
+                                            <li>Lorem Ipsum</li>
+                                        </ul>
+
+                                        <c-slot name="close">
+                                            Close
+                                        </c-slot>
+                                    </c-modal>
+                                </c-slot>
+                                <c-dropdown.sep />
+                                <c-modal id="edit-vaccination-record-{{ $key }}" size="sm" :initOpen="false">
                                     <c-slot name="trigger">
-                                        <c-dropdown.item>View Vaccination Details</c-dropdown.item>
+                                        <c-dropdown.item>Edit Vaccination Details</c-dropdown.item>
                                     </c-slot>
 
                                     <c-slot name="headerPrefix">
-                                    <img src="{{ asset('assets/icons/vaccine.svg' )}}" />
-                                </c-slot>
-
-
-                                    <c-slot name="headerSuffix">
-                                        <c-badge type="{{$badgeType}}">
-                                            {{ ucfirst($item['Vaccination Status'] )}}
-                                        </c-badge>
-
+                                        <img src="{{ asset('assets/icons/vaccine.svg' )}}" />
                                     </c-slot>
 
                                     <c-slot name="header">
-                                        <div>Vaccination Details</div>
+                                        <div>Edit Vaccination Details</div>
                                     </c-slot>
 
-                                    <c-modal.viewcard>
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="ID"
-                                            info="{{ $item['id'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Name"
-                                            info="{{ $item['name'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                            title="Age" info="{{ $item['Age'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Type of Vaccine" info="Rubella Vaccine" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Vaccination Status" info="{{ $item['Vaccination Status'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
-                                            title="Vaccination Date" info="{{ $item['Vaccination Date'] }}" />
-                                    </c-modal.viewcard>
-
-                                    <h4>Additional Information</h4>
-                                    <ul>
-                                        <li>Alargies: None</li>
-                                        <li>Lorem Ipsum</li>
-                                    </ul>
-
-                                    <c-slot name="close">
-                                        Close
+                                    <form id="edit-vaccination-form" action="">
+                                        <c-input type="text" label="ID:" placeholder="{{ $item['id'] }}" required />
+                                        <c-input type="text" label="Name:" placeholder="{{ $item['name'] }}" required />
+                                        <c-input type="text" label="Age:" placeholder="{{ $item['Age'] }}" required />
+                                        <c-select label="Vaccination Status:" name="permissions" multiple="1" searchable="1">
+                                            <li class="select-item" data-value="child">Upcoming</li>
+                                            <li class="select-item" data-value="maternal">Pending</li>
+                                            <li class="select-item" data-value="infant">Completed</li>
+                                            <li class="select-item" data-value="toddler">Overdue</li>
+                                        </c-select>
+                                        <c-input type="text" label="Vaccination Date:" placeholder="{{ $item['Vaccination Date'] }}" required />
+                                    </form>
+                                    <c-slot name="footer">
+                                        <c-button type="button" variant="primary" form="edit-vaccination-form" >Save
+                                            Changes</c-button>
                                     </c-slot>
                                 </c-modal>
-                            </c-slot>
-                            <c-dropdown.sep />
-                            <c-modal id="edit-vaccination-record-{{ $key }}" size="sm" :initOpen="false">
-                                <c-slot name="trigger">
-                                    <c-dropdown.item>Edit Vaccination Details</c-dropdown.item>
-                                </c-slot>
-
-                                <c-slot name="headerPrefix">
-                                    <img src="{{ asset('assets/icons/vaccine.svg' )}}" />
-                                </c-slot>
-
-                                <c-slot name="header">
-                                    <div>Edit Vaccination Details</div>
-                                </c-slot>
-
-                                <form id="edit-vaccination-form" action="">
-                                    <c-input type="text" label="ID:" placeholder="{{ $item['id'] }}" required />
-                                    <c-input type="text" label="Name:" placeholder="{{ $item['name'] }}" required />
-                                    <c-input type="text" label="Age:" placeholder="{{ $item['Age'] }}" required />
-                                    <c-select label="Vaccination Status:" name="permissions" multiple="1"
-                                        searchable="1">
-                                        <li class="select-item" data-value="child">Upcoming</li>
-                                        <li class="select-item" data-value="maternal">Pending</li>
-                                        <li class="select-item" data-value="infant">Completed</li>
-                                        <li class="select-item" data-value="toddler">Overdue</li>
-                                    </c-select>
-                                    <c-input type="text" label="Vaccination Date:"
-                                        placeholder="{{ $item['Vaccination Date'] }}" required />
-                                </form>
-                                <c-slot name="footer">
-                                    <c-button type="button" variant="primary" form="edit-vaccination-form" >Save
-                                        Changes</c-button>
-                                </c-slot>
-                            </c-modal>
-                        </c-dropdown.main>
-                    </c-table.td>
-                </c-table.tr>
+                            </c-dropdown.main>
+                        </c-table.td>
+                    </c-table.tr>
                 @endforeach
+                
                 @if(count($items) === 0)
-                <tr>
-                    <td colspan="6">
-                        <div class="table-empty">No items found</div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="6">
+                            <div class="table-empty">No items found</div>
+                        </td>
+                    </tr>
                 @endif
             </c-table.tbody>
         </c-table.main>
