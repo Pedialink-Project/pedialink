@@ -153,6 +153,7 @@ $items = [
                                 </c-slot>
                                 <c-slot name="menu">
                                     <c-dropdown.item>Copy Child ID</c-dropdown.item>
+                                    <c-dropdown.sep />
                                     <c-modal id="View-Child-{{ $key }}" size="md" :initOpen="false">
                                         <c-slot name="headerPrefix">
                                             <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
@@ -256,53 +257,52 @@ $items = [
                                             </c-button>
                                         </c-slot>
                                     </c-modal>
-                                </c-slot>
-                                <c-dropdown.sep />
-                                <c-modal id="edit-child-profile-{{ $key }}" size="md" :initOpen="false">
-                                    <c-slot name="trigger">
-                                        <c-dropdown.item>Edit Child Profile</c-dropdown.item>
-                                    </c-slot>
-                                    <c-slot name="headerPrefix">
-                                        <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
-                                    </c-slot>
-                                    <c-slot name="header">
-                                        <div>Edit Child Profile</div>
-                                    </c-slot>
+                                    <c-modal id="edit-child-profile-{{ $key }}" size="md" :initOpen="false">
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>Edit Child Profile</c-dropdown.item>
+                                        </c-slot>
+                                        <c-slot name="headerPrefix">
+                                            <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
+                                        </c-slot>
+                                        <c-slot name="header">
+                                            <div>Edit Child Profile</div>
+                                        </c-slot>
 
-                                    <form id="edit-child-profile-form" class="child-form" action="">
-                                        <c-input type="text" label="Child Full Name:" placeholder="{{ $item['name'] }}"
-                                            required />
-                                        <c-input type="text" label="GN Devision:" placeholder="{{ $item['gs_devision'] }}"
-                                            required />
-                                        <c-input type="date" label="Date of Birth:" value="" required />
-                                        <c-textarea label="Address:" placeholder="132,1/2,Lorem street" rows="1">
-                                        </c-textarea>
-                                        <c-select label="Health Status:" multiple="1" default="{{ $item['Health Status'] }}">
-                                            <option class="select-item" data-value="child">Good</option>
-                                            <option class="select-item" data-value="child">Crtical</option>
-                                        </c-select>
-                                        
-                                        <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." rows="4"></c-textarea>
-                                    </form>
-                                    <c-slot name="close">
-                                        Close
-                                    </c-slot>
-                                    <c-slot name="footer">
-                                        <c-button type="button" variant="primary">
-                                            Save Changes
-                                        </c-button>
-                                    </c-slot>
-                                </c-modal>
-                                <c-dropdown.sep />
-                                <c-dropdown.item href="{{ route('phm.growth.monitoring',['id'=>$key,])}}">
-                                    View Growth Records
-                                </c-dropdown.item>
-                                <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$key,])}}">
-                                    View Health Records
-                                </c-dropdown.item>
-                                <c-dropdown.item href="{{ route('phm.vaccination',['id'=>$key,])}}">
-                                    View Vaccination Records
-                                </c-dropdown.item>
+                                        <form id="edit-child-profile-form" class="child-form" action="">
+                                            <c-input type="text" label="Child Full Name:" placeholder="{{ $item['name'] }}"
+                                                required />
+                                            <c-input type="text" label="GN Devision:" placeholder="{{ $item['gs_devision'] }}"
+                                                required />
+                                            <c-input type="date" label="Date of Birth:" value="" required />
+                                            <c-textarea label="Address:" placeholder="132,1/2,Lorem street" rows="1">
+                                            </c-textarea>
+                                            <c-select label="Health Status:" multiple="1" default="{{ $item['Health Status'] }}">
+                                                <option class="select-item" data-value="child">Good</option>
+                                                <option class="select-item" data-value="child">Crtical</option>
+                                            </c-select>
+                                            
+                                            <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." rows="4"></c-textarea>
+                                        </form>
+                                        <c-slot name="close">
+                                            Close
+                                        </c-slot>
+                                        <c-slot name="footer">
+                                            <c-button type="button" variant="primary">
+                                                Save Changes
+                                            </c-button>
+                                        </c-slot>
+                                    </c-modal>
+                                    <c-dropdown.sep />
+                                    <c-dropdown.item href="{{ route('phm.growth.monitoring',['id'=>$key,])}}">
+                                        View Growth Records
+                                    </c-dropdown.item>
+                                    <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$key,])}}">
+                                        View Health Records
+                                    </c-dropdown.item>
+                                    <c-dropdown.item href="{{ route('phm.vaccination',['id'=>$key,])}}">
+                                        View Vaccination Records
+                                    </c-dropdown.item>
+                                </c-slot>
                             </c-dropdown.main>
                         </c-table.td>
                     </c-table.tr>
