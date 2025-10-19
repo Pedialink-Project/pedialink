@@ -352,10 +352,10 @@ Parent - Appointments
                                             value="{{$appointment['date']}}" required />
                                         <c-select label="New Time" name="time" multiple="1" searchable="1"
                                             value="{{$appointment['time']}}" required>
-                                            <li class="select-item" data-value=" ">09.00 AM</li>
-                                            <li class="select-item" data-value=" ">10.00 AM</li>
-                                            <li class="select-item" data-value=" ">11.00 AM</li>
-                                            <li class="select-item" data-value=" ">12.00 PM</li>
+                                            <li class="select-item" data-value="09:00">09.00 AM</li>
+                                            <li class="select-item" data-value="10:00">10.00 AM</li>
+                                            <li class="select-item" data-value="11:00">11.00 AM</li>
+                                            <li class="select-item" data-value="12:00">12.00 PM</li>
                                         </c-select>
                                         <c-textarea name="reason" label="Reason for Rescheduling"
                                             placeholder="Enter your reason" required />
@@ -438,7 +438,7 @@ Parent - Appointments
 
                                     </c-card>
 
-                                    <form id="cancel-appointment-form" action="">
+                                    <form id="cancel-appointment-form-{{$appointment['id']}}" action="{{ route('parent.appointment.cancel', ['id' => $appointment['id']]) }}" method="POST">
                                         <c-textarea name="reason" label="Reason for Cancellation"
                                             placeholder="Enter your reason" required />
                                         <c-textarea name="notes" label="Additional Notes"
@@ -450,7 +450,7 @@ Parent - Appointments
                                     </c-slot>
 
                                     <c-slot name="footer">
-                                        <c-button type="submit" form="cancel-appointment-form" variant="destructive">
+                                        <c-button type="submit" form="cancel-appointment-form-{{$appointment['id']}}" variant="destructive">
                                             Cancel Appointment
                                         </c-button>
 
