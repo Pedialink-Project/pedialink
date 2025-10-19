@@ -21,6 +21,7 @@
 @import "./components/pill.css";
 @import "./components/modal.css";
 @import "./components/toast.css";
+@import "./components/calendar.css";
 
 /* helper/additional css for components */
 @import "./components/password-icon.css";
