@@ -345,13 +345,6 @@ class AppointmentService
 
 
 
-    public function cancelAppointment($appointmentId)
-    {
-        $appointment = Appointment::find($appointmentId);
-        $appointment->status = 'cancelled';
-        $appointment->save();
-
-    }
 
 
     public function requestCancelAppointment($appointmentId, $reason, $notes)
@@ -360,6 +353,15 @@ class AppointmentService
         $appointment->status = 'cancel_requested';
         $appointment->cancel_reason = $reason;
         $appointment->notes = $this->formatNotes($notes);
+        $appointment->save();
+
+    }
+
+
+    public function cancelAppointment($appointmentId)
+    {
+        $appointment = Appointment::find($appointmentId);
+        $appointment->status = 'cancelled';
         $appointment->save();
 
     }

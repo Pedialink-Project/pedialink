@@ -304,15 +304,11 @@ Parent - Appointments
                                     </c-modal.viewlist>
                                     @endif
 
-                                    <c-slot name="footer">
-                                        <c-button variant="secondary">
-                                            Cancel Appointment
-                                        </c-button>
-
-                                        <c-button variant="primary">
-                                            Reschedule Appointment
-                                        </c-button>
+                                    <c-slot name="close">
+                                        Close
                                     </c-slot>
+
+                                      
                                 </c-modal>
                                 <c-dropdown.sep />
                                 <c-modal id="reschedule-appointmant-{{$key}}" size="md" :initOpen="flash('reschedule') === $appointment['id'] ? true : false">

@@ -8,7 +8,7 @@ class Appointment extends Model
 
     protected static string $table = "appointments";
 
-    protected array $fillable = ["patient_id", "staff_id", "requested_by", "datetime", "location","status","purpose","notes","cancled_by"];
+    protected array $fillable = ["patient_id", "staff_id", "datetime", "location","status","purpose","notes","cancel_reason","reschedule_reason"];
 
 
 
