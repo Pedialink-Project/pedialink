@@ -2,6 +2,8 @@
 
 namespace App\Services;
 use App\Models\Appointment;
+use App\Models\Staff;
+use App\Models\Patient;
 
 
 
@@ -43,10 +45,10 @@ class AppointmentService
 
         $appointmentDate = new \DateTime($date);
 
-         if (!$appointmentDate) {
-        $error = "Invalid time format (expected HH:MM, 24-hour format)";
-        return $error;
-    }
+        if (!$appointmentDate) {
+            $error = "Invalid time format (expected HH:MM, 24-hour format)";
+            return $error;
+        }
         $currentDate = new \DateTime();
 
         if ($appointmentDate <= $currentDate) {
@@ -99,7 +101,58 @@ class AppointmentService
 
 
     }
-    
+
+    private function validateStaff(string $staff)
+    {
+        $error = null;
+        if (!Validator::validateFieldExistence($staff)) {
+            $error = "Staff Preference cannot be empty";
+            return $error;
+        }
+
+        $staffTypes = Staff::all();
+        $validType = false;
+
+        foreach ($staffTypes as $staffType) {
+            if (strtolower($$staff) === strtolower($staffType->type)) {
+                $validType = true;
+                break;
+            }
+        }
+
+        if (!$validType) {
+            $error = "Invalid Staff type";
+            return $error;
+        }
+
+        return $error;
+    }
+
+    private function validatePatient(string $patient)
+    {
+        $error = null;
+        if (!Validator::validateFieldExistence($patient)) {
+            $error = "Patient cannot be empty";
+            return $error;
+        }
+
+        $patients = Patient::all();
+        $validPatient = false;
+
+        foreach ($patients as $p) {
+            if (strtolower($patient) === strtolower($p->name)) {
+                $validPatient = true;
+                break;
+            }
+        }
+
+        if (!$validPatient) {
+            $error = "Invalid Patient";
+            return $error;
+        }
+
+        return $error;
+    }
 }
 
 ?>
