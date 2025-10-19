@@ -243,6 +243,19 @@ class AppointmentService
 
         return $errors;
     }
+private function formatNotes(string $notes)
+{
+    // Split the string by new lines (\r\n, \r, or \n)
+    $lines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $notes)));
+
+    $notesArray = array_map(function ($line) {
+        return ['note' => $line];
+    }, $lines);
+
+    return json_encode($notesArray, JSON_UNESCAPED_UNICODE);
+}
+
+     
 
     public function createAppointment($patient, $staff, $date, $time, $purpose, $notes, $requester)
     {
@@ -255,7 +268,7 @@ class AppointmentService
         $appointment->requested_by = $requester;
         $appointment->datetime = $appointmentDateTime;
         $appointment->purpose = $purpose;
-        $appointment->notes = json_encode($notes);
+        $appointment->notes = $this->formatNotes($notes);
         $appointment->save();
 
     }
