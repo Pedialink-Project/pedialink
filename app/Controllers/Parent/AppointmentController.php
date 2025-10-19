@@ -78,6 +78,18 @@ class AppointmentController
             ->withMessage("success");
     }
 
+    public function requestCancelAppointment(Request $request,$appointment)
+    {
+       
+        $reason = $request->input("reason");
+        $notes = $request->input("notes");
+
+        $this->appointmentService->requestCancelAppointment($appointment, $reason, $notes);
+
+        return redirect(route("parent.appointments"))
+            ->withMessage("success");
+    }
+
 
 
 

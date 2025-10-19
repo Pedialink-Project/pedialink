@@ -214,20 +214,33 @@ Parent - Appointments
                     <c-table.td col="status">
                         {{
                         $badgeType = '';
-                        if(strtolower($appointment['status']) == 'completed') {
-                        $badgeType = 'green';
-                        } elseif (strtolower($appointment['status']) == 'upcoming') {
-                        $badgeType = 'purple';
-                        } elseif (strtolower($appointment['status']) == 'pending') {
+
+                        switch (strtolower($appointment['status'])) {
+                        case 'pending':
                         $badgeType = 'yellow';
-                        }
-                        else {
+                        break;
+                        case 'confirmed':
+                        $badgeType = 'green';
+                        break;
+                        case 'cancelled':
+                        case 'cancel_requested':
                         $badgeType = 'red';
+                        break;
+                        case 'reschedule_requested':
+                        $badgeType = 'blue';
+                        break;
+                        case 'rescheduled':
+                        $badgeType = 'purple';
+                        break;
+                        default:
+                        $badgeType = 'primary';
                         }
+                        $badgeText = ucwords(str_replace('_', ' ', $appointment['status']));
+
 
                         }}
                         <c-badge type="{{ $badgeType }}">
-                            {{$appointment['status']}}
+                            {{$badgeText}}
                         </c-badge>
                     </c-table.td>
                     <c-table.td class="table-actions" align="center">
@@ -254,7 +267,7 @@ Parent - Appointments
                                     <c-slot name="headerSuffix">
 
                                         <c-badge type="{{ $badgeType }}">
-                                            {{$appointment['status']}}
+                                            {{$badgeText}}
                                         </c-badge>
                                     </c-slot>
 
@@ -347,7 +360,9 @@ Parent - Appointments
 
                                     </c-card>
 
-                                    <form id="reschedule-appointment-form-{{$appointment['id']}}" action="{{ route('parent.appointment.reschedule', ['id' => $appointment['id']]) }}" method="POST">
+                                    <form id="reschedule-appointment-form-{{$appointment['id']}}"
+                                        action="{{ route('parent.appointment.reschedule', ['id' => $appointment['id']]) }}"
+                                        method="POST">
                                         <c-input type="date" label="New Date" name="date" placeholder="Select Date"
                                             value="{{$appointment['date']}}" required />
                                         <c-select label="New Time" name="time" multiple="1" searchable="1"
@@ -368,7 +383,8 @@ Parent - Appointments
                                     </c-slot>
 
                                     <c-slot name="footer">
-                                        <c-button type="submit" form="reschedule-appointment-form-{{$appointment['id']}}" variant="primary">
+                                        <c-button type="submit"
+                                            form="reschedule-appointment-form-{{$appointment['id']}}" variant="primary">
                                             Submit Request
                                         </c-button>
                                     </c-slot>
@@ -438,7 +454,9 @@ Parent - Appointments
 
                                     </c-card>
 
-                                    <form id="cancel-appointment-form-{{$appointment['id']}}" action="{{ route('parent.appointment.cancel', ['id' => $appointment['id']]) }}" method="POST">
+                                    <form id="cancel-appointment-form-{{$appointment['id']}}"
+                                        action="{{ route('parent.appointment.cancel', ['id' => $appointment['id']]) }}"
+                                        method="POST">
                                         <c-textarea name="reason" label="Reason for Cancellation"
                                             placeholder="Enter your reason" required />
                                         <c-textarea name="notes" label="Additional Notes"
@@ -450,7 +468,8 @@ Parent - Appointments
                                     </c-slot>
 
                                     <c-slot name="footer">
-                                        <c-button type="submit" form="cancel-appointment-form-{{$appointment['id']}}" variant="destructive">
+                                        <c-button type="submit" form="cancel-appointment-form-{{$appointment['id']}}"
+                                            variant="destructive">
                                             Cancel Appointment
                                         </c-button>
 
