@@ -12,4 +12,11 @@ class ChildHealthController
             "id" => $id,
         ]);
     }
+
+    public function vaccinationIndex(Request $request, int $id)
+    {
+        return view("doctor/vaccinationrecord", [
+            "id" => $id,
+        ]);
+    }
 }
