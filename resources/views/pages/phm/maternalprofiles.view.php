@@ -4,10 +4,6 @@
 PHM Maternal Profiles
 @endsection
 
-@section('css')
-<link rel="stylesheet" href="{{ asset('css/pages/phm/childprofiles.css') }}">
-@endsection
-
 @section('header')
 <svg width="30" height="27" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_474_8661)">
@@ -52,7 +48,7 @@ $items = [
 ];
 ?>
 
-<c-table.controls :columns='["ID","Name","Age","Address","Type","Stage"]'>
+<c-table.controls :columns='["ID","Name","Age","Type","Stage"]'>
 
     <c-slot name="filter">
         <c-button variant="outline">
@@ -74,7 +70,6 @@ $items = [
                     <c-table.th sortable="1" width="160px">ID</c-table.th>
                     <c-table.th sortable="1" width="210px">Name</c-table.th>
                     <c-table.th sortable="1" width="200px">Age</c-table.th>
-                    <c-table.th sortable="1" width="270px">Address</c-table.th>
                     <c-table.th align="left" sortable="1" width="220px">Type</c-table.th>
                     <c-table.th align="left" sortable="1">Stage</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
@@ -87,7 +82,6 @@ $items = [
                     <c-table.td col="id">{{ $item['id'] }}</c-table.td>
                     <c-table.td col="name">{{ $item['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $item['Age'] }}</c-table.td>
-                    <c-table.td col="address">{{ $item['Address'] }}</c-table.td>
                     <c-table.td col="type">{{ $item['Type'] }}</c-table.td>
                     <c-table.td col="stage">{{ $item['Stage'] }}</c-table.td>
                     <c-table.td class="table-actions" align="center">
@@ -99,6 +93,7 @@ $items = [
                             </c-slot>
                             <c-slot name="menu">
                                 <c-dropdown.item>Copy Mother ID</c-dropdown.item>
+                                <c-dropdown.sep />
                                 <c-modal id="view-maternal-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>View Maternal Profile</c-dropdown.item>
@@ -134,29 +129,33 @@ $items = [
                                         <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
                                             title="Pregnancy Duration" info="5 weeks and 2 days" />
                                     </c-modal.viewcard>
-                                    <h4>Medical Records</h4>
-                                    <ul>
-                                        <li>Height:160cm</li>
-                                        <li>Weight:67kg</li>
-                                        <li>Blood Group: O+</li>
-                                        <li>Blood Sugar:110 mg/dL</li>
-                                        <li>Blood Presure:120 mmHg</li>
-                                        <li>Width of Belly: 32 cm</li>
-                                    </ul>
-                                    <h4>Additional Information</h4>
-                                    <ul>
-                                        <li>Nutrition Facts: Good</li>
-                                        <li>Allergies: None</li>
-                                    </ul>
+
+                                    <c-modal.viewlist title="Medical Records">
+                                        <c-slot name="list">
+                                            <li>Height:160cm</li>
+                                            <li>Weight:67kg</li>
+                                            <li>Blood Group: O+</li>
+                                            <li>Blood Sugar:110 mg/dL</li>
+                                            <li>Blood Presure:120 mmHg</li>
+                                            <li>Width of Belly: 32 cm</li>
+                                        </c-slot>
+                                    </c-modal.viewlist>
+
+                                    <c-modal.viewlist title="Additional Information">
+                                        <c-slot name="list">
+                                            <li>Nutrition Facts: Good</li>
+                                            <li>Allergies: None</li>
+                                        </c-slot>
+                                    </c-modal.viewlist>
 
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$key,])}}">
+                                    View Health Records
+                                </c-dropdown.item>
                             </c-slot>
-                            <c-dropdown.sep />
-                            <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$key,])}}">View Health
-                                Records</c-dropdown.item>
                         </c-dropdown.main>
                     </c-table.td>
                 </c-table.tr>

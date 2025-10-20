@@ -5,7 +5,7 @@ PHM Maternal Health
 @endsection
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/pages/phm/childprofiles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/phm/maternal-health.css') }}">
 @endsection
 
 @section('header')
@@ -80,17 +80,17 @@ $items = [
                 <div>Add Health Records</div>
             </c-slot>
 
-            <form id="add-health-record-form" action="">
-                <c-input type="text" label="Recorded at:" placeholder="Enter Recorded Date & Time" required /><br>
-                <c-input type="text" label="BMI:" placeholder="Enter BMI of the Mother" required /><br>
+            <form id="add-health-record-form" class="maternal-health-form" action="">
+                <c-input type="text" label="Recorded at:" placeholder="Enter Recorded Date & Time" required />
+                <c-input type="text" label="BMI:" placeholder="Enter BMI of the Mother" required />
                 <c-input type="text" label="Blood Pressure:" placeholder="Enter Blood Pressure of the Mother (in mmHg)"
-                    required /><br>
+                    required />
                 <c-input type="text" label="Blood Sugar:" placeholder="Enter Blood Sugar of the Mother (in mg/dL )"
-                    required /><br>
+                    required />
                 <c-select label="Status:" name="permissions" multiple="1" searchable="1">
                     <li class="select-item" data-value="child">Good</li>
                     <li class="select-item" data-value="maternal">Bad</li>
-                </c-select><br>
+                </c-select>
             </form>
             <c-slot name="close">
                 Close
@@ -118,147 +118,141 @@ $items = [
 
             <c-table.tbody>
                 @foreach ($items as $key=>$item)
-                                                  <?php
-$badgeType = '';
-if (strtolower($item['Health Status']) === "good")
-    $badgeType = 'green';
-elseif (strtolower($item['Health Status']) === "critical")
-    $badgeType = 'purple';
-elseif (strtolower($item['Health Status']) === "bad")
-    $badgeType = 'red';
-
-?>
-                <c-table.tr>
-                    <c-table.td col="Recorded at">{{ $item['Recorded at'] }}</c-table.td>
-                    <c-table.td col="BMI">{{ $item['BMI'] }}</c-table.td>
-                    <c-table.td col="Blood Pressure">{{ $item['Blood Pressure'] }}</c-table.td>
-                    <c-table.td col="Blood Sugar">{{ $item['Blood Sugar'] }}</c-table.td>
-                    <c-table.td col="Health Status">
-                        <c-badge type="{{ $badgeType }}">{{ $item['Health Status'] }}</c-badge>
-                </c-table.td>
-                    <c-table.td class="table-actions" align="center">
-                        <c-dropdown.main>
-                            <c-slot name="trigger">
-                                <c-button variant="ghost" class="dropdown-trigger">
-                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
-                                </c-button>
-                            </c-slot>
-                            <c-slot name="menu">
-                                <c-modal id="view-health-record-{{ $key }}" size="sm" :initOpen="false">
-                                    <c-slot name="trigger">
-                                        <c-dropdown.item>View Record</c-dropdown.item>
-                                    </c-slot>
-                                    <c-slot name="headerSuffix">
-                                        <c-badge type="{{ $badgeType }}">{{ $item['Health Status'] }}</c-badge>
-                                    </c-slot>
-
-                                    <c-slot name="headerPrefix">
-                                        <img src="{{ asset('assets/icons/profile.svg' )}}" />
-                                    </c-slot>
-
-                                    <c-slot name="header">
-                                        <div>Health Record</div>
-                                    </c-slot>
-
-                                    <c-modal.viewcard>
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Record ID" info="12000" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
-                                            title="Recorded At" info="{{ $item['Recorded at'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}" title="Height"
-                                            info="160cm" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
-                                            title="Weight" info="77kg" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
-                                            title="Blood Pressure" info="{{ $item['Blood Pressure'] }} " />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
-                                            title="Blood Sugar" info="{{ $item['Blood Sugar'] }} " />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}"
-                                            title="Pregnancy Stage" info="First Trimester" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
-                                            title="Fundal Height" info="5 cm" />
-                                    </c-modal.viewcard>
-
-                                    <h4>Additional Information</h4>
-                                    <ul>
-                                        <li>Nutrition Facts: Good</li>
-                                        <li>Lorem Ipsum</li>
-                                    </ul>
-
-                                    <c-slot name="close">
-                                        Close
-                                    </c-slot>
-                                    
-                                </c-modal>
-                            </c-slot>
-                            <c-dropdown.sep />
-                            <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="false">
+                    <c-table.tr>
+                        <c-table.td col="Recorded at">{{ $item['Recorded at'] }}</c-table.td>
+                        <c-table.td col="BMI">{{ $item['BMI'] }}</c-table.td>
+                        <c-table.td col="Blood Pressure">{{ $item['Blood Pressure'] }}</c-table.td>
+                        <c-table.td col="Blood Sugar">{{ $item['Blood Sugar'] }}</c-table.td>
+                        <c-table.td col="Health Status">
+                            @if (strtolower($item['Health Status']) === "good")
+                                <c-badge type="green">{{ $item['Health Status'] }}</c-badge>                   
+                            @elseif (strtolower($item['Health Status']) === "critical")
+                                <c-badge type="purple">{{ $item['Health Status'] }}</c-badge>
+                            @elseif (strtolower($item['Health Status']) === "bad")
+                                <c-badge type="red">{{ $item['Health Status'] }}</c-badge>
+                            @endif
+                        </c-table.td>
+                        <c-table.td class="table-actions" align="center">
+                            <c-dropdown.main>
                                 <c-slot name="trigger">
-                                    <c-dropdown.item>Edit Health Records</c-dropdown.item>
+                                    <c-button variant="ghost" class="dropdown-trigger">
+                                        <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                    </c-button>
                                 </c-slot>
+                                <c-slot name="menu">
+                                    <c-modal id="view-health-record-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>View Record</c-dropdown.item>
+                                        </c-slot>
+                                        <c-slot name="headerSuffix">
+                                            <c-badge type="{{ $badgeType }}">{{ $item['Health Status'] }}</c-badge>
+                                        </c-slot>
 
-                                <c-slot name="headerPrefix">
-                                    <img src="{{ asset('assets/icons/profile.svg' )}}" />
-                                </c-slot>
+                                        <c-slot name="headerPrefix">
+                                            <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                        </c-slot>
 
-                                <c-slot name="header">
-                                    <div>Edit Health Records</div>
-                                </c-slot>
+                                        <c-slot name="header">
+                                            <div>Health Record</div>
+                                        </c-slot>
 
-                                <form id="edit-health-record-form" action="">
-                                    <c-input type="text" label="Recorded at:" placeholder="{{ $item['Recorded at'] }}"
-                                        required /><br>
-                                    <c-input type="text" label="BMI:" placeholder="{{ $item['BMI'] }}" required /><br>
-                                    <c-input type="text" label="Blood Pressure:"
-                                        placeholder="{{ $item['Blood Pressure'] }}" required /><br>
-                                    <c-input type="text" label="Blood Sugar:" placeholder="{{ $item['Blood Sugar'] }}"
-                                        required /><br>
-                                    <c-select label="Blood :" multiple="1" Default="{{ $item['Health Status'] }}">
-                                        <option class="select-item" data-value="child">Good</option>
-                                        <option class="select-item" data-value="child">Bad</option>
-                                    </c-select><br>
-                                    <c-textarea label="Additional Notes:" placeholder="Nutrition Facts."
-                                        rows="4"></c-textarea>
-                                </form>
-                                <c-slot name="close">Close</c-slot>
-                                <c-slot name="footer">
-                                    <c-button type="submit" variant="primary" form="edit-health-record-form">Save
-                                        Changes</c-button>
-                                </c-slot>
-                            </c-modal>
-                            <c-dropdown.sep />
-                            <c-modal id="mark-as-invalid-{{ $key }}" size="sm" :initOpen="false">
-                                <c-slot name="trigger">
-                                    <c-dropdown.item>Mark as Invalid</c-dropdown.item>
-                                </c-slot>
-                                <c-slot name="headerPrefix">
-                                    <img src="{{ asset('assets/icons/profile.svg' )}}" />
-                                </c-slot>
+                                        <c-modal.viewcard>
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
+                                                title="Record ID" info="12000" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                                title="Recorded At" info="{{ $item['Recorded at'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}" title="Height"
+                                                info="160cm" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
+                                                title="Weight" info="77kg" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                                title="Blood Pressure" info="{{ $item['Blood Pressure'] }} " />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                                title="Blood Sugar" info="{{ $item['Blood Sugar'] }} " />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}"
+                                                title="Pregnancy Stage" info="First Trimester" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
+                                                title="Fundal Height" info="5 cm" />
+                                        </c-modal.viewcard>
 
-                                <c-slot name="header">
-                                    <div>Mark as Invalid</div>
-                                </c-slot>
+                                        <c-modal.viewlist title="Additional Information">
+                                            <c-slot name="list">
+                                                <li>Nutrition Facts: Good</li>
+                                                <li>Lorem Ipsum</li>
+                                            </c-slot>
+                                        </c-modal.viewlist>
 
-                                <p>Are you sure you want to mark this record as invalid?</p>
+                                        <c-slot name="close">
+                                            Close
+                                        </c-slot>
+                                        
+                                    </c-modal>
+                                    <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>Edit Health Records</c-dropdown.item>
+                                        </c-slot>
 
-                                <c-slot name="close">
-                                    cancel
+                                        <c-slot name="headerPrefix">
+                                            <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                        </c-slot>
+
+                                        <c-slot name="header">
+                                            <div>Edit Health Records</div>
+                                        </c-slot>
+
+                                        <form id="edit-health-record-form" class="maternal-health-form" action="">
+                                            <c-input type="text" label="Recorded at:" placeholder="{{ $item['Recorded at'] }}"
+                                                required />
+                                            <c-input type="text" label="BMI:" placeholder="{{ $item['BMI'] }}" required />
+                                            <c-input type="text" label="Blood Pressure:"
+                                                placeholder="{{ $item['Blood Pressure'] }}" required />
+                                            <c-input type="text" label="Blood Sugar:" placeholder="{{ $item['Blood Sugar'] }}"
+                                                required />
+                                            <c-select label="Blood :" multiple="1" Default="{{ $item['Health Status'] }}">
+                                                <option class="select-item" data-value="child">Good</option>
+                                                <option class="select-item" data-value="child">Bad</option>
+                                            </c-select>
+                                            <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." rows="4"></c-textarea>
+                                        </form>
+                                        <c-slot name="close">Close</c-slot>
+                                        <c-slot name="footer">
+                                            <c-button type="submit" variant="primary" form="edit-health-record-form">Save
+                                                Changes</c-button>
+                                        </c-slot>
+                                    </c-modal>
+                                    <c-modal id="mark-as-invalid-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>Mark as Invalid</c-dropdown.item>
+                                        </c-slot>
+                                        <c-slot name="headerPrefix">
+                                            <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                        </c-slot>
+
+                                        <c-slot name="header">
+                                            <div>Mark as Invalid</div>
+                                        </c-slot>
+
+                                        <p>Are you sure you want to mark this record as invalid?</p>
+
+                                        <c-slot name="close">
+                                            cancel
+                                        </c-slot>
+                                        <c-slot name="footer">
+                                            <c-button type="button" variant="destructive">Mark</c-button>
+                                        </c-slot>
+                                    </c-modal>
                                 </c-slot>
-                                <c-slot name="footer">
-                                    <c-button type="button" variant="destructive"
-                                      >Mark</c-button>
-                                </c-slot>
-                            </c-modal>
-                        </c-dropdown.main>
-                    </c-table.td>
-                </c-table.tr>
+                            </c-dropdown.main>
+                        </c-table.td>
+                    </c-table.tr>
                 @endforeach
+
                 @if(count($items) === 0)
-                <tr>
-                    <td colspan="6">
-                        <div class="table-empty">No items found</div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="6">
+                            <div class="table-empty">No items found</div>
+                        </td>
+                    </tr>
                 @endif
             </c-table.tbody>
         </c-table.main>

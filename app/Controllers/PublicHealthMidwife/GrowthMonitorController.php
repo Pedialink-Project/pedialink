@@ -10,4 +10,11 @@ class GrowthMonitorController
     {
         return view("phm/growthmonitoring");
     }
+
+    public function childGrowthIndex(Request $request, int $id)
+    {
+        return view("phm/growthmonitoring", [
+            "id" => $id,
+        ]);
+    }
 }

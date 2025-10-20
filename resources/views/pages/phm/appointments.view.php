@@ -5,16 +5,20 @@
 @endsection
 
 @section('header')
-<svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M2.08337 10C2.08337 6.26806 2.08337 4.40208 3.24274 3.24271C4.40211 2.08334 6.26809 2.08334 10 2.08334C13.732 2.08334 15.598 2.08334 16.7573 3.24271C17.9167 4.40208 17.9167 6.26806 17.9167 10C17.9167 13.732 17.9167 15.5979 16.7573 16.7573C15.598 17.9167 13.732 17.9167 10 17.9167C6.26809 17.9167 4.40211 17.9167 3.24274 16.7573C2.08337 15.5979 2.08337 13.732 2.08337 10Z" stroke="#3A3C41" stroke-width="1.5"/>
-<path d="M9.16663 5.83334L14.1666 5.83334" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M5.83337 5.83334L6.66671 5.83334" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M5.83337 10L6.66671 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M5.83337 14.1667L6.66671 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M9.16663 10L14.1666 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M9.16663 14.1667L14.1666 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
-</svg>
+    <svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.08337 10C2.08337 6.26806 2.08337 4.40208 3.24274 3.24271C4.40211 2.08334 6.26809 2.08334 10 2.08334C13.732 2.08334 15.598 2.08334 16.7573 3.24271C17.9167 4.40208 17.9167 6.26806 17.9167 10C17.9167 13.732 17.9167 15.5979 16.7573 16.7573C15.598 17.9167 13.732 17.9167 10 17.9167C6.26809 17.9167 4.40211 17.9167 3.24274 16.7573C2.08337 15.5979 2.08337 13.732 2.08337 10Z" stroke="#3A3C41" stroke-width="1.5"/>
+        <path d="M9.16663 5.83334L14.1666 5.83334" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M5.83337 5.83334L6.66671 5.83334" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M5.83337 10L6.66671 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M5.83337 14.1667L6.66671 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M9.16663 10L14.1666 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
    Appointments Details
+@endsection
+
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/pages/phm/appointment.css') }}">
 @endsection
 
 @section('content')
@@ -32,8 +36,8 @@
         ['id' => 'A-1345', 'name' => 'Fiona Adams', 'Age' => '38', 'Category' => 'Mother', 'Date & Time' =>'2023-03-25', 'Status' => 'Pending'],
         ['id' => 'A-1345', 'name' => 'George Baker', 'Age' => '9', 'Category' => 'Baby', 'Date & Time' =>'2023-03-30', 'Status' => 'Upcoming'],
         ['id' => 'D-1345', 'name' => 'Hannah Evans', 'Age' => '10', 'Category' => 'Baby', 'Date & Time' =>'2023-04-04', 'Status' => 'Overdue'],
-        ];
-        ?>
+    ];
+    ?>
 
     <c-table.controls :columns='["ID","Name","Age","Category","Date & Time","Status"]'>
 
@@ -57,7 +61,7 @@
                 </c-slot>
 
                 <c-slot name="headerPrefix">
-                    <img src="{{ asset('assets/icons/profile-02.svg' )}}"/>
+                    <img src="{{ asset('assets/icons/profile.svg' )}}"/>
                 </c-slot>
 
                 <c-slot name="header">
@@ -65,17 +69,17 @@
                 </c-slot>
 
                 <form id="admin-register-form" action="">
-                    <c-input type="text" label="ID:" placeholder="Enter ID" required /><br>
-                    <c-input type="text" label="Name:" placeholder="Enter Name of the Mother/Child" required /><br>
-                    <c-input type="text" label="Age(yrs):" placeholder="Enter Age" required /><br>
-                    <c-input type="text" label="Category:" placeholder="Enter the Category" required /><br>
-                    <c-input type="text" label="Date & Time:" placeholder="Enter Date & Time" required /><br>
+                    <c-input type="text" label="ID:" placeholder="Enter ID" required />
+                    <c-input type="text" label="Name:" placeholder="Enter Name of the Mother/Child" required />
+                    <c-input type="text" label="Age(yrs):" placeholder="Enter Age" required />
+                    <c-input type="text" label="Category:" placeholder="Enter the Category" required />
+                    <c-input type="text" label="Date & Time:" placeholder="Enter Date & Time" required />
                     <c-select label="Status:" name="permissions" multiple="1" searchable="1">
                         <li class="select-item" data-value="child">Upcoming</li>
                         <li class="select-item" data-value="maternal">Pending</li>
                         <li class="select-item" data-value="infant">Completed</li>
                         <li class="select-item" data-value="toddler">Overdue</li>
-                    </c-select><br>
+                    </c-select>
                 </form>
                 <c-slot name="close">
                         Close
@@ -130,22 +134,22 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                         <c-dropdown.item><b>Actions</c-dropdown.item>
-                                         <c-modal id="View-appointment-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-dropdown.item><b>Actions</c-dropdown.item>
+                                        <c-modal id="View-appointment-{{ $key }}" size="sm" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Appointment</c-dropdown.item>
                                             </c-slot>
 
                                             <c-slot name="headerSuffix">
-                                              @if (strtolower($item["Status"]) === "completed")
-                                                 <c-badge type="yellow">{{ $item['Status']}}</c-badge>
-                                              @elseif (strtolower($item["Status"]) === "pending")
-                                                 <c-badge type="green">{{ $item['Status']}}</c-badge>
-                                              @elseif (strtolower($item["Status"]) === "overdue")
-                                                 <c-badge type="red">{{ $item['Status']}}</c-badge>
-                                              @elseif (strtolower($item["Status"]) === "upcoming")
-                                                 <c-badge type="purple">{{ $item['Status']}}</c-badge>
-                                              @endif    
+                                                @if (strtolower($item["Status"]) === "completed")
+                                                    <c-badge type="yellow">{{ $item['Status']}}</c-badge>
+                                                @elseif (strtolower($item["Status"]) === "pending")
+                                                    <c-badge type="green">{{ $item['Status']}}</c-badge>
+                                                @elseif (strtolower($item["Status"]) === "overdue")
+                                                    <c-badge type="red">{{ $item['Status']}}</c-badge>
+                                                @elseif (strtolower($item["Status"]) === "upcoming")
+                                                    <c-badge type="purple">{{ $item['Status']}}</c-badge>
+                                                @endif    
                                             </c-slot>
 
                                             <c-slot name="header">
@@ -196,81 +200,81 @@
                                             </c-modal.viewcard>
                                             
                                             <h4>Additional Information</h4>
-                                             <ul>
-                                              <li>Nutrition Facts: Good</li>
-                                              <li>Lorem Ipsum</li>
+                                            <ul>
+                                                <li>Nutrition Facts: Good</li>
+                                                <li>Lorem Ipsum</li>
                                             </ul>  
                                             
                                             <c-slot name="close">
                                                 Close
                                             </c-slot>
                                         </c-modal>
-                                        </c-slot>
                                         <c-dropdown.sep />
-                                    <c-modal id="edit-appointment-{{ $key }}" size="sm" :initOpen="false">
-                                    <c-slot name="trigger">
-                                     <c-dropdown.item>Edit Appointment Details</c-dropdown.item>
-                                    </c-slot>
+                                        <c-modal id="edit-appointment-{{ $key }}" size="sm" :initOpen="false">
+                                            <c-slot name="trigger">
+                                            <c-dropdown.item>Edit Appointment Details</c-dropdown.item>
+                                            </c-slot>
 
-                                    <c-slot name="headerPrefix">
-                                           <img src="{{ asset('assets/icons/configuration-02.svg' )}}"/>
-                                     </c-slot>
+                                            <c-slot name="headerPrefix">
+                                                <img src="{{ asset('assets/icons/configuration-02.svg' )}}"/>
+                                            </c-slot>
 
-                                    <c-slot name="header">
-                                            <div>Edit Appointment Details</div>
-                                    </c-slot>
+                                            <c-slot name="header">
+                                                    <div>Edit Appointment Details</div>
+                                            </c-slot>
 
-                        <form id="admin-register-form" action="">
-                             <c-input type="text" label="ID:" placeholder="{{ $item['id'] }}" required /><br>
-                             <c-input type="text" label="Name:" placeholder="{{ $item['name'] }}" required /><br>
-                             <c-input type="text" label="Age:" placeholder="{{ $item['Age'] }}" required /><br>
-                             <c-select label="Category:" name="permissions" multiple="1" searchable="1">
-                                    <li class="select-item" data-value="child">Mother</li>
-                                    <li class="select-item" data-value="maternal">Baby</li>
-                             </c-select><br>
-                             <c-input type="text" label="Date & Time:" placeholder="{{ $item['Date & Time'] }}" required /><br>
-                             <c-select label="Status:" name="permissions" multiple="1" searchable="1">
-                                    <li class="select-item" data-value="child">Upcoming</li>
-                                    <li class="select-item" data-value="maternal">Pending</li>
-                                    <li class="select-item" data-value="infant">Completed</li>
-                                    <li class="select-item" data-value="toddler">Overdue</li>
-                             </c-select><br>
-                        </form>
-                        <c-slot name="close">
-                        Close
-                </c-slot>
-                <c-slot name="footer">
-                    <c-button type="submit" form="admin-register-form" variant="primary">Save Changes</c-button>
-                </c-slot>
-                        </c-modal>
-                        <c-dropdown.sep />
-                                <c-modal id="cancel-appointment-{{ $key }}" size="sm" :initOpen="false">
-                                    <c-slot name="trigger">
-                                     <c-dropdown.item>Cancel Appointment</c-dropdown.item>
-                                    </c-slot>
-                                     <c-slot name="headerPrefix">
-                                           <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
-                                     </c-slot>
- 
-                                    <c-slot name="header">
-                                            <div style="color: red;">Cancel Appointment</div>
-                                    </c-slot>
+                                            <form action="">
+                                                <c-input type="text" label="ID:" placeholder="{{ $item['id'] }}" required />
+                                                <c-input type="text" label="Name:" placeholder="{{ $item['name'] }}" required />
+                                                <c-input type="text" label="Age:" placeholder="{{ $item['Age'] }}" required />
+                                                <c-select label="Category:" name="permissions" multiple="1" searchable="1">
+                                                        <li class="select-item" data-value="child">Mother</li>
+                                                        <li class="select-item" data-value="maternal">Baby</li>
+                                                </c-select>
+                                                <c-input type="text" label="Date & Time:" placeholder="{{ $item['Date & Time'] }}" required />
+                                                <c-select label="Status:" name="permissions" multiple="1" searchable="1">
+                                                        <li class="select-item" data-value="child">Upcoming</li>
+                                                        <li class="select-item" data-value="maternal">Pending</li>
+                                                        <li class="select-item" data-value="infant">Completed</li>
+                                                        <li class="select-item" data-value="toddler">Overdue</li>
+                                                </c-select>
+                                            </form>
+                                            <c-slot name="close">
+                                                Close
+                                            </c-slot>
+                                            <c-slot name="footer">
+                                                <c-button type="submit" variant="primary">Save Changes</c-button>
+                                            </c-slot>
+                                        </c-modal>
+                                        <c-modal id="cancel-appointment-{{ $key }}" size="sm" :initOpen="false">
+                                            <c-slot name="trigger">
+                                                <c-dropdown.item>Cancel Appointment</c-dropdown.item>
+                                            </c-slot>
+                                            <c-slot name="headerPrefix">
+                                                <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
+                                            </c-slot>
+        
+                                            <c-slot name="header">
+                                                Cancel Appointment
+                                            </c-slot>
 
-                                    <form id="admin-register-form" action="">
-                                        <c-textarea label="Reason for Cancellation:" placeholder="Enter your reason..." rows="3"></c-textarea>
-                                        <c-textarea label="Additional Notes:" placeholder="Any additional notes or others" rows="4"></c-textarea>
-                                    </form>
-                                    <c-slot name="close">
-                                       Close
+                                            <form id="admin-register-form" action="">
+                                                <c-textarea label="Reason for Cancellation:" placeholder="Enter your reason..." rows="3"></c-textarea>
+                                                <c-textarea label="Additional Notes:" placeholder="Any additional notes or others" rows="4"></c-textarea>
+                                            </form>
+                                            <c-slot name="close">
+                                                Close
+                                            </c-slot>
+                                            <c-slot name="footer">
+                                                <c-button type="submit" variant="destructive">Cancel Appointment</c-button>
+                                            </c-slot>
+                                        </c-modal>
                                     </c-slot>
-                                    <c-slot name="footer">
-                                    <c-button type="submit" form="admin-register-form" variant="secondary">Cancel Appointment</c-button>
-                                    </c-slot>
-                               </c-modal>
-                            </c-dropdown.main>
+                                </c-dropdown.main>
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
+
                     @if(count($items) === 0)
                         <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
                     @endif

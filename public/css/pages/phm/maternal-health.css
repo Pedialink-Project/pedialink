@@ -1,0 +1,11 @@
+.maternal-health-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+.maternal-health-form > div {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+}

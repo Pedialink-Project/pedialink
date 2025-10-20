@@ -6,8 +6,10 @@ use Library\Framework\Http\Request;
 
 class ChildHealthController
 {
-    public function index(Request $request)
+    public function index(Request $request, int $id)
     {
-        return view("phm/childhealth");
+        return view("phm/childhealth", [
+            "id" => $id,
+        ]);
     }
 }

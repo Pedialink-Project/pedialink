@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-PHM - Growth Monitorinng
+Growth Monitorinng
 @endsection
 
 @section('css')
@@ -26,27 +26,41 @@ PHM - Growth Monitorinng
             stroke="#18181B" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
 
-    <span>Growth Monitoring</span>
+    <span>
+        Growth Monitoring
+        @if (isset($id))
+            &#8594; Baby Sarah &middot; C-000{{ $id }}
+        @endif
+    </span>
 </div>
 @endsection
 
 @section('content')
 
-<main class="container">
+<div class="container">
 
     <!-- BMI Chart -->
     <c-card class="card bmi-card">
         <div class="header">
             <div class="title-section">
                 <span class="card-title">Child BMI Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
+                <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
             </div>
             <!-- Child Selector -->
-            <c-select name='child' class="child-select" placeholder="Select Child">
-                <li class="select-item" data-value="all-children">All Children</li>
-                <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                <li class="select-item" data-value="baby-john">Baby John</li>
-            </c-select>
+            @if (isset($id))
+                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child" value="baby-sara" disabled>
+                    <li class="select-item" data-value="all-children">All Children</li>
+                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                    <li class="select-item" data-value="baby-john">Baby John</li>
+                </c-select>
+            @else 
+                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child">
+                    <li class="select-item" data-value="all-children">All Children</li>
+                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                    <li class="select-item" data-value="baby-john">Baby John</li>
+                </c-select>
+            @endif
+            
         </div>
         <hr class="divider">
         <div class="card-body">
@@ -61,14 +75,22 @@ PHM - Growth Monitorinng
         <div class="header">
             <div class="title-section">
                 <span class="card-title">Child Height Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's Height over time</span>
+                <span class="card-subtitle">Track Baby Sarah's Height over time</span>
             </div>
             <!-- Child Selector -->
-            <c-select name='child' class="child-select" placeholder="Select Child">
-                <li class="select-item" data-value="all-children">All Children</li>
-                <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                <li class="select-item" data-value="baby-john">Baby John</li>
-            </c-select>
+            @if (isset($id))
+                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child" value="baby-sara" disabled>
+                    <li class="select-item" data-value="all-children">All Children</li>
+                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                    <li class="select-item" data-value="baby-john">Baby John</li>
+                </c-select>
+            @else 
+                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child">
+                    <li class="select-item" data-value="all-children">All Children</li>
+                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                    <li class="select-item" data-value="baby-john">Baby John</li>
+                </c-select>
+            @endif
         </div>
         <hr class="divider">
         <div class="card-body">
@@ -83,14 +105,22 @@ PHM - Growth Monitorinng
         <div class="header">
             <div class="title-section">
                 <span class="card-title">Child Weight Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's Weight over time</span>
+                <span class="card-subtitle">Track Baby Sarah's Weight over time</span>
             </div>
             <!-- Child Selector -->
-            <c-select name='child' class="child-select" placeholder="Select Child">
-                <li class="select-item" data-value="all-children">All Children</li>
-                <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                <li class="select-item" data-value="baby-john">Baby John</li>
-            </c-select>
+            @if (isset($id))
+                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child" value="baby-sara" disabled>
+                    <li class="select-item" data-value="all-children">All Children</li>
+                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                    <li class="select-item" data-value="baby-john">Baby John</li>
+                </c-select>
+            @else 
+                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child">
+                    <li class="select-item" data-value="all-children">All Children</li>
+                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
+                    <li class="select-item" data-value="baby-john">Baby John</li>
+                </c-select>
+            @endif
         </div>
         <hr class="divider">
         <div class="card-body">
@@ -100,7 +130,7 @@ PHM - Growth Monitorinng
         </div>
     </c-card>
 
-</main>
+</div>
 
 
 <script>
