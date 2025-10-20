@@ -52,7 +52,7 @@
 
 /* Focus ring on wrapper for consistent look */
 .textarea-row:focus-within {
-  box-shadow: var(--textarea-focus-ring);
+  /* box-shadow: var(--textarea-focus-ring); */
   border-color: var(--accent);
   transform: translateY(-1px);
 }

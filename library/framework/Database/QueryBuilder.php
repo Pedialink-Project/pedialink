@@ -85,6 +85,32 @@ class QueryBuilder
     }
 
     /**
+ * Add a WHERE IN condition
+ * @param string $column
+ * @param array $values
+ * @return QueryBuilder
+ */
+public function whereIn(string $column, array $values): static
+{
+    if (empty($values)) {
+        // No values, so condition will never match
+        $this->wheres[] = "0 = 1";
+        return $this;
+    }
+
+    $placeholders = [];
+    foreach ($values as $index => $value) {
+        $key = ":{$column}_in{$index}";
+        $placeholders[] = $key;
+        $this->bindings[$key] = $value;
+    }
+
+    $this->wheres[] = "{$column} IN (" . implode(',', $placeholders) . ")";
+    return $this;
+}
+
+
+    /**
      * Retrieve array of model instances after
      * executing the built query
      * @return object[]
@@ -220,6 +246,31 @@ class QueryBuilder
         $stmt->execute($params);
         return $stmt;
     }
+
+
+    /**
+ * Get a single column from the results as an array
+ * @param string $column
+ * @return array
+ */
+public function pluck(string $column): array
+{
+    $sql = "SELECT {$column} FROM {$this->table}";
+    if ($this->wheres) {
+        $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
+    }
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($this->bindings);
+
+    $results = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $results[] = $row[$column];
+    }
+
+    return $results;
+}
+
 
     /**
      * Raw get method for fetching data with sql.

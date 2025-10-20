@@ -1,0 +1,19 @@
+.role-badge {
+    width: 5rem;
+    justify-content: center;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+#delete-account .delete-content {
+    font-size: var(--text-md);
+}
+
+.delete-content > .admin-id, .admin-type {
+    color: var(--destructive);
+    font-weight: var(--font-weight-semibold); 
+}

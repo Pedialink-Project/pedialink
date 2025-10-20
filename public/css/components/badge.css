@@ -5,7 +5,8 @@
 .badge{
     display: inline-flex;
     align-items: center;
-    padding: .125rem .5rem;
+    white-space: nowrap;
+    padding: .25rem .5rem;
     gap: .25rem;
     border: 1px solid transparent;
     border-radius: calc(var(--radius-4xl));
@@ -60,8 +61,8 @@
 }
 
 .badge-blue{
-    background-color: #6CB9DA66;
-    color: #327E93;
+    background-color: #7eb8d166;
+    color: #15718b;
 }
 
 
@@ -73,39 +74,4 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.badge-parent {
-    background: var(--color-sky-600);
-    color: var(--color-white);
-}
-
-.badge-doctor {
-    background: var(--color-teal-600);
-    color: var(--color-white);
-}
-
-.badge-phm {
-    background: var(--color-emerald-600);
-    color: var(--color-white);
-}
-
-.badge-admin {
-  background-color: var(--color-indigo-600);
-  color: var(--color-white);
-}
-
-.badge-user-admin {
-    background: var(--color-indigo-600);
-    color: var(--color-white);
-}
-
-.badge-data-admin {
-    background: var(--color-amber-500);
-    color: var(--color-slate-900);
-}
-
-.badge-super-admin {
-    background: var(--color-red-600);
-    color: var(--color-white);
 }

@@ -44,4 +44,9 @@ class User extends Model
 
         return false;
     }
+
+    public function getRole()
+    {
+        return Admin::find($this->id);
+    }
 }

@@ -1,4 +1,4 @@
-:root{
+:root {
   --nav-height: 64px;
   --sidebar-width: 20rem;
   --sidebar-rail: 5.5rem;
@@ -11,8 +11,10 @@
 */
 .app-layout {
   display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;   /* left: sidebar, right: content */
-  grid-template-rows: var(--nav-height) 1fr;        /* top row: navbar (content col), bottom: main */
+  grid-template-columns: var(--sidebar-width) 1fr;
+  /* left: sidebar, right: content */
+  grid-template-rows: var(--nav-height) 1fr;
+  /* top row: navbar (content col), bottom: main */
   height: 100vh;
   min-height: 100vh;
   transition: grid-template-columns var(--layout-transition) ease;
@@ -22,7 +24,8 @@
 /* Sidebar sits in left column and spans both navbar row and main row */
 .sidebar {
   grid-column: 1 / 2;
-  grid-row: 1 / 3;               /* span both rows */
+  grid-row: 1 / 3;
+  /* span both rows */
   height: 100%;
   overflow: auto;
   box-sizing: border-box;
@@ -31,12 +34,17 @@
 
 /* Navbar sits in the right column, top row only (does NOT span left) */
 .app-navbar {
-  grid-column: 2 / -1;           /* right column(s) */
-  grid-row: 1 / 2;               /* top row only */
+  grid-column: 2 / -1;
+  /* right column(s) */
+  grid-row: 1 / 2;
+  /* top row only */
   position: sticky;
-  top: 0;                        /* sticky relative to the content column */
-  z-index: 60;                   /* above content, still under any global overlays */
-  background: transparent;       /* keep visuals to navbar.css */
+  top: 0;
+  /* sticky relative to the content column */
+  z-index: 60;
+  /* above content, still under any global overlays */
+  background: transparent;
+  /* keep visuals to navbar.css */
 }
 
 /* Main content sits below the navbar in the right column */
@@ -44,8 +52,10 @@
   grid-column: 2 / -1;
   grid-row: 2 / 3;
   padding: var(--layout-gap);
-  min-height: 0;                 /* very important to enable internal scrolling */
-  overflow: auto;                /* main scroll happens here */
+  min-height: 0;
+  /* very important to enable internal scrolling */
+  overflow: auto;
+  /* main scroll happens here */
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
 }
@@ -58,19 +68,38 @@ body.sidebar-collapsed .app-layout {
 }
 
 body.sidebar-collapsed .sidebar {
-  width: 0;             /* animate sidebar width to rail */
-  transform: translateX(0);               /* keep it in flow, no large slide */
+  width: 0;
+  /* animate sidebar width to rail */
+  transform: translateX(0);
+  /* keep it in flow, no large slide */
   opacity: 1;
   overflow: hidden;
 }
 
 .page-header {
-  display:flex; align-items:center; justify-content:space-between; gap:.75rem; margin-bottom:1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+.header__right {
+  display: flex;
+  align-items: center;
+flex-wrap: wrap;
+  gap: .75rem;
+}
+
+.page-title{
+    display:flex; align-items:center; gap:.75rem; 
+
 }
 
 /* ---------- Mobile: sidebar becomes off-canvas under the navbar ----------
    Sidebar should be off-canvas starting under the navbar, not covering it. */
 @media (max-width: 920px) {
+
   /* collapse left column width to 0 so content takes full width */
   .app-layout {
     grid-template-columns: 0 1fr;
@@ -80,32 +109,45 @@ body.sidebar-collapsed .sidebar {
   /* turn sidebar into an off-canvas panel placed under the navbar */
   .sidebar {
     position: fixed;
-    top: var(--nav-height);             /* start below the navbar */
+    top: var(--nav-height);
+    /* start below the navbar */
     left: 0;
     bottom: 0;
     width: var(--sidebar-width);
-    transform: translateX(-110%);       /* hidden by default */
-    z-index: 70;                        /* still under the navbar (60) or set bigger accordingly */
-    box-shadow: 0 20px 40px rgba(2,6,23,0.16);
-    background: var(--primary-50);      /* look controlled by sidebar.css */
+    transform: translateX(-110%);
+    /* hidden by default */
+    z-index: 70;
+    /* still under the navbar (60) or set bigger accordingly */
+    box-shadow: 0 20px 40px rgba(2, 6, 23, 0.16);
+    background: var(--primary-50);
+    /* look controlled by sidebar.css */
     overflow: auto;
     height: calc(100vh - var(--nav-height));
   }
 
   /* when body.show-sidebar is set, reveal the off-canvas sidebar */
-  body.show-sidebar .sidebar { transform: translateX(0); }
+  body.show-sidebar .sidebar {
+    transform: translateX(0);
+  }
 
   /* overlay backdrop (should not cover the navbar) — add a .sidebar-overlay element */
-  .sidebar-overlay { display: none; }
+  .sidebar-overlay {
+    display: none;
+  }
+
   body.show-sidebar .sidebar-overlay {
     display: block;
     position: fixed;
-    inset: var(--nav-height) 0 0 0;     /* top offset = navbar height, so navbar remains visible */
-    background: rgba(0,0,0,0.36);
-    z-index: 65;                         /* below sidebar (70) and under navbar (60) if desired */
+    inset: var(--nav-height) 0 0 0;
+    /* top offset = navbar height, so navbar remains visible */
+    background: rgba(0, 0, 0, 0.36);
+    z-index: 65;
+    /* below sidebar (70) and under navbar (60) if desired */
     pointer-events: auto;
   }
 
   /* prevent body scroll while overlay visible */
-  body.show-sidebar { overflow: hidden; }
+  body.show-sidebar {
+    overflow: hidden;
+  }
 }

@@ -1,0 +1,15 @@
+.role-badge {
+    width: 5rem;
+    justify-content: center;
+}
+
+#staff-register-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+#staff-register-form > * {
+    gap: calc(var(--spacing) * 2);
+
+}

@@ -1,0 +1,15 @@
+.vaccine-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing)*5);
+}
+
+.delete-vaccine-highlight {
+    font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 480px) {
+    .add-vaccine-btn > span {
+        display: none;
+    }
+}
