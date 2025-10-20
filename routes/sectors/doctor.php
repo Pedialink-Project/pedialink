@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\Doctor\ChildHealthController;
 use App\Controllers\Doctor\DashboardController;
 use App\Controllers\Doctor\ChildProfileController;
 use App\Controllers\Doctor\MaternalProfileController;
@@ -10,6 +11,7 @@ use App\Controllers\TestController;
 return [
     ['GET', '/doctor/dashboard', [DashboardController::class, 'index'], 'doctor.dashboard', ['doctor']],
     ['GET', '/doctor/child-profiles', [ChildProfileController::class, 'index'], 'doctor.child.profiles', ['doctor']],
+    ['GET', '/doctor/child-profiles/{id}/health-records', [ChildHealthController::class, 'index'], 'doctor.child.health', ['doctor']],
     ['GET', '/doctor/maternal-profiles', [MaternalProfileController::class, 'index'], 'doctor.maternal.profiles', ['doctor']],
     ['GET', '/doctor/maternal-profiles/{id}/health-records', [MaternalHealthController::class, 'index'], 'doctor.maternal.health', ['doctor']],
     ['GET', '/doctor/appointments', [AppointmentController::class, 'index'], 'doctor.appointments', ['doctor']],
