@@ -77,7 +77,7 @@ $menuItems = [
         'Settings' => [
             [
                 'name' => 'Notifications',
-                'link' => '#',
+                'link' => route('admin.notification'),
                 'icon' => asset('/assets/icons/notification-02.svg'),
             ],
             [
@@ -87,7 +87,7 @@ $menuItems = [
             ],
             [
                 'name' => 'Settings',
-                'link' => '#',
+                'link' => route('admin.settings'),
                 'icon' => asset('/assets/icons/setting-07.svg'),
             ],
         ]
@@ -135,7 +135,7 @@ $menuItems = [
         'Settings' => [
             [
                 'name' => 'Notifications',
-                'link' => route('phm.notifications'),
+                'link' => route('phm.notification'),
                 'icon' => asset('/assets/icons/notification-02.svg'),
             ],
             [
@@ -185,7 +185,7 @@ $menuItems = [
         'Settings' => [
             [
                 'name' => 'Notifications',
-                'link' => route('parent.notifications'),
+                'link' => route('parent.notification'),
                 'icon' => asset('/assets/icons/notification-02.svg'),
             ],
             [

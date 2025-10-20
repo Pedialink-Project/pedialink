@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\NotificationController;
 use App\Controllers\Parent\AppointmentController;
 use App\Controllers\Parent\DashboardController;
 use App\Controllers\Parent\EventController;
@@ -7,6 +8,7 @@ use App\Controllers\Parent\MyChildrenController;
 use App\Controllers\Parent\NutritionController;
 use App\Controllers\Parent\VaccinationController;
 use App\Controllers\ParentController;
+use App\Controllers\SettingController;
 
 return [
     ['GET', '/parent/dashboard', [DashboardController::class, 'index'], 'parent.dashboard', ['parent']],
@@ -19,6 +21,6 @@ return [
     ['POST', '/parent/appointment/{id}/reschedule', [AppointmentController::class, 'requestRescheduleAppointment'], 'parent.appointment.reschedule', ['parent']],
     ['POST', '/parent/appointment/{id}/cancel', [AppointmentController::class, 'requestCancelAppointment'], 'parent.appointment.cancel', ['parent']],
     ['GET', '/parent/events-campaigns', [EventController::class, 'index'], 'parent.events.campaigns', ['parent']],
-    ['GET', '/parent/notifications', [ParentController::class, 'notifications'], 'parent.notifications', ['parent']],
-    ['GET', '/parent/settings', [ParentController::class, 'settings'], 'parent.settings', ['parent']],
+    ['GET', '/parent/notification', [NotificationController::class, 'index'], 'parent.notification', ['parent']],
+    ['GET', '/parent/settings', [SettingController::class, 'index'], 'parent.settings', ['parent']],
 ];

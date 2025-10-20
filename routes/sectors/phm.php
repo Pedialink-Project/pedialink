@@ -1,9 +1,11 @@
 <?php
 
 
+use App\Controllers\NotificationController;
 use App\Controllers\PublicHealthMidwife\ChildProfileController;
 use App\Controllers\PublicHealthMidwife\DashboardController;
 use App\Controllers\PublicHealthMidwife\MaternalProfileController;
+use App\Controllers\SettingController;
 use App\Controllers\TestController;
 use App\Controllers\PublicHealthMidwife\GrowthMonitorController;
 use App\Controllers\PublicHealthMidwife\VaccinationController;
@@ -24,6 +26,6 @@ return [
     ['GET', '/phm/vaccination', [VaccinationController::class, 'index'], 'phm.vaccination', ['phm']],
     ['GET', '/phm/nutrition-tracking', [TestController::class, 'nutritionTracking'], 'phm.nutrition.tracking', ['phm']],
     ['GET', '/phm/appointments', [AppointmentsController::class, 'index'], 'phm.appointments', ['phm']],
-    ['GET', '/phm/notifications', [TestController::class, 'notifications'], 'phm.notifications', ['phm']],
-    ['GET', '/phm/settings', [TestController::class, 'settings'], 'phm.settings', ['phm']],
+    ['GET', '/phm/notification', [NotificationController::class, 'index'], 'phm.notification', ['phm']],
+    ['GET', '/phm/settings', [SettingController::class, 'index'], 'phm.settings', ['phm']],
 ];

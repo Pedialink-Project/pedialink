@@ -7,6 +7,8 @@ use App\Controllers\Admin\EventController;
 use App\Controllers\Admin\MaternalController;
 use App\Controllers\Admin\UserController;
 use App\Controllers\Admin\VaccineController;
+use App\Controllers\NotificationController;
+use App\Controllers\SettingController;
 
 return [
     ['GET', '/admin/dashboard', [DashboardController::class, 'index'], 'admin.dashboard', ['admin']],
@@ -27,4 +29,6 @@ return [
     ['GET', '/admin/vaccination/schedule/{schedule_id}/manage', [VaccineController::class, 'manageSchedule'], 'admin.vaccination.schedule.manage', ['admin']],
     ['GET', '/admin/appointment', [AppointmentController::class, 'index'], 'admin.appointment', ['admin']],
     ['GET', '/admin/events-and-campaigns', [EventController::class, 'index'], 'admin.event', ['admin']],
+    ['GET', '/admin/settings', [SettingController::class, 'index'], 'admin.settings', ['admin']],
+    ['GET', '/admin/notification', [NotificationController::class, 'index'], 'admin.notification', ['admin']]
 ];
