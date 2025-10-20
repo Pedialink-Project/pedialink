@@ -140,7 +140,7 @@ $menuItems = [
         'Settings' => [
             [
                 'name' => 'Notifications',
-                'link' => route('doctor.notifications'),
+                'link' => route('doctor.notification'),
                 'icon' => asset('/assets/icons/notification-02.svg'),
             ],
             [
