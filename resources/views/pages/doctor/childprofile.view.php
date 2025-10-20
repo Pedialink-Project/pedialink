@@ -267,7 +267,7 @@ $items = [
                                     <c-dropdown.item href="{{ route('doctor.child.health', ['id' => $key])}}">
                                         View Health Records
                                     </c-dropdown.item>
-                                    <c-dropdown.item href="">
+                                    <c-dropdown.item href="{{ route('doctor.child.vaccination', ['id' => $key]) }}">
                                         View Vaccination Records
                                     </c-dropdown.item>
                                 </c-slot>
