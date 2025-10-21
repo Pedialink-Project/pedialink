@@ -53,7 +53,7 @@ PHM Child Profiles
     </c-slot>
 
     <c-slot name="extrabtn">
-        <c-modal id="addChild" size="sm" :initOpen="false">
+        <c-modal id="addChild" size="sm" :initOpen="flash('create') ? true : false">
             <c-slot name="trigger">
                 <c-button variant="primary">
                     Add Child Profile
@@ -66,20 +66,27 @@ PHM Child Profiles
                 <div>Add Child Profile</div>
             </c-slot>
 
-            <form id="add-child-form" class="child-form" action="">
-                <c-input type="text" label="Child Full Name:" name="full_name" placeholder="Enter Full Name" required />
-                <c-select label="GS Division" name="division" searchable="1" required>
-                    <li class="select-item" data-value="option1">Borella</li>
-                    <li class="select-item" data-value="option2">Dehiwala</li>
-                    <li class="select-item" data-value="option3">Moratuwa</li>
-                    <li class="select-item" data-value="option4">Ratmalana</li>
-                    <li class="select-item" data-value="option5">Wellawatta</li>
-                    <li class="select-item" data-value="option6">Other</li>
+            <form id="add-child-form" class="child-form" action="{{ route('phm.child.create') }}" method="POST">
+                <c-input
+                    type="text"
+                    label="Child Full Name:"
+                    name="name"
+                    value="{{ old('name') ?? '' }}"
+                    error="{{ errors('name') ?? '' }}"
+                    placeholder="Enter Full Name"
+                    required
+                />
+                <c-select label="GS Division" name="division" searchable="1" error="{{ errors('division') ?? '' }}" required>
+                    <li class="select-item" data-value="borella">Borella</li>
+                    <li class="select-item" data-value="dehiwala">Dehiwala</li>
+                    <li class="select-item" data-value="morutuwa">Moratuwa</li>
+                    <li class="select-item" data-value="ratmalana">Ratmalana</li>
+                    <li class="select-item" data-value="wellawatta">Wellawatta</li>
                 </c-select>
-                <c-input type="date" label="Date of Birth:" name="dob" required />
-                <c-select label="Gender" name="gender" required>
-                    <li class="select-item" data-value="option1">Male</li>
-                    <li class="select-item" data-value="option2">Female</li>
+                <c-input type="date" label="Date of Birth:" name="dob" value="{{ old('dob') ?? '' }}" error="{{ errors('dob') ?? ''}}" required />
+                <c-select label="Gender" name="gender" value="{{ old('gender') ?? '' }}" error="{{ errors('gender') ?? ''}}" required>
+                    <li class="select-item" data-value="male">Male</li>
+                    <li class="select-item" data-value="female">Female</li>
                 </c-select>
                 <c-textarea label="Additional Notes:" placeholder="Enter any additional notes here..." rows="4"></c-textarea>
             </form>
@@ -87,7 +94,7 @@ PHM Child Profiles
                 Close
             </c-slot>
             <c-slot name="footer">
-                <c-button type="submit" form="admin-register-form" variant="primary">Create a Child Profile</c-button>
+                <c-button type="submit" form="add-child-form" variant="primary">Create a Child Profile</c-button>
             </c-slot>
         </c-modal>
     </c-slot>
