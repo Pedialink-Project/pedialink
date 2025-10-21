@@ -144,6 +144,19 @@ class ChildService
         return $errors;
     }
 
+    public function validateDeleteProfile(int $id)
+    {
+        $error = null;
+
+        $child = Child::find($id);
+
+        if ($child && $child->parent_id !== NULL) {
+            $error = "Cannot delete linked child account";
+        }
+
+        return $error;
+    }
+
     public function createChildProfile(string $name, string $division, string $dob, string $gender)
     {
         $phmId = auth()->id();
@@ -172,5 +185,15 @@ class ChildService
             $child->gs_division = $division;
             $child->save();
         }
+    }
+
+    public function deleteChildProfile(int $id)
+    {
+        $child = Child::find($id);
+
+        $patient = Patient::find($child->id);
+        $patient->delete();
+        
+        $child->delete();
     }
 }
