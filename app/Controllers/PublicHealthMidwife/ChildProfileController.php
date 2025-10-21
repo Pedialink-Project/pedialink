@@ -83,4 +83,26 @@ class ChildProfileController
                 "success",
             );   
     }
+
+    public function deleteChild(Request $request, int $id)
+    {
+        $error = $this->childService->validateDeleteProfile($id);
+
+        if ($error !== NULL) {
+            return redirect(route('phm.child.profiles'))
+                ->withMessage(
+                    $error,
+                    "Error",
+                    "error",
+                );
+        }
+
+        $this->childService->deleteChildProfile($id);
+        return redirect(route('phm.child.profiles'))
+                ->withMessage(
+                    "Deleted successfully",
+                    "Success",
+                    "success",
+                );
+    }
 }
