@@ -42,7 +42,7 @@ $items = [
     ['id' => 'L-123', 'name' => 'Noah Lyles', 'Age' => '4 months', 'Vaccination Status' => 'pending', 'Vaccination Date' => '2023-01-18'],
     ['id' => 'T-123', 'name' => 'Yohan Blake', 'Age' => '7 months', 'Vaccination Status' => 'Completed', 'Vaccination Date' => '2023-01-18'],
     ['id' => 'K-123', 'name' => 'Sarah sense', 'Age' => '2 months', 'Vaccination Status' => 'Completed', 'Vaccination Date' => '2023-01-19'],
-    ['id' => 'A-123', 'name' => 'Devon Ann', 'Age' => '4 months', 'Vaccination Status' => 'Over Due', 'Vaccination Date' => '2023-01-13'],
+    ['id' => 'A-123', 'name' => 'Devon Ann', 'Age' => '4 months', 'Vaccination Status' => 'Overdue', 'Vaccination Date' => '2023-01-13'],
     ['id' => 'L-123', 'name' => 'Jonathn Parker', 'Age' => '2 months', 'Vaccination Status' => 'Completed', 'Vaccination Date' => '2023-01-14'],
 ];
 ?>
