@@ -20,6 +20,7 @@ return [
     ['GET', '/phm/child-profiles', [ChildProfileController::class, 'index'], 'phm.child.profiles', ['phm']],
     ['GET', '/phm/child-profiles/{id}/health-records', [ChildHealthController::class, 'index'], 'phm.child.health.records', ['phm']],
     ['POST', '/phm/child-profile/create', [ChildProfileController::class, 'createChild'], 'phm.child.create', ['phm']],
+    ['POST', '/phm/child-profile/{id}/edit', [ChildProfileController::class, 'editChild'], 'phm.child.edit', ['phm']],
     ['GET', '/phm/maternal-profiles', [MaternalProfileController::class, 'index'], 'phm.maternal.profiles', ['phm']],
     ['GET', '/phm/maternal-profiles/{id}/health-records', [MaternalHealthController::class, 'index'], 'phm.maternal.health', ['phm']],
     ['GET', '/phm/child-vaccinations/{id}/records', [ChildHealthController::class, 'vaccinationIndex'], 'phm.child.vaccinations', ['phm']],
