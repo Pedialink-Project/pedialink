@@ -4,7 +4,6 @@ INSERT INTO
         type,
         nic,
         address,
-        phone_number,
         area_id
     )
 VALUES (
