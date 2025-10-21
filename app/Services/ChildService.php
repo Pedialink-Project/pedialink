@@ -3,25 +3,62 @@
 namespace App\Services;
 
 use App\Models\Child;
+use App\Models\ParentM;
 use App\Models\Patient;
+use App\Models\User;
+use DateTime;
 
 class ChildService
 {
+    private function calculateAge($dob): string
+    {
+        $dobDt = $dob instanceof DateTime ? clone $dob : new DateTime($dob);
+        $now = new DateTime();
+
+        if ($dobDt > $now) {
+            return "0 months"; // simple handling for future dates
+        }
+
+        $diff = $now->diff($dobDt);
+
+        if ($diff->y >= 1) {
+            $y = $diff->y;
+            return $y . ' year' . ($y === 1 ? '' : 's');
+        }
+
+        // less than 1 year -> return months only (integer)
+        $m = $diff->m;
+        return $m . ' month' . ($m === 1 ? '' : 's');
+    }
+
     public function getAllChildren()
     {
         $children = Child::all();
 
         $resource = [];
         foreach ($children as $child) {
+
+            $parent = ParentM::find($child->parent_id);
+
+            $parentResource = NULL;
+            if ($parent) {
+                $parentResource = [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                    'type' => $parent->type,
+                ];
+            }
+
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,
-                'date_of_birth' => $child->date_of_birth,
+                'age' => $this->calculateAge($child->date_of_birth),
                 'gender' => $child->gender,
                 'health_status' => $child->health_status,
                 'gs_division' => $child->gs_division,
                 'vaccination_status' => $child->vaccination_status,
                 'notes' => $child->notes,
+                'parent' => $parentResource,
             ];
         }
 
