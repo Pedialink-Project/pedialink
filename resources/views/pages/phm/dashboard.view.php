@@ -89,7 +89,7 @@ Good Evening Harry!
                 <span class="card-title">Upcoming Appoinments</span>
                 <span class="card-subtitle">Your scheduled visits to the clinic</span>
             </div>
-            <c-button varient="secondary" size="sm">View Schedule</c-button>
+            <c-link type="secondary"  href="{{ route('phm.appointments')}}">View Schedule</c-link>
         </div>
         <div class="card-body">
             <!-- Single appointment row  -->
@@ -167,7 +167,7 @@ Good Evening Harry!
                 <span class="card-title">Upcoming Vaccinations</span>
                 <span class="card-subtitle">Vaccines due for your children</span>
             </div>
-            <c-button varient="secondary" size="sm">View All</c-button>
+            <c-link type="secondary"  href="{{ route('phm.vaccination')}}">View All</c-link>
         </div>
 
 

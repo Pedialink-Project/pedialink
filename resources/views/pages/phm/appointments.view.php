@@ -74,7 +74,7 @@
                     <c-input type="text" label="Age(yrs):" placeholder="Enter Age" required />
                     <c-input type="text" label="Category:" placeholder="Enter the Category" required />
                     <c-input type="text" label="Date & Time:" placeholder="Enter Date & Time" required />
-                    <c-select label="Status:" name="permissions" multiple="1" searchable="1">
+                    <c-select label="Status:" name="permissions" searchable="1">
                         <li class="select-item" data-value="child">Upcoming</li>
                         <li class="select-item" data-value="maternal">Pending</li>
                         <li class="select-item" data-value="infant">Completed</li>
@@ -232,7 +232,7 @@
                                                         <li class="select-item" data-value="maternal">Baby</li>
                                                 </c-select>
                                                 <c-input type="text" label="Date & Time:" placeholder="{{ $item['Date & Time'] }}" required />
-                                                <c-select label="Status:" name="permissions" multiple="1" searchable="1">
+                                                <c-select label="Status:" name="permissions" searchable="1">
                                                         <li class="select-item" data-value="child">Upcoming</li>
                                                         <li class="select-item" data-value="maternal">Pending</li>
                                                         <li class="select-item" data-value="infant">Completed</li>

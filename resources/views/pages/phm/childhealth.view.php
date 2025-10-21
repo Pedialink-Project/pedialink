@@ -85,7 +85,7 @@
                     <c-input type="text" label="Height:" placeholder="Enter Height of the Child (in cm)" required />
                     <c-input type="text" label="Weight:" placeholder="Enter Weight of the Child (in kg)" required />
                     <c-input type="text" label="Head Circumference:" placeholder="Enter Head Circumference of the Child (in cm)" required />
-                    <c-select label="Status:" name="permissions" multiple="1" searchable="1">
+                    <c-select label="Status:" name="permissions"  searchable="1">
                         <li class="select-item" data-value="child">Good</li>
                         <li class="select-item" data-value="maternal">Bad</li>
                     </c-select>

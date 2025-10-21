@@ -159,7 +159,7 @@ $items = [
                                             <c-input type="text" label="ID:" placeholder="{{ $item['id'] }}" required />
                                             <c-input type="text" label="Name:" placeholder="{{ $item['name'] }}" required />
                                             <c-input type="text" label="Age:" placeholder="{{ $item['Age'] }}" required />
-                                            <c-select label="Vaccination Status:" name="permissions" multiple="1" searchable="1">
+                                            <c-select label="Vaccination Status:" name="permissions" searchable="1">
                                                 <li class="select-item" data-value="child">Upcoming</li>
                                                 <li class="select-item" data-value="maternal">Pending</li>
                                                 <li class="select-item" data-value="infant">Completed</li>
@@ -167,6 +167,9 @@ $items = [
                                             </c-select>
                                             <c-input type="text" label="Vaccination Date:" placeholder="{{ $item['Vaccination Date'] }}" required />
                                         </form>
+                                        <c-slot name="close">
+                                            Cancel
+                                        </c-slot>
                                         <c-slot name="footer">
                                             <c-button type="button" variant="primary" form="edit-vaccination-form" >Save
                                                 Changes</c-button>
