@@ -54,7 +54,7 @@ $items = [
 ];
 ?>
 
-<c-table.controls :columns='["ID","Name","Age","Vaccination Status","GN Devision"]'>
+<c-table.controls :columns='["ID","Name","Age","Vaccination Status","GS Devision"]'>
 
     <c-slot name="filter">
         <c-button variant="outline">
@@ -273,10 +273,8 @@ $items = [
                                         </c-slot>
 
                                         <form id="edit-child-profile-form" class="child-form" action="">
-                                            <c-input type="text" label="Child Full Name:" placeholder="{{ $item['name'] }}"
-                                                required />
-                                            <c-input type="text" label="GN Devision:" placeholder="{{ $item['gs_devision'] }}"
-                                                required />
+                                            <c-input type="text" label="Child Full Name:" placeholder="{{ $item['name'] }}"required />
+                                            <c-input type="text" label="GN Devision:" placeholder="{{ $item['gs_devision'] }}"required />
                                             <c-input type="date" label="Date of Birth:" value="" required />
                                             <c-textarea label="Address:" placeholder="132,1/2,Lorem street" rows="1">
                                             </c-textarea>
@@ -303,7 +301,7 @@ $items = [
                                     <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$key,])}}">
                                         View Health Records
                                     </c-dropdown.item>
-                                    <c-dropdown.item href="{{ route('phm.vaccination',['id'=>$key,])}}">
+                                    <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$key,])}}">
                                         View Vaccination Records
                                     </c-dropdown.item>
                                 </c-slot>
