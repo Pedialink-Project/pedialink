@@ -37,7 +37,7 @@ Home
       <c-slot name="menu">
         <c-dropdown.item>
 
-          <div class="drop-item ">
+          <a class="drop-item " href="{{ route(auth()->user()->role . '.dashboard') }}">
             <svg width="17" height="17" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M5.48131 12.9013C4.30234 13.6033 1.21114 15.0368 3.09388 16.8305C4.01359 17.7067 5.03791 18.3333 6.32572 18.3333H13.6743C14.9621 18.3333 15.9864 17.7067 16.9061 16.8305C18.7889 15.0368 15.6977 13.6033 14.5187 12.9013C11.754 11.2551 8.24599 11.2551 5.48131 12.9013Z"
@@ -47,15 +47,15 @@ Home
                 stroke="#18181B" stroke-width="1.5" />
             </svg>
 
-            <span>My Account</span>
-          </div>
+            <span>My Portal</span>
+          </a>
 
 
 
         </c-dropdown.item>
         <c-dropdown.sep />
         <c-dropdown.item>
-          <div class="drop-item ">
+          <a class="drop-item " href="{{ route(auth()->user()->role . '.dashboard') }}">
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clip-path="url(#clip0_474_15232)">
                 <path
@@ -73,13 +73,13 @@ Home
             </svg>
 
             <span>Settings</span>
-          </div>
+          </a>
         </c-dropdown.item>
         <c-modal size="md" :initOpen="false">
           <c-slot name="trigger">
             <c-dropdown.item>
 
-              <div class="drop-item logout">
+              <div class="drop-item logout" >
 
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -151,8 +151,14 @@ Home
       <h1>Your Partner in Parenthood</h1>
       <p>Connect with top PHM & doctors, monitor your child's health, and receive personalized support every step of the
         way.</p>
-      <c-link $type="primary">
+      @if(!auth()->check())
+      <c-link href="{{ route('parent.register') }}" class="cta-btn" $type="primary">
         Get Started
+      </c-link>
+      @else 
+      <c-link href="{{ route(auth()->user()->role . '.dashboard') }}" class="cta-btn" $type="primary">
+        Go to Dashboard
+      @endif
       </c-link>
 
     </div>
@@ -274,9 +280,15 @@ Home
     <div class="section cta">
       <h2>Ready to Get Started?</h2>
       <p>Join PediaLink today and experience the difference in child and mother care.</p>
-      <c-link $type="primary">
+     @if(!auth()->check())
+      <c-link href="{{ route('parent.register') }}" class="cta-btn" $type="primary">
         Get Started
       </c-link>
+      @else 
+      <c-link href="{{ route(auth()->user()->role . '.dashboard') }}" class="cta-btn" $type="primary">
+        Go to Dashboard
+      </c-link>
+      @endif
     </div>
 
 
