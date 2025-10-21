@@ -31,7 +31,7 @@ Maternal Health
     </defs>
 </svg>
 
-    Health Records 
+Health Records
 @endsection
 
 @section('content')
@@ -55,18 +55,29 @@ Maternal Health
                 <div>Add Health Records</div>
             </c-slot>
 
-            <form id="add-health-record-form" class="maternal-health-form" action="">
-                <c-input type="text" label="Recorded at:" placeholder="Enter Recorded Date & Time" required />
-                <c-input type="text" label="BMI:" placeholder="Enter BMI of the Mother" required />
-                <c-input type="text" label="Blood Pressure:" placeholder="Enter Blood Pressure of the Mother (in mmHg)"
-                    required />
-                <c-input type="text" label="Blood Sugar:" placeholder="Enter Blood Sugar of the Mother (in mg/dL )"
-                    required />
-                <c-select label="Status:" name="permissions" multiple="1" searchable="1">
-                    <li class="select-item" data-value="child">Good</li>
-                    <li class="select-item" data-value="maternal">Bad</li>
+            <form id="add-health-record-form" class="maternal-health-form"
+                action="{{ route('doctor.maternal.health.add') }}" method="POST">
+                @csrf
+                <c-input type="date" name="recorded_at" label="Recorded at:" placeholder="Enter Recorded Date" />
+                <c-input type="text" name="bmi" label="BMI:" placeholder="Enter BMI of the Mother" />
+                <c-input type="text" name="blood_pressure" label="Blood Pressure:" placeholder="Enter Blood Pressure of the Mother (in mmHg)"
+                     />
+                <c-input type="text" name="blood_sugar" label="Blood Sugar:" placeholder="Enter Blood Sugar of the Mother (in mg/dL )"
+                     />
+                <c-input type="text" name="weight" label="Weight:" placeholder="Enter Weight of the Mother (in kg)" />
+                <c-input type="text" name="height" label="Height:" placeholder="Enter Height of the Mother (in cm)" />
+                <c-input type="text" name="fundal_height" label="Fundal Height:" placeholder="Enter Fundal Height of the Mother (in cm)"
+             />
+                <c-select label="Status:" name="health_status" searchable="1">
+                    <li class="select-item" data-value="good">Good</li>
+                    <li class="select-item" data-value="bad">Bad</li>
                 </c-select>
-                <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." rows="4"></c-textarea>
+                <c-select label="Pregnancy Stage:" name="pregnancy_stage" searchable="1">
+                    <li class="select-item" data-value="first_trimester">First Trimester</li>
+                    <li class="select-item" data-value="second_trimester">Second Trimester</li>
+                    <li class="select-item" data-value="third_trimester">Third Trimester</li>
+                </c-select>
+                <c-textarea label="Additional Notes:" name="notes" placeholder="Nutrition Facts." rows="4"></c-textarea>
 
             </form>
             <c-slot name="close">
@@ -122,7 +133,9 @@ Maternal Health
                                         <c-dropdown.item>View Record</c-dropdown.item>
                                     </c-slot>
                                     <c-slot name="headerSuffix">
-                                        <c-badge type="{{ strtolower($item['health_status']) === 'good' ? 'green' : 'red' }}">{{ ucfirst($item['health_status']) }}
+                                        <c-badge
+                                            type="{{ strtolower($item['health_status']) === 'good' ? 'green' : 'red' }}">{{
+                                            ucfirst($item['health_status']) }}
                                         </c-badge>
                                     </c-slot>
 
@@ -152,8 +165,8 @@ Maternal Health
                                         <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Fundal Height" info="{{ $item['fundal_height'] }}" />
                                     </c-modal.viewcard>
-    
-                                  @if($item['notes'])
+
+                                    @if($item['notes'])
                                     <c-modal.viewlist title="Additional Notes">
                                         <c-slot name="list">
                                             @foreach($item['notes'] as $note)
