@@ -126,7 +126,7 @@ class AuthController
         $password = htmlspecialchars($request->input("password")) ?? '';
 
         if (auth()->attempt($email, $password, "parent")) {
-            return redirect(route("parent.dashboard"));
+            return redirect(route("home"));
         }
 
         return redirect(route("parent.login"))

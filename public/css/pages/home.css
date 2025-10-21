@@ -60,7 +60,7 @@ p {
 .navmenu {
     display: inline-flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 
