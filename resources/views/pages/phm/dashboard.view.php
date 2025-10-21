@@ -1,56 +1,55 @@
 @extends('layout/portal')
 
 @section('title')
-PHM Dashboard
+Parent Dashboard
 @endsection
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('/css/pages/phm/dashboard.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/parent/dashboard.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 @endsection
 
-@section('header')
-Good Evening Harry!
-@endsection
+
 
 @section('content')
-<!-- Dashboard Content -->
-<div class="dashboard-content">
-    <div class="stats-grid">
-        <!--<div class="stat-card">-->
-        <div class="stat-content">
-            <c-pill>
-                <c-slot name="title">Assinged Children</c-slot>
-                <c-slot name="number">03</c-slot>
-                <c-slot name="icon">
-                    <img src="{{ asset('assets/icons/baby-01.svg') }}" alt="" />
-                </c-slot>
-            </c-pill>
+<div class="top-section">
 
-            <c-pill>
-                <c-slot name="title">Assigned Mothers</c-slot>
-                <c-slot name="number">04</c-slot>
-                <c-slot name="icon">
-                    <img src="{{ asset('assets/icons/mother.svg') }}" alt="" />
-                </c-slot>
-            </c-pill>
-
-            <c-pill>
-                <c-slot name="title">Vaccinations Due</c-slot>
-                <c-slot name="number">04</c-slot>
-                <c-slot name="icon">
-                    <img src="{{ asset('assets/icons/vaccine.svg') }}" alt="" />
-                </c-slot>
-            </c-pill>
-
-        </div>
-    </div>
+    <section class="greet">
+        <h1>Good Moring <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}}</span>
+        </h1>
+    </section>
+    <section class="pill-container">
+        <c-pill>
+            <c-slot name="title">Linked Childern</c-slot>
+            <c-slot name="number">03</c-slot>
+            <c-slot name="icon">
+                <img src="{{asset('assets/icons/baby-01.svg')}}">
+            </c-slot>
+        </c-pill>
+        <c-pill>
+            <c-slot name="title">Appoinments</c-slot>
+            <c-slot name="number">03</c-slot>
+            <c-slot name="icon">
+                <img src="{{asset('assets/icons/profile.svg')}}">
+            </c-slot>
+        </c-pill>
+        <c-pill>
+            <c-slot name="title">Vaccinations</c-slot>
+            <c-slot name="number">03</c-slot>
+            <c-slot name="icon">
+                <img src="{{asset('assets/icons/vaccine.svg')}}">
+            </c-slot>
+        </c-pill>
+    </section>
 </div>
 
-</div>
-<!-- Charts and Data Section -->
-<div class="charts-grid">
-    <!-- Antenatal Risk Cases Chart -->
-    <c-card class="card risk-card">
+<main class="container">
+    <div class="left-col">
+
+
+        <!-- Upcoming Events Card -->
+        <c-card class="card risk-card">
         <div class="header">
             <div class="title-section">
                 <span class="card-title">Antenatal Risk Cases</span>
@@ -63,27 +62,8 @@ Good Evening Harry!
         </div>
     </c-card>
 
-    <!-- Monthly Vaccinations Chart -->
-    <c-card class="card vaccine-card">
-
-        <div class="header">
-            <div class="title-section">
-                <span class="card-title">Monthly Vaccinations Completed</span>
-                <span class="card-subtitle">Tracking vaccination completion rates over time</span>
-            </div>
-        </div>
-
-        <div class="card-body">
-            <canvas id="vaccChart"></canvas>
-        </div>
-    </c-card>
-</div>
-
-<!-- Appointments and Vaccinations Section -->
-<div class="appointments-grid">
-    <!-- Upcoming Appointments -->
-    <!-- Upcoming Appoinments Card -->
-    <c-card class="card appoinment-card">
+        <!-- Upcoming Appoinments Card -->
+        <c-card class="card appoinment-card">
         <div class="header">
             <div class="title-section">
                 <span class="card-title">Upcoming Appoinments</span>
@@ -109,7 +89,7 @@ Good Evening Harry!
                         <div class="sub-name">Dr.Smith</div>
                     </div>
                 </div>
-                <div class="secondary-deatails">
+                <div class="secondary-details">
                     <div class="date">2025-06-01</div>
                     <c-badge type="primary">09.30 AM</c-badge>
                 </div>
@@ -160,96 +140,119 @@ Good Evening Harry!
         </div>
     </c-card>
 
-    <!-- Upcoming Vaccination Card -->
-    <c-card class="card vaccine-card">
-        <div class="header">
-            <div class="title-section">
-                <span class="card-title">Upcoming Vaccinations</span>
-                <span class="card-subtitle">Vaccines due for your children</span>
+    </div>
+
+    <div class="right-col">
+        <!-- Growth Chart Card -->
+        <c-card class="card vaccine-card">
+
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Monthly Vaccinations Completed</span>
+                    <span class="card-subtitle">Tracking vaccination completion rates over time</span>
+                </div>
             </div>
-            <c-link type="secondary"  href="{{ route('phm.vaccination')}}">View All</c-link>
-        </div>
+
+            <div class="card-body">
+                <div class="chart-wrapper">
+                    <canvas id="vaccChart" height="290px"></canvas>
+
+                </div>
+            </div>
+        </c-card>
 
 
-        <div class="card-body">
-            <!-- Single vaccination row -->
-            <div class="row vaccine-row">
-                <div class="primary-details">
-                    <div class="name">Baby Sara</div>
-                    <div class="sub-details">
-                        <!-- Location Icon -->
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
-                                stroke="#71717A" stroke-width="1.5" />
-                            <path
-                                d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
-                                stroke="#71717A" stroke-width="1.5" />
-                            <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
-                                stroke-width="1.5" stroke-linecap="round" />
-                        </svg>
-                        <div class="sub-name">RHU Center A</div>
+
+        <!-- Upcoming Events Card -->
+        <c-card class="card vaccine-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Upcoming Vaccinations</span>
+                    <span class="card-subtitle">Vaccines due for your children</span>
+                </div>
+                <c-link type="secondary"  href="{{ route('phm.vaccination')}}">View All</c-link>
+            </div>
+
+
+            <div class="card-body">
+                <!-- Single vaccination row -->
+                <div class="row vaccine-row">
+                    <div class="primary-details">
+                        <div class="name">Baby Sara</div>
+                        <div class="sub-details">
+                            <!-- Location Icon -->
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
+                                    stroke="#71717A" stroke-width="1.5" />
+                                <path
+                                    d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
+                                    stroke="#71717A" stroke-width="1.5" />
+                                <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
+                                    stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                            <div class="sub-name">RHU Center A</div>
+                        </div>
+                    </div>
+                    <!-- Vaccine Type -->
+                    <c-badge type="blue">BCG</c-badge>
+                    <div class="secondary-deatails">
+                        <div class="date">2025-06-01</div>
                     </div>
                 </div>
-                <!-- Vaccine Type -->
-                <c-badge type="blue">BCG</c-badge>
-                <div class="secondary-deatails">
-                    <div class="date">2025-06-01</div>
-                </div>
-            </div>
-            <!-- Repeatable rows for other vaccinations -->
-            <div class="row">
-                <div class="primary-details">
-                    <div class="name">Baby Mike</div>
-                    <div class="sub-details">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
-                                stroke="#71717A" stroke-width="1.5" />
-                            <path
-                                d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
-                                stroke="#71717A" stroke-width="1.5" />
-                            <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
-                                stroke-width="1.5" stroke-linecap="round" />
-                        </svg>
-                        <div class="sub-name">RHU Center C</div>
+                <!-- Repeatable rows for other vaccinations -->
+                <div class="row">
+                    <div class="primary-details">
+                        <div class="name">Baby Mike</div>
+                        <div class="sub-details">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
+                                    stroke="#71717A" stroke-width="1.5" />
+                                <path
+                                    d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
+                                    stroke="#71717A" stroke-width="1.5" />
+                                <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
+                                    stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                            <div class="sub-name">RHU Center C</div>
+                        </div>
                     </div>
-                </div>
-                <c-badge type="green">OPV</c-badge>
-                <div class="secondary-deatails">
-                    <div class="date">2025-06-08</div>
-                </div>
-
-            </div>
-            <div class="row">
-                <div class="primary-details">
-                    <div class="name">Baby Sara</div>
-                    <div class="sub-details">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
-                                stroke="#71717A" stroke-width="1.5" />
-                            <path
-                                d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
-                                stroke="#71717A" stroke-width="1.5" />
-                            <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
-                                stroke-width="1.5" stroke-linecap="round" />
-                        </svg>
-                        <div class="sub-name">RHU Center A</div>
+                    <c-badge type="green">OPV</c-badge>
+                    <div class="secondary-deatails">
+                        <div class="date">2025-06-08</div>
                     </div>
-                </div>
-                <c-badge type="yellow">MMR</c-badge>
-                <div class="secondary-deatails">
-                    <div class="date">2025-06-10</div>
-                </div>
 
+                </div>
+                <div class="row">
+                    <div class="primary-details">
+                        <div class="name">Baby Sara</div>
+                        <div class="sub-details">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
+                                    stroke="#71717A" stroke-width="1.5" />
+                                <path
+                                    d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
+                                    stroke="#71717A" stroke-width="1.5" />
+                                <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
+                                    stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                            <div class="sub-name">RHU Center A</div>
+                        </div>
+                    </div>
+                    <c-badge type="yellow">MMR</c-badge>
+                    <div class="secondary-deatails">
+                        <div class="date">2025-06-10</div>
+                    </div>
+
+                </div>
             </div>
-        </div>
-    </c-card>
+        </c-card>
+    </div>
 
-</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</main>
+
 <script>
     // ---------- Stacked Bar (Antenatal Risk Cases) ----------
     const riskCtx = document.getElementById('riskChart').getContext('2d');
@@ -361,6 +364,7 @@ Good Evening Harry!
         type: 'doughnut',
         data: vaccData,
         options: {
+            responsive: false,
             maintainAspectRatio: false,
             cutout: '64%',
             plugins: {
