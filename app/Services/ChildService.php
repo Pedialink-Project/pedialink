@@ -53,6 +53,7 @@ class ChildService
                 'id' => $child->id,
                 'name' => $child->name,
                 'age' => $this->calculateAge($child->date_of_birth),
+                'date_of_birth' => $child->date_of_birth,
                 'gender' => $child->gender,
                 'health_status' => $child->health_status,
                 'gs_division' => $child->gs_division,
