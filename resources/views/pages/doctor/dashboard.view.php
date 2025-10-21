@@ -161,7 +161,7 @@ Doctor Dashboard
                     <span class="card-title">New Health Records</span>
                     <span class="card-subtitle">Updated health records of patient</span>
                 </div>
-                <c-button varient="secondary" size="sm">View Recprds</c-button>
+                <c-button varient="secondary" size="sm">View Records</c-button>
             </div>
             <hr class="divider">
             <div class="card-body">
