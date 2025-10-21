@@ -87,7 +87,7 @@ $items = [
                     required />
                 <c-input type="text" label="Blood Sugar:" placeholder="Enter Blood Sugar of the Mother (in mg/dL )"
                     required />
-                <c-select label="Status:" name="permissions" multiple="1" searchable="1">
+                <c-select label="Status:" name="permissions" searchable="1">
                     <li class="select-item" data-value="child">Good</li>
                     <li class="select-item" data-value="maternal">Bad</li>
                 </c-select>
