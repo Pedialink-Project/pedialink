@@ -17,26 +17,26 @@ class MaternalService
         foreach ($maternals as $maternal) {
             $resource[] = [
                 'id' => $maternal->id,
-                'parent_id' => $maternal->parentId,
+                'parent_id' => $maternal->parent_id,
                 'type' => $maternal->type,
                 'stage' => $maternal->stage,
-                'pregnancy_date' => $maternal->pregnancyDate,
-                'health_status' => $maternal->healthStatus,
-                'additional_info' => $maternal->additionalInfo,
+                'pregnancy_date' => $maternal->pregnancy_date,
+                'health_status' => $maternal->health_status,
+                'additional_info' => $maternal->additional_info,
             ];
         }
 
         return $resource;
     }
 
-    public function calculatePregnancyDuration( $date)
-    {
-        $start = new \DateTime($date);
-        $end = new \DateTime(); 
-        $interval = $start->diff($end);
+    // public function calculatePregnancyDuration( $date)
+    // {
+    //     $start = new \DateTime($date);
+    //     $end = new \DateTime(); 
+    //     $interval = $start->diff($end);
 
-        return $interval->days;
-    }
+    //     return $interval->days;
+    // }
 
     
 
@@ -45,7 +45,7 @@ class MaternalService
         return Maternal::find($id);
     }
 
-    public function getDoctorMaternalDetails($doctorId)
+    public function getDoctorMaternalDetails()
     {//
 
 
@@ -56,22 +56,19 @@ class MaternalService
             $parentName = User::query()->where('id', '=',$maternal['parent_id'])->first()->name;
             $parentAge = ParentM::query()->where('id', '=',$maternal['parent_id'])->first()->age;
             $parentAddress = ParentM::query()->where('id', '=',$maternal['parent_id'])->first()->address;
-            $parentAreaId = ParentM::query()->where('id', '=',$maternal['parent_id'])->first()->area_id;
-            $parentArea = Area::query()->where('id', '=',$parentAreaId)->first()->code;
+            $parentAreaId = ParentM::query()->where('id', '=',$maternal['parent_id'])->first()->areaId;
 
 
                 $resource[] = [
-                    'maternal_id' => $maternal['id'],
+                    'id' => $maternal['id'],
                     'type' => $maternal['type'],
                     'stage' => $maternal['stage'],
                     'pregnancy_date' => $maternal['pregnancy_date'],
-                    'pregnancy_duration_days' => $this->calculatePregnancyDuration( $maternal['pregnancy_date']),
                     'health_status' => $maternal['health_status'],
                     'additional_info' => $maternal['additional_info'],
-                    'parent_name' => $parentName,
-                    'parent_age' => $parentAge,
-                    'parent_address' => $parentAddress,
-                    'parent_area' => $parentArea,
+                    'name' => $parentName,
+                    'age' => $parentAge,
+                    'address' => $parentAddress,
                 ];
 
         }
