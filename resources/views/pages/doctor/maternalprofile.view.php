@@ -205,7 +205,7 @@ Maternal Profiles - Overview
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
-                                <c-dropdown.item href="{{ route('doctor.maternal.health', ['id' => $key]) }}">
+                                <c-dropdown.item href="{{ route('doctor.maternal.health', ['id' => $item['id']]) }}">
                                     View Health Records
                                 </c-dropdown.item>
                             </c-slot>

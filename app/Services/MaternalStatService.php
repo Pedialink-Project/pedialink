@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\Models\MaternalStat;
+use App\Models\Maternal;
 class MaternalStatService
 {
     public function getAllMaternalStats()
@@ -22,7 +23,7 @@ class MaternalStatService
                 'blood_pressure' => $stat->blood_pressure,
                 'health_status' => $stat->health_status,
                 'fundal_height' => $stat->fundal_height,
-                'notes' => $stat->notes,
+                'notes' => json_decode($stat->notes),
             ];
         }
 
@@ -34,8 +35,8 @@ class MaternalStatService
 
     public function getMaternalStatByMaternalId($id)
     {
-        $maternalStats = MaternalStat::query()->where('maternal_id', $id)->get();
-
+        $maternalStats = MaternalStat::query()->where('maternal_id', '=',$id)->get();
+        $healthStatus = Maternal::query()->where('id', '=',$id)->first()->health_status;
         $resource = [];
         foreach ($maternalStats as $stat) {
             $resource[] = [
@@ -48,9 +49,9 @@ class MaternalStatService
                 'height' => $stat->height,
                 'blood_sugar' => $stat->blood_sugar,
                 'blood_pressure' => $stat->blood_pressure,
-                'health_status' => $stat->health_status,
+                'health_status' => $healthStatus,
                 'fundal_height' => $stat->fundal_height,
-                'notes' => $stat->notes,
+                'notes' => json_decode($stat->notes),
             ];
         }
 

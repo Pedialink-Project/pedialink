@@ -16,7 +16,7 @@ class MaternalHealthController
 
     public function index(Request $request, int $id)
     {
-        
+
         $maternalStats = $this->MaternalStatService->getMaternalStatByMaternalId($id);
         return view("doctor/maternalhealth", [
             "items"=>$maternalStats
