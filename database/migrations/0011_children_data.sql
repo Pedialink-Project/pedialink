@@ -45,8 +45,7 @@ INSERT INTO
         id,
         parent_id,
         phm_id,
-        first_name,
-        last_name,
+        name,
         date_of_birth,
         gender,
         health_status
