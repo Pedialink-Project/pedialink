@@ -143,7 +143,7 @@ Parent - Appointments
 
             <form id="request-appointment-form" action="{{ route('parent.appointment.request') }}" method="POST">
                 <c-select label="Appointment For" name="patient" placeholder="Select Child or Parent" error="{{ errors('patient') ?? '' }}" value="{{ old('patient') ?? '' }}" required>
-                    <li class="select-item" data-value="1">Keeththi</li>
+                    <li class="select-item" data-value="1">Delna</li>
                     <li class="select-item" data-value="2">Alex Hales</li>
                 </c-select>
 

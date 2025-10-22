@@ -192,7 +192,7 @@ $notifications = auth()->user()->notifications ?? [
 
     <c-slot name="footer">
       <form action="{{ auth()->check() ? route('logout') : '#' }}" method="post">
-        <c-button varient="destructive" type="submit">Logout</c-button>
+        <c-button variant="destructive" type="submit">Logout</c-button>
       </form>
     </c-slot>
   </c-modal>
