@@ -159,18 +159,12 @@
                                                 />
                                             </c-modal.viewcard>
 
-                                            <div class="vaccine-schedule-additional-content">
-                                                <h4>Additional Details</h4>
-                                                <ul>
+                                            <c-modal.viewlist title="Additional Details">
+                                                <c-slot name="list">
                                                     <li>Lorem Ipsum</li>
                                                     <li>Lorem Ipsum</li>
-                                                </ul>
-                                            </div>
-
-                                            <div class="vaccine-schedule-additional-content">
-                                                <h4>Notes</h4>
-                                                <p>Lorem Ipsum</p>
-                                            </div>
+                                                </c-slot>
+                                            </c-modal.viewlist>
 
                                             <c-slot name="close">
                                                 Close

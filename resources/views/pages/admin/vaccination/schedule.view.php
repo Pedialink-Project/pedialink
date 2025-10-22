@@ -182,7 +182,7 @@
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="{{ !$schedule['enabled'] ? 'success' : 'destructive' }}">
+                                                <c-button type="submit" variant="{{ !$schedule['enabled'] ? 'primary' : 'destructive' }}">
                                                     {{ !$schedule["enabled"] ? "Enable" : "Disable"}} Schedule
                                                 </c-button>
                                             </c-slot>

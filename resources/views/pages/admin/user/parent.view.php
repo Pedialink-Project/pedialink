@@ -220,12 +220,11 @@
                                 />
                             </c-modal.viewcard>
 
-                            <div class="approval-additional-content">
-                                <h4>Additional Information</h4>
-                                <ul>
+                            <c-modal.viewlist title="Additional Information">
+                                <c-slot name="list">
                                     <li>Address: Lorem Ipsum</li>
-                                </ul>
-                            </div>
+                                </c-slot>
+                            </c-modal.viewlist>
 
                             <c-slot name="close">
                                 Close

@@ -188,31 +188,30 @@
                                                 />
                                             </c-modal.viewcard>
 
-                                            <div class="event-additional-content">
-                                                <h4>Title</h4>
-                                                <p>
-                                                    Polio Vaccination Drive
-                                                </p>
-                                            </div>
+                                            <c-modal.viewlist title="Title">
+                                                <c-slot name="list">
+                                                    <li>Polio Vaccination Drive</li>
+                                                </c-slot>
+                                            </c-modal.viewlist>
 
-                                            <div class="event-additional-content">
-                                                <h4>Purpose of Visit</h4>
-                                                <p>
-                                                    Join us for a comprehensive polio vaccination drive targeting children under 5
-                                                    years. This initiative is part of our ongoing effort to maintain polio-free
-                                                    status in our community. Qualified healthcare professionals will administer the
-                                                    vaccines following WHO guidelines.
-                                                </p>
-                                            </div>
+                                            <c-modal.viewlist title="Purpose of Visit">
+                                                <c-slot name="list">
+                                                    <li>
+                                                        Join us for a comprehensive polio vaccination drive targeting children under 5
+                                                        years. This initiative is part of our ongoing effort to maintain polio-free
+                                                        status in our community. Qualified healthcare professionals will administer the
+                                                        vaccines following WHO guidelines.
+                                                    </li>
+                                                </c-slot>
+                                            </c-modal.viewlist>
 
-                                            <div class="event-additional-content">
-                                                <h4>Important Notes</h4>
-                                                <ul>
+                                            <c-modal.viewlist title="Important Notes">
+                                                <c-slot name="list">
                                                     <li>Bring child vaccination card</li>
                                                     <li>Valid ID for parent/guardian</li>
                                                     <li>Free entry</li>
-                                                </ul>
-                                            </div>
+                                                </c-slot>
+                                            </c-modal.viewlist>
 
                                             <c-slot name="close">
                                                 Close

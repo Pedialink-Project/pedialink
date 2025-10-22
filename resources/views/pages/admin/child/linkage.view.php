@@ -93,22 +93,20 @@
                                     />
                                 </c-modal.viewcard>
 
-                                <div class="linkage-additional-content">
-                                    <h4>Parent Details</h4>
-                                    <ul>
+                                <c-modal.viewlist title="Parent Details">
+                                    <c-slot name="list">
                                         <li>NIC: 230001045</li>
                                         <li>Type: {{ ucfirst($request["type"] ) }}</li>
                                         <li>Address: 124/23, St Peters Lane, Colombo</li>
-                                    </ul>
-                                </div>
+                                    </c-slot>
+                                </c-modal.viewlist>
 
-                                <div class="linkage-additional-content">
-                                    <h4>Child Details</h4>
-                                    <ul>
+                                <c-modal.viewlist title="Child Details">
+                                    <c-slot name="list">
                                         <li>Link Status: 1 account linked</li>
                                         <li>Registered GS Division: Borella</li>
-                                    </ul>
-                                </div>
+                                    </c-slot>
+                                </c-modal.viewlist>
 
                                 <c-slot name="close">
                                     Close
@@ -237,22 +235,20 @@
                                 />
                             </c-modal.viewcard>
 
-                            <div class="linkage-additional-content">
-                                <h4>Parent Details</h4>
-                                <ul>
+                            <c-modal.viewlist title="Parent Details">
+                                <c-slot name="list">
                                     <li>NIC: 230001045</li>
                                     <li>Type: {{ ucfirst($request["type"] ) }}</li>
                                     <li>Address: 124/23, St Peters Lane, Colombo</li>
-                                </ul>
-                            </div>
+                                </c-slot>
+                            </c-modal.viewlist>
 
-                            <div class="linkage-additional-content">
-                                <h4>Child Details</h4>
-                                <ul>
+                            <c-modal.viewlist title="Child Details">
+                                <c-slot name="list">
                                     <li>Link Status: 1 account linked</li>
                                     <li>Registered GS Division: Borella</li>
-                                </ul>
-                            </div>
+                                </c-slot>
+                            </c-modal.viewlist>
 
                             <c-slot name="close">
                                 Close

@@ -133,20 +133,18 @@
                                                 />
                                             </c-modal.viewcard>
 
-                                            <div class="appointment-additional-content">
-                                                <h4>Purpose of Visit</h4>
-                                                <ul>
+                                            <c-modal.viewlist title="Purpose of Visit">
+                                                <c-slot name="list">
                                                     <li>Regular Checkup</li>
-                                                </ul>
-                                            </div>
+                                                </c-slot>
+                                            </c-modal.viewlist>
 
-                                            <div class="appointment-additional-content">
-                                                <h4>Important Notes</h4>
-                                                <ul>
+                                            <c-modal.viewlist title="Important Notes">
+                                                <c-slot name="list">
                                                     <li>Bring child vaccination card</li>
                                                     <li>Valid ID for parent/guardian</li>
-                                                </ul>
-                                            </div>
+                                                </c-slot>
+                                            </c-modal.viewlist>
 
                                             <c-slot name="close">
                                                 Close
