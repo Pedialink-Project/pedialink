@@ -193,6 +193,38 @@ class MaternalStatService
         return $maternalStat;
     }
 
+    public function editMaternalStat($id, $recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $notes){
+        $maternalStat = MaternalStat::find($id);
+
+        if (!$maternalStat) {
+            throw new \Exception("MaternalStat not found");
+        }
+
+        $maternalStat->recorded_at = $recordedAt;
+        $maternalStat->bmi = $bmi;
+        $maternalStat->blood_pressure = $bloodPressure;
+        $maternalStat->blood_sugar = $bloodSugar;
+        $maternalStat->weight = $weight;
+        $maternalStat->height = $height;
+        $maternalStat->fundal_height = $fundalHeight;
+        $maternalStat->health_status = $healthStatus;
+        $maternalStat->pregnancy_stage = $prenacyStage;
+        $maternalStat->notes = $this->formatNotes($notes);
+
+        $maternalStat->save();
+
+        return $maternalStat;
+    }
+
+    public function deleteMaternalStat($id){
+        $maternalStat = MaternalStat::find($id);
+
+        if (!$maternalStat) {
+            throw new \Exception("MaternalStat not found");
+        }
+
+        $maternalStat->delete();
+    }
 
 
 
