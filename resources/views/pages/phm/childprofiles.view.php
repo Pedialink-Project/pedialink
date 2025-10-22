@@ -242,13 +242,6 @@ PHM Child Profiles
                                         <c-slot name="close">
                                             Close
                                         </c-slot>
-
-                                        <c-slot name="footer">
-                                            <c-button variant="primary">
-                                                <img src="{{ asset('assets/icons/download-04.svg')}}" />
-                                                Download documents
-                                            </c-button>
-                                        </c-slot>
                                     </c-modal>
                                     <c-modal id="edit-child-profile-{{ $key }}" size="md" :initOpen="flash('edit') === $child['id'] ? true : false">
                                         <c-slot name="trigger">
