@@ -14,7 +14,7 @@
         <path d="M9.16663 10L14.1666 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
         <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
-   My Appointments Details
+   Appointment requests
 @endsection
 
 @section('css')
@@ -24,18 +24,18 @@
 @section('content')
     <?php
     $items = [
-        ['id' => 'P-1345', 'name' => 'Nancy Drew', 'Age' => '28', 'Category' => 'Mother', 'Date & Time' =>'2023-01-19', 'Status' => 'Upcoming'],
-        ['id' => 'D-1345', 'name' => 'John peter', 'Age' => '32', 'Category' => 'Mother', 'Date & Time' =>'2023-02-17', 'Status' => 'Pending'],
-        ['id' => 'S-1345', 'name' => 'Femke Bol', 'Age' => '2', 'Category' => 'Baby', 'Date & Time' =>'2023-01-16', 'Status' => 'Completed'],
-        ['id' => 'T-1345', 'name' => 'Daniel Parker', 'Age' => '1', 'Category' => 'Baby', 'Date & Time' =>'2023-01-17', 'Status' => 'overdue'],
-        ['id' => 'R-1345', 'name' => 'Alice Smith', 'Age' => '31', 'Category' => 'Mother', 'Date & Time' =>'2023-03-01', 'Status' => 'Completed'],
-        ['id' => 'I-1345', 'name' => 'Bob Johnson', 'Age' => '4', 'Category' => 'Baby', 'Date & Time' =>'2023-03-05', 'Status' => 'Pending'],
-        ['id' => 'N-1345', 'name' => 'Charlie Lee', 'Age' => '5', 'Category' => 'Baby', 'Date & Time' =>'2023-03-10', 'Status' => 'Upcoming'],
-        ['id' => 'P-1345', 'name' => 'Diana King', 'Age' => '6', 'Category' => 'Baby', 'Date & Time' =>'2023-03-15', 'Status' => 'Overdue'],
-        ['id' => 'W-1345', 'name' => 'Ethan Clark', 'Age' => '27', 'Category' => 'Mother', 'Date & Time' =>'2023-03-20', 'Status' => 'Completed'],
-        ['id' => 'A-1345', 'name' => 'Fiona Adams', 'Age' => '38', 'Category' => 'Mother', 'Date & Time' =>'2023-03-25', 'Status' => 'Pending'],
-        ['id' => 'A-1345', 'name' => 'George Baker', 'Age' => '9', 'Category' => 'Baby', 'Date & Time' =>'2023-03-30', 'Status' => 'Upcoming'],
-        ['id' => 'D-1345', 'name' => 'Hannah Evans', 'Age' => '10', 'Category' => 'Baby', 'Date & Time' =>'2023-04-04', 'Status' => 'Overdue'],
+        ['id' => 'P-1345', 'name' => 'Nancy Drew', 'Age' => '28', 'Category' => 'Mother', 'Date & Time' =>'2023-01-19', 'Status' => 'conformed'],
+        ['id' => 'D-1345', 'name' => 'John peter', 'Age' => '32', 'Category' => 'Mother', 'Date & Time' =>'2023-02-17', 'Status' => 'requested'],
+        ['id' => 'S-1345', 'name' => 'Femke Bol', 'Age' => '2', 'Category' => 'Baby', 'Date & Time' =>'2023-01-16', 'Status' => 'reshedulled'],
+        ['id' => 'T-1345', 'name' => 'Daniel Parker', 'Age' => '1', 'Category' => 'Baby', 'Date & Time' =>'2023-01-17', 'Status' => 'reshudule_requested'],
+        ['id' => 'R-1345', 'name' => 'Alice Smith', 'Age' => '31', 'Category' => 'Mother', 'Date & Time' =>'2023-03-01', 'Status' => 'canceled'],
+        ['id' => 'I-1345', 'name' => 'Bob Johnson', 'Age' => '4', 'Category' => 'Baby', 'Date & Time' =>'2023-03-05', 'Status' => 'cancel_requested'],
+        ['id' => 'N-1345', 'name' => 'Charlie Lee', 'Age' => '5', 'Category' => 'Baby', 'Date & Time' =>'2023-03-10', 'Status' => 'conformed'],
+        ['id' => 'P-1345', 'name' => 'Diana King', 'Age' => '6', 'Category' => 'Baby', 'Date & Time' =>'2023-03-15', 'Status' => 'requested'],
+        ['id' => 'W-1345', 'name' => 'Ethan Clark', 'Age' => '27', 'Category' => 'Mother', 'Date & Time' =>'2023-03-20', 'Status' => 'canceled'],
+        ['id' => 'A-1345', 'name' => 'Fiona Adams', 'Age' => '38', 'Category' => 'Mother', 'Date & Time' =>'2023-03-25', 'Status' => 'reshedulled'],
+        ['id' => 'A-1345', 'name' => 'George Baker', 'Age' => '9', 'Category' => 'Baby', 'Date & Time' =>'2023-03-30', 'Status' => 'conformed'],
+        ['id' => 'D-1345', 'name' => 'Hannah Evans', 'Age' => '10', 'Category' => 'Baby', 'Date & Time' =>'2023-04-04', 'Status' => 'requested'],
     ];
     ?>
 
@@ -52,43 +52,7 @@
             </c-button>
         </c-slot>
 
-        <c-slot name="extrabtn">
-            <c-modal id="registerStaff" size="sm" :initOpen="false">
-                <c-slot name="trigger">
-                    <c-button variant="primary">
-                        Add Appointment 
-                    </c-button>
-                </c-slot>
-
-                <c-slot name="headerPrefix">
-                    <img src="{{ asset('assets/icons/profile.svg' )}}"/>
-                </c-slot>
-
-                <c-slot name="header">
-                    <div>Add Appointment</div>
-                </c-slot>
-
-                <form id="admin-register-form" action="">
-                    <c-input type="text" label="ID:" placeholder="Enter ID" required />
-                    <c-input type="text" label="Name:" placeholder="Enter Name of the Mother/Child" required />
-                    <c-input type="text" label="Age(yrs):" placeholder="Enter Age" required />
-                    <c-input type="text" label="Category:" placeholder="Enter the Category" required />
-                    <c-input type="text" label="Date & Time:" placeholder="Enter Date & Time" required />
-                    <c-select label="Status:" name="permissions" searchable="1">
-                        <li class="select-item" data-value="child">Upcoming</li>
-                        <li class="select-item" data-value="maternal">Pending</li>
-                        <li class="select-item" data-value="infant">Completed</li>
-                        <li class="select-item" data-value="toddler">Overdue</li>
-                    </c-select>
-                </form>
-                <c-slot name="close">
-                        Close
-                </c-slot>
-                <c-slot name="footer">
-                    <c-button type="submit" form="admin-register-form" variant="primary">Add Appointment</c-button>
-                </c-slot>
-            </c-modal>
-        </c-slot>
+       
     </c-table.controls>
 
     <c-table.wrapper card="1">
@@ -115,13 +79,13 @@
                             <c-table.td col="Category">{{ $item['Category'] }}</c-table.td>
                             <c-table.td col="Date & Time">{{ $item['Date & Time'] }}</c-table.td>
                             <c-table.td col="Status">
-                                @if (strtolower($item["Status"]) === "completed")
-                                    <c-badge type="yellow">{{ $item['Status']}}</c-badge>
-                                @elseif (strtolower($item["Status"]) === "pending")
+                                @if (strtolower($item["Status"]) === "conformed")
                                     <c-badge type="green">{{ $item['Status']}}</c-badge>
-                                @elseif (strtolower($item["Status"]) === "overdue")
+                                @elseif (strtolower($item["Status"]) === "requested")
+                                    <c-badge type="purple">{{ $item['Status']}}</c-badge>
+                                @elseif (strtolower($item["Status"]) === "canceled")
                                     <c-badge type="red">{{ $item['Status']}}</c-badge>
-                                @elseif (strtolower($item["Status"]) === "upcoming")
+                                @else
                                     <c-badge type="purple">{{ $item['Status']}}</c-badge>
                                     
                                 @endif
@@ -210,42 +174,29 @@
                                             </c-slot>
                                         </c-modal>
                                         <c-dropdown.sep />
-                                        <c-modal id="edit-appointment-{{ $key }}" size="sm" :initOpen="false">
+                                         <c-modal id="approve-appointment-{{ $key }}" size="sm" :initOpen="false">
                                             <c-slot name="trigger">
-                                            <c-dropdown.item>Edit Appointment Details</c-dropdown.item>
+                                                <c-dropdown.item>Approve Appointment</c-dropdown.item>
                                             </c-slot>
-
                                             <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/configuration-02.svg' )}}"/>
+                                                <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
                                             </c-slot>
-
+        
                                             <c-slot name="header">
-                                                    <div>Edit Appointment Details</div>
+                                                Approve Appointment
                                             </c-slot>
 
-                                            <form action="">
-                                                <c-input type="text" label="ID:" placeholder="{{ $item['id'] }}" required />
-                                                <c-input type="text" label="Name:" placeholder="{{ $item['name'] }}" required />
-                                                <c-input type="text" label="Age:" placeholder="{{ $item['Age'] }}" required />
-                                                <c-select label="Category:" name="permissions" multiple="1" searchable="1">
-                                                        <li class="select-item" data-value="child">Mother</li>
-                                                        <li class="select-item" data-value="maternal">Baby</li>
-                                                </c-select>
-                                                <c-input type="text" label="Date & Time:" placeholder="{{ $item['Date & Time'] }}" required />
-                                                <c-select label="Status:" name="permissions" searchable="1">
-                                                        <li class="select-item" data-value="child">Upcoming</li>
-                                                        <li class="select-item" data-value="maternal">Pending</li>
-                                                        <li class="select-item" data-value="infant">Completed</li>
-                                                        <li class="select-item" data-value="toddler">Overdue</li>
-                                                </c-select>
+                                            <form id="admin-register-form" action="">
+                                                <c-textarea label="Additional Notes:" placeholder="Any additional notes or others" rows="4"></c-textarea>
                                             </form>
                                             <c-slot name="close">
                                                 Close
                                             </c-slot>
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="primary">Save Changes</c-button>
+                                                <c-button type="submit" variant="primary">Approve Appointment</c-button>
                                             </c-slot>
                                         </c-modal>
+                                       
                                         <c-modal id="cancel-appointment-{{ $key }}" size="sm" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>Cancel Appointment</c-dropdown.item>

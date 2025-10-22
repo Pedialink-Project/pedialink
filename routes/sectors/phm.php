@@ -11,6 +11,7 @@ use App\Controllers\PublicHealthMidwife\GrowthMonitorController;
 use App\Controllers\PublicHealthMidwife\VaccinationController;
 use App\Controllers\PublicHealthMidwife\AppointmentsController;
 use App\Controllers\PublicHealthMidwife\ChildHealthController;
+use App\Controllers\PublicHealthMidwife\AppointmentRequestController;
 use App\Controllers\PublicHealthMidwife\ChildVaccinationController;
 use App\Controllers\PublicHealthMidwife\MaternalHealthController;
 
@@ -30,6 +31,7 @@ return [
     ['GET', '/phm/vaccination', [VaccinationController::class, 'index'], 'phm.vaccination', ['phm']],
     ['GET', '/phm/nutrition-tracking', [TestController::class, 'nutritionTracking'], 'phm.nutrition.tracking', ['phm']],
     ['GET', '/phm/appointments', [AppointmentsController::class, 'index'], 'phm.appointments', ['phm']],
+    ['GET', '/phm/appointment-requests', [AppointmentRequestController::class, 'index'], 'phm.appointments.requests', ['phm']],
     ['GET', '/phm/notification', [NotificationController::class, 'index'], 'phm.notification', ['phm']],
     ['GET', '/phm/settings', [SettingController::class, 'index'], 'phm.settings', ['phm']],
 ];

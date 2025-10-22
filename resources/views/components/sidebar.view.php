@@ -124,10 +124,20 @@ $menuItems = [
                 'icon' => asset('/assets/icons/vaccine.svg'),
                
             ],
+            // [
+            //     'name' => 'Appointments',
+            //     'link' => route('phm.appointments'),
+            //     'icon' => asset('/assets/icons/profile.svg'),
+            // ],
             [
                 'name' => 'Appointments',
-                'link' => route('phm.appointments'),
+                'link' => '#',
                 'icon' => asset('/assets/icons/profile.svg'),
+
+                'children' => [
+                    ['name' => 'My Appointments', 'link' => route('phm.appointments')],
+                    ['name' => 'Request Appointments', 'link' => route('phm.appointments.requests')],
+                ]
             ],
            
              

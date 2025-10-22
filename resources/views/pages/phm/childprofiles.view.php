@@ -116,7 +116,7 @@ PHM Child Profiles
             <c-table.tbody>
                 @foreach ($children as $key => $child)
                     <c-table.tr>
-                        <c-table.td col="id">{{ $child['id'] }}</c-table.td>
+                        <c-table.td col="id">{{ 'C-000' . $child['id'] }}</c-table.td>
                         <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
                         <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
                         <c-table.td col="Gender">
@@ -162,7 +162,7 @@ PHM Child Profiles
                                             <c-modal.viewitem
                                                 icon="{{ asset('assets/icons/profile.svg') }}"
                                                 title="Child ID"
-                                                info="{{ $child['id'] }}"
+                                                info="C-000{{ $child['id'] }}"
                                             />
                                             <c-modal.viewitem
                                                 icon="{{ asset('assets/icons/baby-01.svg') }}"
