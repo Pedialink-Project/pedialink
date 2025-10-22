@@ -7,7 +7,7 @@ class Maternal extends Model{
     
 protected static string $table = "maternal";
 
-protected array $fillable = ["parent_id"];
+protected array $fillable = ["parent_id","type","stage","pregnancy_date","health_status","additional_info"];
 
 }
 
