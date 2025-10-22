@@ -53,9 +53,9 @@ Parent Dashboard
             <div class="header">
                 <div class="title-section">
                     <span class="card-title">Upcoming Vaccinations</span>
-                    <span class="card-subtitle">Vaccines due for your children/span>
+                    <span class="card-subtitle">Vaccines due for your children</span>
                 </div>
-                <c-button varient="secondary" size="sm">View All</c-button>
+                <c-link type="secondary" size="sm" href="{{route('parent.vaccination')}}">View All</c-link>
             </div>
             <hr class="divider">
 
@@ -145,7 +145,7 @@ Parent Dashboard
                     <span class="card-title">Upcoming Appoinments</span>
                     <span class="card-subtitle">Your scheduled visits to the clinic</span>
                 </div>
-                <c-button varient="secondary" size="sm">View Schedule</c-button>
+                <c-link type="secondary" size="sm" href="{{route('parent.appointments')}}">View All</c-link>
             </div>
             <hr class="divider">
             <div class="card-body">
@@ -253,7 +253,7 @@ Parent Dashboard
                     <span class="card-title">Upcoming Events & Campaigns</span>
                     <span class="card-subtitle">Scheduled health events and vaccination drives</span>
                 </div>
-                <c-button varient="secondary" size="sm">View All</c-button>
+                <c-link type="secondary" size="sm" href="{{route('parent.events.campaigns')}}">View All</c-link>
             </div>
             <hr class="divider">
 

@@ -16,6 +16,6 @@ class ParentMiddleware
             return $next($request, $params);
         }
 
-        return view('parent/dashboard'); // temporary fallback for errors (Need to implement proper Error class!)
+        return view('erorr/404'); // temporary fallback for errors (Need to implement proper Error class!)
     }
 }
