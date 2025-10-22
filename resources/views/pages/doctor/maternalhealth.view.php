@@ -203,20 +203,24 @@ Health Records
                                         <div>Edit Health Records</div>
                                     </c-slot>
 
-                                    <form id="edit-health-record-form" class="maternal-health-form" action="">
+                                    <form id="edit-health-record-form" class="maternal-health-form" action="{{ route('doctor.maternal.health.edit',['id'=>$item['maternal_id']]) }}" method="POST">
                                         <c-input type="text" label="Recorded at:"
-                                            placeholder="{{ $item['Recorded at'] }}" required />
-                                        <c-input type="text" label="BMI:" placeholder="{{ $item['BMI'] }}" required />
-                                        <c-input type="text" label="Blood Pressure:"
-                                            placeholder="{{ $item['Blood Pressure'] }}" required />
-                                        <c-input type="text" label="Blood Sugar:"
-                                            placeholder="{{ $item['Blood Sugar'] }}" required />
-                                        <c-select label="Blood :" multiple="1" Default="{{ $item['Health Status'] }}">
-                                            <option class="select-item" data-value="child">Good</option>
-                                            <option class="select-item" data-value="child">Bad</option>
+                                            name="recorded_at"  />
+                                        <c-input type="text" label="BMI:" name="bmi"     />
+                                        <c-input type="text" label="Blood Pressure:" name="blood_pressure"
+                                            error="{{ errors('blood_pressure') ?? '' }}" value="{{ old('blood_pressure')??'' }}" />
+                                        <c-input type="text" label="Blood Sugar:" name="blood_sugar"/>
+                                        <c-input type="text" label="Weight:" name="weight" />
+                                        <c-input type="text" label="Height:" name="height" />
+                                        <c-input type="text" label="Fundal Height:" name="fundal_height" />
+                                        <c-input type="text" label="Health Status:" name="health_status" />
+                                        <c-select label="Health Status" multiple="1" Default="{{ $item['Health Status'] }}" >
+                                            <option class="select-item" data-value="good">Good</option>
+                                            <option class="select-item" data-value="bad">Bad</option>
                                         </c-select>
-                                        <c-textarea label="Additional Notes:" placeholder="Nutrition Facts."
-                                            rows="4"></c-textarea>
+                                        <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." name="notes"
+                                            rows="4">
+                                        </c-textarea>
                                     </form>
                                     <c-slot name="close">Close</c-slot>
                                     <c-slot name="footer">
