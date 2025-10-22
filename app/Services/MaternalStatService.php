@@ -71,6 +71,16 @@ class MaternalStatService
             return $error;
         }
 
+        if (intval($data) < 0) {
+            $error = "$attributeName cannot be negative";
+            return $error;
+        }
+
+        if (strlen(explode('.', $data, 2)[0]) > 3) {
+            $error = "$attributeName is too large";
+            return $error;
+        }
+
         return $error;
 
     }
