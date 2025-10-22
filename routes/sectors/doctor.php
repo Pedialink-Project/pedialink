@@ -18,6 +18,7 @@ return [
     ['GET', '/doctor/maternal-profiles/{id}/health-records', [MaternalHealthController::class, 'index'], 'doctor.maternal.health', ['doctor']],
     ['POST', '/doctor/maternal-profiles/{id}/health-records/add', [MaternalHealthController::class, 'createMaternalRecord'], 'doctor.maternal.health.add', ['doctor']],
     ['POST', '/doctor/maternal-profiles/{id}/health-records/{recordId}/edit', [MaternalHealthController::class, 'editMaternalRecord'], 'doctor.maternal.health.edit', ['doctor']],
+    ['POST', '/doctor/maternal-profiles/{id}/health-records/{recordId}/delete', [MaternalHealthController::class, 'deleteMaternalRecord'], 'doctor.maternal.health.delete', ['doctor']],
     ['GET', '/doctor/appointments', [AppointmentController::class, 'index'], 'doctor.appointments', ['doctor']],
     ['GET', '/doctor/notification', [NotificationController::class, 'index'], 'doctor.notification', ['doctor']],
     ['GET', '/doctor/settings', [SettingController::class, 'index'], 'doctor.settings', ['doctor']],

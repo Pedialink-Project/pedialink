@@ -215,7 +215,8 @@ Health Records
                                         action="{{ route('doctor.maternal.health.edit',['id'=>$maternalId,'recordId'=>$item['id']]) }}"
                                         method="POST">
                                         <c-input type="date" name="e_recorded_at" label="Recorded at:"
-                                            placeholder="Enter Recorded Date" error="{{ errors('e_recorded_at') ?? '' }}"
+                                            placeholder="Enter Recorded Date"
+                                            error="{{ errors('e_recorded_at') ?? '' }}"
                                             value="{{ old('e_recorded_at')?? $item['visit_date'] }}" />
                                         <c-input type="text" name="e_bmi" label="BMI:"
                                             placeholder="Enter BMI of the Mother" error="{{ errors('e_bmi') ?? '' }}"
@@ -230,10 +231,12 @@ Health Records
                                             value="{{ old('e_blood_sugar')?? $item['blood_sugar'] }}" />
                                         <c-input type="text" name="e_weight" label="Weight:"
                                             placeholder="Enter Weight of the Mother (in kg)"
-                                            error="{{ errors('e_weight') ?? '' }}" value="{{ old('e_weight')?? $item['weight'] }}" />
+                                            error="{{ errors('e_weight') ?? '' }}"
+                                            value="{{ old('e_weight')?? $item['weight'] }}" />
                                         <c-input type="text" name="e_height" label="Height:"
                                             placeholder="Enter Height of the Mother (in cm)"
-                                            error="{{ errors('e_height') ?? '' }}" value="{{ old('e_height')?? $item['height'] }}" />
+                                            error="{{ errors('e_height') ?? '' }}"
+                                            value="{{ old('e_height')?? $item['height'] }}" />
                                         <c-input type="text" name="e_fundal_height" label="Fundal Height:"
                                             placeholder="Enter Fundal Height of the Mother (in cm)"
                                             error="{{ errors('e_fundal_height') ?? '' }}"
@@ -256,30 +259,36 @@ Health Records
                                     </form>
                                     <c-slot name="close">Close</c-slot>
                                     <c-slot name="footer">
-                                        <c-button type="submit" variant="primary" form="edit-health-record-form-{{ $key }}">
+                                        <c-button type="submit" variant="primary"
+                                            form="edit-health-record-form-{{ $key }}">
                                             Save Changes
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
                                 <c-modal id="mark-as-invalid-{{ $key }}" size="sm" :initOpen="false">
                                     <c-slot name="trigger">
-                                        <c-dropdown.item>Mark as Invalid</c-dropdown.item>
+                                        <c-dropdown.item>Delete</c-dropdown.item>
                                     </c-slot>
                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/profile.svg' )}}" />
                                     </c-slot>
+                                    <form id="mark-as-invalid-form-{{ $key }}"
+                                        action="{{ route('doctor.maternal.health.delete',['id'=>$maternalId,'recordId'=>$item['id']]) }}"
+                                        method="POST">
+                                    </form>
 
                                     <c-slot name="header">
-                                        <div>Mark as Invalid</div>
+                                        <div>Delete</div>
                                     </c-slot>
 
-                                    <p>Are you sure you want to mark this record as invalid?</p>
+                                    <p>Are you sure you want to delete this record?</p>
 
                                     <c-slot name="close">
                                         Cancel
                                     </c-slot>
                                     <c-slot name="footer">
-                                        <c-button type="button" variant="destructive">Mark</c-button>
+                                        <c-button type="submit" variant="destructive"
+                                            form="mark-as-invalid-form-{{ $key }}">Delete</c-button>
                                     </c-slot>
                                 </c-modal>
                             </c-slot>
