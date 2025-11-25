@@ -72,6 +72,10 @@ case "$COMMAND" in
     db:rollback)
         _run rollback "$@"
         ;;
+    
+    db:reset)
+        _run reset "$@"
+        ;;
 
     db:status)
         _run status
