@@ -1,5 +1,6 @@
 <?php
 namespace Database\Migrations;
+use Library\Framework\Database\QueryBuilder;
 
 /**
  * Migration: 20251125171614_insert_data_for_parents_table
@@ -10,14 +11,26 @@ namespace Database\Migrations;
  */
 class Migration_20251125171614_insert_data_for_parents_table implements \Library\Framework\Database\Migration
 {
+
+    private string $parentMail = "keeththi2003@gmail.com";
     public function up(): void
     {
-        // TODO: write SQL or call your app's DB helper to apply this migration.
-        // Example (comment-only): // QueryBuilder::raw("CREATE TABLE ...");
+        $commonPassword = password_hash("qwerty123", PASSWORD_DEFAULT);
+        QueryBuilder::raw(
+            "INSERT INTO users (name, email, password_hash, role)
+            VALUES
+            ('Keeththi', '{$this->parentMail}', '{$commonPassword}', 'parent');"
+        );
+
+        QueryBuilder::raw(
+            "INSERT INTO parents (id, parent_type, nic, address, area_id)
+            VALUES
+            ((SELECT id FROM users WHERE email = '{$this->parentMail}'),'mother', '200315300887', 'Jaffna', 1 );"
+        );
     }
 
     public function down(): void
     {
-        // TODO: revert changes made in up()
+        
     }
 }
