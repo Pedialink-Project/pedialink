@@ -264,7 +264,7 @@ function cmd_migrate(PDO $pdo, string $migrationsDir): void
     echo "Migrations applied successfully.\n";
 }
 
-function cmd_rollback(PDO $pdo, string $migrationsDir): void
+function cmd_rollback(PDO $pdo, string $migrationsDir, bool $complete = false): void
 {
     ensureMigrationsTable($pdo);
     $stmt = $pdo->query("SELECT COALESCE(MAX(batch), 0) AS mb FROM migrations");
@@ -274,11 +274,21 @@ function cmd_rollback(PDO $pdo, string $migrationsDir): void
         return;
     }
     echo "Rolling back batch $mb ...\n";
-    $stmt = $pdo->prepare("SELECT migration FROM migrations WHERE batch = :b ORDER BY id DESC");
-    $stmt->execute([':b' => $mb]);
-    $rows = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-    if (!$rows) {
-        echo "No migrations found for batch $mb.\n";
+
+    $tows = null;
+    if ($complete) {
+        $stmt = $pdo->query("SELECT migration FROM migrations ORDER BY id DESC");
+        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+
+    } else {
+        $stmt = $pdo->prepare("SELECT migration FROM migrations WHERE batch = :b ORDER BY id DESC");
+        $stmt->execute([':b' => $mb]);
+        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
+     if (!$rows) {
+        
+        echo "No migrations found \n";
         return;
     }
 
@@ -316,7 +326,11 @@ function cmd_rollback(PDO $pdo, string $migrationsDir): void
         }
     }
 
-    echo "Rollback of batch $mb completed.\n";
+    if ($complete) {
+        echo "All migrations have been reversed.\n";
+    } else {
+        echo "Rollback of batch $mb completed.\n";
+    }
 }
 
 // -------- dispatch ----------
@@ -332,6 +346,9 @@ switch ($cmd) {
         break;
     case 'rollback':
         cmd_rollback($pdo, $migrationsDir);
+        break;
+    case 'reset':
+        cmd_rollback($pdo, $migrationsDir, true);
         break;
     case 'status':
         cmd_status($pdo, $migrationsDir);
