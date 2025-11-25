@@ -31,6 +31,15 @@ class Migration_20251125171614_insert_data_for_parents_table implements \Library
 
     public function down(): void
     {
-        
+        QueryBuilder::raw(
+            "DELETE FROM parents p
+            USING users u
+            WHERE p.id = u.id
+            AND email = '{$this->parentMail}';"
+        );
+
+        QueryBuilder::raw(
+            "DELETE FROM users WHERE email = '{$this->parentMail}';"
+        );
     }
 }
