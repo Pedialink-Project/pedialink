@@ -59,7 +59,7 @@ abstract class Model
     public static function query(): QueryBuilder
     {
         return new QueryBuilder(
-            static::$pdo, static::getTable(), static::class
+            static::getTable(), static::class
         );
     }
 
