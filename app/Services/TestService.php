@@ -22,7 +22,7 @@ class TestService
                 "stock" => $test->stock,
                 "price" => $test->price,
                 "created_at" => $test->created_at,
-               
+
             ];
         }
 
@@ -30,37 +30,43 @@ class TestService
     }
 
 
-    public function getSearchResults($search){
-        $tests = Test::query()->get();
+    public function getSearchResults($search)
+    {
+
+        // $tests = Test::query()->get();
+
+        // $searchResults = array_filter($tests, function ($row) use ($search) {
+        //     $s = strtolower($search);
+        //     return str_contains(strtolower($row['name']), $s)
+        //         || str_contains(strtolower($row['category']), $s)
+        //         || str_contains(strtolower($row['price']), $s);
+        // });
+
+        $like = "%$search%";
+
+        $sql = "SELECT * FROM test
+            WHERE CAST(name AS TEXT) ILIKE ?
+            OR CAST(category AS TEXT) ILIKE ?
+            OR CAST(price AS TEXT) ILIKE ?";
+
+
+        $searchResults = Test::query()->rawGet($sql, [$like, $like, $like]);
 
         $resource = [];
-
-        foreach ($tests as $test) {
+        foreach ($searchResults as $row) {
             $resource[] = [
-                "id" => $test->id,
-                "name" => $test->name,
-                "category" => $test->category,
-                "stock" => $test->stock,
-                "price" => $test->price,
-                "created_at" => $test->created_at,
-               
+                'id' => $row['id'],
+                'name' => $row['name'],
+                'category' => $row['category'],
+                'stock' => $row['stock'],
+                'price' => $row['price'],
+                'created_at' => $row['created_at'],
             ];
         }
 
-         if ($search) {
-        $searchResutls = array_filter($resource, function ($row) use ($search) {
-            $s = strtolower($search);
-            return str_contains(strtolower($row['name']), $s)
-                || str_contains(strtolower($row['category']), $s)
-                || str_contains(strtolower($row['price']), $s);
-        });
+        return $resource;
     }
 
-    return $searchResutls;
-
-
-
-    }
 
 }
 
