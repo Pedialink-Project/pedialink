@@ -9,22 +9,7 @@ Test Portal
 @endsection
 
 @section('content')
-    <?php
-    $items = [
-        ['id' => 1, 'name' => 'Deluxe Chair',      'category' => 'Furniture', 'price' => 129.99, 'stock' => 12, 'status' => 'active',  'created_at' => '2025-01-03'],
-        ['id' => 2, 'name' => 'Oak Desk',          'category' => 'Furniture', 'price' => 349.50, 'stock' => 5,  'status' => 'active',  'created_at' => '2024-11-21'],
-        ['id' => 3, 'name' => 'Ceramic Mug (Set)', 'category' => 'Kitchen',   'price' => 19.95,  'stock' => 120,'status' => 'active',  'created_at' => '2025-03-10'],
-        ['id' => 4, 'name' => 'LED Lamp',          'category' => 'Lighting',  'price' => 45.00,  'stock' => 0,  'status' => 'out-of-stock','created_at' => '2024-12-02'],
-        ['id' => 5, 'name' => 'Bluetooth Speaker', 'category' => 'Audio',     'price' => 79.9,   'stock' => 34, 'status' => 'active',  'created_at' => '2025-02-18'],
-        ['id' => 6, 'name' => 'Cotton Blanket',    'category' => 'Bedding',   'price' => 59.0,   'stock' => 8,  'status' => 'active',  'created_at' => '2024-10-09'],
-        ['id' => 7, 'name' => 'Stainless Knife',   'category' => 'Kitchen',   'price' => 24.5,   'stock' => 200,'status' => 'active',  'created_at' => '2025-04-01'],
-        ['id' => 8, 'name' => 'Wall Art - Blue',   'category' => 'Decor',     'price' => 89.0,   'stock' => 3,  'status' => 'active',  'created_at' => '2024-09-30'],
-        ['id' => 9, 'name' => 'Running Shoes',     'category' => 'Footwear',  'price' => 99.99,  'stock' => 22, 'status' => 'active',  'created_at' => '2025-05-05'],
-        ['id' =>10, 'name' => 'Notebook A5',       'category' => 'Stationery', 'price' => 6.5,    'stock' => 500,'status' => 'active',  'created_at' => '2025-06-12'],
-        ['id' =>11, 'name' => 'Desk Plant',        'category' => 'Plants',    'price' => 15.0,   'stock' => 40, 'status' => 'active',  'created_at' => '2025-01-30'],
-        ['id' =>12, 'name' => 'USB-C Cable',       'category' => 'Electronics','price' => 8.99,  'stock' => 150,'status' => 'active',  'created_at' => '2025-03-20'],
-    ];
-    ?>
+  
 
     <c-table.controls :columns='["ID","Name","Category","Date & Time","Status"]'>
 
