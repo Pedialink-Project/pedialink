@@ -13,22 +13,7 @@
 @endsection
 
 @section('content')
-    <?php
-    $items = [
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'parent', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'phm', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'doctor', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'phm', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'parent', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'admin', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'admin', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'doctor', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'admin', 'status' => 'Pending Approval',],
-        ['name' => 'mani', 'email' => 'mani@gmail.com', 'role' => 'phm', 'status' => 'Pending Approval',],
-    ];
-    ?>
-
-    <c-table.controls :columns='["ID","Name","Category","Date & Time","Status"]'>
+    <c-table.controls :columns='["Name","Email","Role","Status"]'>
 
         <c-slot name="filter">
             <c-button variant="outline">
@@ -87,26 +72,26 @@
                 </c-table.thead>
 
                 <c-table.tbody>
-                    @foreach ($items as $key => $item)
+                    @foreach ($users as $key => $user)
                         <c-table.tr>
-                            <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                            <c-table.td col="email">{{ $item['email'] }}</c-table.td>
+                            <c-table.td col="name">{{ $user['name'] }}</c-table.td>
+                            <c-table.td col="email">{{ $user['email'] }}</c-table.td>
                             <c-table.td col="role">
-                                @if (strtolower($item["role"]) === "parent")
+                                @if (strtolower($user["role"]) === "parent")
                                     <c-badge class="role-badge" type="purple">
-                                        {{ ucfirst($item['role']) }}
+                                        {{ ucfirst($user['role']) }}
                                     </c-badge>
-                                @elseif (strtolower($item["role"]) === "doctor")
+                                @elseif (strtolower($user["role"]) === "doctor")
                                     <c-badge class="role-badge" type="green">
-                                        {{ ucfirst($item['role']) }}
+                                        {{ ucfirst($user['role']) }}
                                     </c-badge>
-                                @elseif (strtolower($item["role"]) === "phm")
+                                @elseif (strtolower($user["role"]) === "phm")
                                     <c-badge class="role-badge" type="blue">
-                                        {{ strtoupper($item['role']) }}
+                                        {{ strtoupper($user['role']) }}
                                     </c-badge>
-                                @elseif (strtolower($item["role"]) === "admin")
+                                @elseif (strtolower($user["role"]) === "admin")
                                     <c-badge class="role-badge" type="red">
-                                        {{ ucfirst($item['role']) }}
+                                        {{ ucfirst($user['role']) }}
                                     </c-badge>
                                 @else
                                     <c-badge class="role-badge" type="destructive">
@@ -115,7 +100,13 @@
                                 @endif
                                 
                             </c-table.td>
-                            <c-table.td col="price">{{ $item['status'] }}</c-table.td>
+                            <c-table.td col="price">
+                                @if ($user["email_verified_at"])
+                                    <c-badge type="success">Verified</c-badge>
+                                @else 
+                                    <c-badge type="red">Unverified</c-badge>
+                                @endif
+                            </c-table.td>
                             <c-table.td class="table-actions" align="center">
                                 <c-dropdown.main>
                                     <c-slot name="trigger">
@@ -139,17 +130,17 @@
                                                 <div>Account Info</div>
                                             </c-slot>
 
-                                            @if (strtolower($item['role']) === "parent")
+                                            @if (strtolower($user['role']) === "parent")
                                                 <c-modal.viewcard>
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                         title="Profile"
-                                                        info="P-1234"
+                                                        info="P-{{ $user['id'] }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/user.svg') }}"
                                                         title="Full Name"
-                                                        info="{{ $item['name'] }}"
+                                                        info="{{ $user['name'] }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/calendar-02.svg') }}"
@@ -164,7 +155,7 @@
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/security-validation.svg') }}"
                                                         title="Role"
-                                                        info="Parent"
+                                                        info="{{ ucfirst($user['role']) }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/mother.svg') }}"
@@ -182,17 +173,17 @@
                                                         info="Borella"
                                                     />
                                                 </c-modal.viewcard>
-                                            @elseif (strtolower($item['role']) === "phm")
+                                            @elseif (strtolower($user['role']) === "phm")
                                                 <c-modal.viewcard>
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                         title="Profile"
-                                                        info="PHM-1234"
+                                                        info="PHM-{{ $user['id'] }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/user.svg') }}"
                                                         title="Full Name"
-                                                        info="{{ $item['name'] }}"
+                                                        info="{{ $user['name'] }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/calendar-02.svg') }}"
@@ -215,17 +206,17 @@
                                                         info="200301243423"
                                                     />
                                                 </c-modal.viewcard>
-                                            @elseif (strtolower($item['role']) === "doctor")
+                                            @elseif (strtolower($user['role']) === "doctor")
                                                 <c-modal.viewcard>
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                         title="Profile"
-                                                        info="D-1234"
+                                                        info="D-{{ $user['id'] }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/user.svg') }}"
                                                         title="Full Name"
-                                                        info="{{ $item['name'] }}"
+                                                        info="{{ $user['name'] }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/calendar-02.svg') }}"
@@ -248,7 +239,7 @@
                                                         info="200301243423"
                                                     />
                                                 </c-modal.viewcard>
-                                            @elseif (strtolower($item['role']) === "admin")
+                                            @elseif (strtolower($user['role']) === "admin")
                                                 <c-modal.viewcard>
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
@@ -258,7 +249,7 @@
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/user.svg') }}"
                                                         title="Full Name"
-                                                        info="{{ $item['name'] }}"
+                                                        info="{{ $user['name'] }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/calendar-02.svg') }}"
@@ -304,7 +295,7 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($items) === 0)
+                    @if(count($users) === 0)
                         <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
                     @endif
                 </c-table.tbody>
