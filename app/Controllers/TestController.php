@@ -16,8 +16,21 @@ class TestController
     }
     public function testPortal(Request $request)
     {
+
+        
         $testDetails = $this->testService->getAllTestDetails();
         return view('test/test', ['items' => $testDetails]);
+    }
+
+    public function getSearchResutls(Request $request){
+
+        $search = $request->input("search");
+
+        $searchResults = $this->testService->getSearchResults($search);
+
+                return view('test/test', ['items' => $searchResults]);
+
+        
     }
 
     public function testCalendar(Request $request)

@@ -10,11 +10,12 @@ Test Portal
 
 @section('content')
   
+<form id="search-form" method="POST" action="{{ route('test.search') }}">
 
     <c-table.controls :columns='["ID","Name","Category","Date & Time","Status"]'>
 
         <c-slot name="filter">
-            <c-button variant="outline">
+            <c-button type="submit" form="search-form" variant="outline">
                 <img src="{{ asset('assets/icons/filter.svg') }}" />
                 Category
             </c-button>
@@ -23,6 +24,8 @@ Test Portal
                 Status
             </c-button>
         </c-slot>
+</form>
+        
 
         <c-slot name="extrabtn">
             <c-button variant="primary" >

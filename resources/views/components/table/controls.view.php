@@ -10,13 +10,16 @@ $columns = isset($columns) ? $columns : null;
     @if (!empty($slots['search']))
       {{ $slots['search'] }}
     @else
-        <c-input type="text" placeholder="Search">
+        <c-input 
+        name="search"
+        type="text"
+        placeholder="Search"
+        >
             <c-slot name="prefix" >
                 <span class="search-icon" aria-hidden="true">
                 <img src="{{ asset('assets/icons/search.svg') }}" />
                 </span>
             </c-slot>
-
         </c-input>
     @endif
 
