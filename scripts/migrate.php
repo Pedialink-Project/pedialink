@@ -224,10 +224,12 @@ function cmd_make(array $argv, string $migrationsDir): void
 
     $class = "Migration_{$base}";
     $namespace = "Database\\Migrations";
+    $useNamespace ="Library\Framework\Database\QueryBuilder;";
 
     $content = <<<PHP
 <?php
 namespace {$namespace};
+use {$useNamespace};
 
 /**
  * Migration: {$base}
