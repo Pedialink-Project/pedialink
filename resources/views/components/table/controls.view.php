@@ -10,6 +10,9 @@ $columns = isset($columns) ? $columns : null;
     @if (!empty($slots['search']))
     {{ $slots['search'] }}
     @else
+
+    <form id="search-form" method="GET" action="{{ $action }}">
+
     <div class="tc-search">
       <c-input name="search" type="text" placeholder="Search">
       </c-input>
@@ -18,6 +21,7 @@ $columns = isset($columns) ? $columns : null;
         <img src="{{ asset('assets/icons/search.svg') }}" />
       </c-button>
     </div>
+    </form>
     @endif
 
     <div class="tc-filters">

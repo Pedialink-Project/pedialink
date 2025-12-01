@@ -10,9 +10,8 @@ Test Portal
 
 @section('content')
   
-<form id="search-form" method="GET" action="{{ route('test.portal') }}">
 
-    <c-table.controls :columns='["ID","Name","Category","Date & Time","Status"]'>
+    <c-table.controls :columns='["ID","Name","Category","Date & Time","Status"]' action="{{ route('test.portal') }}">
 
         <c-slot name="filter">
             <c-button  variant="outline">
@@ -24,7 +23,6 @@ Test Portal
                 Status
             </c-button>
         </c-slot>
-</form>
         
 
         <c-slot name="extrabtn">
@@ -42,7 +40,7 @@ Test Portal
                         <c-table.th width="70px">ID</c-table.th>
                         <c-table.th sortable="1">Name</c-table.th>
                         <c-table.th>Category</c-table.th>
-                        <c-table.th align="right">Price</c-table.th>
+                        <c-table.th align="center">Price</c-table.th>
                         <c-table.th align="center">Stock</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
@@ -54,7 +52,7 @@ Test Portal
                             <c-table.td col="id">{{ $item['id'] }}</c-table.td>
                             <c-table.td col="name">{{ $item['name'] }}</c-table.td>
                             <c-table.td col="category">{{ $item['category'] }}</c-table.td>
-                            <c-table.td col="price" align="right">₨ {{ number_format($item['price'], 2) }}</c-table.td>
+                            <c-table.td col="price" align="center">₨ {{ number_format($item['price'], 2) }}</c-table.td>
                             <c-table.td col="stock" align="center">{{ $item['stock'] }}</c-table.td>
                             <c-table.td class="table-actions" align="center">
                                 <c-dropdown.main>
