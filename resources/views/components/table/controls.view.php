@@ -25,36 +25,42 @@ $filters = isset($filters) ? $filters : null;
       </div>
     </form>
     @endif
+    <form id="filter-form" method="GET" action="{{$action}}">
+      <div class="tc-filters">
+        @if (!empty($filters) && is_array($filters))
+        @foreach ($filters as $filterName => $filterItems)
+        <div class="tc-actions column-dropdown">
+          <c-dropdown.main :closeOnSelect="false">
+            <c-slot name="trigger">
+              <c-button variant="outline" class="dropdown-trigger">
+                <img src="{{ asset('assets/icons/filter.svg') }}" />
+                <span>{{ $filterName }}</span>
+              </c-button>
+            </c-slot>
 
-    <div class="tc-filters">
-      @if (!empty($filters) && is_array($filters))
-      @foreach ($filters as $filterName => $filterItems)
-      <div class="tc-actions column-dropdown">
-        <c-dropdown.main>
-          <c-slot name="trigger">
-            <c-button variant="outline" class="dropdown-trigger">
-              <img src="{{ asset('assets/icons/filter.svg') }}" />
-              <span>{{ $filterName }}</span>
-            </c-button>
-          </c-slot>
+            <c-slot name="menu">
+              @foreach ($filterItems as $item)
+              <c-dropdown.item>
+                <label style="display: flex; align-items:center; gap:.5rem;">
+                  <input type="checkbox" name="filters[{{ $filterName }}][]" value="{{ $item }}" />
+                  <span>{{ $item }}</span>
+                </label>
+              </c-dropdown.item>
+              @endforeach
+              <c-dropdown.item>
+                <c-button type="submit" variant="outline" size="sm" form="filter-form">
+                  Apply
+                </c-button>
+              </c-dropdown.item>
+            </c-slot>
 
-          <c-slot name="menu">
-            @foreach ($filterItems as $item)
-            <c-dropdown.item>
-              <label style="display: flex; align-items:center; gap:.5rem;">
-                <input type="checkbox" name="filters[{{ $filterName }}][]" value="{{ $item }}" />
-                <span>{{ $item }}</span>
-              </label>
-            </c-dropdown.item>
-            @endforeach
-          </c-slot>
+          </c-dropdown.main>
+        </div>
+        @endforeach
+        @endif
 
-        </c-dropdown.main>
       </div>
-      @endforeach
-      @endif
-
-    </div>
+    </form>
   </div>
 
   <div class="table-controls__right">
@@ -88,3 +94,4 @@ $filters = isset($filters) ? $filters : null;
     @endif
   </div>
 </div>
+
