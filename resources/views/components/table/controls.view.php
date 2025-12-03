@@ -48,11 +48,10 @@ $filters = isset($filters) ? $filters : null;
               </label>
             </c-dropdown.item>
             @endforeach
-            <c-dropdown.item>
-              <c-button type="submit" variant="outline" size="sm" form="filter-form-{{$filterName}}">
+
+            <c-button class="filter-btn" type="submit" variant="primary" size="sm" form="filter-form-{{$filterName}}">
                 Apply
-              </c-button>
-            </c-dropdown.item>
+            </c-button>
             </form>
           </c-slot>
         </c-dropdown.main>
