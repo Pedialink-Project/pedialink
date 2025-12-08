@@ -59,9 +59,9 @@ $filters = isset($filters) ? $filters : null;
       @endforeach
       @endif
       <a href="{{$action}}">
-      <c-button variant="primary">
-        Reset
-      </c-button>
+        <c-button variant="primary">
+          Reset
+        </c-button>
       </a>
     </div>
 
@@ -79,7 +79,7 @@ $filters = isset($filters) ? $filters : null;
 
     @if (!empty($columns) && is_array($columns))
     <div class="tc-actions column-dropdown">
-      <c-dropdown.main>
+      <c-dropdown.main :closeOnSelect="false">
         <c-slot name="trigger">
           <c-button variant="outline" class="dropdown-trigger">
             <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" alt="" />
@@ -88,13 +88,18 @@ $filters = isset($filters) ? $filters : null;
         </c-slot>
 
         <c-slot name="menu">
-          @foreach ($columns as $col)
-          <c-dropdown.item>
-            <label style="display:inline-flex; align-items:center; gap:.5rem; width:100%;">
-              <input type="checkbox" name="col[]" value="{{ $col }}" /> <span>{{ $col }}</span>
-            </label>
-          </c-dropdown.item>
-          @endforeach
+          <form id="col-form" method="GET" action="{{$action}}">
+            @foreach ($columns as $col)
+            <c-dropdown.item>
+              <label style="display:inline-flex; align-items:center; gap:.5rem; width:100%;">
+                <input type="checkbox" name="col[]" value="{{ $col }}" /> <span>{{ $col }}</span>
+              </label>
+            </c-dropdown.item>
+            @endforeach
+            <c-button class="filter-btn" type="submit" variant="primary" size="sm" form="col-form">
+              Apply
+            </c-button>
+          </form>
         </c-slot>
       </c-dropdown.main>
     </div>
