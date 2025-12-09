@@ -8,6 +8,7 @@ use Library\Framework\Http\Response;
 use Library\Framework\Routing\Router;
 use Library\Framework\Session\SessionManager;
 use Library\Framework\View\View;
+use Library\Framework\Http\Request;
 
 /**
  * Global helper to retrieve application instance
@@ -180,4 +181,25 @@ function errors(string $key = null)
 function flash(string $key, $default = null)
 {
     return session()->getFlash($key, $default);
+}
+
+/**
+ * Global helper to access the current HTTP request or retrieve input values.
+ *
+ * If $key is null the Request instance is returned; otherwise the input value
+ * for the given key is returned (or $default if not present).
+ *
+ * @param string|null $key
+ * @param mixed $default
+ * @return mixed
+ */
+function request($key = null, $default = null)
+{
+    $req = app(Request::class);
+
+    if ($key === null) {
+        return $req; 
+    }
+
+    return $req->input($key, $default);
 }

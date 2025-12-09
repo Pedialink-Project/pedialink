@@ -50,6 +50,13 @@
     margin-left: 1rem;
 }
 
+.filter-btn{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: .5rem;
+}
+
 .tc-filter:hover {
     background: var(--surface);
     color: var(--text-primary);

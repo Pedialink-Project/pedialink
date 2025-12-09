@@ -67,6 +67,38 @@ class TestService
         return $resource;
     }
 
+    public function getFilteredResults($filters)
+{
+    $query = Test::query();
+
+    foreach ($filters as $filterName => $filterValues) {
+        if (!empty($filterValues) && is_array($filterValues)) {
+
+            $column = strtolower($filterName);
+
+            $values = array_map('strtolower', $filterValues);
+
+            $query->whereIn($column, $values);
+        }
+    }
+
+    $filteredResults = $query->get();
+
+    $resource = [];
+    foreach ($filteredResults as $row) {
+        $resource[] = [
+            'id' => $row->id,
+            'name' => $row->name,
+            'category' => $row->category,
+            'stock' => $row->stock,
+            'price' => $row->price,
+            'created_at' => $row->created_at,
+        ];
+    }
+
+    return $resource;
+}
+
 
 }
 

@@ -271,7 +271,7 @@ $closeOnSelect = isset($closeOnSelect) ? (bool)$closeOnSelect : true; // true by
     if (!it) {
       return;
     }
-    const closeOnSelect = {{ $closeOnSelect }};
+const closeOnSelect = {{ $closeOnSelect ? 'true' : 'false' }};
     if (closeOnSelect) {
       closeMenu(true);
     }

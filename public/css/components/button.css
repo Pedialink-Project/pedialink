@@ -86,7 +86,8 @@
 }
 
 .btn-ghost:hover {
-    background: color-mix(in srgb, var(--panel) 85%, var(--bg) 15%);
+    border-color: var(--border); ;
+    
 }
 
 

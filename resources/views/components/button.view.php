@@ -13,6 +13,7 @@ if (!empty($size)) {
     $classes .= " btn-{$size}";
 }
 
+
 // if icon-only
 if (!empty($icon_only)) $classes .= ' btn-icon';
 ?>
@@ -25,7 +26,7 @@ if (!empty($icon_only)) $classes .= ' btn-icon';
     @if (!empty($type))
         type="{{ $type }}"
     @else 
-        type="submit"
+        type="button"
     @endif
 
     @if (!empty($form))
