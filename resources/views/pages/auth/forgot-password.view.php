@@ -39,7 +39,7 @@
                     </form>
                 </div>
                 <div class="footer">
-                    <c-button id="send-email" form="forgot-password" variant="primary">
+                    <c-button id="send-email" type="submit" form="forgot-password" variant="primary">
                         Send Email
                     </c-button>
                 </div>

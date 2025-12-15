@@ -51,7 +51,7 @@
             </form>
 
             <div class="footer-settings">
-                <c-button variant="primary">Save</c-button>
+                <c-button  type="submit" variant="primary">Save</c-button>
             </div>
         </c-card>
     </div>

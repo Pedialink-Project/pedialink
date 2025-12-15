@@ -104,11 +104,11 @@
                 </div>
                 <div class="footer">
                     @if (!empty($final) && $final)
-                        <c-button id="sign-up" form="parent-register-final" variant="primary">
+                        <c-button id="sign-up" type="submit" form="parent-register-final" variant="primary">
                             Sign Up
                         </c-button>
                     @else
-                        <c-button id="next-page" form="parent-register" variant="primary">
+                        <c-button id="next-page" type="submit" form="parent-register" variant="primary">
                             Next
                         </c-button>
                     @endif
