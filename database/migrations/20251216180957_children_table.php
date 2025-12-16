@@ -31,6 +31,6 @@ class Migration_20251216180957_children_table implements \Library\Framework\Data
 
     public function down(): void
     {
-        // TODO: revert changes made in up()
+        QueryBuilder::raw("DROP TABLE IF EXISTS children;");
     }
 }
