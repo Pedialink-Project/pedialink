@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Child;
 use App\Models\ParentM;
 use App\Models\Patient;
+use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use DateTime;
 
@@ -80,11 +81,22 @@ class ChildService
                 $parentResource = [
                     'id' => $parent->id,
                     'name' => User::find($parent->id)->name,
+                    'email' => User::find($parent->id)->email,
                     'type' => $parent->type,
                 ];
             }
 
-            
+            $phm = PublicHealthMidwife::find($child->parent_id);
+
+            $phmResource = NULL;
+            if ($phm) {
+                $phmResource = [
+                    'id' => $phm->id,
+                    'name' => User::find($phm->id)->name,
+                ];
+            }
+
+
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,
@@ -95,6 +107,7 @@ class ChildService
                 'blood_type' => $child->blood_type,
                 'notes' => $child->notes,
                 'parent' => $parentResource,
+                'phm' => $phmResource,
             ]
             ;
         }
