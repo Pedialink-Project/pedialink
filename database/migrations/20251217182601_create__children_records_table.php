@@ -22,6 +22,7 @@ class Migration_20251217182601_create__children_records_table implements \Librar
                 age_recorded_at INT NOT NULL,
                 height REAL,
                 weight REAL,
+                bmi REAL,
                 head_circumference REAL,
                 notes TEXT,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
