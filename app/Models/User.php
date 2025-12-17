@@ -47,6 +47,16 @@ class User extends Model
 
     public function getRole()
     {
-        return Admin::find($this->id);
+        if ($this->role === "parent") {
+            return ParentM::find($this->id);       
+        } else if ($this->role === "phm") {
+            return PublicHealthMidwife::find($this->id);
+        } else if ($this->role === "doctor") {
+            return Doctor::find($this->id);
+        } else if ($this->role === "admin") {
+            return Admin::find($this->id);
+        }
+
+        return null;
     }
 }
