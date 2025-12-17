@@ -67,7 +67,7 @@ class ChildService
         return $resource;
     }
 
-    private function getChildernByParentId(int $parentId)
+    public function getChildernByParentId(int $parentId)
     {
         $children = Child::query()->where('parent_id', '=', $parentId)->get();
 
@@ -86,7 +86,7 @@ class ChildService
                 ];
             }
 
-            $phm = PublicHealthMidwife::find($child->parent_id);
+            $phm = PublicHealthMidwife::find($child->phm_id);
 
             $phmResource = NULL;
             if ($phm) {
