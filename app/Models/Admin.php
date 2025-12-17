@@ -9,9 +9,8 @@ class Admin extends Model
     protected static string $table = "admins";
     protected array $fillable = ["id", "admin_type_id"];
 
-    public function getAdminType()
+    public function getAdminType(): string|null
     {
-        return AdminType::find($this->admin_type_id)
-            ->type;
+        return AdminType::find($this->admin_type_id)?->type;
     }
 }
