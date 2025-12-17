@@ -27,9 +27,15 @@ class ChildService
             return $y . ' year' . ($y === 1 ? '' : 's');
         }
 
-        // less than 1 year -> return months only (integer)
-        $m = $diff->m;
-        return $m . ' month' . ($m === 1 ? '' : 's');
+        if ($diff->m >= 1) {
+            $m = $diff->m;
+            return $m . ' month' . ($m === 1 ? '' : 's');
+        }
+
+        $d = $diff->d;
+        return $d . ' day' . ($d === 1 ? '' : 's');
+
+
     }
 
     public function getAllChildren()
