@@ -13,13 +13,14 @@ class Migration_20251217184211_create_maternal_records_table implements \Library
 {
     public function up(): void
     {
+        QueryBuilder::raw("CREATE TYPE trimester_type AS ENUM ('first', 'second', 'third');");
         QueryBuilder::raw(
          "CREATE TABLE IF NOT EXISTS maternal_records (
                 id SERIAL PRIMARY KEY,
                 parent_id INT REFERENCES parents(id) ON DELETE CASCADE,
                 staff_id INT REFERENCES staff(id) ON DELETE SET NULL,
                 visit_date DATE NOT NULL,
-                trimester INT NOT NULL,
+                trimester trimester_type NOT NULL,
                 weight REAL,
                 notes TEXT,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
