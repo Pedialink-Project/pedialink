@@ -66,6 +66,43 @@ class ChildService
         return $resource;
     }
 
+    private function getChildernByParentId(int $parentId)
+    {
+        $children = Child::query()->where('parent_id', '=', $parentId)->get();
+
+        $resource = [];
+        foreach ($children as $child) {
+
+            $parent = ParentM::find($child->parent_id);
+
+            $parentResource = NULL;
+            if ($parent) {
+                $parentResource = [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                    'type' => $parent->type,
+                ];
+            }
+
+            
+            $resource[] = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'date_of_birth' => $child->date_of_birth,
+                'age' => $this->calculateAge($child->date_of_birth),
+                'gender' => $child->gender,
+                'health_status' => $child->health_status,
+                'blood_type' => $child->blood_type,
+                'notes' => $child->notes,
+                'parent' => $parentResource,
+            ]
+            ;
+        }
+
+        return $resource;
+    }
+
+
     private function validateName(string $name)
     {
         $error = null;
@@ -126,17 +163,17 @@ class ChildService
             $errors["{$suffix}name"] = $nameError;
         }
 
-        $divisionError= $this->validateCommonFields($division, "GS Division");
+        $divisionError = $this->validateCommonFields($division, "GS Division");
         if ($divisionError) {
             $errors["{$suffix}division"] = $divisionError;
         }
 
-        $dobError= $this->validateCommonFields($dob, "Date of Birth");
+        $dobError = $this->validateCommonFields($dob, "Date of Birth");
         if ($dobError) {
             $errors["{$suffix}dob"] = $dobError;
         }
 
-        $genderError= $this->validateGender($gender);
+        $genderError = $this->validateGender($gender);
         if ($genderError) {
             $errors["{$suffix}gender"] = $genderError;
         }
@@ -193,7 +230,7 @@ class ChildService
 
         $patient = Patient::find($child->id);
         $patient->delete();
-        
+
         $child->delete();
     }
 }
