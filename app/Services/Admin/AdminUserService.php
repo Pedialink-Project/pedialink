@@ -182,7 +182,7 @@ class AdminUserService
 
         if ($admin->getAdminType() === "super") {
             $superAdminType = AdminType::query()->where("type", "=", "super")->first();
-            $otherSuperAdmins = Admin::query()->where("admin_type_id", "=", $superAdminType->id);
+            $otherSuperAdmins = Admin::query()->where("admin_type_id", "=", $superAdminType->id)->get();
 
             if (count($otherSuperAdmins) <= 1) {
                 $error = "Cannot delete default super admin";

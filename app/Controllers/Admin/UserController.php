@@ -2,20 +2,26 @@
 
 namespace App\Controllers\Admin;
 use App\Services\Admin\AdminUserService;
+use App\Services\Admin\UserOverviewService;
 use Library\Framework\Http\Request;
 
 class UserController
 {
+    private UserOverviewService $userOverviewService;
     private AdminUserService $adminUserService;
 
     public function __construct()
     {
+        $this->userOverviewService = new UserOverviewService();
         $this->adminUserService = new AdminUserService();
     }
 
     public function overview()
     {
-        return view('admin/user/overview');
+        $users = $this->userOverviewService->getUserDetails();
+        return view('admin/user/overview', [
+            'users' => $users,
+        ]);
     }
 
     public function parentAccountApproval()
