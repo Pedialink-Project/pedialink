@@ -161,24 +161,32 @@ class QueryBuilder
      * @return object|null
      */
     public function first(): ?object
-    {
-        $sql = "SELECT * FROM {$this->table}";
-        if ($this->wheres) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
-        }
-        $sql .= ' LIMIT 1';
-        $stmt = static::$pdo->prepare($sql);
-        $stmt->execute($this->bindings);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+{
+    $sql = "SELECT * FROM {$this->table}";
 
-        if (!$row) {
-            return null;
-        }
-
-        $model = new $this->modelClass;
-        $model->hydrate($row);
-        return $model;
+    if ($this->wheres) {
+        $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
     }
+
+    if ($this->orderBys) {
+        $sql .= ' ORDER BY ' . implode(', ', $this->orderBys);
+    }
+
+    $sql .= ' LIMIT 1';
+
+    $stmt = static::$pdo->prepare($sql);
+    $stmt->execute($this->bindings);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row) {
+        return null;
+    }
+
+    $model = new $this->modelClass;
+    $model->hydrate($row);
+    return $model;
+}
+
 
     /**
      * Insert new row in the table
