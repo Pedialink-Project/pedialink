@@ -117,9 +117,14 @@ class UserController
             );
     }
 
-    public function admin()
+    public function admin(Request $request)
     {
-        $admins = $this->adminUserService->getAdminDetails();
+        $search = $request->input('search');
+        $filters = $request->input('filters');
+        $admins = $this->adminUserService->getAdminDetails(
+            $search,
+            $filters
+        );
 
         return view('admin/user/admin', [
             "admins" => $admins,
