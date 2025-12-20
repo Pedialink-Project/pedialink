@@ -3,16 +3,48 @@
 namespace App\Services\Admin;
 
 use App\Models\User;
+use Library\Framework\Database\QueryBuilder;
 
 class UserOverviewService
 {
-    public function getUserDetails()
+    private function applySearch(QueryBuilder $users, string $search)
     {
-        $users = User::all();
+        $users->where('name', 'ILIKE', "$search%");
+
+        return $users;
+    }
+
+    private function applyFilters(QueryBuilder $users, array $filters)
+    {
+        foreach ($filters as $filterName => $filterValue) {
+            if ($filterValue && is_array($filterValue)) {
+                $users->whereIn('role', $filterValue);
+            }
+        }
+
+        return $users;
+    }
+
+    public function getUserDetails(?string $search, ?array $filters)
+    {
+        $users = User::query();
+
+        if ($search) {
+            $users = $this->applySearch($users, $search);
+        }
+
+        if ($filters) {
+            $users = $this->applyFilters($users, $filters);
+        }
+
+        $results = $users
+            ->orderBy('id', 'ASC')
+            ->paginate(10)
+            ->toArray();
 
         $resource = [];
 
-        foreach ($users as $user) {
+        foreach ($results['items'] as $user) {
             $common = [
                 "id" => $user->id,
                 "name" => $user->name,
