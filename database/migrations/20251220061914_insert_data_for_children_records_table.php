@@ -23,24 +23,13 @@ class Migration_20251220061914_insert_data_for_children_records_table implements
             "INSERT INTO child_records
                   (child_id, staff_id, visit_date, age_recorded_at, height, weight, bmi, head_circumference, notes)
                   VALUES
-                  ((SELECT id FROM users WHERE name = '{$this->childName1}' LIMIT 1), (SELECT s.id AS staff_id
-                  FROM users u
-                  JOIN staffs s ON s.user_id = u.id
-                  WHERE u.email = '{$this->staffEmail1}';
+                  ((SELECT id FROM children WHERE name = '{$this->childName1}' LIMIT 1), (SELECT id FROM users WHERE email = '{$this->staffEmail1}'
                   ), '2025-01-10', 24, 85.5, 12.3, 16.8, 47.2, 'Normal growth for age'),
-                  ((SELECT id FROM users WHERE name = '{$this->childName2}' LIMIT 1), (SELECT s.id AS staff_id
-                  FROM users u
-                  WHERE u.email = '{$this->staffEmail2}';
+                  ((SELECT id FROM children WHERE name = '{$this->childName2}' LIMIT 1), (SELECT id FROM users WHERE email = '{$this->staffEmail2}'
                   ), '2025-01-15', 36, 95.0, 14.8, 16.4, 49.0, 'Slight underweight, advised balanced diet'),
-                  ((SELECT id FROM users WHERE name = '{$this->childName2}' LIMIT 1), (SELECT s.id AS staff_id
-                  FROM users u
-                  JOIN staffs s ON s.user_id = u.id
-                  WHERE u.email = '{$this->staffEmail2}';
+                  ((SELECT id FROM children WHERE name = '{$this->childName2}' LIMIT 1), (SELECT id FROM users WHERE email = '{$this->staffEmail2}'
                   ), '2025-01-20', 18, 78.2, 10.5, 17.1, 45.5, 'Vaccination visit, no issues'),
-                  ((SELECT id FROM users WHERE name = '{$this->childName1}' LIMIT 1), (SELECT s.id AS staff_id
-                  FROM users u
-                  JOIN staffs s ON s.user_id = u.id
-                  WHERE u.email = '{$this->staffEmail1}';
+                  ((SELECT id FROM children WHERE name = '{$this->childName1}' LIMIT 1), (SELECT id FROM users WHERE email = '{$this->staffEmail1}'
                   ), '2025-01-25', 48, 102.4, 17.9, 17.0, 50.8, 'Healthy child, follow-up in 6 months');"
 
         );
@@ -48,6 +37,14 @@ class Migration_20251220061914_insert_data_for_children_records_table implements
 
     public function down(): void
     {
-        
+        QueryBuilder::raw(
+            "DELETE FROM child_records
+            WHERE (child_id, visit_date) IN (
+                ((SELECT id FROM children WHERE name = '{$this->childName1}' LIMIT 1), '2025-01-10'),
+                ((SELECT id FROM children WHERE name = '{$this->childName2}' LIMIT 1), '2025-01-15'),
+                ((SELECT id FROM children WHERE name = '{$this->childName2}' LIMIT 1), '2025-01-20'),
+                ((SELECT id FROM children WHERE name = '{$this->childName1}' LIMIT 1), '2025-01-25')
+            );"
+        );
     }
 }
