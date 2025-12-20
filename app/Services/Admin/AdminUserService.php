@@ -6,16 +6,49 @@ use App\Models\Admin;
 use App\Models\AdminType;
 use App\Models\User;
 use App\Services\Validator;
+use Library\Framework\Database\QueryBuilder;
 
 class AdminUserService
 {
-    public function getAdminDetails()
+    private function applySearch(QueryBuilder $admins, string $search)
     {
-        $admins = User::query()->where("role", "=", "admin")->get();
+        $admins->where('name', 'ILIKE', "{$search}%");
+        return $admins;
+
+    }
+    public function getAdminDetails(?string $search, ?array $filters)
+    {
+        $admins = User::query()->where("role", "=", "admin");
+
+        if ($search) {
+            $admins = $this->applySearch($admins, $search);
+        }
+
+        // TODO: Implement nested where for filters like this to function
+        // if ($filters) {
+        //     foreach ($filters as $filterName => $filterValue) {
+        //         if ($filterValue && is_array($filterValue)) {
+        //             $adminType = AdminType::query()
+        //                 ->whereIn('type', $filterValue)
+        //                 ->get();
+
+        //             $typeId = array_map(function ($type) {
+        //                 return $type->id;
+        //             }, $adminType);
+
+        //             $admins->whereIn('admin_type_id', $typeId);
+        //         }
+        //     }
+        // }
+
+        $results = $admins
+            ->orderBy('id', 'ASC')
+            ->paginate(10)
+            ->toArray();
 
         $resource = [];
 
-        foreach ($admins as $admin) {
+        foreach ($results['items'] as $admin) {
             $resource[] = [
                 "id" => $admin->id,
                 "name" => $admin->name,

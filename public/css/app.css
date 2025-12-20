@@ -22,6 +22,7 @@
 @import "./components/modal.css";
 @import "./components/toast.css";
 @import "./components/calendar.css";
+@import "./components/checkbox.css";
 
 /* helper/additional css for components */
 @import "./components/password-icon.css";

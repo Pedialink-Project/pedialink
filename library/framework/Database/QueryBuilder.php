@@ -50,6 +50,10 @@ class QueryBuilder
      */
     protected array $bindings = [];
 
+    protected ?int $limit = null;
+    protected ?int $offset = null;
+    protected array $orderBys = [];
+
     public function __construct(?string $table = null, ?string $modelClass = null)
     {
         $this->table = $table;
@@ -86,7 +90,7 @@ class QueryBuilder
     public function where(string $column, string $operator, $value): static
     {
         // Basic operator whitelist to prevent SQL injection
-        $allowed = ['=', '<', '>', '<=', '>=', '<>', '!=', 'LIKE'];
+        $allowed = ['=', '<', '>', '<=', '>=', '<>', '!=', 'LIKE', 'ILIKE'];
 
         // Check if operator is allowed
         if (!in_array(strtoupper($operator), $allowed, true)) {
@@ -262,6 +266,98 @@ class QueryBuilder
         $stmt = static::$pdo->prepare($sql);
         $stmt->execute($params);
         return $stmt;
+    }
+
+    /**
+     * Add ORDER BY clause
+     * @param string $column
+     * @param string $direction 'ASC'|'DESC'
+     * @return $this
+     */
+    public function orderBy(string $column, string $direction = 'ASC'): static
+    {
+        $dir = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+        $this->orderBys[] = "{$column} {$dir}";
+        return $this;
+    }
+
+    /**
+     * Set LIMIT value
+     * @param int $limit
+     * @return $this
+     */
+    public function limit(int $limit): static
+    {
+        $this->limit = max(0, $limit);
+        return $this;
+    }
+
+    /**
+     * Set OFFSET value
+     * @param int $offset
+     * @return $this
+     */
+    public function offset(int $offset): static
+    {
+        $this->offset = max(0, $offset);
+        return $this;
+    }
+
+    public function paginate(int $perPage = 15, ?int $page = null): Paginator
+    {
+        // determine current page from argument or _GET
+        $page = $page ?? (isset($_GET['page']) ? (int) $_GET['page'] : 1);
+        $page = max(1, (int) $page);
+        $perPage = max(1, (int) $perPage);
+        $offset = ($page - 1) * $perPage;
+
+        // 1) Count query
+        $countSql = "SELECT COUNT(*) AS total FROM {$this->table}";
+        if ($this->wheres) {
+            $countSql .= ' WHERE ' . implode(' AND ', $this->wheres);
+        }
+
+        $countStmt = static::$pdo->prepare($countSql);
+        $countStmt->execute($this->bindings);
+        $countRow = $countStmt->fetch(PDO::FETCH_ASSOC);
+        $total = $countRow ? (int) $countRow['total'] : 0;
+
+        if ($total === 0) {
+            // return empty paginator
+            return new Paginator([], $total, $perPage, $page);
+        }
+
+        // 2) Select query with ordering + limit/offset (use separate binding array to avoid mutating internal bindings)
+        $sql = "SELECT * FROM {$this->table}";
+        if ($this->wheres) {
+            $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
+        }
+        if ($this->orderBys) {
+            $sql .= ' ORDER BY ' . implode(', ', $this->orderBys);
+        }
+
+        // create unique placeholder names to avoid collisions and to support named bindings (consistent with your existing pattern)
+        $limitKey = ':__limit';
+        $offsetKey = ':__offset';
+
+        $sql .= " LIMIT {$limitKey} OFFSET {$offsetKey}";
+
+        // clone bindings and add pagination bindings
+        $bindings = $this->bindings;
+        $bindings[$limitKey] = $perPage;
+        $bindings[$offsetKey] = $offset;
+
+        $stmt = static::$pdo->prepare($sql);
+        $stmt->execute($bindings);
+
+        $results = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $model = new $this->modelClass;
+            $model->hydrate($row);
+            $results[] = $model;
+        }
+
+        return new Paginator($results, $total, $perPage, $page);
     }
 
 

@@ -33,6 +33,8 @@
     </div>
     @yield('scripts')
 
+    <script src="{{ asset('js/data-table-query-merge.js') }}"></script>
+
     <c-toast :initToasts="flash('_message') ?? null"></c-toast>
 </body>
 

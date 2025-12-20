@@ -26,6 +26,17 @@ if (!empty($variant) && in_array($variant, ['danger','muted'])) {
         @endif
         {{ $slot }}
     </a>
+@elseif (!empty($asChild))
+    <div
+        id="{{ $uid }}"
+        class="{{ $classes }}"
+        role="menuitem"
+    >
+        @if (!empty($slots['icon']))
+            <span class="dropdown-item__icon">{{ $slots['icon'] }}</span>
+        @endif
+        {{ $slot }}
+    </div>
 @else
     <button
         id="{{ $uid }}"

@@ -16,9 +16,14 @@ class UserController
         $this->adminUserService = new AdminUserService();
     }
 
-    public function overview()
+    public function overview(Request $request)
     {
-        $users = $this->userOverviewService->getUserDetails();
+        $search = $request->input('search');
+        $filters = $request->input('filters');
+        $users = $this->userOverviewService->getUserDetails(
+            $search,
+            $filters
+        );
         return view('admin/user/overview', [
             'users' => $users,
         ]);
@@ -112,9 +117,14 @@ class UserController
             );
     }
 
-    public function admin()
+    public function admin(Request $request)
     {
-        $admins = $this->adminUserService->getAdminDetails();
+        $search = $request->input('search');
+        $filters = $request->input('filters');
+        $admins = $this->adminUserService->getAdminDetails(
+            $search,
+            $filters
+        );
 
         return view('admin/user/admin', [
             "admins" => $admins,

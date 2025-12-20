@@ -1,0 +1,113 @@
+/* checkbox.css — minimal, accessible checkbox component */
+
+.checkbox-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* label acts as the interactive region */
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    user-select: none;
+    padding: .25rem .5rem;
+    border-radius: 8px;
+}
+
+/* visual checkbox square */
+.checkbox-box {
+    width: 1.25rem;
+    height: 1.25rem;
+    min-width: 1.25rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    transition: background .12s ease, border-color .12s ease, transform .08s ease;
+}
+
+/* icon hidden by default; will show on checked */
+.checkbox-box svg {
+    width: 14px;
+    height: 14px;
+    display: none;
+}
+
+/* visually hide native input but keep it accessible */
+.checkbox-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+/* when checked — style the box and show icon */
+.checkbox-input:checked+.checkbox-box {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.checkbox-input:checked+.checkbox-box svg {
+    display: block;
+    color: var(--text-inverted);
+}
+
+/* focus styling on native input via adjacent box */
+.checkbox-input:focus+.checkbox-box {
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.06);
+    outline: none;
+}
+
+/* disabled state */
+.checkbox-input:disabled+.checkbox-box,
+.checkbox.disabled .checkbox-box {
+    opacity: .55;
+    pointer-events: none;
+    cursor: default;
+}
+
+/* label / text */
+.checkbox-text {
+    font-size: .95rem;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+/* support for compact / small */
+.checkbox--sm .checkbox-box {
+    width: 1rem;
+    height: 1rem;
+    min-width: 1rem;
+    border-radius: 6px;
+}
+
+.checkbox--sm .checkbox-text {
+    font-size: .9rem;
+}
+
+/* optional visual wrapper click target */
+.checkbox-wrapper.clickable {
+    cursor: pointer;
+}
+
+/* utility: when .checked class present on wrapper (mirrors state) */
+.checkbox-wrapper.checked .checkbox-box {
+    /* this mirrors :checked styling for cases where JS manipulates state */
+}
+
+/* small responsive tweak */
+@media (max-width:480px) {
+    .checkbox-text {
+        font-size: .92rem;
+    }
+}

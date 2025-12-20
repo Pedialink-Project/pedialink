@@ -13,7 +13,7 @@
 @endsection
 
 @section('content')
-    <c-table.controls :columns='["ID","Name","Email", "Admin Type"]'>
+    <c-table.controls action="{{ route('admin.user.admin') }}" :filters="['type' => ['super', 'data', 'user']]">
 
         <c-slot name="filter">
             <c-button variant="outline">
