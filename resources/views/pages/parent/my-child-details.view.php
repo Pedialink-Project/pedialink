@@ -51,11 +51,11 @@
                         <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}" title="Blood Type"
                             info="{{ $child['blood_type'] }}" />
                         <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}" title="Weight"
-                            info="{{ $child['weight'] ?? '' }} kg" />
+                            info="{{ $child['record']['weight'] ?? '' }} kg" />
                         <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}" title="Height"
-                            info="{{ $child['height'] ?? '' }} cm" />
+                            info="{{ $child['record']['height'] ?? '' }} cm" />
                         <c-modal.viewitem icon="{{ asset('assets/icons/chart.svg') }}" title="BMI"
-                            info="{{ $child['bmi'] ?? '' }}" />
+                            info="{{ $child['record']['bmi'] ?? '' }}" />
                         <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="Assigned PHM"
                             info="    {{ $child['phm']['name'] }}
 " />
