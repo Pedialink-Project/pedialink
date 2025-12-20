@@ -96,7 +96,7 @@ $appointments = [
 ?>
 
 
-<c-table.controls action="{{ route('parent.appointments') }}">
+<c-table.controls action="{{ route('parent.appointments') }}" :filters="['status' => ['upcoming', 'pending', 'completed', 'cancelled']]">
     <c-slot name="filter">
         <c-button variant="outline">
             <img src="{{ asset('assets/icons/filter.svg') }}" />
