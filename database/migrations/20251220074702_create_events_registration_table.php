@@ -26,13 +26,14 @@ class Migration_20251220074702_create_events_registration_table implements \Libr
                 booking_status booking_status DEFAULT 'booked',
                 cancel_reason TEXT,
                 cancelled_at TIMESTAMP WITH TIME ZONE,
-                registration_date TIMESTAMP WITH TIME ZONE DEFAULT now(),
+                registration_date TIMESTAMP WITH TIME ZONE DEFAULT now()
             );"
         );
     }
 
     public function down(): void
     {
-        // TODO: revert changes made in up()
+        QueryBuilder::raw("DROP TABLE IF EXISTS events_registrations;");
+        QueryBuilder::raw("DROP TYPE IF EXISTS booking_status;");
     }
 }
