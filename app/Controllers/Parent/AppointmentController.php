@@ -15,10 +15,10 @@ class AppointmentController
     }
     public function index()
     {
-        $appointments = $this->appointmentService->getParentAppointmentDetails(auth()->id());
+        // $appointments = $this->appointmentService->getParentAppointmentDetails(auth()->id());
 
 
-        return view("parent/appointments", ['appointments' => $appointments]);
+        return view("parent/appointments");
     }
 
     public function requestAppointment(Request $request)
