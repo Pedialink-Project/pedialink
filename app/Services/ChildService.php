@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Models\Child;
 use App\Models\ParentM;
-use App\Models\Patient;
 use App\Models\PublicHealthMidwife;
 use App\Models\User;
+use App\Models\ChildRecord;
 use DateTime;
 
 class ChildService
@@ -121,49 +121,64 @@ class ChildService
         return $resource;
     }
 
-     public function getChildernById(int $id)
+    public function getChildernById(int $id)
     {
         $child = Child::find($id);
 
-        
+        $childRecord = ChildRecord::query()->where('child_id', '=', $id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
 
-            $parent = ParentM::find($child->parent_id);
+        $childRecordResource = null;
+        if($childRecord) {
+            $childRecordResource = [
+                'id' => $childRecord->id,
+                'visit_date' => $childRecord->visit_date,
+                'age_recorded_at' => $childRecord->age_recorded_at,
+                'height' => $childRecord->height,
+                'weight' => $childRecord->weight,
+                'bmi' => $childRecord->bmi,
+                'head_circumference' => $childRecord->head_circumference,
+                'notes' => $childRecord->notes,
+            ];
+        }
 
-            $parentResource = NULL;
-            if ($parent) {
-                $parentResource = [
-                    'id' => $parent->id,
-                    'name' => User::find($parent->id)->name,
-                    'email' => User::find($parent->id)->email,
-                    'type' => $parent->type,
-                ];
-            }
+        $parent = ParentM::find($child->parent_id);
 
-            $phm = PublicHealthMidwife::find($child->phm_id);
+        $parentResource = NULL;
+        if ($parent) {
+            $parentResource = [
+                'id' => $parent->id,
+                'name' => User::find($parent->id)->name,
+                'email' => User::find($parent->id)->email,
+                'type' => $parent->type,
+            ];
+        }
 
-            $phmResource = NULL;
-            if ($phm) {
-                $phmResource = [
-                    'id' => $phm->id,
-                    'name' => User::find($phm->id)->name,
-                ];
-            }
+        $phm = PublicHealthMidwife::find($child->phm_id);
+
+        $phmResource = NULL;
+        if ($phm) {
+            $phmResource = [
+                'id' => $phm->id,
+                'name' => User::find($phm->id)->name,
+            ];
+        }
 
 
-            $resource = [
-                'id' => $child->id,
-                'name' => $child->name,
-                'date_of_birth' => $child->date_of_birth,
-                'age' => $this->calculateAge($child->date_of_birth),
-                'gender' => $child->gender,
-                'health_status' => $child->health_status,
-                'blood_type' => $child->blood_type,
-                'notes' => $child->notes,
-                'parent' => $parentResource,
-                'phm' => $phmResource,
-            ]
-            ;
-        
+        $resource = [
+            'id' => $child->id,
+            'name' => $child->name,
+            'date_of_birth' => $child->date_of_birth,
+            'age' => $this->calculateAge($child->date_of_birth),
+            'gender' => $child->gender,
+            'health_status' => $child->health_status,
+            'blood_type' => $child->blood_type,
+            'notes' => $child->notes,
+            'parent' => $parentResource,
+            'phm' => $phmResource,
+            'record'=>$childRecordResource
+        ]
+        ;
+
 
         return $resource;
     }
@@ -262,23 +277,23 @@ class ChildService
         return $error;
     }
 
-    public function createChildProfile(string $name, string $division, string $dob, string $gender)
-    {
-        $phmId = auth()->id();
+    // public function createChildProfile(string $name, string $division, string $dob, string $gender)
+    // {
+    //     $phmId = auth()->id();
 
-        $patient = new Patient();
-        $patient->type = "child";
-        $patientId = $patient->save();
+    //     $patient = new Patient();
+    //     $patient->type = "child";
+    //     $patientId = $patient->save();
 
-        $child = new Child();
-        $child->id = $patientId;
-        $child->name = $name;
-        $child->date_of_birth = $dob;
-        $child->gender = $gender;
-        $child->gs_division = $division;
-        $child->phm_id = $phmId;
-        $child->save();
-    }
+    //     $child = new Child();
+    //     $child->id = $patientId;
+    //     $child->name = $name;
+    //     $child->date_of_birth = $dob;
+    //     $child->gender = $gender;
+    //     $child->gs_division = $division;
+    //     $child->phm_id = $phmId;
+    //     $child->save();
+    // }
 
     public function editChildProfile(int $childId, string $name, string $division, string $dob, string $gender)
     {
@@ -292,13 +307,13 @@ class ChildService
         }
     }
 
-    public function deleteChildProfile(int $id)
-    {
-        $child = Child::find($id);
+    // public function deleteChildProfile(int $id)
+    // {
+    //     $child = Child::find($id);
 
-        $patient = Patient::find($child->id);
-        $patient->delete();
+    //     $patient = Patient::find($child->id);
+    //     $patient->delete();
 
-        $child->delete();
-    }
+    //     $child->delete();
+    // }
 }
