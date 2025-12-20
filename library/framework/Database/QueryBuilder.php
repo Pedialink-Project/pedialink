@@ -90,7 +90,7 @@ class QueryBuilder
     public function where(string $column, string $operator, $value): static
     {
         // Basic operator whitelist to prevent SQL injection
-        $allowed = ['=', '<', '>', '<=', '>=', '<>', '!=', 'LIKE'];
+        $allowed = ['=', '<', '>', '<=', '>=', '<>', '!=', 'LIKE', 'ILIKE'];
 
         // Check if operator is allowed
         if (!in_array(strtoupper($operator), $allowed, true)) {
