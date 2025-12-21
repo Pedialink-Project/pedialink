@@ -15,7 +15,7 @@ class Migration_20251221091441_add_dob_column_parents_table implements \Library\
     {
         QueryBuilder::raw(
             "ALTER TABLE parents
-            ADD COLUMN date_of_birth DATE NOT NULL;"
+            ADD COLUMN date_of_birth DATE;"
         );
     }
 
