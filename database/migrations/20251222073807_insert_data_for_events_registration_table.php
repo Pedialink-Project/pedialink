@@ -25,6 +25,10 @@ class Migration_20251222073807_insert_data_for_events_registration_table impleme
 
     public function down(): void
     {
-        // TODO: revert changes made in up()
+        QueryBuilder::raw(
+            "DELETE FROM events_registrations
+            WHERE event_id = (SELECT id FROM events WHERE title = 'Health Awareness Campaign' LIMIT 1)
+            AND user_id = (SELECT id FROM users WHERE email = '{$this->userEmail}' LIMIT 1);"
+        );
     }
 }
