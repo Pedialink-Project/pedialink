@@ -6,7 +6,7 @@ use App\Models\Events;
 
 class EventService
 {
-    private function getAllEvents(): array
+    public function getAllEvents(): array
     {
         $events = Events::all();
 
