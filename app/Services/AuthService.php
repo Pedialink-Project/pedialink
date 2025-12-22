@@ -2,7 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Area;
+use App\Helpers\Validator;
+use App\Rules\EmailRule;
+use App\Rules\NameRule;
+use App\Rules\PasswordRule;
+use App\Rules\ValidateDivision;
+use App\Rules\ValidateRule;
 
 /**
  * Service class that encapsulates logic
@@ -15,88 +20,7 @@ use App\Models\Area;
  */
 class AuthService
 {
-    /**
-     * Validate the name fields (first and last name)
-     * 
-     * @param string $name
-     * @param string $attributeName
-     * @return string|null
-     */
-    private function validateName(string $name, string $attributeName)
-    {
-        $error = null;
-        if (!Validator::validateFieldExistence($name)) {
-            $error = "{$attributeName} field cannot be empty";
-            return $error;
-        }
-
-        if (!Validator::validateFieldMinLength($name, 3)) {
-            $error = "{$attributeName} cannot be less than 3 characters";
-            return $error;
-        }
-
-        if (!Validator::validateFieldMaxLength($name, 20)) {
-            $error = "{$attributeName} cannot be greater than 20 characters";
-            return $error;
-        }
-
-        return $error;
-    }
-
-    /**
-     * Validate the email
-     * 
-     * @param string $email
-     * @return string|null
-     */
-    private function validateEmail(string $email)
-    {
-        $error = null;
-        if(!Validator::validateFieldExistence($email)) {
-            $error = "Email field cannot be empty";
-            return $error;
-        }
-
-        if (!Validator::validateEmailFormat($email)) {
-            $error = "Email format is invalid";
-            return $error;
-        }
-
-        if (Validator::validateEmailExists($email)) {
-            $error = "This email is already registered with our system";
-            return $error;
-        }
-
-        return $error;
-    }
-
-    /**
-     * Validate the password
-     * 
-     * @param string $password
-     * @param string $confirmPassword
-     * @return string|null
-     */
-    private function validatePassword(string $password, string $confirmPassword)
-    {
-        $error = null;
-        if (!Validator::validateFieldExistence($password)) {
-            $error = "Password field cannot be empty";
-            return $error;
-        }
-
-        if (!Validator::validateFieldMinLength($password, 6)) {
-            $error = "Password cannot be less than 6 characters";
-            return $error;
-        }
-
-        if (!Validator::validatePassword($password, password_hash($confirmPassword, PASSWORD_DEFAULT))) {
-            $error = "Passwords do not match";
-            return $error;
-        }
-
-        return $error;
-    }
+    use NameRule, EmailRule, PasswordRule, ValidateRule;
 
     /**
      * Validate account type
@@ -155,29 +79,6 @@ class AuthService
 
         if (!Validator::validateFieldExistence($address)) {
             $error = "Address field cannot be empty";
-            return $error;
-        }
-
-        return $error;
-    }
-
-    /**
-     * Validate GS divisions
-     * 
-     * @param string $division
-     * @return string|null
-     */
-    private function validateDivision(string $division)
-    {
-        $error = null;
-
-        if (!Validator::validateFieldExistence($division)) {
-            $error = "GS Division field cannot be empty";
-            return $error;
-        }
-
-        if (count(Area::query()->where("id", "=", (int)$division)->get()) === 0) {
-            $error = "Invalid GS Division";
             return $error;
         }
 
