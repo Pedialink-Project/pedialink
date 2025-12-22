@@ -29,6 +29,10 @@ class Migration_20251222070804_insert_data_for_events_table implements \Library\
 
     public function down(): void
     {
-        // TODO: revert changes made in up()
+        QueryBuilder::raw(
+            "DELETE FROM events
+            WHERE title IN ('Health Awareness Campaign', 'Vaccination Workshop')
+            AND admin_id = (SELECT id FROM users WHERE email = '{$this->adminEmail}' LIMIT 1);"
+        );
     }
 }
