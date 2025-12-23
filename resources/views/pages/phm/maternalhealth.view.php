@@ -36,7 +36,7 @@ Health Records View
 @section('content')
 <?php
 $items = [
-    ['Recorded at' => '2024-01-15 at 09.00 AM', 'BMI' => '18.5', 'Blood Pressure' => '120/80 mmHg', 'Blood Sugar' => '90 mg/dL', 'Health Status' => 'Good'],
+    /*['Recorded at' => '2024-01-15 at 09.00 AM', 'BMI' => '18.5', 'Blood Pressure' => '120/80 mmHg', 'Blood Sugar' => '90 mg/dL', 'Health Status' => 'Good'],
     ['Recorded at' => '2024-01-16 at 09.15 AM', 'BMI' => '22.3', 'Blood Pressure' => '130/85 mmHg', 'Blood Sugar' => '110 mg/dL', 'Health Status' => 'Bad'],
     ['Recorded at' => '2024-01-17 at 09.28 AM', 'BMI' => '19.4', 'Blood Pressure' => '115/75 mmHg', 'Blood Sugar' => '95 mg/dL', 'Health Status' => 'Good'],
     ['Recorded at' => '2024-01-13 at 08.00 AM', 'BMI' => '24.6', 'Blood Pressure' => '140/90 mmHg', 'Blood Sugar' => '130 mg/dL', 'Health Status' => 'Bad'],
@@ -46,7 +46,7 @@ $items = [
     ['Recorded at' => '2024-01-12 at 09.00 AM', 'BMI' => '22.5', 'Blood Pressure' => '132/86 mmHg', 'Blood Sugar' => '115 mg/dL', 'Health Status' => 'Bad'],
     ['Recorded at' => '2024-01-21 at 09.24 AM', 'BMI' => '21.5', 'Blood Pressure' => '118/78 mmHg', 'Blood Sugar' => '98 mg/dL', 'Health Status' => 'Good'],
     ['Recorded at' => '2024-01-14 at 09.00 AM', 'BMI' => '19.6', 'Blood Pressure' => '122/80 mmHg', 'Blood Sugar' => '92 mg/dL', 'Health Status' => 'Good'],
-    ['Recorded at' => '2024-01-16 at 09.00 AM', 'BMI' => '20.9', 'Blood Pressure' => '126/84 mmHg', 'Blood Sugar' => '108 mg/dL', 'Health Status' => 'Good'],
+    ['Recorded at' => '2024-01-16 at 09.00 AM', 'BMI' => '20.9', 'Blood Pressure' => '126/84 mmHg', 'Blood Sugar' => '108 mg/dL', 'Health Status' => 'Good'],*/
     ['Recorded at' => '2024-01-22 at 09.00 AM', 'BMI' => '23.3', 'Blood Pressure' => '134/87 mmHg', 'Blood Sugar' => '118 mg/dL', 'Health Status' => 'Good'],
 ];
 ?>
@@ -80,16 +80,21 @@ $items = [
                 <div>Add Health Records</div>
             </c-slot>
 
-            <form id="add-health-record-form" class="maternal-health-form" action="">
-                <c-input type="text" label="Recorded at:" placeholder="Enter Recorded Date & Time" required />
-                <c-input type="text" label="BMI:" placeholder="Enter BMI of the Mother" required />
-                <c-input type="text" label="Blood Pressure:" placeholder="Enter Blood Pressure of the Mother (in mmHg)"
-                    required />
-                <c-input type="text" label="Blood Sugar:" placeholder="Enter Blood Sugar of the Mother (in mg/dL )"
-                    required />
-                <c-select label="Status:" name="permissions" searchable="1">
-                    <li class="select-item" data-value="child">Good</li>
-                    <li class="select-item" data-value="maternal">Bad</li>
+            <form id="add-health-record-form" class="maternal-health-form"  action="{{ route('phm.maternal.health.add',['id'=>$maternalId]) }}" method="POST">
+                <c-input type="date" name="recorded_at" label="Visited at:" placeholder="Enter Recorded Date"
+                    error="{{ errors('recorded_at') ?? '' }}" value="{{ old('recorded_at')??'' }}" />
+                <c-input type="text" name="bmi" label="BMI:" placeholder="Enter BMI of the Mother"
+                    error="{{ errors('bmi') ?? '' }}" value="{{ old('bmi')??'' }}" />
+                <c-input type="text" name="blood_pressure" label="Blood Pressure:"
+                    placeholder="Enter Blood Pressure of the Mother (in mmHg)"
+                    error="{{ errors('blood_pressure') ?? '' }}" value="{{ old('blood_pressure')??'' }}" />
+                <c-input type="text" name="blood_sugar" label="Blood Sugar:"
+                    placeholder="Enter Blood Sugar of the Mother (in mg/dL )" error="{{ errors('blood_sugar') ?? '' }}"
+                    value="{{ old('blood_sugar')??'' }}" />
+                <c-select label="Status:" name="health_status" error="{{ errors('health_status') ?? '' }}"
+                    value="{{ old('health_status')??'' }}">
+                    <li class="select-item" data-value="good">Good</li>
+                    <li class="select-item" data-value="bad">Bad</li>
                 </c-select>
             </form>
             <c-slot name="close">
