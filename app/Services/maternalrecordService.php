@@ -11,9 +11,8 @@ class maternalrecordService
         $resource = [];
         foreach ($maternalrecords as $record) {
             $resource[] = [
-                'id' => $record->id,
-                'maternal_id' => $record->maternal_id,
-                'recorded_at' => $record->recorded_at,
+                'parent_id' => $record->parent_id,
+                'visit_date' => $record->visit_date,
                 'bmi' => $record->bmi,
                 'blood_sugar' => $record->blood_sugar,
                 'blood_pressure' => $record->blood_pressure,
@@ -29,13 +28,12 @@ class maternalrecordService
 
     public function getMaternalRecordByMaternalId($id)
     {
-        $maternalrecords = MaternalRecord::query()->where('maternal_id', '=', $id)->get();
+        $maternalrecords = MaternalRecord::query()->where('parent_id', '=', $id)->get();
         $resource = [];
         foreach ($maternalrecords as $record) {
             $resource[] = [
-                'id' => $record->id,
-                'maternal_id' => $record->maternal_id,
-                'recorded_at' => $record->recoded_at,
+                'parent_id' => $record->parent_id,
+                'visit_date' => $record->visit_date,
                 'bmi' => $record->bmi,
                 'blood_sugar' => $record->blood_sugar,
                 'blood_pressure' => $record->blood_pressure,
@@ -86,25 +84,26 @@ class maternalrecordService
     }
 
     public function validateDate($date)
-    {
-        $error = null;
+{
+    $error = null;
 
-        if (!Validator::validateFieldExistence($date)) {
-            $error = "Recorded At Date cannot be empty";
-            return $error;
-        }
-
-
-
-
-        return $error;
-
-
+    // FIRST: check for null or empty
+    if ($date === null || trim($date) === '') {
+        return "Visit date cannot be empty";
     }
 
+    // THEN: safe to call validator
+    if (!Validator::validateFieldExistence((string)$date)) {
+        return "Visit date cannot be empty";
+    }
+
+    return $error;
+}
 
 
-    public function validateMaternalRecordData($recordedAt, $bmi, $bloodPressure, $bloodSugar, $healthStatus, $edit = false)
+
+
+    public function validateMaternalRecordData($visitdate, $bmi, $bloodPressure, $bloodSugar, $healthStatus, $edit = false)
     {
         $errorSuffix = '';
         if ($edit) {
@@ -112,7 +111,7 @@ class maternalrecordService
         }
         $errors = [];
 
-        $recordedAtError = $this->validateDate($recordedAt);
+        $recordedAtError = $this->validateDate($visitdate);
         if ($recordedAtError) {
             $errors["{$errorSuffix}recorded_at"] = $recordedAtError;
         }
@@ -154,13 +153,13 @@ class maternalrecordService
         return json_encode($notesArray, JSON_UNESCAPED_UNICODE);
     }
 
-    public function createMaternalStat($maternalId,$recordedAt, $bmi, $bloodPressure, $bloodSugar,$healthStatus,){
+    public function createMaternalRecord($parentId,$visitdate, $bmi, $bloodPressure, $bloodSugar,$healthStatus,){
 
 
         
         $maternalrecord = new MaternalRecord();
-        $maternalrecord->maternal_id = $maternalId;
-        $maternalrecord->recorded_at = $recordedAt;
+        $maternalrecord->parent_id = $parentId;
+        $maternalrecord->visit_date = $visitdate;
         $maternalrecord->bmi = $bmi;
         $maternalrecord->blood_pressure = $bloodPressure;
         $maternalrecord->blood_sugar = $bloodSugar;
@@ -171,14 +170,14 @@ class maternalrecordService
         return $maternalrecord;
     }
 
-    public function editMaternalStat($id, $recordedAt, $bmi, $bloodPressure, $bloodSugar,$healthStatus){
+    public function editMaternalRecord($id, $recordedAt, $bmi, $bloodPressure, $bloodSugar,$healthStatus){
         $maternalrecord = MaternalRecord::find($id);
 
         if (!$maternalrecord) {
             throw new \Exception("MaternalStat not found");
         }
 
-        $maternalrecord->recoded_at = $recordedAt;
+        $maternalrecord->visit_date = $recordedAt;
         $maternalrecord->bmi = $bmi;
         $maternalrecord->blood_pressure = $bloodPressure;
         $maternalrecord->blood_sugar = $bloodSugar;
@@ -189,7 +188,7 @@ class maternalrecordService
         return $maternalrecord;
     }
 
-    public function deleteMaternalStat($id){
+    public function deleteMaternalRecord($id){
         $maternalrecord = MaternalRecord::find($id);
 
         if (!$maternalrecord) {

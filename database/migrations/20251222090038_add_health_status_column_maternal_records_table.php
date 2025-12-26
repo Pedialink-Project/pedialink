@@ -16,7 +16,7 @@ class Migration_20251222090038_add_health_status_column_maternal_records_table i
         {
         QueryBuilder::raw(
             "ALTER TABLE maternal_records
-            ADD COLUMN health_status CHAR;"
+            ADD COLUMN health_status TEXT;"
         );
     }
     }

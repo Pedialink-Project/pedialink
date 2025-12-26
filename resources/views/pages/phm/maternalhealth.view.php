@@ -81,8 +81,8 @@ $items = [
             </c-slot>
 
             <form id="add-health-record-form" class="maternal-health-form"  action="{{ route('phm.maternal.health.add',['id'=>$maternalId]) }}" method="POST">
-                <c-input type="date" name="recorded_at" label="Visited at:" placeholder="Enter Recorded Date"
-                    error="{{ errors('recorded_at') ?? '' }}" value="{{ old('recorded_at')??'' }}" />
+                <c-input type="date" name="visit_date" label="Visited at:" placeholder="Enter Recorded Date"
+                    error="{{ errors('visit_date') ?? '' }}" value="{{ old('visit_date')??'' }}" />
                 <c-input type="text" name="bmi" label="BMI:" placeholder="Enter BMI of the Mother"
                     error="{{ errors('bmi') ?? '' }}" value="{{ old('bmi')??'' }}" />
                 <c-input type="text" name="blood_pressure" label="Blood Pressure:"
