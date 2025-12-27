@@ -1,3 +1,5 @@
 .env
 .vscode
 vendor/
+public/media
+public/storage

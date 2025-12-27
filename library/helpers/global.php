@@ -7,6 +7,7 @@ use Library\Framework\Http\RedirectResponse;
 use Library\Framework\Http\Response;
 use Library\Framework\Routing\Router;
 use Library\Framework\Session\SessionManager;
+use Library\Framework\Storage\Storage;
 use Library\Framework\View\View;
 use Library\Framework\Http\Request;
 
@@ -202,4 +203,14 @@ function request($key = null, $default = null)
     }
 
     return $req->input($key, $default);
+}
+
+/**
+ * Global helper to access storage class
+ */
+function storage()
+{
+    $storage = app(Storage::class);
+
+    return $storage;
 }
