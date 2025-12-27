@@ -28,6 +28,7 @@ $app->singleton('config', function() {
         'app' => require __DIR__ . '/../config/app.php',
         'database' => require __DIR__ . '/../config/database.php',
         'view' => require __DIR__ . '/../config/view.php',
+        'storage' => require __DIR__ . '/../config/storage.php',
     ];
 });
 
@@ -38,6 +39,7 @@ $providers = [
     App\Providers\SessionManagerProvider::class,
     App\Providers\ViewServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
+    App\Providers\StorageProvider::class,
 ];
 
 foreach ($providers as $providerClass)
