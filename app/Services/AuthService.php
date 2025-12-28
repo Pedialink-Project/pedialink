@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Helpers\NicExtractor;
 use App\Helpers\NicValidator;
 use App\Helpers\Validator;
+use App\Models\ParentM;
+use App\Models\User;
 use App\Rules\DivisionRule;
 use App\Rules\EmailRule;
 use App\Rules\NameRule;
@@ -139,5 +142,29 @@ class AuthService
         }
 
         return $errors;
+    }
+
+    public function createParentAccount(array $data)
+    {
+        $user = new User();
+        $user->name = $data["firstName"] . " " . $data["lastName"];
+        $user->email = $data["email"];
+        $user->password_hash = $data["passwordHash"];
+        $user->role = "parent";
+        $userId = $user->save();
+
+        $nicExtractor = new NicExtractor($data["nic"]);
+        $extractedResults = $nicExtractor->getExtractedNic();
+
+        $parent = new ParentM();
+        $parent->id = $userId;
+        $parent->type = $data["type"];
+        $parent->address = $data["address"];
+        $parent->date_of_birth = $extractedResults["dob"];
+        $parent->nic = $data["nic"];
+        $parent->area_id = (int)$data["division"];
+        $parent->save();
+
+        return $user;
     }
 }
