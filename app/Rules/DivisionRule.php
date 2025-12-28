@@ -6,7 +6,7 @@ use App\Helpers\Validator;
 use App\Models\Area;
 
 
-trait ValidateRule
+trait DivisionRule
 {
     /**
      * Validate GS divisions
