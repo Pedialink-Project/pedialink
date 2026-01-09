@@ -2,12 +2,13 @@
 
 namespace App\Middleware;
 
+use Library\Framework\Core\Middleware;
 use Library\Framework\Http\Request;
 
 /**
  * Middleware for authenticated pages
  */
-class AuthMiddleware
+class AuthMiddleware implements Middleware
 {
     public function handle(Request $request, callable $next, array $params)
     {
