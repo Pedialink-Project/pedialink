@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Events;
+use App\Models\EventRegistrations;
 
 class EventService
 {
@@ -29,10 +30,20 @@ class EventService
                     'name' => $event->getAdmin()->name,
                     'email' => $event->getAdmin()->email,
                 ] : null,
+                'booking_status' => $this->getEventBookingStatus($event->id)
             ];
         }
 
         return $resource;
+    }
+
+    public function getEventBookingStatus($eventId)
+    {
+        $eventRegistration =  EventRegistrations::find($eventId);
+
+    return $eventRegistration ? $eventRegistration->booking_status : null;
+
+
     }
 
 }
