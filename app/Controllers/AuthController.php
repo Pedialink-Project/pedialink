@@ -85,25 +85,10 @@ class AuthController
 
         $errors = $this->authService->validateFinalForm($data);
 
-        // NOTE: If possible refactor this to AuthService class if you have the time!
-        // Otherwise Focus on frontend work exclusively until interim!
         if (count($errors) === 0) {
             $data = array_merge($data, session()->get("register_form"));
 
-            $user = new User();
-            $user->name = $data["firstName"] . " " . $data["lastName"];
-            $user->email = $data["email"];
-            $user->password_hash = $data["passwordHash"];
-            $user->role = "parent";
-            $userId = $user->save();
-
-            $parent = new ParentM();
-            $parent->id = $userId;
-            $parent->type = $data["type"];
-            $parent->address = $data["address"];
-            $parent->nic = $data["nic"];
-            $parent->area_id = (int)$data["division"];
-            $parent->save();
+            $user = $this->authService->createParentAccount($data);
 
             auth()->login($user);
 

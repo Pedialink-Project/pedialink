@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AuthController;
+use App\Controllers\SettingController;
 
 return [
     ['GET', '/parent/register', [AuthController::class, 'parentRegisterInitial'], 'parent.register', ['guest']],
@@ -12,5 +13,7 @@ return [
     ['GET', '/staff/login', [AuthController::class, 'staffLogin'], 'staff.login', ['guest']],
     ['POST', '/staff/login', [AuthController::class, 'loginAsStaff'], 'staff.login.submit', ['guest']],
     ['GET', '/forgot-password', [AuthController::class, 'forgotPassword'], 'forgot.password', ['guest']],
-    ['POST', '/logout', [AuthController::class, 'logout'], 'logout', ['auth']]
+    ['POST', '/logout', [AuthController::class, 'logout'], 'logout', ['auth']],
+    ['POST', '/profile/update-profile', [SettingController::class, 'updateName'], 'update.profile', ['auth']],
+    ['POST', '/profile/update-password', [SettingController::class, 'updatePassword'], 'update.password', ['auth']],
 ];
