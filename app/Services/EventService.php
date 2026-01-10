@@ -46,6 +46,45 @@ class EventService
 
     }
 
+
+     private function validateEmail(string $email)
+    {
+        $error = null;
+        if(!Validator::validateFieldExistence($email)) {
+            $error = "Email field cannot be empty";
+            return $error;
+        }
+
+        if (!Validator::validateEmailFormat($email)) {
+            $error = "Email format is invalid";
+            return $error;
+        }
+
+        return $error;
+    }
+
+      private function validateName(string $name)
+    {
+        $error = null;
+        if (!Validator::validateFieldExistence($name)) {
+            $error = "Name field cannot be empty";
+            return $error;
+        }
+
+        if (!Validator::validateFieldMinLength($name, 3)) {
+            $error = "Name cannot be less than 3 characters";
+            return $error;
+        }
+
+        if (!Validator::validateFieldMaxLength($name, 20)) {
+            $error = "Name cannot be greater than 20 characters";
+            return $error;
+        }
+
+        return $error;
+    }
+
+
     public function addEventParticpantCount($eventId)
     {
         $event = Events::find($eventId);
