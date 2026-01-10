@@ -25,6 +25,7 @@ class EventService
                 'event_status' => $event->event_status,
                 'event_location' => $event->event_location,
                 'max_count' => $event->max_count,
+                'participants_count'=> $event->participants_count,
                 'admin' => $event->getAdmin() ? [
                     'id' => $event->getAdmin()->id,
                     'name' => $event->getAdmin()->name,
@@ -49,7 +50,7 @@ class EventService
     {
         $event = Events::find($eventId);
         if ($event) {
-            $event->participant_count += 1;
+            $event->participants_count += 1;
             $event->save();
         }
     }
