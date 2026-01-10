@@ -16,7 +16,10 @@ class maternalrecordService
                 'bmi' => $record->bmi,
                 'blood_sugar' => $record->blood_sugar,
                 'blood_pressure' => $record->blood_pressure,
+                'weight' => $record->weight,
+                'trimester' => $record->trimester,
                 'health_status' => $record->health_status,
+                'notes' => $record->notes,
             ];
         }
 
@@ -32,15 +35,18 @@ class maternalrecordService
         $resource = [];
         foreach ($maternalrecords as $record) {
             $resource[] = [
+                'id' => $record->id,
                 'parent_id' => $record->parent_id,
                 'visit_date' => $record->visit_date,
                 'bmi' => $record->bmi,
                 'blood_sugar' => $record->blood_sugar,
                 'blood_pressure' => $record->blood_pressure,
+                'weight' => $record->weight,
+                'trimester' => $record->trimester,
                 'health_status' => $record->health_status,
+                'notes' => $record->notes,
             ];
         }
-
         return $resource;
     }
 
@@ -48,7 +54,7 @@ class maternalrecordService
     {
 
         $error = null;
-        if (!Validator::validateFieldExistence($data)) {
+        if ($data === null || trim((string)$data) === '') {
             $error = "$attributeName can not be empty";
             return $error;
         }
@@ -75,7 +81,7 @@ class maternalrecordService
     public function validateCommonFields($data, $attributeName)
     {
         $error = null;
-        if (!Validator::validateFieldExistence($data)) {
+        if ($data === null || trim((string)$data) === '') {
             $error = "$attributeName can not be empty";
             return $error;
         }
@@ -103,7 +109,7 @@ class maternalrecordService
 
 
 
-    public function validateMaternalRecordData($visitdate, $bmi, $bloodPressure, $bloodSugar, $healthStatus, $edit = false)
+    public function validateMaternalRecordData($visitdate, $bmi, $bloodPressure, $bloodSugar,$weight,$trimester, $healthStatus,$additionalNotes, $edit = false)
     {
         $errorSuffix = '';
         if ($edit) {
@@ -111,9 +117,9 @@ class maternalrecordService
         }
         $errors = [];
 
-        $recordedAtError = $this->validateDate($visitdate);
-        if ($recordedAtError) {
-            $errors["{$errorSuffix}recorded_at"] = $recordedAtError;
+        $visitDateError = $this->validateDate($visitdate);
+        if ($visitDateError) {
+            $errors["{$errorSuffix}visit_date"] = $visitDateError;
         }
 
         $bmiError = $this->validateNumericStat($bmi, "BMI");
@@ -131,12 +137,26 @@ class maternalrecordService
             $errors["{$errorSuffix}blood_sugar"] = $bloodSugarError;
         }
 
+        $weightError = $this->validateNumericStat($weight, "Weight");
+        if ($weightError) {
+            $errors["{$errorSuffix}weight"] = $weightError;
+        }
+
+        $trimesterError = $this->validateCommonFields($trimester, "Trimester");
+        if ($trimesterError) {
+            $errors["{$errorSuffix}trimester"] = $trimesterError;
+        }
+
 
         $healthStatusError = $this->validateCommonFields($healthStatus, "Health Status");
         if ($healthStatusError) {
             $errors["{$errorSuffix}health_status"] = $healthStatusError;
         }
 
+        $notesError = $this->validateCommonFields($additionalNotes, "Additional Notes");
+        if ($notesError) {
+            $errors["{$errorSuffix}notes"] = $notesError;
+        }
 
         return $errors;
     }
@@ -153,7 +173,7 @@ class maternalrecordService
         return json_encode($notesArray, JSON_UNESCAPED_UNICODE);
     }
 
-    public function createMaternalRecord($parentId,$visitdate, $bmi, $bloodPressure, $bloodSugar,$healthStatus,){
+    public function createMaternalRecord($parentId,$visitdate, $bmi, $bloodPressure, $bloodSugar,$weight,$trimester,$healthStatus,$additionalNotes){
 
 
         
@@ -163,41 +183,34 @@ class maternalrecordService
         $maternalrecord->bmi = $bmi;
         $maternalrecord->blood_pressure = $bloodPressure;
         $maternalrecord->blood_sugar = $bloodSugar;
+        $maternalrecord->weight = $weight;
+        $maternalrecord->trimester = $trimester;
         $maternalrecord->health_status = $healthStatus;
+        $maternalrecord->notes =$additionalNotes;
 
         $maternalrecord->save();
 
         return $maternalrecord;
     }
 
-    public function editMaternalRecord($id, $recordedAt, $bmi, $bloodPressure, $bloodSugar,$healthStatus){
-        $maternalrecord = MaternalRecord::find($id);
+    public function editMaternalRecord($recordId, $visitdate, $bmi, $bloodPressure, $bloodSugar,$weight,$trimester,$healthStatus,$additionalNotes){
+        $maternalrecord = MaternalRecord::find($recordId);
 
         if (!$maternalrecord) {
-            throw new \Exception("MaternalStat not found");
+            throw new \Exception("Maternal Record not found");
         }
 
-        $maternalrecord->visit_date = $recordedAt;
+        $maternalrecord->visit_date = $visitdate;
         $maternalrecord->bmi = $bmi;
         $maternalrecord->blood_pressure = $bloodPressure;
         $maternalrecord->blood_sugar = $bloodSugar;
+        $maternalrecord->weight = $weight;
+        $maternalrecord->trimester = $trimester;
         $maternalrecord->health_status = $healthStatus;
+        $maternalrecord->notes = $additionalNotes;
 
         $maternalrecord->save();
 
         return $maternalrecord;
     }
-
-    public function deleteMaternalRecord($id){
-        $maternalrecord = MaternalRecord::find($id);
-
-        if (!$maternalrecord) {
-            throw new \Exception("MaternalStat not found");
-        }
-
-        $maternalrecord->delete();
-    }
-
-
-
 }
