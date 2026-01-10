@@ -36,24 +36,13 @@ Parent - Event & Campaigns
 
 @section('header_right')
 
-<c-button variant="outline" class="filter">
-   <img src="{{ asset('assets/icons/filter.svg') }}" />
-   Date
-   <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" />
-</c-button>
 
-<c-button variant="outline" class="filter">
-   <img src="{{ asset('assets/icons/filter.svg') }}" />
-   Status
-   <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" />
-</c-button>
-<div class="search-box">
-   <span class="search-icon" aria-hidden="true">
-      <img src="{{ asset('assets/icons/search.svg') }}" />
+<c-table.controls  action="{{ route('parent.appointments') }}" :filters="['status' => ['upcoming', 'pending', 'completed', 'cancelled']]">
+    
 
-   </span>
-   <input type="search" name="q" placeholder="Search" />
-</div>
+
+</c-table.controls>
+
 
 
 
