@@ -37,8 +37,8 @@ Parent - Event & Campaigns
 @section('header_right')
 
 
-<c-table.controls  action="{{ route('parent.appointments') }}" :filters="['status' => ['upcoming', 'pending', 'completed', 'cancelled']]">
-    
+<c-table.controls action="{{ route('parent.appointments') }}"  :filters="['status' => ['upcoming', 'pending', 'completed', 'cancelled']]">
+
 
 
 </c-table.controls>
@@ -92,7 +92,7 @@ Parent - Event & Campaigns
             <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
                info="{{ $event['event_time'] }}" />
             <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
-               info="{{ $event['max_count'] .'/' .$event['max_count'] }}" />
+               info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
             <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
                info="{{ $event['event_location'] }}" />
          </c-modal.viewcard>
@@ -133,7 +133,7 @@ Parent - Event & Campaigns
                <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
                   info="{{ $event['event_time'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
-                  info="{{ $event['max_count'] .'/' .$event['max_count'] }}" />
+                  info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
                   info="{{ $event['event_location'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
@@ -153,9 +153,9 @@ Parent - Event & Campaigns
 
             <c-modal.viewlist title="Notes">
                <c-slot name="list">
-                  
+
                   <li>{{ $event['notes'] }}</li>
-                
+
                </c-slot>
             </c-modal.viewlist>
 
@@ -163,10 +163,10 @@ Parent - Event & Campaigns
                Close
             </c-slot>
 
-           
+
          </c-modal>
 
-         @if($event['booking_status'] == NULL)
+         @if($event['booking_status'] == NULL && strtolower($event['event_status']) == 'upcoming')
          <c-modal id="book-event-{{$key}}" size="md" :initOpen="flash('booked') ? true : false">
             <c-slot name="trigger">
                <c-button variant="primary">
@@ -185,7 +185,7 @@ Parent - Event & Campaigns
 
             <c-slot name="headerSuffix">
 
-                <c-badge type="{{ $badgeType }}">
+               <c-badge type="{{ $badgeType }}">
                   {{ucfirst($event['event_status'])}}
                </c-badge>
             </c-slot>
@@ -218,7 +218,8 @@ Parent - Event & Campaigns
 
 
 
-            <form id="book-event-form" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}}" method="POST">
+            <form id="book-event-form" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}}"
+               method="POST">
                <c-input type="text" label="Name " name="name" placeholder="Enter Participant Name" required />
                <c-input type="email" label="Email " name="email" placeholder="Enter Email" required />
                <c-input type="text" label="Phone Number " name="phone" placeholder="Enter Phone number" required>
@@ -240,7 +241,7 @@ Parent - Event & Campaigns
                </c-button>
             </c-slot>
          </c-modal>
-         @elseif ($event['booking_status'] == 'booked')
+         @elseif ($event['booking_status'] == 'booked' && strtolower($event['event_status']) == 'upcoming')
          <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="false">
             <c-slot name="trigger">
                <c-button variant="destructive">
@@ -324,9 +325,17 @@ Parent - Event & Campaigns
 
             </c-slot>
          </c-modal>
+         @elseif (strtolower($event['event_status']) == 'completed')
+         <c-button variant="disabled">
+            Event Completed
+         </c-button>
+         @elseif (strtolower($event['event_status']) == 'ongoing')
+         <c-button variant="disabled">
+            Event Ongoing
+         </c-button>
          @else
          <c-button variant="disabled">
-            Finished
+            Cancelled
          </c-button>
          @endif
       </div>
