@@ -28,6 +28,6 @@ return [
     | URL & Timezone
     |--------------------------------------------------------------------------
     */
-    'url'      => env('APP_URL', 'http://localhost'),
+    'url'      => env('APP_URL', 'http://localhost:8080'),
     'timezone' => 'UTC',
 ];
