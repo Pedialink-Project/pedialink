@@ -163,7 +163,7 @@ Parent - Event & Campaigns
 
          </c-modal>
 
-         @if($event['booking_status'] == NULL && strtolower($event['event_status']) == 'upcoming')
+         @if($event['booking_status'] == NULL && $event['participants_count'] < $event['max_count'] && strtolower($event['event_status']) == 'upcoming')
          <c-modal id="book-event-{{$key}}" size="md" :initOpen="flash('booked') == $event['id'] ? true : false">
             <c-slot name="trigger">
                <c-button variant="primary">

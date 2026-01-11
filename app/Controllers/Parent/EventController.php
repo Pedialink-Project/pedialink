@@ -17,8 +17,6 @@ class EventController
     {
         $events = $this->eventService->getAllEvents();
 
-        print_r($events[4]['booking_status']);
-
         return view("parent/events-campaigns", ['events' => $events]);
     }
 
