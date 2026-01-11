@@ -167,7 +167,7 @@ Parent - Event & Campaigns
          </c-modal>
 
          @if($event['booking_status'] == NULL && strtolower($event['event_status']) == 'upcoming')
-         <c-modal id="book-event-{{$key}}" size="md" :initOpen="flash('booked') ? true : false">
+         <c-modal id="book-event-{{$key}}" size="md" :initOpen="flash('booked') == $event['id'] ? true : false">
             <c-slot name="trigger">
                <c-button variant="primary">
                   Book Now
@@ -218,14 +218,17 @@ Parent - Event & Campaigns
 
 
 
-            <form id="book-event-form" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}} " method="POST">
-               <c-input type="text" label="Name " name="name" placeholder="Enter Participant Name" required />
-               <c-input type="email" label="Email " name="email" placeholder="Enter Email" required />
-               <c-input type="text" label="Phone Number " name="phone" placeholder="Enter Phone number" required>
+            <form id="book-event-form" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}} " method="POST" >
+               <c-input type="text" label="Name " name="name"   value="{{ old('name') ?? '' }}"
+                        error="{{ errors('name') ?? '' }}" placeholder="Enter Participant Name" required />
+               <c-input type="email" label="Email " name="email"  value="{{ old('email') ?? '' }}"
+                        error="{{ errors('email') ?? '' }}" placeholder="Enter Email" required />
+               <c-input type="text" label="Phone Number " name="phone"  value="{{ old('phone') ?? '' }}"
+                        error="{{ errors('phone') ?? '' }}" placeholder="Enter Phone number" required>
                   <c-slot name="prefix">
                      +94
                   </c-slot>
-               </c-input>
+                </c-input>
             </form>
 
 
@@ -241,7 +244,7 @@ Parent - Event & Campaigns
             </c-slot>
          </c-modal>
          @elseif ($event['booking_status'] == 'booked' && strtolower($event['event_status']) == 'upcoming')
-         <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="false">
+         <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="flash('cancelBooking') == $event['id'] ? true : false">
             <c-slot name="trigger">
                <c-button variant="destructive">
                   Cancel Booking
@@ -306,10 +309,10 @@ Parent - Event & Campaigns
 
 
 
-            <form id="cancel-event-form" action="">
-               <c-input type="text" name="reason" label="Reason for Cancellation" placeholder="Enter your reason"
+            <form id="cancel-event-form-{{ $key }}" action="{{route('parent.events.campaigns.cancel', ['id' => $event['id']])}}" method="POST" novalidate>
+               <c-input type="text" name="reason" label="Reason for Cancellation" placeholder="Enter your reason" value="{{ old('reason') ?? '' }}"
+                        error="{{ errors('reason') ?? '' }}"
                   required />
-               <c-textarea name="notes" label="Additional Notes" placeholder="Any additional notes or others" />
             </form>
 
             <c-slot name="close">
@@ -317,7 +320,7 @@ Parent - Event & Campaigns
             </c-slot>
 
             <c-slot name="footer">
-               <c-button variant="destructive" type="submit" form="cancel-event-form">
+               <c-button variant="destructive" type="submit" form="cancel-event-form-{{$key}}">
                   Cancel Booking
                </c-button>
 
