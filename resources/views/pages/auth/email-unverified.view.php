@@ -23,12 +23,12 @@
                     or resend the verification email by clicking the below link.
                 </div>
 
-                <form action="POST" class="hidden" id="resend-verification"></form>
+                <form method="POST" action="{{ route('email.verify.send') }}" class="hidden" id="resend-verification"></form>
 
                 <div class="footer">
                     
                     @if ($blocked == true)
-                        <c-button id="resend-email" type="submit" variant="primary" disabled>
+                        <c-button id="resend-email" type="submit" form="resend-verification" variant="primary" disabled>
                             Resend Email
                         </c-button>
                         <div id="retry-info">
@@ -66,6 +66,7 @@
 
                 if (remaining <= 0) {
                     retryBox.style.display = "None";
+                    resendBtn.disabled = false;
                     return;
                 }
 
