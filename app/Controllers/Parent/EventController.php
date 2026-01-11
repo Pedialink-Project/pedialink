@@ -17,6 +17,8 @@ class EventController
     {
         $events = $this->eventService->getAllEvents();
 
+        print_r($events[4]['booking_status']);
+
         return view("parent/events-campaigns", ['events' => $events]);
     }
 
@@ -58,6 +60,7 @@ class EventController
         $reason = $request->input('reason');
 
         $errors = $this->eventService->validateEventCancelData($reason);
+
 
         if(count($errors) !== 0) {
             return redirect(route("parent.events.campaigns"))

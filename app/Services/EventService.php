@@ -46,7 +46,7 @@ class EventService
 
     public function getEventBookingStatus($eventId)
     {
-        $eventRegistration =  EventRegistrations::find($eventId);
+        $eventRegistration =  EventRegistrations::query()->where('event_id', '=', $eventId)->first();
 
     return $eventRegistration ? $eventRegistration->booking_status : null;
 
@@ -101,12 +101,11 @@ class EventService
 
         return $errors;
     }
-   
 
     public function addEventParticpantCount($eventId)
     {
         $event = Events::find($eventId);
-        if ($event) {
+        if ($event && $event->participants_count < $event->max_count) {
             $event->participants_count += 1;
             $event->save();
         }
