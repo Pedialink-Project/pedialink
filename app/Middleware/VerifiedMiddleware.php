@@ -11,8 +11,7 @@ class VerifiedMiddleware implements Middleware
     {
         $user = auth()->user();
         $proceed = false;
-        $failView = "auth/email-unverified";
-        $viewParams = ["blocked" => false];
+        $route = route('email.unverified');
 
         if ($user && $user->email_verified) {
             if ($user->isParent()) {
@@ -21,11 +20,8 @@ class VerifiedMiddleware implements Middleware
                 if ($parent && $parent->verified) {
                     $proceed = true;
                 } else {
-                    $failView = "auth/parent-unverified";
-                    $submitted = $parent?->birth_certificate &&
-                        $parent?->marriage_certificate &&
-                        $parent?->nic_copy;
-                    $viewParams = ["submitted" => $submitted];
+                    $route = route('parent.unverified');
+                    
                 }
             } else {
                 $proceed = true;
@@ -36,6 +32,6 @@ class VerifiedMiddleware implements Middleware
             return $next($request, $params);
         }
 
-        return view($failView, $viewParams);
+        return redirect($route);
     }
 }
