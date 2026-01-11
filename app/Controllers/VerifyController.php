@@ -2,10 +2,18 @@
 
 namespace App\Controllers;
 
+use App\Services\EmailVerificationService;
 use Library\Framework\Http\Request;
 
 class VerifyController
 {
+    private EmailVerificationService $emailVerificationService;
+
+    public function __construct()
+    {
+        $this->emailVerificationService = new EmailVerificationService();
+    }
+
     private function preventEmailVerifyViewing()
     {
         $user = auth()->user();
@@ -45,6 +53,43 @@ class VerifyController
         return view("auth/email-unverified", [
             "blocked" => $blocked,
         ]);
+    }
+
+    public function verifyEmailSend(Request $request)
+    {
+        $user = auth()->user();
+        $data = [
+            'title' => 'Email sent',
+            'message' => 'Your verification email has been successfully sent',
+            'type' => 'success'
+        ];
+
+        try {
+            if ($user) {
+                $verifyLink = $this->emailVerificationService
+                    ->createVerificationUrl(
+                        $user, config('app.key')
+                    );
+
+                mailer()->sendTemplate(
+                    $user->email,
+                    'verify-email',
+                    [
+                        'username' => $user->name,
+                        'verify_link' => $verifyLink
+                    ],
+                    'Verify your email',
+                );
+            }
+
+        } catch (\Exception $e) {
+            $data['title'] = 'Failure';
+            $data['message'] = 'Failed to send verification email';
+            $data['type'] = 'error';
+        }
+
+        return redirect(route('email.unverified', [],['blocked' => true]))
+            ->withMessage($data['message'], $data['title'], $data['type']);
     }
 
     public function parentUnverified(Request $request)
