@@ -4,9 +4,14 @@ namespace App\Services;
 
 use App\Models\Events;
 use App\Models\EventRegistrations;
+use App\Helpers\Validator;
+use App\Rules\PhoneRule;
+use App\Rules\NameRule; 
 
 class EventService
 {
+
+    use NameRule,PhoneRule;
     public function getAllEvents(): array
     {
         $events = Events::all();
@@ -63,27 +68,28 @@ class EventService
         return $error;
     }
 
-      private function validateName(string $name)
+    public function validateEventBookingData($name, $email, $phone)
     {
-        $error = null;
-        if (!Validator::validateFieldExistence($name)) {
-            $error = "Name field cannot be empty";
-            return $error;
+        $errors = [];
+
+        $nameError = $this->validateName($name,"Participant Name");
+        if ($nameError) {
+            $errors['name'] = $nameError;
         }
 
-        if (!Validator::validateFieldMinLength($name, 3)) {
-            $error = "Name cannot be less than 3 characters";
-            return $error;
+        $emailError = $this->validateEmail($email);
+        if ($emailError) {
+            $errors['email'] = $emailError;
         }
 
-        if (!Validator::validateFieldMaxLength($name, 20)) {
-            $error = "Name cannot be greater than 20 characters";
-            return $error;
+        $phoneError = $this->validatePhone($phone);
+        if ($phoneError) {
+            $errors['phone'] = $phoneError;
         }
 
-        return $error;
+        return $errors;
     }
-
+   
 
     public function addEventParticpantCount($eventId)
     {
