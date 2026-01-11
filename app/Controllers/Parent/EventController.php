@@ -28,7 +28,7 @@ class EventController
         $email = $request->input('email');
         $phone = $request->input('phone');
 
-        $errors = [];
+        $errors = $this->eventService->validateEventBookingData($name, $email, $phone);
 
         if (count($errors) !== 0) {
             return redirect(route("parent.events.campaigns"))
@@ -38,7 +38,7 @@ class EventController
                     "phone" => $phone
                 ])
                 ->withErrors($errors)
-                ->with("booked", true);
+                ->with("booked", $id);
         }
 
         $this->eventService->bookEvent($eventId, $userId, $name, $email, $phone);
