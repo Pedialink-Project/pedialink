@@ -57,6 +57,10 @@ class VerifyController
 
     public function verifyEmailSend(Request $request)
     {
+        if ($this->preventEmailVerifyViewing()) {
+            return view("error/404");
+        }
+
         $user = auth()->user();
         $data = [
             'title' => 'Email sent',
@@ -90,6 +94,30 @@ class VerifyController
 
         return redirect(route('email.unverified', [],['blocked' => true]))
             ->withMessage($data['message'], $data['title'], $data['type']);
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        if ($this->preventEmailVerifyViewing()) {
+            return view("error/404");
+        }
+
+        $token = $request->query('token') ?? '';
+
+        $user = auth()->user();
+
+        if ($user) {
+            $status = $this->emailVerificationService
+                ->verifySignedTokenAndMarkVerified($token, config('app.key'));
+
+            if ($status) {
+                return redirect(route('home'))
+                    ->withMessage('Email verified successfully', 'Email verified', 'success');
+            }
+        }
+
+        return redirect(route('home'))
+            ->withMessage('Failed to verify your email', 'Email not verified', 'error');
     }
 
     public function parentUnverified(Request $request)
