@@ -127,4 +127,29 @@ class Validator
 
         return false;
     }
+
+ /**
+     * Validate phone formats according to Sri Lankan
+     * standards
+     * 
+     * @param mixed $phone
+     * @return bool
+     */
+    public static function validatePhoneNumberFormat($phone)
+{
+    $phone = trim($phone);
+
+    // Only digits allowed (no country code, no spaces)
+    if (!preg_match('/^\d+$/', $phone)) {
+        return false;
+    }
+
+    // 10 digits starting with 0  OR  9 digits not starting with 0
+    if (preg_match('/^0\d{9}$/', $phone) || preg_match('/^[1-9]\d{8}$/', $phone)) {
+        return true;
+    }
+
+    return false;
+}
+
 }

@@ -32,31 +32,17 @@ Parent - Event & Campaigns
 
    <span>Events & Campaigns</span>
 </div>
+
 @endsection
 
 @section('header_right')
 
-<c-button variant="outline" class="filter">
-   <img src="{{ asset('assets/icons/filter.svg') }}" />
-   Date
-   <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" />
-</c-button>
 
-<c-button variant="outline" class="filter">
-   <img src="{{ asset('assets/icons/filter.svg') }}" />
-   Status
-   <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" />
-</c-button>
-<div class="search-box">
-   <span class="search-icon" aria-hidden="true">
-      <img src="{{ asset('assets/icons/search.svg') }}" />
-
-   </span>
-   <input type="search" name="q" placeholder="Search" />
-</div>
+<c-table.controls action="{{ route('parent.appointments') }}"  :filters="['status' => ['upcoming', 'pending', 'completed', 'cancelled']]">
 
 
 
+</c-table.controls>
 
 
 
@@ -64,38 +50,18 @@ Parent - Event & Campaigns
 
 @section('content')
 
-<?php
-$eventDetails = [
-   ['id' => 'EVT001', 'title' => 'Health Awareness Campaign', 'subtitle' => 'Join us for a day of health awareness activities and workshops.', 'status' => 'Upcoming', 'date' => '2024-07-15', 'time' => '10:00 AM - 4:00 PM', 'registeredParticipants' => 45, 'totalParticipants' => 100, 'location' => 'Community Center', 'isRegistered' => true, 'isFinished' => false, 'organizer' => 'Health Dept.', 'purpose' => 'Join us for a comprehensive polio vaccination drive targeting children under 5 years. This initiative is part of our ongoing effort to maintain polio-free status in our community. Qualified healthcare professionals will administer the vaccines following WHO guidelines.', 'notes' => ['Please bring your child\'s vaccination record', 'Arrive 15 minutes early for registration', 'Light refreshments will be provided']],
-   ['id' => 'EVT002', 'title' => 'Nutrition Workshop', 'subtitle' => 'Learn about balanced diets and healthy eating habits.', 'status' => 'Completed', 'date' => '2024-06-10', 'time' => '1:00 PM - 3:00 PM', 'registeredParticipants' => 30, 'totalParticipants' => 30, 'location' => 'Health Clinic', 'isRegistered' => false, 'isFinished' => true, 'organizer' => 'Nutrition Dept.', 'purpose' => 'Join us for a comprehensive polio vaccination drive targeting children under 5 years. This initiative is part of our ongoing effort to maintain polio-free status in our community. Qualified healthcare professionals will administer the vaccines following WHO guidelines.', 'notes' => ['Please bring your child\'s vaccination record']],
-   ['id' => 'EVT003', 'title' => 'Vaccination Drive', 'subtitle' => 'Get your vaccinations done for a healthier community.', 'status' => 'Ongoing', 'date' => '2024-06-20', 'time' => '9:00 AM - 5:00 PM', 'registeredParticipants' => 75, 'totalParticipants' => 150, 'location' => 'Local School', 'isRegistered' => true, 'isFinished' => false, 'organizer' => 'Health Dept.', 'purpose' => 'Join us for a comprehensive polio vaccination drive targeting children under 5 years. This initiative is part of our ongoing effort to maintain polio-free status in our community. Qualified healthcare professionals will administer the vaccines following WHO guidelines.', 'notes' => ['Please bring your child\'s vaccination record']],
-   ['id' => 'EVT004', 'title' => 'Mental Health Seminar', 'subtitle' => 'Discuss mental health topics with experts in the field.', 'status' => 'Upcoming', 'date' => '2024-08-05', 'time' => '11:00 AM - 2:00 PM', 'registeredParticipants' => 20, 'totalParticipants' => 50, 'location' => 'Library Conference Room', 'isRegistered' => false, 'isFinished' => false, 'organizer' => 'Mental Health Dept.', 'purpose' => 'Join us for a comprehensive polio vaccination drive targeting children under 5 years. This initiative is part of our ongoing effort to maintain polio-free status in our community. Qualified healthcare professionals will administer the vaccines following WHO guidelines.', 'notes' => ['Please bring your child\'s vaccination record']],
-   ['id' => 'EVT005', 'title' => 'First Aid Training', 'subtitle' => "Learn essential first aid skills to help in emergencies.", 'status' => 'Completed', 'date' => '2024-05-25', 'time' => '2:00 PM - 6:00 PM', 'registeredParticipants' => 25, 'totalParticipants' => 25, 'location' => 'Hospital Training Room', 'isRegistered' => false, 'isFinished' => true, 'organizer' => 'Emergency Services', 'purpose' => 'Join us for a comprehensive polio vaccination drive targeting children under 5 years. This initiative is part of our ongoing effort to maintain polio-free status in our community. Qualified healthcare professionals will administer the vaccines following WHO guidelines.', 'notes' => ['Please bring your child\'s vaccination record']],
-];
 
-?>
 <div class="card-container">
-   @foreach ($eventDetails as $key => $event)
+   @foreach ($events as $key => $event)
    {{
    $badgeType = '';
-   if(strtolower($event['status']) == 'completed') {
+   if(strtolower($event['event_status']) == 'completed') {
    $badgeType = 'red';
-   } elseif (strtolower($event['status']) == 'upcoming') {
+   } elseif (strtolower($event['event_status']) == 'upcoming') {
    $badgeType = 'purple';}
    else {
    $badgeType = 'red';
    }
-
-
-   $buttonType = 'primary';
-   $buttonText = 'Book Now';
-
-   if($event['isRegistered'] && !$event['isFinished']){
-   $buttonType = 'destructive';
-   $buttonText = 'Cancel Booking';
-   }elseif($event['isFinished']){
-   $buttonType = 'disabled';
-   $buttonText = 'Event Finished';}
    }}
 
    <c-card class="event-card">
@@ -105,7 +71,7 @@ $eventDetails = [
          </span>
 
          <c-badge type="{{ $badgeType}}">
-            {{$event['status']}}
+            {{ucfirst($event['event_status'])}}
          </c-badge>
       </div>
 
@@ -113,19 +79,19 @@ $eventDetails = [
 
 
       <span class="event-subtitle">
-         {{$event['subtitle']}}
+         {{$event['description']}}
       </span>
 
       <div class="card-body">
          <c-modal.viewcard>
             <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-               info="{{ $event['date'] }}" />
+               info="{{ $event['event_date'] }}" />
             <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-               info="{{ $event['time'] }}" />
+               info="{{ $event['event_time'] }}" />
             <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
-               info="{{ $event['registeredParticipants'] .'/' .$event['totalParticipants'] }}" />
+               info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
             <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
-               info="{{ $event['location'] }}" />
+               info="{{ $event['event_location'] }}" />
          </c-modal.viewcard>
 
       </div>
@@ -150,7 +116,7 @@ $eventDetails = [
             <c-slot name="headerSuffix">
 
                <c-badge type="{{ $badgeType }}">
-                  {{$event['status']}}
+                  {{ucfirst($event['event_status'])}}
                </c-badge>
             </c-slot>
 
@@ -160,15 +126,15 @@ $eventDetails = [
                <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event ID"
                   info="{{ $event['id'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-                  info="{{ $event['date'] }}" />
+                  info="{{ $event['event_date'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                  info="{{ $event['time'] }}" />
+                  info="{{ $event['event_time'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
-                  info="{{ $event['registeredParticipants'] .'/' .$event['totalParticipants'] }}" />
+                  info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
-                  info="{{ $event['location'] }}" />
+                  info="{{ $event['event_location'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
-                  info="{{ $event['organizer'] }}" />
+                  info="{{ $event['admin']['name'] }}" />
             </c-modal.viewcard>
 
 
@@ -184,29 +150,24 @@ $eventDetails = [
 
             <c-modal.viewlist title="Notes">
                <c-slot name="list">
-                  @foreach($event['notes'] as $note)
-                  <li>{{ $note }}</li>
-                  @endforeach
+
+                  <li>{{ $event['notes'] }}</li>
+
                </c-slot>
             </c-modal.viewlist>
 
             <c-slot name="close">
-               Cancel
+               Close
             </c-slot>
 
-            <c-slot name="footer">
 
-               <c-button variant="{{ $buttonType }}">
-                  {{ $buttonText }}
-               </c-button>
-            </c-slot>
          </c-modal>
 
-         @if(!$event['isRegistered'] && !$event['isFinished'])
-         <c-modal id="book-event-{{$key}}" size="md" :initOpen="false">
+         @if($event['booking_status'] == NULL && $event['participants_count'] < $event['max_count'] && strtolower($event['event_status']) == 'upcoming')
+         <c-modal id="book-event-{{$key}}" size="md" :initOpen="flash('booked') == $event['id'] ? true : false">
             <c-slot name="trigger">
-               <c-button variant="{{ $buttonType }}">
-                  {{ $buttonText }}
+               <c-button variant="primary">
+                  Book Now
                </c-button>
 
             </c-slot>
@@ -222,7 +183,7 @@ $eventDetails = [
             <c-slot name="headerSuffix">
 
                <c-badge type="{{ $badgeType }}">
-                  {{$event['status']}}
+                  {{ucfirst($event['event_status'])}}
                </c-badge>
             </c-slot>
 
@@ -236,13 +197,13 @@ $eventDetails = [
                   <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
                      info="{{ $event['title'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-                     info="{{ $event['date'] }} " />
+                     info="{{ $event['event_date'] }} " />
                   <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                     info="{{ $event['time'] }}" />
+                     info="{{ $event['event_time'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
-                     info="{{ $event['location'] }}" />
-                  <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organzer"
-                     info="{{ $event['organizer'] }}" />
+                     info="{{ $event['event_location'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
+                     info="{{ $event['admin']['name'] }}" />
 
 
 
@@ -254,15 +215,17 @@ $eventDetails = [
 
 
 
-            <form id="book-event-form" action="">
-               <c-input type="text" label="Name " name="name" placeholder="Enter Participant Name" required />
-               <c-input type="email" label="Email " name="email" placeholder="Enter Email" required />
-               <c-input type="text" label="Phone Number " name="phone" placeholder="Enter Phone number" required>
+            <form id="book-event-form-{{$key}}" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}} " method="POST" novalidate>
+               <c-input type="text" label="Name " name="name"   value="{{ old('name') ?? '' }}"
+                        error="{{ errors('name') ?? '' }}" placeholder="Enter Participant Name" required />
+               <c-input type="email" label="Email " name="email"  value="{{ old('email') ?? '' }}"
+                        error="{{ errors('email') ?? '' }}" placeholder="Enter Email" required />
+               <c-input type="text" label="Phone Number " name="phone"  value="{{ old('phone') ?? '' }}"
+                        error="{{ errors('phone') ?? '' }}" placeholder="Enter Phone number" required>
                   <c-slot name="prefix">
                      +94
                   </c-slot>
-               </c-input>
-               <c-textarea name="notes" label="Addtional Notes" placeholder="Any additional notes or others" />
+                </c-input>
             </form>
 
 
@@ -272,16 +235,16 @@ $eventDetails = [
 
             <c-slot name="footer">
 
-               <c-button variant="{{ $buttonType }}" type="submit" form="book-event-form">
-                  {{ $buttonText }}
+               <c-button variant="primary" type="submit" form="book-event-form-{{$key}}">
+                  Book Now
                </c-button>
             </c-slot>
          </c-modal>
-         @elseif ($event['isRegistered'] && !$event['isFinished'])
-         <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="false">
+         @elseif ($event['booking_status'] == 'booked' && strtolower($event['event_status']) == 'upcoming')
+         <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="flash('cancelBooking') == $event['id'] ? true : false">
             <c-slot name="trigger">
-               <c-button variant="{{ $buttonType }}">
-                  {{ $buttonText }}
+               <c-button variant="destructive">
+                  Cancel Booking
                </c-button> </c-slot>
 
             <c-slot name="headerPrefix">
@@ -313,22 +276,22 @@ $eventDetails = [
             </c-slot>
 
             <div class="info-card">
-                  <span class="title">
-                     Current Event
-                  </span>
+               <span class="title">
+                  Current Event
+               </span>
 
                <c-modal.viewcard>
 
                   <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
                      info="{{ $event['title'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-                     info="{{ $event['date'] }} " />
+                     info="{{ $event['event_date'] }} " />
                   <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                     info="{{ $event['time'] }}" />
+                     info="{{ $event['event_time'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
-                     info="{{ $event['location'] }}" />
-                  <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organzer"
-                     info="{{ $event['organizer'] }}" />
+                     info="{{ $event['event_location'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
+                     info="{{ $event['admin']['name'] }}" />
 
 
 
@@ -343,42 +306,43 @@ $eventDetails = [
 
 
 
-            <form id="cancel-event-form" action="">
-               <c-input type="text" name="reason" label="Reason for Cancellation" placeholder="Enter your reason"
+            <form id="cancel-event-form-{{ $key }}" action="{{route('parent.events.campaigns.cancel', ['id' => $event['id']])}}" method="POST" novalidate>
+               <c-input type="text" name="reason" label="Reason for Cancellation" placeholder="Enter your reason" value="{{ old('reason') ?? '' }}"
+                        error="{{ errors('reason') ?? '' }}"
                   required />
-               <c-textarea name="notes" label="Additional Notes" placeholder="Any additional notes or others" />
             </form>
 
             <c-slot name="close">
-               Cancel
+               Close
             </c-slot>
 
             <c-slot name="footer">
-               <c-button variant="{{ $buttonType }}" type="submit" form="cancel-event-form">
-                  {{ $buttonText }}
+               <c-button variant="destructive" type="submit" form="cancel-event-form-{{$key}}">
+                  Cancel Booking
                </c-button>
 
 
             </c-slot>
          </c-modal>
-         @else
-         <c-button variant="{{ $buttonType }}">
-            {{ $buttonText }}
+         @elseif (strtolower($event['event_status']) == 'completed')
+         <c-button variant="disabled">
+            Event Completed
          </c-button>
-
-
-
+         @elseif (strtolower($event['event_status']) == 'ongoing')
+         <c-button variant="disabled">
+            Event Ongoing
+         </c-button>
+          @elseif (strtolower($event['booking_status']) == 'cancelled')
+         <c-button variant="disabled">
+            Booking Cancelled
+         </c-button>
+         @else
+         <c-button variant="disabled">
+            Cancelled
+         </c-button>
          @endif
-
-
       </div>
-
-
    </c-card>
-
    @endforeach
 </div>
-
-
-
 @endsection
