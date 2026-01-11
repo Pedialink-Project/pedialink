@@ -218,7 +218,7 @@ Parent - Event & Campaigns
 
 
 
-            <form id="book-event-form" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}} " method="POST" >
+            <form id="book-event-form-{{$key}}" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}} " method="POST" novalidate>
                <c-input type="text" label="Name " name="name"   value="{{ old('name') ?? '' }}"
                         error="{{ errors('name') ?? '' }}" placeholder="Enter Participant Name" required />
                <c-input type="email" label="Email " name="email"  value="{{ old('email') ?? '' }}"
@@ -238,7 +238,7 @@ Parent - Event & Campaigns
 
             <c-slot name="footer">
 
-               <c-button variant="primary" type="submit" form="book-event-form">
+               <c-button variant="primary" type="submit" form="book-event-form-{{$key}}">
                   Book Now
                </c-button>
             </c-slot>
