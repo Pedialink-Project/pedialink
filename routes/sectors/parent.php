@@ -11,7 +11,7 @@ use App\Controllers\ParentController;
 use App\Controllers\SettingController;
 
 return [
-    ['GET', '/parent/dashboard', [DashboardController::class, 'index'], 'parent.dashboard', ['parent']],
+    ['GET', '/parent/dashboard', [DashboardController::class, 'index'], 'parent.dashboard', ['parent', 'verified']],
     ['GET', '/parent/my-children', [MyChildrenController::class, 'index'], 'parent.my.children', ['parent']],
     ['GET', '/parent/my-children/{id}', [MyChildrenController::class, 'viewChildDetails'], 'parent.child.details', ['parent']],
     ['GET', '/parent/vaccination', [VaccinationController::class, 'index'], 'parent.vaccination', ['parent']],
