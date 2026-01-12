@@ -248,6 +248,14 @@ class QueryBuilder
         }
 
         $stmt = static::$pdo->prepare($sql);
+
+        foreach ($this->bindings as $ph => $val) {
+            // detect booleans explicitly
+            if (is_bool($val)) {
+                $this->bindings[$ph] = $val ? 1 : 0;
+            }
+        }
+
         return $stmt->execute($this->bindings);
     }
 
