@@ -50,7 +50,7 @@ class UserOverviewService
                 "name" => $user->name,
                 "email" => $user->email,
                 "role" => $user->role,
-                "email_verified_at" => false,
+                "email_verified_at" => $user->email_verified,
                 "created_at" => $user->created_at,
             ];
 
