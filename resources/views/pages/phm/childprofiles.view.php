@@ -69,20 +69,23 @@ PHM Child Profiles
             <form id="add-child-form" class="child-form" action="{{ route('phm.child.create') }}" method="POST">
                 <c-input type="text" label="Child Full Name:" name="name" value="{{ old('name') ?? '' }}"
                     error="{{ errors('name') ?? '' }}" placeholder="Enter Full Name" required />
-                <c-select label="GS Division" name="division" searchable="1" error="{{ errors('division') ?? '' }}"
+                <c-select label="Area" name="area" searchable="1" error="{{ errors('area') ?? '' }}"  value="{{ old('area') ?? '' }}"
+                    error="{{ errors('area') ?? '' }}" placeholder="Enter Area"
                     required>
-                    <li class="select-item" data-value="borella">Borella</li>
-                    <li class="select-item" data-value="dehiwala">Dehiwala</li>
-                    <li class="select-item" data-value="morutuwa">Moratuwa</li>
-                    <li class="select-item" data-value="ratmalana">Ratmalana</li>
-                    <li class="select-item" data-value="wellawatta">Wellawatta</li>
+                    <li class="select-item" data-value="1">Borella</li>
+                    <li class="select-item" data-value="2">Dehiwala</li>
+                    <li class="select-item" data-value="3">Morutuwa</li>
+                    <li class="select-item" data-value="4">Ratmalana</li>
+                    <li class="select-item" data-value="5">Wellawatta</li>
                 </c-select>
-                <c-input type="date" label="Date of Birth:" name="dob" value="{{ old('dob') ?? '' }}"
-                    error="{{ errors('dob') ?? ''}}" required />
+                <c-input type="date" label="Date of Birth:" name="date_of_birth" value="{{ old('date_of_birth') ?? '' }}"
+                    error="{{ errors('date_of_birth') ?? ''}}" required />
+                      <c-input type="text" label="Birth Certificate No:" name="birth_certificate" value="{{ old('birth_certificate') ?? '' }}"
+                    error="{{ errors('birth_certificate') ?? ''}}" required />
                 <c-select label="Gender" name="gender" value="{{ old('gender') ?? '' }}"
                     error="{{ errors('gender') ?? ''}}" required>
-                    <li class="select-item" data-value="male">Male</li>
-                    <li class="select-item" data-value="female">Female</li>
+                    <li class="select-item" data-value="m">Male</li>
+                    <li class="select-item" data-value="f">Female</li>
                 </c-select>
             </form>
             <c-slot name="close">
