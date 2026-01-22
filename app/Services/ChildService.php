@@ -63,7 +63,7 @@ class ChildService
                 'date_of_birth' => $child->date_of_birth,
                 'gender' => $child->gender,
                 'health_status' => $child->health_status,
-                'gs_division' => $child->gs_division,
+                'area' => $child->getArea()->code,
                 'vaccination_status' => $child->vaccination_status,
                 'notes' => $child->notes,
                 'parent' => $parentResource,
