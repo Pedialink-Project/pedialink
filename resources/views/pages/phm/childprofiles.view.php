@@ -243,19 +243,23 @@ PHM Child Profiles
                                             value="{{ flash('edit') === $child['id'] ? (old('e_name') ?? '') : $child['name'] }}"
                                             error="{{ flash('edit') === $child['id'] ? (errors('e_name') ?? '') : '' }}"
                                             placeholder="Enter Full Name" required />
-                                        <c-select label="GS Division" name="e_division" searchable="1"
-                                            value="{{ flash('edit') === $child['id'] ? (old('e_division') ?? '') : $child['gs_division'] }}"
-                                            error="{{ flash('edit') === $child['id'] ? (errors('e_division') ?? '') : '' }}"
+                                        <c-select label="Area" name="e_area" searchable="1"
+                                            value="{{ flash('edit') === $child['id'] ? (old('e_area') ?? '') : $child['area'] }}"
+                                            error="{{ flash('edit') === $child['id'] ? (errors('e_area') ?? '') : '' }}"
                                             required>
-                                            <li class="select-item" data-value="borella">Borella</li>
-                                            <li class="select-item" data-value="dehiwala">Dehiwala</li>
-                                            <li class="select-item" data-value="morutuwa">Moratuwa</li>
-                                            <li class="select-item" data-value="ratmalana">Ratmalana</li>
-                                            <li class="select-item" data-value="wellawatta">Wellawatta</li>
+                                            <li class="select-item" data-value="1">Borella</li>
+                                            <li class="select-item" data-value="2">Dehiwala</li>
+                                            <li class="select-item" data-value="3">Moratuwa</li>
+                                            <li class="select-item" data-value="4">Ratmalana</li>
+                                            <li class="select-item" data-value="5">Wellawatta</li>
                                         </c-select>
-                                        <c-input type="date" label="Date of Birth:" name="e_dob"
-                                            value="{{ flash('edit') === $child['id'] ? (old('e_dob') ?? '') : $child['date_of_birth'] }}"
-                                            error="{{ flash('edit') === $child['id'] ? (errors('e_dob') ?? '') : ''}}"
+                                        <c-input type="date" label="Date of Birth:" name="e_date_of_birth"
+                                            value="{{ flash('edit') === $child['id'] ? (old('e_date_of_birth') ?? '') : $child['date_of_birth'] }}"
+                                            error="{{ flash('edit') === $child['id'] ? (errors('e_date_of_birth') ?? '') : ''}}"
+                                            required />
+                                            <c-input type="text" label="Birth Certificate No:" name="e_birth_certificate"
+                                            value="{{ flash('edit') === $child['id'] ? (old('e_birth_certificate') ?? '') : $child['birth_certificate'] }}"
+                                            error="{{ flash('edit') === $child['id'] ? (errors('e_birth_certificate') ?? '') : ''}}"
                                             required />
                                         <c-select label="Gender" name="e_gender"
                                             value="{{ flash('edit') === $child['id'] ? (old('e_gender') ?? '') : $child['gender'] }}"
