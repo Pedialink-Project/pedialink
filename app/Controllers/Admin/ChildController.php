@@ -2,13 +2,26 @@
 
 namespace App\Controllers\Admin;
 
+use App\Services\Admin\ChildService;
 use Library\Framework\Http\Request;
 
 class ChildController
 {
+    private ChildService $childService;
+
+    public function __construct()
+    {
+        $this->childService = new ChildService();
+    }
+
     public function overview(Request $request)
     {
-        return view("admin/child/overview");
+        $search = $request->query("search") ?? '';
+        [$children, $links]  = $this->childService->getChildren($search);
+        return view("admin/child/overview", [
+            "children" => $children,
+            "links" => $links
+        ]);
     }
 
     public function accessControl(Request $request, int $id)
