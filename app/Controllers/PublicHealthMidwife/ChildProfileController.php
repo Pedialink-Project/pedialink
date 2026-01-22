@@ -24,25 +24,27 @@ class ChildProfileController
     public function createChild(Request $request)
     {
         $name = $request->input('name');
-        $division = $request->input('division');
-        $dob = $request->input('dob');
+        $areaId = $request->input('area');
+        $dob = $request->input('date_of_birth');
+        $birthCertificate = $request->input('birth_certificate');
         $gender = $request->input('gender');
 
-        $errors = $this->childService->validateChildProfile($name, $division, $dob, $gender);
+        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate);
 
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
                 ->withErrors($errors)
                 ->withInput([
                     "name" => $name,
-                    "division" => $division,
-                    "dob" => $dob,
+                    "area" => $areaId,
+                    "date_of_birth" => $dob,
                     "gender" => $gender,
+                    "birth_certificate" => $birthCertificate,
                 ])
                 ->with("create", true);
         }
 
-        $this->childService->createChildProfile($name, $division, $dob, $gender);
+        $this->childService->createChildProfile($name, $areaId, $dob, $gender, $birthCertificate);
 
         return redirect(route('phm.child.profiles'))
             ->withMessage(
