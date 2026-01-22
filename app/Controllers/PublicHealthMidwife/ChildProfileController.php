@@ -58,25 +58,26 @@ class ChildProfileController
     public function editChild(Request $request, int $id)
     {
         $name = $request->input('e_name');
-        $division = $request->input('e_division');
-        $dob = $request->input('e_dob');
+        $areaId = $request->input('e_area');
+        $dob = $request->input('e_date_of_birth');
         $gender = $request->input('e_gender');
+        $birthCertificate = $request->input('e_birth_certificate');
 
-        $errors = $this->childService->validateChildProfile($name, $division, $dob, $gender, true);
-
+        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, true);
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
                 ->withErrors($errors)
                 ->withInput([
                     "e_name" => $name,
-                    "e_division" => $division,
-                    "e_dob" => $dob,
+                    "e_area" => $areaId,
+                    "e_date_of_birth" => $dob,
                     "e_gender" => $gender,
+                    "e_birth_certificate" => $birthCertificate,
                 ])
                 ->with("edit", $id);
         }
 
-        $this->childService->editChildProfile($id, $name, $division, $dob, $gender);
+        $this->childService->editChildProfile($id, $name, $areaId, $dob, $gender, $birthCertificate);
 
         return redirect(route('phm.child.profiles'))
             ->withMessage(
