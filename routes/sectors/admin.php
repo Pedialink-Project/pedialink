@@ -33,6 +33,7 @@ return [
     // Admin child profiles
     ['GET', '/admin/child-profiles/overview', [ChildController::class, 'overview'], 'admin.child.overview', ['admin', 'verified']],
     ['GET', '/admin/child/{id}/access-control', [ChildController::class, 'accessControl'], 'admin.child.access.control', ['admin', 'verified']],
+    ['POST', '/admin/child/{id}/access-control/revoke', [ChildController::class, 'removeLinkage'], 'admin.child.access.control.revoke', ['admin', 'verified']],
     ['GET', '/admin/child-profiles/linkage-requests', [ChildController::class, 'linkageRequests'], 'admin.child.linkage.requests', ['admin', 'verified']],
     ['GET', '/admin/child-profiles/access-requests', [ChildController::class, 'accessRequests'], 'admin.child.access.requests', ['admin', 'verified']],
 
