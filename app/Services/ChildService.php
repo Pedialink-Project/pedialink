@@ -65,7 +65,7 @@ class ChildService
                 'gender' => $child->gender,
                 'health_status' => $child->health_status,
                 'area' => $child->getArea()->code,
-                'vaccination_status' => $child->vaccination_status,
+                'birth_certificate' => $child->birth_certificate,
                 'notes' => $child->notes,
                 'parent' => $parentResource,
             ];
@@ -298,14 +298,15 @@ class ChildService
         $child->save();
     }
 
-    public function editChildProfile(int $childId, string $name, string $division, string $dob, string $gender)
+    public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate)
     {
         $child = Child::find($childId);
         if ($child) {
             $child->name = $name;
             $child->date_of_birth = $dob;
             $child->gender = $gender;
-            $child->gs_division = $division;
+            $child->area_id = $areaId;
+            $child->birth_certificate = $birthCertificate;
             $child->save();
         }
     }
