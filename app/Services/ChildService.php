@@ -7,6 +7,7 @@ use App\Models\ParentM;
 use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
+use App\Helpers\Validator;
 use DateTime;
 
 class ChildService
@@ -63,8 +64,8 @@ class ChildService
                 'date_of_birth' => $child->date_of_birth,
                 'gender' => $child->gender,
                 'health_status' => $child->health_status,
-                'gs_division' => $child->gs_division,
-                'vaccination_status' => $child->vaccination_status,
+                'area' => $child->getArea()->code,
+                'birth_certificate' => $child->birth_certificate,
                 'notes' => $child->notes,
                 'parent' => $parentResource,
             ];
@@ -228,7 +229,7 @@ class ChildService
         }
 
         $gender = strtolower($gender);
-        if ($gender !== "male" && $gender !== "female") {
+        if ($gender !== "m" && $gender !== "f") {
             $error = "Invalid Gender";
             return $error;
         }
@@ -236,7 +237,7 @@ class ChildService
         return $error;
     }
 
-    public function validateChildProfile(string $name, string $division, string $dob, string $gender, bool $edit = false)
+    public function validateChildProfile(string $name, int $areaId, string $dob, string $gender, string $birthCertificate, bool $edit = false)
     {
         $errors = [];
         $suffix = $edit ? 'e_' : '';
@@ -246,14 +247,19 @@ class ChildService
             $errors["{$suffix}name"] = $nameError;
         }
 
-        $divisionError = $this->validateCommonFields($division, "GS Division");
-        if ($divisionError) {
-            $errors["{$suffix}division"] = $divisionError;
+        $areaError = $this->validateCommonFields($areaId, "Area");
+        if ($areaError) {
+            $errors["{$suffix}area"] = $areaError;
         }
 
         $dobError = $this->validateCommonFields($dob, "Date of Birth");
         if ($dobError) {
-            $errors["{$suffix}dob"] = $dobError;
+            $errors["{$suffix}date_of_birth"] = $dobError;
+        }
+
+        $birthCertificateError = $this->validateCommonFields($birthCertificate, "Birth Certificate No");
+        if ($birthCertificateError) {
+            $errors["{$suffix}birth_certificate"] = $birthCertificateError;
         }
 
         $genderError = $this->validateGender($gender);
@@ -277,32 +283,30 @@ class ChildService
         return $error;
     }
 
-    // public function createChildProfile(string $name, string $division, string $dob, string $gender)
-    // {
-    //     $phmId = auth()->id();
+    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate)
+    {
+        $phmId = auth()->id();
 
-    //     $patient = new Patient();
-    //     $patient->type = "child";
-    //     $patientId = $patient->save();
+        
+        $child = new Child();
+        $child->name = $name;
+        $child->date_of_birth = $dob;
+        $child->gender = $gender;
+        $child->birth_certificate = $birthCertificate;
+        $child->area_id = $areaId;
+        $child->phm_id = $phmId;
+        $child->save();
+    }
 
-    //     $child = new Child();
-    //     $child->id = $patientId;
-    //     $child->name = $name;
-    //     $child->date_of_birth = $dob;
-    //     $child->gender = $gender;
-    //     $child->gs_division = $division;
-    //     $child->phm_id = $phmId;
-    //     $child->save();
-    // }
-
-    public function editChildProfile(int $childId, string $name, string $division, string $dob, string $gender)
+    public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate)
     {
         $child = Child::find($childId);
         if ($child) {
             $child->name = $name;
             $child->date_of_birth = $dob;
             $child->gender = $gender;
-            $child->gs_division = $division;
+            $child->area_id = $areaId;
+            $child->birth_certificate = $birthCertificate;
             $child->save();
         }
     }
