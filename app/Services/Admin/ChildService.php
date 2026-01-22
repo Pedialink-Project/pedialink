@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\Area;
 use App\Models\Child;
+use App\Models\ParentM;
 use App\Models\PublicHealthMidwife;
 use App\Models\User;
 
@@ -37,5 +38,41 @@ class ChildService
         $links = array_diff_key($children, ['items' => true]);
 
         return [$resource, $links];
+    }
+
+    public function getAccessControlData(Child $child)
+    {
+        $data = [];
+
+        if ($child) {
+            # Incorrect, child must be linked to both parents
+            # NOTE: currnetly only a child is linked to one parent
+            $parentData = ParentM::find($child->parent_id);
+
+            if ($parentData) {
+                $data["parents"] = [
+                    [
+                        "id" => $parentData->id,
+                        "name" => User::find($parentData->id)->name,
+                        "type" => $parentData->type,
+                    ],
+                ];
+            }
+
+            $phmData = PublicHealthMidwife::find($child->phm_id);
+
+            if ($phmData) {
+                $data["phm"] = [
+                    [
+                        "id" => $phmData->id,
+                        "name" => User::find($phmData->id)->name,
+                        "role" => "Public Health Midwife"
+                    ],
+                ];
+            }
+
+        }
+
+        return $data;
     }
 }
