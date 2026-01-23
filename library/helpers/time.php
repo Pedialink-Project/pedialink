@@ -55,3 +55,95 @@ function time_ago(string|int|\DateTimeInterface $input, \DateTimeInterface|null 
 
     return $past ? "{$result} ago" : "in {$result}";
 }
+
+function getChildTypeFromAge(string $dob): string
+{
+    try {
+        $dt  = new \DateTimeImmutable($dob);
+    } catch (\Exception $e) {
+        throw new \InvalidArgumentException('Invalid date string provided: ' . $e->getMessage());
+    }
+
+    $now = new \DateTimeImmutable('now');
+
+    if ($dt > $now) {
+        throw new \InvalidArgumentException('Date of birth is in the future.');
+    }
+
+    $diff = $now->diff($dt);
+
+    // Age components
+    $years  = $diff->y;
+    $months = $diff->m;
+    $days   = $diff->d;
+
+    // Configurable thresholds (tweak as needed)
+    $NEWBORN_MAX_DAYS      = 28;   // less than 28 days => newborn
+    $INFANT_MAX_MONTHS     = 12;   // < 12 months => infant
+    $TODDLER_MAX_YEARS     = 3;    // < 3 years => toddler
+    $PRESCHOOL_MAX_YEARS   = 6;    // < 6 years => preschool
+    $CHILD_MAX_YEARS       = 13;   // < 13 years => child
+    $TEEN_MAX_YEARS        = 18;   // < 18 years => teen
+
+    // Determine category; check the most-specific conditions first
+    if ($years === 0 && $months === 0 && $days < $NEWBORN_MAX_DAYS) {
+        return 'newborn';
+    }
+
+    if ($years === 0 && ($months < $INFANT_MAX_MONTHS || ($months === ($INFANT_MAX_MONTHS - 1) && $days >= 0))) {
+        // still under 12 months
+        return 'infant';
+    }
+
+    if ($years < $TODDLER_MAX_YEARS) {
+        return 'toddler';
+    }
+
+    if ($years < $PRESCHOOL_MAX_YEARS) {
+        return 'preschool';
+    }
+
+    if ($years < $CHILD_MAX_YEARS) {
+        return 'child';
+    }
+
+    if ($years < $TEEN_MAX_YEARS) {
+        return 'teen';
+    }
+
+    return 'adult';
+}
+
+function calculateAge(string $dob, ?\DateTimeImmutable $asOf = null): string
+{
+    try {
+        $birth = new \DateTimeImmutable($dob);
+    } catch (\Throwable $e) {
+        throw new \InvalidArgumentException('Invalid date string provided: ' . $e->getMessage());
+    }
+
+    $now = $asOf ?? new \DateTimeImmutable('now');
+
+    if ($birth > $now) {
+        throw new \InvalidArgumentException('Date of birth is in the future.');
+    }
+
+    // $diff->y, ->m, ->d are the canonical components
+    $diff = $now->diff($birth);
+
+    // DateInterval::days gives total days as an integer when available
+    // (DateTimeImmutable::diff always sets days when both operands are DateTimeImmutable)
+    $totalDays = $diff->days ?? (int) floor(($now->getTimestamp() - $birth->getTimestamp()) / 86400);
+
+    $age = "0 years";
+
+    if ($diff->y > 0) {
+        $age = "{$diff->y} years";
+    } else if ($diff->m > 0) {
+        $age = "{$diff->m} months";
+    } else if ($diff->d) {
+        $age = "{$diff->d} days";
+    }
+
+    return $age;
+}
