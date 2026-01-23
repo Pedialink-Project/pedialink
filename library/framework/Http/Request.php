@@ -9,6 +9,7 @@ class Request
     public array $headers;
     public array $get;
     public array $post;
+    public array $files;
 
     /**
      * Capture incoming requests
@@ -23,6 +24,7 @@ class Request
         $request->headers = getallheaders();
         $request->get = $_GET;
         $request->post = $_POST;
+        $request->files = $_FILES;
 
         return $request;
     }
@@ -35,5 +37,10 @@ class Request
     public function query($key, $default = null)
     {
         return $this->get[$key] ?? $default;
+    }
+
+    public function file($key)
+    {
+        return $this->files[$key] ?? null;
     }
 }

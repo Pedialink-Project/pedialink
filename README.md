@@ -74,6 +74,80 @@ docker compose up -d
 docker compose down
 ```
 
+## Set up app key for token generation for the application
+
+Our application depends on the existence of unique app id for generation of secure tokens
+and signed URL. By default the config assigns an unsafe value. 
+
+Update the `.env` with random character combination for security. An example is shown below
+
+```bash
+APP_KEY=232131
+```
+
+## Set up the correct url to receive working links in email
+
+The correct app url must be set to get working links in the email. Since this project is being run
+locally, the correct link is `http://localhost:8080`
+
+```bash
+APP_URL=http://localhost:8080
+```
+
+## Set up mailtrap for SMTP emails
+
+Create an account in [Mailtrap](https://mailtrap.io) and register a test sandbox for free.
+
+Get the smtp credentials from the dashboard.
+
+Update the `.env` file with the following entries. Fill in the smtp username and password accordingly.
+
+```bash
+MAIL_DRIVER=smtp
+MAIL_FROM_ADDRESS=no-reply@example.com
+MAIL_FROM_NAME=Example
+SMTP_HOST="sandbox.smtp.mailtrap.io"
+SMTP_PORT=587
+SMTP_USER=<YOUR-USERNAME>
+SMTP_PASS=<YOUR-PASSWORD>
+SMTP_ENCRYPTION=tls
+```
+
+## Storage fix for docker
+
+Type the following commands to fix storage issues:
+
+### 1. Find the id for www-data in the docker container
+
+Type this command inside the project root. This will give you the uid.
+
+```bash
+docker compose exec app id www-data
+```
+
+**NOTE**: The value will be typically 33
+
+### 2. Change the storage folder owner to the above id
+
+This will change the owner of the storage folder. In my case the id was 33.
+
+```bash
+sudo chown -R 33:33 ./storage
+```
+
+### 3. Change the permissions for storage folder
+
+Change the permissions for all directories inside storage folder
+
+```bash
+sudo find ./storage -type d -exec chmod 775 {} \;
+```
+Change the permissions for all files inside storage folder
+
+```bash
+sudo find ./storage -type f -exec chmod 664 {} \;
+```
+
 ### Additional info:
 
 - By default the project runs under `localhost:8080`

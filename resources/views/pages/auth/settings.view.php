@@ -24,13 +24,27 @@
                 </div>
             </c-slot>
 
-            <form class="settings-form">
-                <c-input type="name" label="Name" name="name" value="{{ $name }}" placeholder="Enter your name" />
-                <c-input type="email" label="Email" name="email" value="{{ $email }}" placeholder="Enter your email" />
+            <form id="update-profile-info" method="POST" action="{{ route('update.profile') }}" class="settings-form">
+                <c-input
+                    type="name"
+                    label="Name"
+                    name="name"
+                    value="{{ old('name') ?? $name }}"
+                    error="{{ errors('name') ?? '' }}"
+                    placeholder="Enter your name"
+                />
+                <c-input
+                    type="email"
+                    label="Email"
+                    name="email"
+                    value="{{ old('email') ?? $email }}"
+                    error="{{ errors('email') ?? '' }}"
+                    placeholder="Enter your email"
+                />
             </form>
 
             <div class="footer-settings">
-                <c-button variant="primary">Save</c-button>
+                <c-button form="update-profile-info" type="submit" variant="primary">Save</c-button>
             </div>
         </c-card>
 
@@ -44,14 +58,26 @@
                 </div>
             </c-slot>
 
-            <form class="settings-form">
-                <c-input type="password" label="Current Password" name="cur_password" placeholder="Enter your current password" />
-                <c-input type="password" label="New Password" name="password" placeholder="Enter your new password" />
-                <c-input type="password" label="Confirm Password" name="confirm_password" placeholder="Re-enter your new password" />
+            <form id="update-password" method="POST" action="{{ route('update.password') }}" class="settings-form">
+                <c-input
+                    type="password"
+                    label="Current Password"
+                    name="currentPassword"
+                    error="{{ errors('currentPassword') ?? '' }}"
+                    placeholder="Enter your current password"
+                />
+                <c-input
+                    type="password"
+                    label="New Password"
+                    name="password"
+                    error="{{ errors('password') ?? '' }}"
+                    placeholder="Enter your new password"
+                />
+                <c-input type="password" label="Confirm Password" name="confirmPassword" placeholder="Re-enter your new password" />
             </form>
 
             <div class="footer-settings">
-                <c-button  type="submit" variant="primary">Save</c-button>
+                <c-button form="update-password" type="submit" variant="primary">Save</c-button>
             </div>
         </c-card>
     </div>

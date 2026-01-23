@@ -13,25 +13,6 @@
 @endsection
 
 @section('content')
-    <?php
-
-    $primaryAccess = [
-        ["id" => 1234, "name" => "John William", "type" => "father"],
-        ["id" => 1234, "name" => "Mauri William", "type" => "mother"],
-
-    ];
-
-    $secondaryAccess = [
-        ["id" => 1234, "name" => "Dr Nirmala Perara", "role" => "doctor"],
-        ["id" => 1234, "name" => "Dr Nirmala Perara", "role" => "doctor"],
-        ["id" => 1234, "name" => "Dr Nirmala Perara", "role" => "doctor"],
-        ["id" => 1234, "name" => "Dr Nirmala Perara", "role" => "doctor"],
-        ["id" => 1234, "name" => "Dr Nirmala Perara", "role" => "doctor"],
-        ["id" => 1234, "name" => "Dr Nirmala Perara", "role" => "doctor"],
-
-    ];
-
-    ?>
     <div class="control-content">
         @foreach ($primaryAccess as $key => $primaryAccount)
             <c-card class="control-card">
@@ -114,18 +95,21 @@
 
                             <p>
                                 Remove linkage of <span class="name-deny">"{{ $primaryAccount["name"] }}"</span> of 
-                                id <span class="id-deny">D-{{ $primaryAccount["id"] }}</span> with child account
+                                id <span class="id-deny">P-{{ $primaryAccount["id"] }}</span> with child account
                                 <span class="child-name-deny">"{{ $name }}"</span> of id <span class="child-id-deny">C-{{ $id }}</span>?
                             </p>
                             
-                            <form id="deny-account-{{ $key }}" action="" class="hidden"></form>
+                            <form id="primary-deny-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.control.revoke', ['id' => $id]) }}" class="hidden">
+                                <input class="hidden" type="text" name="id" value="{{ $primaryAccount['id'] }}" />
+                                <input class="hidden" type="type" name="type" value="parent" />
+                            </form>
 
                             <c-slot name="close">
                                 Cancel
                             </c-slot>
 
                             <c-slot name="footer">
-                                <c-button type="submit" variant="destructive" form="deny-account-{{ $key }}">
+                                <c-button type="submit" variant="destructive" form="primary-account-{{ $key }}">
                                     Remove Linkage
                                 </c-button>
                             </c-slot>
@@ -141,7 +125,7 @@
                     <h3>{{ $secondaryAccount["name"] }}</h3>
                 </c-slot>
                 <p class="control-card-content">
-                    D-{{ $secondaryAccount["id"] }} has been granted access to this profile
+                    PHM-{{ $secondaryAccount["id"] }} has been granted access to this profile
                 </p>
                 <c-slot name="footer">
                     <div class="control-card-btn-grp">
@@ -215,19 +199,22 @@
                             </c-slot>
 
                             <p>
-                                Remove access of <span class="name-deny">"{{ $primaryAccount["name"] }}"</span> of 
-                                id <span class="id-deny">D-{{ $primaryAccount["id"] }}</span> with child account
+                                Remove access of <span class="name-deny">"{{ $secondaryAccount["name"] }}"</span> of 
+                                id <span class="id-deny">PHM-{{ $secondaryAccount["id"] }}</span> with child account
                                 <span class="child-name-deny">"{{ $name }}"</span> of id <span class="child-id-deny">C-{{ $id }}</span>?
                             </p>
                             
-                            <form id="deny-account-{{ $key }}" action="" class="hidden"></form>
+                            <form id="secondary-deny-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.control.revoke', ['id' => $id]) }}" class="hidden">
+                                <input class="hidden" type="text" name="id" value="{{ $secondaryAccount['id'] }}" />
+                                <input class="hidden" type="type" name="type" value="phm" />
+                            </form>
 
                             <c-slot name="close">
                                 Cancel
                             </c-slot>
 
                             <c-slot name="footer">
-                                <c-button type="submit" variant="destructive" form="deny-account-{{ $key }}">
+                                <c-button type="submit" variant="destructive" form="secondary-deny-account-{{ $key }}">
                                     Remove Access
                                 </c-button>
                             </c-slot>
@@ -237,6 +224,4 @@
             </c-card>
         @endforeach
     </div>
-
-    <c-table.pagination />
 @endsection

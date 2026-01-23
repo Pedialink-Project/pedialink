@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 use Library\Framework\Http\Request;
 use App\Services\TestService;
 
@@ -20,23 +21,9 @@ class TestController
         $search = $request->input("search");
         $filters = $request->input("filters");
 
-        if (!empty($search)) {
-            $searchResults = $this->testService->getSearchResults($search);
 
-            return view('test/test', ['items' => $searchResults]);
-
-
-        }
-
-        if (!empty($filters)) {
-            $filteredResults = $this->testService->getFilteredResults($filters);
-
-            return view('test/test', ['items' => $filteredResults]);
-        }
-
-
-        $testDetails = $this->testService->getAllTestDetails();
-        return view('test/test', ['items' => $testDetails]);
+        [$testDetails,$links] = $this->testService->getAllTestDetails($search, $filters);
+        return view('test/test', ['items' => $testDetails, 'links' => $links]);
     }
 
   
@@ -55,5 +42,27 @@ class TestController
                 'info',
                 ['link' => route('test.portal'), 'text' => 'Go to portal']
             );
+    }
+
+    public function sendMail(Request $request)
+    {
+        $message = "Successfully sent email";
+        try {
+            mailer()->sendTemplate(
+                'manimehalan400@gmail.com',
+                'welcome',
+                [
+                    'appName' => 'Pedialink',
+                    'name' => 'Mani',
+                    'ctaUrl' => 'localhost',
+                ],
+                'Welcome Mail from Pedialink',
+            );
+        } catch (Exception $e) {
+            $message = "Failed to send email";
+        }
+
+        return redirect(route('test.portal'))
+            ->withMessage($message, "Email", "success");
     }
 }

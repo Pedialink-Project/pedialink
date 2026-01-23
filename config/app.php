@@ -7,6 +7,8 @@ return [
     */
     'name' => env('APP_NAME', 'MyApp'),
 
+    'key' => env('APP_KEY', 'change_me_to_a_random_secret'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -26,6 +28,6 @@ return [
     | URL & Timezone
     |--------------------------------------------------------------------------
     */
-    'url'      => env('APP_URL', 'http://localhost'),
+    'url'      => env('APP_URL', 'http://localhost:8080'),
     'timezone' => 'UTC',
 ];

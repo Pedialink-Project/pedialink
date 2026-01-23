@@ -43,14 +43,67 @@
     font-weight: var(--font-weight-medium);
 }
 
-.parent-name-approve, .parent-id-approve {
+.parent-name-approve,
+.parent-id-approve {
     color: var(--success);
     font-weight: var(--font-weight-semibold);
 }
 
-.parent-name-deny, .parent-id-deny {
+.parent-name-deny,
+.parent-id-deny {
     color: var(--destructive);
     font-weight: var(--font-weight-semibold);
+}
+
+.download-btn {
+    width: 18rem;
+    justify-content: center;
+}
+
+.btn-grp {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+.btn-grp .download-btn {
+    width: 100%;
+}
+
+.empty-parents {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 12px;
+    color: var(--text-muted);
+    /* muted text color */
+    background: transparent;
+    /* min-height: 12rem; */
+    text-align: center;
+    width: 100%;
+    grid-column: 1 / -1;
+}
+
+.empty-parents__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing) * 3);
+    width: 100%;
+}
+
+.empty-parents__icon {
+    width: 56px;
+    height: 56px;
+    opacity: 0.95;
+    /* leaving fill none and stroke currentColor in SVG makes it theme-aware */
+}
+
+.empty-parents__message {
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: inherit;
 }
 
 @media (max-width: 1200px) {

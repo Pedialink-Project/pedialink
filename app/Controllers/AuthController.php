@@ -2,21 +2,27 @@
 
 namespace App\Controllers;
 
+use App\Helpers\SignedToken;
 use App\Models\Area;
-use App\Models\ParentM;
-use App\Models\User;
 use App\Services\AuthService;
+use App\Services\EmailVerificationService;
+use App\Services\ForgotPasswordService;
+use App\Services\RegisterStaffService;
 use Library\Framework\Http\Request;
-use Library\Framework\Http\Response;
-use Library\Framework\Session\SessionManager;
 
 class AuthController
 {
     private AuthService $authService;
+    private EmailVerificationService $emailVerificationService;
+    private RegisterStaffService $registerStaffService;
+    private ForgotPasswordService $forgotPasswordService;
 
     public function __construct()
     {
         $this->authService = new AuthService();
+        $this->emailVerificationService = new EmailVerificationService();
+        $this->registerStaffService = new RegisterStaffService();
+        $this->forgotPasswordService = new ForgotPasswordService();
     }
 
     public function parentRegisterInitial(Request $request)
@@ -85,25 +91,25 @@ class AuthController
 
         $errors = $this->authService->validateFinalForm($data);
 
-        // NOTE: If possible refactor this to AuthService class if you have the time!
-        // Otherwise Focus on frontend work exclusively until interim!
         if (count($errors) === 0) {
             $data = array_merge($data, session()->get("register_form"));
 
-            $user = new User();
-            $user->name = $data["firstName"] . " " . $data["lastName"];
-            $user->email = $data["email"];
-            $user->password_hash = $data["passwordHash"];
-            $user->role = "parent";
-            $userId = $user->save();
+            $user = $this->authService->createParentAccount($data);
 
-            $parent = new ParentM();
-            $parent->id = $userId;
-            $parent->type = $data["type"];
-            $parent->address = $data["address"];
-            $parent->nic = $data["nic"];
-            $parent->area_id = (int)$data["division"];
-            $parent->save();
+            $verifyLink = $this->emailVerificationService
+                    ->createVerificationUrl(
+                        $user, config('app.key')
+                    );
+
+            mailer()->sendTemplate(
+                $user->email,
+                'verify-email',
+                [
+                    'username' => $user->name,
+                    'verify_link' => $verifyLink
+                ],
+                'Verify your email',
+            );
 
             auth()->login($user);
 
@@ -173,9 +179,171 @@ class AuthController
             ]);
     }
 
+    public function registerStaffView(Request $request)
+    {
+        $token = $request->input('token') ?? '';
+
+        [$user, $verified] = SignedToken::verifySignedToken($token, config('app.key'));
+
+        if (!$verified || $user->email_verified === true) {
+            return redirect(route('home'))
+                ->withMessage('Invalid token', 'Failure', 'error');
+        }
+
+        $areas = Area::all();
+
+        return view('auth/staff-register', [
+            'token' => $token,
+            'email' => $user->email,
+            'role' => $user->role,
+            'areas' => $areas,
+        ]);
+    }
+
+    public function registerStaff(Request $request)
+    {
+        $token = $request->input('token') ?? '';
+
+        [$user, $verified] = SignedToken::verifySignedToken($token, config('app.key'));
+
+        if (!$verified || $user->email_verified === true) {
+            return redirect(route('staff.register', [], ['token' => $token]))
+                ->withMessage('Invalid token', 'Failure', 'error');
+        }
+
+        $data = [
+            'name' => $request->input('name') ?? '',
+            'nic' => $request->input('nic') ?? '',
+            'license_no' => $request->input('license_no') ?? '',
+            'password' => $request->input('password') ?? '',
+            'confirm_password' => $request->input('confirm_password') ?? '',
+        ];
+
+        if ($user->isPublicHealthMidwife()) {
+            $data['division'] = $request->input('division') ?? '';
+        }
+
+        $errors = $this->registerStaffService->validateFinalStaffData(
+            $user,
+            $data['name'],
+            $data['nic'],
+            $data['license_no'],
+            $data['password'],
+            $data['confirm_password'],
+            isset($data['division']) ? $data['division'] : null
+        );
+
+        if (count($errors) !== 0) {
+            unset($data['password'], $data['confirm_password']);
+            return redirect(route('staff.register', [], ['token' => $token]))
+                ->withInput($data)
+                ->withErrors($errors);
+        }
+
+        $newUser = $this->registerStaffService->saveStaffFinal(
+            $user,
+            $data['name'],
+            $data['nic'],
+            $data['license_no'],
+            $data['password'],
+            isset($data['division']) ? $data['division'] : null
+        );
+
+        auth()->login($newUser);
+
+        $route = route('home');
+
+        if ($user->role === "doctor") {
+            $route = route('doctor.dashboard');
+        } else if ($user->role === "phm") {
+            $route = route('phm.dashboard');
+        }
+
+        return redirect($route);
+    }
+
     public function forgotPassword(Request $request)
     {
         return view('auth/forgot-password');
+    }
+
+    public function sendResetPassword(Request $request)
+    {
+        $email = $request->input('email') ?? '';
+
+        $errors = $this->forgotPasswordService->validateData($email);
+
+        if (count($errors) !== 0) {
+            return redirect(route('forgot.password'))
+                ->withInput([
+                    'email' => $email
+                ])
+                ->withErrors($errors);
+        }
+
+        $sent = $this->forgotPasswordService->sendResetLink($email);
+
+        if (!$sent) {
+            return redirect(route('forgot.password'))
+                ->withInput([
+                    'email' => $email
+                ])
+                ->withMessage('Failed to send email', 'Failure', 'error');
+        }
+
+        return redirect(route('home'))
+            ->withMessage('Successfully sent reset password email', 'Sent email', 'success');
+        
+    }
+
+    public function resetPasswordView(Request $request)
+    {
+        $token = $request->input('token') ?? '';
+
+        [$user, $verified] = SignedToken::verifySignedToken($token, config('app.key'));
+
+        if (!$verified) {
+            return redirect(route('home'))
+                ->withMessage('Invalid token', 'Failure', 'error');
+        }
+
+        return view('auth/reset-password', [
+            'email' => $user->email,
+            'token' => $token,
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $token = $request->input('token') ?? '';
+
+        [$user, $verified] = SignedToken::verifySignedToken($token, config('app.key'));
+
+        if (!$verified) {
+            return redirect(route('reset.password', [], ['token' => $token]))
+                ->withMessage('Invalid token', 'Failure', 'error');
+        }
+
+        $password = $request->input('password') ?? '';
+        $confirm_password = $request->input('confirm_password') ?? '';
+
+        $errors = $this->forgotPasswordService->validateResetData(
+            $password,
+            $confirm_password
+        );
+
+        if (count($errors) !== 0) {
+            return redirect(route('reset.password', [], ['token' => $token]))
+                ->withErrors($errors);
+        }
+
+        $user = $this->forgotPasswordService
+            ->resetPassword($user, $password);
+
+        auth()->login($user);
+        
+        return redirect(route('home'))
+            ->withMessage('Successfully reset your password', 'Success', 'success');
     }
 
     public function logout(Request $request)

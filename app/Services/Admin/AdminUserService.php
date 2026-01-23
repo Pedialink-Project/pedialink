@@ -2,10 +2,10 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\Validator;
 use App\Models\Admin;
 use App\Models\AdminType;
 use App\Models\User;
-use App\Services\Validator;
 use Library\Framework\Database\QueryBuilder;
 
 class AdminUserService

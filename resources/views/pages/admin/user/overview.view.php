@@ -27,7 +27,7 @@
         </c-slot>
 
         <c-slot name="extrabtn">
-            <c-modal id="registerStaff" size="sm" :initOpen="false">
+            <c-modal id="registerStaff" size="sm" :initOpen="flash('create') ? true : false">
                 <c-slot name="trigger">
                     <c-button variant="primary">
                         Register Doctor/PHM
@@ -38,13 +38,20 @@
                     <div>Register PHM/Doctor</div>
                 </c-slot>
 
-                <form id="staff-register-form" action="">
-                    <c-input type="text" label="Email:" placeholder="Enter email" />
-                    <c-select label="Role:" name="role">
+                <form id="staff-register-form" method="POST" action="{{ route('admin.user.register.staff') }}">
+                    <c-input
+                        type="text"
+                        name="email"
+                        label="Email:"
+                        required placeholder="Enter email"
+                        value="{{ old('email') ?? ''}}"
+                        error="{{ errors('email') ?? '' }}"
+                    />
+                    <c-select label="Role:" name="role" required value="{{ old('role') ?? '' }}" error="{{ errors('role') ?? '' }}">
                         <li class="select-item" data-value="phm">Public Health Midwife</li>
                         <li class="select-item" data-value="doctor">Doctor</li>
                     </c-select>
-                    <c-textarea label="Message" placeholder="Enter invitation message"></c-textarea>
+                    <c-textarea label="Message" name="message" value="{{ old('message') ?? '' }}" error="{{ errors('message') ?? '' }}" placeholder="Enter invitation message"></c-textarea>
                 </form>
 
                 <c-slot name="close">
@@ -303,5 +310,5 @@
         </div>
     </c-table.wrapper>
 
-    <c-table.pagination />
+    <c-table.pagination :links="$links" />
 @endsection

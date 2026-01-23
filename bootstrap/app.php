@@ -17,6 +17,7 @@ require_once __DIR__ . '/../library/helpers/global.php';
 
 // Import local helper files
 require_once __DIR__ . '/../library/helpers/filters-data-table.php';
+require_once __DIR__ . '/../library/helpers/time.php';
 
 // Load env values from .env file
 $env = new Env(__DIR__ . '/../.env');
@@ -28,6 +29,8 @@ $app->singleton('config', function() {
         'app' => require __DIR__ . '/../config/app.php',
         'database' => require __DIR__ . '/../config/database.php',
         'view' => require __DIR__ . '/../config/view.php',
+        'storage' => require __DIR__ . '/../config/storage.php',
+        'mail' => require __DIR__ . '/../config/mail.php',
     ];
 });
 
@@ -38,6 +41,8 @@ $providers = [
     App\Providers\SessionManagerProvider::class,
     App\Providers\ViewServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
+    App\Providers\StorageProvider::class,
+    App\Providers\MailServiceProvider::class,
 ];
 
 foreach ($providers as $providerClass)

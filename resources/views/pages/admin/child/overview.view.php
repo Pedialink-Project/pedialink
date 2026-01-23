@@ -9,21 +9,6 @@
 @endsection
 
 @section('content')
-    <?php
-    $children = [
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-        ['id' => 1234, 'name' => 'Nancy Jekkins',  'age' => 2, 'assigned_phm' => 'Sarah Jones'],
-    ];
-    ?>
-
     <c-table.controls :columns='["ID","Name","Age","Assigned PHM"]'>
 
     </c-table.controls>
@@ -46,8 +31,10 @@
                         <c-table.tr>
                             <c-table.td col="id">C-{{ $child['id'] }}</c-table.td>
                             <c-table.td col="name">{{ $child['name'] }}</c-table.td>
-                            <c-table.td col="age" width="200px">{{ $child['age'] }} months</c-table.td>
-                            <c-table.td col="assigned_phm">{{ $child['assigned_phm'] }}</c-table.td>
+                            <c-table.td col="age" width="200px">
+                                {{ calculateAge($child['date_of_birth']) }}
+                            </c-table.td>
+                            <c-table.td col="assigned_phm">{{ $child['phm']['name'] }}</c-table.td>
                             <c-table.td class="table-actions" align="center">
                                 <c-dropdown.main>
                                     <c-slot name="trigger">
@@ -75,7 +62,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Profile"
-                                                    info="P-1234"
+                                                    info="P-{{ $child['id'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -84,23 +71,23 @@
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/calendar-02.svg') }}"
-                                                    title="Created On"
-                                                    info="Monday, January 15, 2023"
+                                                    title="Date of Birth"
+                                                    info="{{ $child['date_of_birth'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user-add--01.svg') }}"
                                                     title="Created By"
-                                                    info="PHM-1310"
+                                                    info="PHM-{{ $child['phm']['id'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/baby-01.svg') }}"
                                                     title="Account Type"
-                                                    info="Baby"
+                                                    info="{{ getChildTypeFromAge($child['date_of_birth']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/location-05.svg') }}"
                                                     title="GS Division"
-                                                    info="Borella"
+                                                    info="{{ $child['division'] }}"
                                                 />
                                             </c-modal.viewcard>
 
@@ -125,5 +112,5 @@
         </div>
     </c-table.wrapper>
 
-    <c-table.pagination />
+    <c-table.pagination :links="$links" />
 @endsection

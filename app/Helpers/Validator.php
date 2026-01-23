@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Helpers;
 
 use App\Models\User;
 
@@ -10,22 +10,30 @@ use App\Models\User;
 class Validator
 {
     /**
-     * Validate if an input field does not contain data (empty).
-     * 
-     * NOTE: Right now only considers input fields with string like data.
-     * 
-     * @param string $value
+     * Validate if an input field has a value (not empty).
+     *
+     * Supports string, int, and float.
+     *
+     * @param mixed $value
      * @return bool
      */
-    public static function validateFieldExistence(string $value)
+    public static function validateFieldExistence($value): bool
     {
-        $value = trim($value);
-        if (strlen($value) === 0) {
+        if ($value === null) {
             return false;
         }
 
-        return true;
+        if (is_string($value)) {
+            return trim($value) !== '';
+        }
+
+        if (is_int($value) || is_float($value)) {
+            return true; 
+        }
+
+        return false;
     }
+
 
     /**
      * Check if a field is greater or equal to minimum length
@@ -127,4 +135,42 @@ class Validator
 
         return false;
     }
+
+    /**
+     * Validate phone formats according to Sri Lankan
+     * standards
+     * 
+     * @param mixed $phone
+     * @return bool
+     */
+    public static function validatePhoneNumberFormat($phone)
+    {
+        $phone = trim($phone);
+
+        // Only digits allowed (no country code, no spaces)
+        if (!preg_match('/^\d+$/', $phone)) {
+            return false;
+        }
+
+        // 10 digits starting with 0  OR  9 digits not starting with 0
+        if (preg_match('/^0\d{9}$/', $phone) || preg_match('/^[1-9]\d{8}$/', $phone)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function validateDateFormat(string $date): bool
+    {
+        $d = \DateTime::createFromFormat('Y-m-d', $date);
+        return $d && $d->format('Y-m-d') === $date;
+    }
+
+    public static function validateTimeFormat(string $time): bool
+    {
+        return preg_match('/^(2[0-3]|[01]?[0-9]):[0-5][0-9]$/', $time);
+    }
+
+
+
 }
