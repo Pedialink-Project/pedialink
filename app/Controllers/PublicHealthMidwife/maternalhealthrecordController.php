@@ -36,21 +36,30 @@ class maternalhealthrecordController
             ]);
     }
         $visitdate = $request->input('visit_date');
-        $bmi = $request->input('bmi');
-        $bloodPressure = $request->input('blood_pressure');
+        $height = $request->input('height');
+        $systolic = $request->input('systolic');
+        $diastolic = $request->input('diastolic');
+        $bloodPressure = !empty($systolic) && !empty($diastolic) ? $systolic . '/' . $diastolic : '';
         $bloodSugar = $request->input('blood_sugar');
         $weight = $request->input('weight');
         $trimester = $request->input('trimester');
-        $healthStatus = $request->input('health_status');
         $additionalNotes = $request->input('notes');
 
-        $errors = $this->maternalrecordService->validateMaternalRecordData($visitdate, $bmi, $bloodPressure, $bloodSugar, $weight, $trimester, $healthStatus, $additionalNotes);
+        $errors = $this->maternalrecordService->validateMaternalRecordData($visitdate, $height, $bloodPressure, $bloodSugar, $weight, $trimester, '', $additionalNotes);
+        
+        // Auto-determine health status based on vital signs
+        if (count($errors) === 0) {
+            $bmi = $this->maternalrecordService->calculateBMI($weight, $height);
+            $healthStatus = $this->maternalrecordService->determineHealthStatus($bloodSugar, $bloodPressure, $bmi);
+        } else {
+            $healthStatus = '';
+        }
 
         if (count($errors) !== 0) {
             return redirect(route("phm.maternal.health", ["id" => $id]))
                 ->withInput([
                     "visit_date" => $visitdate,
-                    "bmi" => $bmi,
+                    "height" => $height,
                     "blood_pressure" => $bloodPressure,
                     "blood_sugar" => $bloodSugar,
                     "weight" => $weight,
@@ -64,7 +73,7 @@ class maternalhealthrecordController
 
         }
 
-        $this->maternalrecordService->createMaternalRecord($id, $visitdate, $bmi, $bloodPressure, $bloodSugar,$weight, $trimester, $healthStatus, $additionalNotes);
+        $this->maternalrecordService->createMaternalRecord($id, $visitdate, $height, $bloodPressure, $bloodSugar,$weight, $trimester, $healthStatus, $additionalNotes);
         return redirect(route("phm.maternal.health", ["id" => $id]))
             ->withMessage(
                 "Health record was successfully created",
@@ -80,20 +89,29 @@ class maternalhealthrecordController
         
         $maternalRecordId = $recordId;
         $visitdate = $request->input('e_visit_date');
-        $bmi = $request->input('e_bmi');
-        $bloodPressure = $request->input('e_blood_pressure');
+        $height = $request->input('e_height');
+        $systolic = $request->input('e_systolic');
+        $diastolic = $request->input('e_diastolic');
+        $bloodPressure = !empty($systolic) && !empty($diastolic) ? $systolic . '/' . $diastolic : '';
         $bloodSugar = $request->input('e_blood_sugar');
         $weight = $request->input('e_weight');
         $trimester = $request->input('e_trimester');
-        $healthStatus = $request->input('e_health_status');
         $additionalNotes = $request->input('e_notes');
 
-        $errors = $this->maternalrecordService->validateMaternalRecordData($visitdate, $bmi, $bloodPressure, $bloodSugar, $weight, $trimester, $healthStatus,$additionalNotes,true);
+        $errors = $this->maternalrecordService->validateMaternalRecordData($visitdate, $height, $bloodPressure, $bloodSugar, $weight, $trimester, '',$additionalNotes,true);
+        
+        // Auto-determine health status based on vital signs
+        if (count($errors) === 0) {
+            $bmi = $this->maternalrecordService->calculateBMI($weight, $height);
+            $healthStatus = $this->maternalrecordService->determineHealthStatus($bloodSugar, $bloodPressure, $bmi);
+        } else {
+            $healthStatus = '';
+        }
         if (count($errors) !== 0) {
             return redirect(route("phm.maternal.health", ["id" => $id]))
                 ->withInput([
                     "e_visit_date" => $visitdate,
-                    "e_bmi" => $bmi,
+                    "e_height" => $height,
                     "e_blood_pressure" => $bloodPressure,
                     "e_blood_sugar" => $bloodSugar,
                     "e_weight" => $weight,
@@ -105,7 +123,7 @@ class maternalhealthrecordController
                 ->with("edit", $maternalRecordId);
         }
 
-        $this->maternalrecordService->editMaternalRecord($maternalRecordId, $visitdate, $bmi, $bloodPressure, $bloodSugar, $weight, $trimester, $healthStatus, $additionalNotes);
+        $this->maternalrecordService->editMaternalRecord($maternalRecordId, $visitdate, $height, $bloodPressure, $bloodSugar, $weight, $trimester, $healthStatus, $additionalNotes);
         return redirect(route("phm.maternal.health", ["id" => $id]))
             ->withMessage(
                 "Health record was successfully updated",

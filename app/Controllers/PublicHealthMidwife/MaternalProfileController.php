@@ -25,10 +25,21 @@ class MaternalProfileController
             $latestRecord = $this->maternalrecordService->getLatestMaternalRecord($parent->id);
             $area = $parent->getArea();
 
+            // Calculate age from date of birth
+            $age = '-';
+            $dob = $parent->date_of_birth ?? $user->date_of_birth ?? null;
+            if ($dob) {
+                try {
+                    $age = calculateAge($dob);
+                } catch (\Exception $e) {
+                    $age = '-';
+                }
+            }
+
             return [
                 'id' => $parent->id,
                 'name' => $user->name ?? 'N/A',
-                'age' => '-',
+                'age' => $age,
                 'address' => $parent->address ?? '-',
                 'type' => $parent->type ?? '-',
                 'gs_devision' => $area->code ?? '-',
