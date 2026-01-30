@@ -23,6 +23,6 @@ return [
     ['GET', '/parent/events-campaigns', [EventController::class, 'index'], 'parent.events.campaigns', ['parent']],
     ['POST', '/parent/events-campaigns/{id}/book', [EventController::class, 'bookEvent'], 'parent.events.campaigns.book', ['parent']],
     ['POST', '/parent/events-campaigns/{id}/cancel', [EventController::class, 'cancelEventBooking'], 'parent.events.campaigns.cancel', ['parent']],
-    ['GET', '/parent/notification', [NotificationController::class, 'index'], 'parent.notification', ['parent']],
-    ['GET', '/parent/settings', [SettingController::class, 'index'], 'parent.settings', ['parent']],
+    ['GET', '/parent/notification', [NotificationController::class, 'index'], 'parent.notification', ['parent','verified']],
+    ['GET', '/parent/settings', [SettingController::class, 'index'], 'parent.settings', ['parent','verified']],
 ];
