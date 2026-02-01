@@ -38,7 +38,7 @@ Parent - Event & Campaigns
 @section('header_right')
 
 
-<c-table.controls action="{{ route('parent.events.campaigns') }}"  :filters="['status' => ['upcoming', 'ongoing', 'completed', 'cancelled']]">
+<c-table.controls action="{{ route('parent.events.campaigns') }}"  >
 
 
 
@@ -66,7 +66,7 @@ Parent - Event & Campaigns
    } elseif (strtolower($event['event_status']) == 'upcoming') {
    $badgeType = 'purple';}
    else {
-   $badgeType = 'red';
+   $badgeType = 'green';
    }
    }}
 
@@ -93,7 +93,7 @@ Parent - Event & Campaigns
             <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
                info="{{ $event['event_date'] }}" />
             <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-               info="{{ $event['event_time'] }}" />
+               info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
             <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
                info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
             <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
@@ -129,12 +129,12 @@ Parent - Event & Campaigns
 
 
             <c-modal.viewcard>
-               <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event ID"
-                  info="{{ $event['id'] }}" />
+               <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
+                  info="{{ $event['title'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
                   info="{{ $event['event_date'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                  info="{{ $event['event_time'] }}" />
+                  info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
                   info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
@@ -195,7 +195,7 @@ Parent - Event & Campaigns
 
             <div class="info-card">
                <span class="title">
-                  Current Event
+                  Event Details
                </span>
 
                <c-modal.viewcard>
@@ -205,7 +205,7 @@ Parent - Event & Campaigns
                   <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
                      info="{{ $event['event_date'] }} " />
                   <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                     info="{{ $event['event_time'] }}" />
+                     info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
                      info="{{ $event['event_location'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
@@ -222,16 +222,10 @@ Parent - Event & Campaigns
 
 
             <form id="book-event-form-{{$key}}" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}} " method="POST" novalidate>
-               <c-input type="text" label="Name " name="name"   value="{{ old('name') ?? '' }}"
-                        error="{{ errors('name') ?? '' }}" placeholder="Enter Participant Name" required />
-               <c-input type="email" label="Email " name="email"  value="{{ old('email') ?? '' }}"
-                        error="{{ errors('email') ?? '' }}" placeholder="Enter Email" required />
-               <c-input type="text" label="Phone Number " name="phone"  value="{{ old('phone') ?? '' }}"
-                        error="{{ errors('phone') ?? '' }}" placeholder="Enter Phone number" required>
-                  <c-slot name="prefix">
-                     +94
-                  </c-slot>
-                </c-input>
+               <div class="msg">
+               Are you sure you want to  booking of this Event?
+            </div>
+
             </form>
 
 
@@ -293,7 +287,7 @@ Parent - Event & Campaigns
                   <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
                      info="{{ $event['event_date'] }} " />
                   <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                     info="{{ $event['event_time'] }}" />
+                     info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
                      info="{{ $event['event_location'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
@@ -301,13 +295,12 @@ Parent - Event & Campaigns
 
 
 
-               </c-modal.viewcard>
-
+</c-modal.viewcard>
 
             </div>
 
             <div class="msg">
-               Are you sure you want to cancel booking of this Evenr? This action cannot be undone.
+               Are you sure you want to cancel booking of this Event? This action cannot be undone.
             </div>
 
 
