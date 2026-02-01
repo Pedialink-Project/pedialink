@@ -35,6 +35,29 @@ class EventService
 
         return $events;
     }
+
+
+    function getEventStatus(object $event): string
+    {
+        if (!empty($event->is_cancelled)) {
+            return 'cancelled';
+        }
+
+        $start = new \DateTime($event->event_date . ' ' . $event->start_time);
+        $end   = new \DateTime($event->event_date . ' ' . $event->end_time);
+        $now   = new \DateTime();
+
+        if ($now < $start) {
+            return 'upcoming';
+        }
+
+        if ($now >= $start && $now <= $end) {
+            return 'ongoing';
+        }
+
+        return 'completed';
+    }
+
     public function getAllEvents(?string $search, ?array $filters): array
     {
         $events = Events::query();
@@ -62,8 +85,9 @@ class EventService
                 'purpose' => $event->purpose,
                 'notes' => $event->notes,
                 'event_date' => $event->event_date,
-                'event_time' => date('H:i', strtotime($event->event_time)),
-                'event_status' => $event->event_status,
+                'event_start_time' => date('H:i', strtotime($event->start_time)),
+                'event_end_time' => date('H:i', strtotime($event->end_time)),
+                'event_status' => $this->getEventStatus($event),
                 'event_location' => $event->event_location,
                 'max_count' => $event->max_count,
                 'participants_count' => $event->participants_count,
@@ -82,7 +106,8 @@ class EventService
         return [$resource, $links];
     }
 
-    public function getVisibleEvents(?string $search, ?array $filters){
+    public function getVisibleEvents(?string $search, ?array $filters)
+    {
 
         $events = Events::query();
 
@@ -110,8 +135,9 @@ class EventService
                     'purpose' => $event->purpose,
                     'notes' => $event->notes,
                     'event_date' => $event->event_date,
-                    'event_time' => date('H:i', strtotime($event->event_time)),
-                    'event_status' => $event->event_status,
+                    'event_start_time' => date('H:i', strtotime($event->start_time)),
+                    'event_end_time' => date('H:i', strtotime($event->end_time)),
+                    'event_status' => $this->getEventStatus($event),
                     'event_location' => $event->event_location,
                     'max_count' => $event->max_count,
                     'participants_count' => $event->participants_count,
@@ -134,7 +160,6 @@ class EventService
         $eventRegistration = EventRegistrations::query()->where('event_id', '=', $eventId)->first();
 
         return $eventRegistration ? $eventRegistration->booking_status : null;
-
     }
 
 
@@ -330,7 +355,6 @@ class EventService
             $error = "Cannot delete ongoing events";
             return $error;
         }
-
     }
 
 
@@ -345,7 +369,6 @@ class EventService
             $error = "Event not found";
             return $error;
         }
-
     }
     public function createEvent($title, $description, $eventDate, $eventTime, $eventLocation, $maxCount, $purpose, $notes)
     {
@@ -363,7 +386,6 @@ class EventService
         $event->event_status = 'upcoming';
 
         $event->save();
-
     }
 
     public function editEvent($eventId, $title, $eventDate, $eventTime, $eventLocation, $maxCount)
@@ -378,7 +400,6 @@ class EventService
         $event->max_count = $maxCount;
 
         $event->save();
-
     }
 
     public function editEventVisible($eventId)
@@ -394,7 +415,6 @@ class EventService
         }
 
         $event->save();
-
     }
 
     public function deleteEvent($eventId)
@@ -402,8 +422,5 @@ class EventService
 
         $event = Events::find($eventId);
         $event->delete();
-
     }
-
 }
-?>
