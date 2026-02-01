@@ -13,22 +13,14 @@
 @endsection
 
 @section('content')
+    @if (count($parents) <= 0)
+        <c-emptytable
+            alt="No parent approval"
+            title="No pending parent approvals"
+            descroption="Currently there are no pending parent approvals remaining"
+        />
+    @endif
     <div class="parent-approval-content">
-        @if (count($parents) <= 0)
-            <div class="empty-parents" role="status">
-                <div class="empty-parents__content">
-                    <svg class="empty-parents__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <rect x="2.5" y="3.5" width="13" height="17" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                        <line x1="8" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        <circle cx="18.2" cy="17.2" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                        <line x1="20.2" y1="19.2" x2="22" y2="21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-
-                    <p class="empty-parents__message">No records found</p>
-                </div>
-            </div>
-        @endif
-
         @foreach ($parents as $key => $parent)
             <c-card class="approval-card">
                 <c-slot name="header">
@@ -276,9 +268,7 @@
         @endforeach
     </div>
 
-    @if (count($parents) <= 0)
-        <c-table.pagination />
-    @else
+    @if (count($parents) > 0)
         <c-table.pagination :links="$links" />
     @endif
 @endsection

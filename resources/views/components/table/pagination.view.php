@@ -30,41 +30,43 @@
     </div>
 </div>
 
-<script>
-    (() => {
-        function buildUrlWithParams(params, baseUrl = window.location.href) {
-            const url = new URL(baseUrl);
+@if (!empty($links))
+    <script>
+        (() => {
+            function buildUrlWithParams(params, baseUrl = window.location.href) {
+                const url = new URL(baseUrl);
 
-            Object.entries(params).forEach(([key, value]) => {
-                if (value === null || value === undefined) {
-                    url.searchParams.delete(key);
-                } else {
-                    url.searchParams.set(key, value);
-                }
-            });
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value === null || value === undefined) {
+                        url.searchParams.delete(key);
+                    } else {
+                        url.searchParams.set(key, value);
+                    }
+                });
 
-            return url.toString();
+                return url.toString();
+            }
+
+            let next = {{ $links['current_page'] + 1
+        }};
+        let previous = {{ $links['current_page'] - 1 }}
+
+        console.log("Heelooo");
+
+        const nextBtn = document.getElementById('next');
+
+        if (nextBtn) {
+            nextBtn.href =
+                buildUrlWithParams({ page: next });
         }
 
-        let next = {{ $links['current_page'] + 1
-    }};
-    let previous = {{ $links['current_page'] - 1 }}
+        const prevBtn = document.getElementById('previous');
 
-    console.log("Heelooo");
+        if (prevBtn) {
+            prevBtn.href =
+                buildUrlWithParams({ page: previous });
+        }
 
-    const nextBtn = document.getElementById('next');
-
-    if (nextBtn) {
-        nextBtn.href =
-            buildUrlWithParams({ page: next });
-    }
-
-    const prevBtn = document.getElementById('previous');
-
-    if (prevBtn) {
-        prevBtn.href =
-            buildUrlWithParams({ page: previous });
-    }
-
-    }) ();
-</script>
+        }) ();
+    </script>
+@endif
