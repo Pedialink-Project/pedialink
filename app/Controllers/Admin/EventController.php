@@ -15,8 +15,7 @@ class EventController
     public function index($request)
     {
         $search = $request->input('search');
-        $filters = $request->input('filters');
-        [$events, $links] = $this->eventService->getAllEvents($search, $filters);
+        [$events, $links] = $this->eventService->getAllEvents($search);
 
         return view('admin/event', ['events' => $events, 'links' => $links]);
     }

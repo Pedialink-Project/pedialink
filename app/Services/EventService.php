@@ -25,16 +25,6 @@ class EventService
         return $events;
     }
 
-    private function applyFilters(QueryBuilder $events, array $filters)
-    {
-        foreach ($filters as $filterName => $filterValue) {
-            if ($filterValue && is_array($filterValue)) {
-                $events->whereIn('event_status', $filterValue);
-            }
-        }
-
-        return $events;
-    }
 
 
     function getEventStatus($eventId): string
@@ -62,7 +52,7 @@ class EventService
         return 'completed';
     }
 
-    public function getAllEvents(?string $search, ?array $filters): array
+    public function getAllEvents(?string $search): array
     {
         $events = Events::query();
 
@@ -70,10 +60,7 @@ class EventService
             $events = $this->applySearch($events, $search);
         }
 
-        if ($filters) {
-            $events = $this->applyFilters($events, $filters);
-        }
-
+        
         $results = $events
             ->orderBy('id', 'ASC')
             ->paginate(8);
@@ -110,7 +97,7 @@ class EventService
         return [$resource, $links];
     }
 
-    public function getVisibleEvents(?string $search, ?array $filters)
+    public function getVisibleEvents(?string $search)
     {
 
         $events = Events::query();
@@ -119,9 +106,6 @@ class EventService
             $events = $this->applySearch($events, $search);
         }
 
-        if ($filters) {
-            $events = $this->applyFilters($events, $filters);
-        }
 
         $results = $events
             ->orderBy('id', 'ASC')
