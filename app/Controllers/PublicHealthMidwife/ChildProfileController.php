@@ -5,6 +5,7 @@ namespace App\Controllers\PublicHealthMidwife;
 use App\Models\Child;
 use App\Services\ChildService;
 use Library\Framework\Http\Request;
+use App\Services\ChildRecordService;
 
 class ChildProfileController
 {
@@ -18,13 +19,14 @@ class ChildProfileController
     public function index(Request $request)
     {
         $children = $this->childService->getAllChildren();
+        
         return view("phm/childprofiles", ['children' => $children]);
     }
 
     public function createChild(Request $request)
     {
         $name = $request->input('name');
-        $areaId = $request->input('area');
+        $areaId = (int)$request->input('area');
         $dob = $request->input('date_of_birth');
         $birthCertificate = $request->input('birth_certificate');
         $gender = $request->input('gender');
@@ -58,7 +60,7 @@ class ChildProfileController
     public function editChild(Request $request, int $id)
     {
         $name = $request->input('e_name');
-        $areaId = $request->input('e_area');
+        $areaId = (int)$request->input('e_area');
         $dob = $request->input('e_date_of_birth');
         $gender = $request->input('e_gender');
         $birthCertificate = $request->input('e_birth_certificate');

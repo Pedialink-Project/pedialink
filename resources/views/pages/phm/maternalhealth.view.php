@@ -30,7 +30,7 @@ PHM Maternal Health
         </clipPath>
     </defs>
 </svg>
-Health Records View
+Health Records &#8594; Maternal ID = {{$parentId}}
 @endsection
 
 @section('content')
@@ -85,26 +85,23 @@ Health Records View
             <form id="add-health-record-form" class="maternal-health-form"  action="{{ route('phm.maternal.health.add',['id'=>$parentId]) }}" method="POST">
                 <c-input type="date" name="visit_date" label="Visited at:" placeholder="Enter Recorded Date"
                     error="{{ errors('visit_date') ?? '' }}" value="{{ old('visit_date')??'' }}" />
-                <c-input type="text" name="bmi" label="BMI:" placeholder="Enter BMI of the Mother"
-                    error="{{ errors('bmi') ?? '' }}" value="{{ old('bmi')??'' }}" />
-                <c-input type="text" name="blood_pressure" label="Blood Pressure:"
-                    placeholder="Enter Blood Pressure of the Mother (in mmHg)"
-                    error="{{ errors('blood_pressure') ?? '' }}" value="{{ old('blood_pressure')??'' }}" />
+                <c-input type="text" name="height" label="Height :" placeholder="Enter Height of the Mother (in cm)"
+                    error="{{ errors('height') ?? '' }}" value="{{ old('height')??'' }}" />
+                <c-input type="text" name="weight" label="Weight :"
+                    placeholder="Enter Weight of the Mother (in kg)" error="{{ errors('weight') ?? '' }}"
+                    value="{{ old('weight')??'' }}" />
+                <c-input type="text" name="systolic" label="Blood Pressure - Systolic:"
+                        placeholder="Enter Systolic (in mmHg)" error="{{ errors('blood_pressure') ?? '' }}"
+                        value="{{ old('systolic')??'' }}" style="flex: 1;" />
+                <c-input type="text" name="diastolic" label="Blood Pressure - Diastolic:"
+                        placeholder="Enter Diastolic (in mmHg)" error="{{ errors('blood_pressure') ?? '' }}"
+                        value="{{ old('diastolic')??'' }}" style="flex: 1;" />
                 <c-input type="text" name="blood_sugar" label="Blood Sugar:"
                     placeholder="Enter Blood Sugar of the Mother (in mg/dL )" error="{{ errors('blood_sugar') ?? '' }}"
-                    value="{{ old('blood_sugar')??'' }}" />
-                <c-input type="text" name="weight" label="Weight (in kg):"
-                    placeholder="Enter Weight of the Mother" error="{{ errors('weight') ?? '' }}"
-                    value="{{ old('weight')??'' }}" />    
+                    value="{{ old('blood_sugar')??'' }}" />    
                 <c-input type="text" name="trimester" label="Trimester:"
                     placeholder="Enter Trimester" error="{{ errors('trimester') ?? '' }}"
                     value="{{ old('trimester')??'' }}" />        
-                <c-select label="Status:" name="health_status" error="{{ errors('health_status') ?? '' }}"
-                    value="{{ old('health_status')??'' }}">
-                    <li class="select-item" data-value="good">Good</li>
-                    <li class="select-item" data-value="bad">Bad</li>
-                    <li class="select-item" data-value="critical">Critical</li>
-                </c-select>
                 <c-textarea name="notes" label="Additional Notes:"
                     placeholder="Enter any additional notes" error="{{ errors('notes') ?? '' }}"
                     value="{{ old('notes')??'' }}" />
@@ -125,9 +122,9 @@ Health Records View
             <c-table.thead>
                 <c-table.tr>
                     <c-table.th sortable="1" >Recorded at</c-table.th>
-                    <c-table.th sortable="1" >BMI</c-table.th>
-                    <c-table.th  >Blood Pressure</c-table.th>
-                    <c-table.th align="left" > Blood Sugar</c-table.th>
+                    <c-table.th sortable="1" >BMI(kg/m2)</c-table.th>
+                    <c-table.th  >Blood Pressure(mm Hg)</c-table.th>
+                    <c-table.th align="left" > Blood Sugar(mg/dL)</c-table.th>
                     <c-table.th align="left" >Health Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
@@ -137,9 +134,9 @@ Health Records View
                 @foreach ($items as $key=>$item)
                     <c-table.tr>
                         <c-table.td col="Recorded at">{{ $item['visit_date'] }}</c-table.td>
-                        <c-table.td col="BMI">{{ $item['bmi'] }}</c-table.td>
-                        <c-table.td col="Blood Pressure">{{ $item['blood_pressure'] }}</c-table.td>
-                        <c-table.td col="Blood Sugar">{{ $item['blood_sugar'] }}</c-table.td>
+                        <c-table.td col="BMI(kg/m2)">{{ $item['bmi'] }}</c-table.td>
+                        <c-table.td col="Blood Pressure(mm Hg)">{{ $item['blood_pressure'] }}</c-table.td>
+                        <c-table.td col="Blood Sugar(mg/dL)">{{ $item['blood_sugar'] }}</c-table.td>
                         <c-table.td col="Health Status">
                             @if (strtolower($item['health_status']) === "good")
                                 <c-badge type="green">{{ $item['health_status'] }}</c-badge>                   
@@ -158,8 +155,8 @@ Health Records View
                                         <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
                                     </c-button>
                                 </c-slot>
-                                <c-slot name="menu">
-                                    <c-modal id="view-health-record-{{ $key }}" size="sm" :initOpen="false">
+                                 <c-slot name="menu">
+                                     <c-modal id="view-health-record-{{ $key }}" size="sm" :initOpen="false">
                                         <c-slot name="trigger">
                                             <c-dropdown.item>View Record</c-dropdown.item>
                                         </c-slot>
@@ -187,13 +184,15 @@ Health Records View
                                             <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
                                                 title="Recorded At" info="{{ $item['visit_date'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
-                                                title="BMI" info="{{ $item['bmi'] }} " />
+                                                title="BMI(kg/m2)" info="{{ $item['bmi'] }} " />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
                                                 title="Blood Pressure(mm Hg)" info="{{ $item['blood_pressure'] }} " />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
                                                 title="Blood Sugar(mg/dL)" info="{{ $item['blood_sugar'] }} " />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
                                                 title="Weight(kg)" info="{{ $item['weight'] }}" />
+                                            <c-modal.viewitem icon="{{asset('assets/icons/ruler.svg')}}"
+                                                title="Height(cm)" info="{{ $item['height'] }} " />    
                                             <c-modal.viewitem icon="{{ asset('assets/icons/bubble-chat.svg') }}"
                                                 title="Trimester" info="{{ $item['trimester'] }} " />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}"
@@ -210,107 +209,8 @@ Health Records View
                                         </c-slot>
                                         
                                     </c-modal>
-                                    <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="false">
-                                        <c-slot name="trigger">
-                                            <c-dropdown.item>Edit Health Records</c-dropdown.item>
-                                        </c-slot>
-
-                                        <c-slot name="headerPrefix">
-                                            <img src="{{ asset('assets/icons/profile.svg' )}}" />
-                                        </c-slot>
-
-                                        <c-slot name="header">
-                                            <div>Edit Health Records</div>
-                                        </c-slot>
-
-                                        <form id="edit-health-record-form-{{ $key }}" class="maternal-health-form"  action="{{ route('phm.maternal.health.edit',['id'=>$parentId,'recordId'=>$item['id']]) }}" method="POST">
-                                            <c-input
-                                            type="date"
-                                            name="e_visit_date"
-                                            label="Visited at:"
-                                            placeholder="Enter Recorded Date"
-                                            error="{{ flash('edit') == $item['id'] ? (errors('e_visit_date') ?? '') : '' }}"
-                                            value="{{ flash('edit') == $item['id'] ? (old('e_visit_date') ?? '') : $item['visit_date'] }}"
-                                        />
-                                        <c-input
-                                            type="text"
-                                            name="e_bmi"
-                                            label="BMI:"
-                                            placeholder="Enter BMI of the Mother" error="{{ flash('edit') == $item['id'] ? (errors('e_bmi') ?? '') : '' }}"
-                                            value="{{ flash('edit') == $item['id'] ? (old('e_bmi') ?? '') : $item['bmi'] }}" />
-                                        <c-input
-                                            type="text"
-                                            name="e_blood_pressure"
-                                            label="Blood Pressure:"
-                                            placeholder="Enter Blood Pressure of the Mother (in mmHg)"
-                                            error="{{ flash('edit') == $item['id'] ? (errors('e_blood_pressure') ?? '') : '' }}"
-                                            value="{{ flash('edit') == $item['id'] ? (old('e_blood_pressure') ?? '') : $item['blood_pressure'] }}" />
-                                        <c-input
-                                            type="text"
-                                            name="e_blood_sugar"
-                                            label="Blood Sugar:"
-                                            placeholder="Enter Blood Sugar of the Mother (in mg/dL )"
-                                            error="{{ flash('edit') == $item['id'] ? (errors('e_blood_sugar') ?? '') : '' }}"
-                                            value="{{ flash('edit') == $item['id'] ? (old('e_blood_sugar') ?? '') : $item['blood_sugar'] }}"
-                                        />
-                                        <c-input
-                                            type="text"
-                                            name="e_weight" label="Weight:"
-                                            placeholder="Enter Weight of the Mother (in kg)"
-                                            error="{{ flash('edit') == $item['id'] ? (errors('e_weight') ?? '') : '' }}"
-                                            value="{{ flash('edit') == $item['id'] ? (old('e_weight') ?? '') : $item['weight'] }}"
-                                        />
-                                        <c-input
-                                            type="text"
-                                            name="e_trimester"
-                                            label="Trimester:"
-                                            placeholder="Enter Trimester of the Mother"
-                                            error="{{ flash('edit') == $item['id'] ? (errors('e_trimester') ?? '') : '' }}"
-                                            value="{{ flash('edit') == $item['id'] ? (old('e_trimester') ?? '') : $item['trimester'] }}"
-                                        />
-                                        <c-select
-                                            label="Status:"
-                                            name="e_health_status"
-                                            error="{{ flash('edit') == $item['id'] ? (errors('e_health_status') ?? '') : '' }}"
-                                            value="{{ flash('edit') == $item['id'] ? (old('e_health_status') ?? '') : $item['health_status'] }}"
-                                        >
-                                            <li class="select-item" data-value="good">Good</li>
-                                            <li class="select-item" data-value="bad">Bad</li>
-                                            <li class="select-item" data-value="critical">Critical</li>
-                                        </c-select>
-                                        <c-textarea label="Additional Notes:" name="e_notes"
-                                            placeholder="Enter any additional notes" error="{{ flash('edit') == $item['id'] ? (errors('e_notes') ?? '') : '' }}"
-                                            value="{{ flash('edit') == $item['id'] ? (old('e_notes') ?? '') : $item['notes'] }}" rows="4"></c-textarea>
-                                        </form>
-                                        <c-slot name="close">Close</c-slot>
-                                        <c-slot name="footer">
-                                           <c-button type="submit" form="edit-health-record-form-{{ $key }}" variant="primary">Save Changes</c-button>
-                                        </c-slot>
-                                    </c-modal>
-                                    <c-modal id="mark-as-invalid-{{ $key }}" size="sm" :initOpen="false">
-                                        <c-slot name="trigger">
-                                            <c-dropdown.item>Mark as Invalid</c-dropdown.item>
-                                        </c-slot>
-                                        <c-slot name="headerPrefix">
-                                            <img src="{{ asset('assets/icons/profile.svg' )}}" />
-                                        </c-slot>
-
-                                        <c-slot name="header">
-                                            <div>Mark as Invalid</div>
-                                        </c-slot>
-
-                                        <form id="mark-invalid-record-form-{{ $key }}" action="{{ route('phm.maternal.health.invalid', ['id' => $parentId, 'recordId' => $item['id']]) }}" method="POST">
-                                            <p>Are you sure you want to mark this record as invalid?</p>
-                                        </form>
-
-                                        <c-slot name="close">
-                                            cancel
-                                        </c-slot>
-                                        <c-slot name="footer">
-                                            <c-button type="submit" form="mark-invalid-record-form-{{ $key }}" variant="destructive">Mark</c-button>
-                                        </c-slot>
-                                    </c-modal>
-                                </c-slot>
+                                    </c-slot>
+                                    
                             </c-dropdown.main>
                         </c-table.td>
                     </c-table.tr>
@@ -329,4 +229,36 @@ Health Records View
 </c-table.wrapper>
 
 <c-table.pagination />
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('add-health-record-form');
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+            const values = {
+                'Visited at': form.visit_date?.value || '',
+                'Height (cm)': form.height?.value || '',
+                'Weight (kg)': form.weight?.value || '',
+                'Systolic (mmHg)': form.systolic?.value || '',
+                'Diastolic (mmHg)': form.diastolic?.value || '',
+                'Blood Sugar (mg/dL)': form.blood_sugar?.value || '',
+                'Trimester': form.trimester?.value || '',
+                'Notes': form.notes?.value || '',
+            };
+
+            const summary = Object.entries(values)
+                .map(([k, v]) => `${k}: ${v || '-'}`)
+                .join('\n');
+
+            const message = `Please confirm the new health record:\n\n${summary}\n\nIs this data correct?`;
+            const ok = window.confirm(message);
+            if (!ok) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
 @endsection

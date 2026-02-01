@@ -42,6 +42,7 @@ class ChildService
     public function getAllChildren()
     {
         $children = Child::all();
+        $childRecordService = new ChildRecordService();
 
         $resource = [];
         foreach ($children as $child) {
@@ -57,6 +58,8 @@ class ChildService
                 ];
             }
 
+            $latestHealthRecord = $childRecordService->getLatestChildRecord($child->id);
+
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,
@@ -64,10 +67,11 @@ class ChildService
                 'date_of_birth' => $child->date_of_birth,
                 'gender' => $child->gender,
                 'health_status' => $child->health_status,
-                'area' => $child->getArea()->code,
+                'area' => $child->getArea()?->code ?? 'Unknown',
                 'birth_certificate' => $child->birth_certificate,
                 'notes' => $child->notes,
                 'parent' => $parentResource,
+                'latest_health_record' => $latestHealthRecord,
             ];
         }
 
@@ -208,9 +212,20 @@ class ChildService
         return $error;
     }
 
-    private function validateCommonFields(string $field, string $attributeName)
+    private function validateCommonFields($field, string $attributeName)
     {
         $error = null;
+        
+        // Handle integer fields (like areaId)
+        if (is_int($field)) {
+            if ($field <= 0) {
+                $error = "{$attributeName} must be a valid selection";
+                return $error;
+            }
+            return $error;
+        }
+        
+        // Handle string fields
         if (!Validator::validateFieldExistence($field)) {
             $error = "{$attributeName} field cannot be empty";
             return $error;

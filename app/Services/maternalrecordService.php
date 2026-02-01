@@ -58,8 +58,13 @@ class maternalrecordService
     public function calculateBMI($weight, $height)
     {
         // BMI = weight (kg) / (height (m))^2
-        if ($height <= 0) {
-            return 0;
+        // Convert to float and validate
+        $weight = (float)$weight;
+        $height = (float)$height;
+        
+        // Return null if weight or height are invalid
+        if ($weight <= 0 || $height <= 0) {
+            return null;
         }
         
         $heightInMeters = $height / 100; // Convert cm to meters
