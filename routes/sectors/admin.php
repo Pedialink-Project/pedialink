@@ -42,6 +42,8 @@ return [
     // Admin maternal profile
     ['GET', '/admin/maternal-profiles/overview', [MaternalController::class, 'overview'], 'admin.maternal.overview', ['admin', 'verified']],
     ['GET', '/admin/maternal-profiles/access-requests', [MaternalController::class, 'accessRequests'], 'admin.maternal.access.requests', ['admin', 'verified']],
+    ['POST', '/admin/maternal-profiles/access-requests/{id}/approve', [MaternalController::class, 'approveAccessRequest'], 'admin.maternal.access.requests.approve', ['admin', 'verified']],
+    ['POST', '/admin/maternal-profiles/access-requests/{id}/deny', [MaternalController::class, 'denyAccessRequest'], 'admin.maternal.access.requests.deny', ['admin', 'verified']],
 
     // Admin vaccinations
     ['GET', '/admin/vaccination/vaccines', [VaccineController::class, 'vaccines'], 'admin.vaccination.vaccines', ['admin', 'verified']],
