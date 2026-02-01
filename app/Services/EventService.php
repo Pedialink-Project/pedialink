@@ -40,7 +40,7 @@ class EventService
     function getEventStatus($eventId): string
     {
 
-    $event = Events::query()->where('id', '=', $eventId)->first();
+        $event = Events::query()->where('id', '=', $eventId)->first();
 
 
         if (!empty($event->is_cancelled)) {
@@ -89,8 +89,8 @@ class EventService
                 'purpose' => $event->purpose,
                 'notes' => $event->notes,
                 'event_date' => $event->event_date,
-                'event_start_time' => date('H:i', strtotime($event->start_time)),
-                'event_end_time' => date('H:i', strtotime($event->end_time)),
+                'start_time' => date('H:i', strtotime($event->start_time)),
+                'end_time' => date('H:i', strtotime($event->end_time)),
                 'event_status' => $this->getEventStatus($event->id),
                 'event_location' => $event->event_location,
                 'max_count' => $event->max_count,
@@ -139,8 +139,8 @@ class EventService
                     'purpose' => $event->purpose,
                     'notes' => $event->notes,
                     'event_date' => $event->event_date,
-                    'event_start_time' => date('H:i', strtotime($event->start_time)),
-                    'event_end_time' => date('H:i', strtotime($event->end_time)),
+                    'start_time' => date('H:i', strtotime($event->start_time)),
+                    'end_time' => date('H:i', strtotime($event->end_time)),
                     'event_status' => $this->getEventStatus($event->id),
                     'event_location' => $event->event_location,
                     'max_count' => $event->max_count,
@@ -297,7 +297,7 @@ class EventService
             $errors['start_time'] = $startTimeError;
         }
 
-         $endTimeError = $this->validateTime($eventEndTime, "Event End Time", true, $eventStartTime);
+        $endTimeError = $this->validateTime($eventEndTime, "Event End Time", true, $eventStartTime);
         if ($endTimeError) {
             $errors['end_time'] = $endTimeError;
         }
@@ -315,9 +315,11 @@ class EventService
         return $errors;
     }
 
-    public function validateEditEventData($title, $eventDate, $eventStartTime, $eventEndTime, $eventLocation, $maxCount)
+    public function validateEditEventData($evetId, $title, $eventDate, $eventStartTime, $eventEndTime, $eventLocation, $maxCount)
     {
         $errors = [];
+
+        $event = Events::find($evetId);
 
         $titleError = $this->validateName($title, "Event Title");
         if ($titleError) {
@@ -335,7 +337,7 @@ class EventService
             $errors['e_start_time'] = $startTimeError;
         }
 
-         $endTimeError = $this->validateTime($eventEndTime, "Event End Time", true, $eventStartTime);
+        $endTimeError = $this->validateTime($eventEndTime, "Event End Time", true, $eventStartTime);
         if ($endTimeError) {
             $errors['e_end_time'] = $endTimeError;
         }
@@ -350,29 +352,38 @@ class EventService
             $errors['e_max_count'] = $maxCountError;
         }
 
+        if (!$maxCountError && $maxCount < $event->participants_count) {
+            $errors['e_max_count'] = "Maximum participants cannot be less than already registered participants ({$event->participants_count})";
+        }
+
         return $errors;
     }
-
     public function validateDeleteEvent($eventId)
     {
-
         $event = Events::find($eventId);
 
-        $error = null;
-
         if (!$event) {
-            $error = "Event not found";
-            return $error;
+            return "Event not found";
         }
 
-        if ($this->getEventStatus($eventId) == 'ongoning') {
-            $error = "Cannot delete ongoing events";
-            return $error;
+        $eventStart = new \DateTime(
+            $event->event_date . ' ' . $event->start_time
+        );
+
+        $now = new \DateTime();
+        $limit = (clone $now)->modify('+24 hours');
+
+        if ($eventStart <= $limit) {
+            return "Cannot delete an event within 24 hours of its start time";
+        }
+
+        if ($event->participants_count > 0) {
+            return "Cannot delete an event with registered participants";
         }
     }
 
 
-    public function validateEditEventVisible($eventId)
+    public function validateEditEventVisible($eventId, $participantMaxCount)
     {
 
         $event = Events::find($eventId);
@@ -384,7 +395,7 @@ class EventService
             return $error;
         }
     }
-    public function createEvent($title, $description, $eventDate, $eventTime, $eventLocation, $maxCount, $purpose, $notes)
+    public function createEvent($title, $description, $eventDate, $eventStartTime, $eventEndTime, $eventLocation, $maxCount, $purpose, $notes)
     {
 
         $event = new Events();
@@ -392,24 +403,25 @@ class EventService
         $event->description = $description;
         $event->admin_id = auth()->user()->id;
         $event->event_date = $eventDate;
-        $event->event_time = $eventTime;
+        $event->start_time = $eventStartTime;
+        $event->end_time = $eventEndTime;
         $event->event_location = $eventLocation;
         $event->max_count = $maxCount;
         $event->notes = $notes;
         $event->purpose = $purpose;
-        $event->event_status = 'upcoming';
 
         $event->save();
     }
 
-    public function editEvent($eventId, $title, $eventDate, $eventTime, $eventLocation, $maxCount)
+    public function editEvent($eventId, $title, $eventDate, $eventStartTime, $eventEndTime, $eventLocation, $maxCount)
     {
 
         $event = Events::find($eventId);
         $event->title = $title;
         $event->admin_id = auth()->user()->id;
         $event->event_date = $eventDate;
-        $event->event_time = $eventTime;
+        $event->start_time = $eventStartTime;
+        $event->end_time = $eventEndTime;
         $event->event_location = $eventLocation;
         $event->max_count = $maxCount;
 
