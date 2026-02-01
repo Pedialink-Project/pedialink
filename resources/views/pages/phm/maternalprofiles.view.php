@@ -31,7 +31,7 @@ Maternal Profiles - Overview
 @endsection
 
 @section('content')
-<c-table.controls :columns='["ID","Name","Age","Type","GS Devision"]'>
+<c-table.controls :columns='["ID","Name","Age","GS Devision"]'>
 
     <c-slot name="filter">
         <c-button variant="outline">
@@ -50,10 +50,10 @@ Maternal Profiles - Overview
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1" width="160px">ID</c-table.th>
-                    <c-table.th sortable="1" width="210px">Name</c-table.th>
-                    <c-table.th sortable="1" width="200px">Age</c-table.th>
-                    <c-table.th align="left" sortable="1" width="220px">Type</c-table.th>
+                    <c-table.th sortable="1" width="220px">ID</c-table.th>
+                    <c-table.th sortable="1" width="220px">Name</c-table.th>
+                    <c-table.th sortable="1" width="240px">Age</c-table.th>
+                    <!-- <c-table.th align="left" sortable="1" width="220px">Type</c-table.th> -->
                     <c-table.th align="left" sortable="1" width="220px">GS Devision</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
@@ -65,7 +65,7 @@ Maternal Profiles - Overview
                     <c-table.td col="id">{{ $item['id'] }}</c-table.td>
                     <c-table.td col="name">{{ $item['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $item['age'] ?? '-' }}</c-table.td>
-                    <c-table.td col="type">{{ $item['type'] ?? '-' }}</c-table.td>
+                    <!-- <c-table.td col="type">{{ $item['type'] ?? '-' }}</c-table.td> -->
                     <c-table.td col="gs_devision">{{ $item['gs_devision'] ?? '-' }}</c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
@@ -75,7 +75,6 @@ Maternal Profiles - Overview
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-dropdown.item>Copy Mother ID</c-dropdown.item>
                                 <c-dropdown.sep />
                                 <c-modal id="view-maternal-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="trigger">
@@ -123,17 +122,20 @@ Maternal Profiles - Overview
                                             title="Pregnancy Stage" info="{{ $item['stage'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
                                             title="Pregnancy Duration" info="5 weeks and 2 days" />
+                                        <!-- <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}" title="Latest Health Status"
+                                            info="{{ isset($item['latest_health_record']) ? ($item['latest_health_record']['health_status'] ?? '-') : '-' }}" /> -->
                                     </c-modal.viewcard>
 
                                     <c-modal.viewlist title="Medical Records">
                                         <c-slot name="list">
                                             @if($item['latest_health_record'])
                                                 <li>Weight: {{ $item['latest_health_record']['weight'] ?? '-' }} kg</li>
-                                                <li>BMI: {{ $item['latest_health_record']['bmi'] ?? '-' }}</li>
+                                                <li>Height: {{ $item['latest_health_record']['height'] ?? '-' }} cm</li>
+                                                <li>BMI: {{ $item['latest_health_record']['bmi'] ?? '-' }} kg/m2</li>
                                                 <li>Blood Sugar: {{ $item['latest_health_record']['blood_sugar'] ?? '-' }} mg/dL</li>
                                                 <li>Blood Pressure: {{ $item['latest_health_record']['blood_pressure'] ?? '-' }} mmHg</li>
                                                 <li>Trimester: {{ $item['latest_health_record']['trimester'] ?? '-' }}</li>
-                                                <li>Last Visit Date: {{ $item['latest_health_record']['visit_date'] ?? '-' }}</li>
+                                                <li>Last Update Date: {{ $item['latest_health_record']['visit_date'] ?? '-' }}</li>
                                             @else
                                                 <li>No health records found</li>
                                             @endif
@@ -142,7 +144,7 @@ Maternal Profiles - Overview
 
                                     <c-modal.viewlist title="Additional Information">
                                         <c-slot name="list">
-                                            @if($item['latest_health_record'])
+                                            <!-- @if($item['latest_health_record'])
                                                 <li>Health Status: 
                                                     @if (strtolower($item['latest_health_record']['health_status']) === 'good')
                                                         <strong style="color: green;">{{ $item['latest_health_record']['health_status'] }}</strong>
@@ -151,11 +153,11 @@ Maternal Profiles - Overview
                                                     @elseif (strtolower($item['latest_health_record']['health_status']) === 'bad')
                                                         <strong style="color: red;">{{ $item['latest_health_record']['health_status'] }}</strong>
                                                     @endif
-                                                </li>
+                                                </li> -->
                                                 <li>Notes: {{ $item['latest_health_record']['notes'] ?? '-' }}</li>
-                                            @else
+                                            <!-- @else
                                                 <li>No additional information available</li>
-                                            @endif
+                                            @endif -->
                                         </c-slot>
                                     </c-modal.viewlist>
 
