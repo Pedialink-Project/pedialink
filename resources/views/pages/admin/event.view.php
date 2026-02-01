@@ -70,8 +70,10 @@ Events & Campaigns
                 <div class="event-form-double-input">
                     <c-input label="Date" type="date" name="date" value="{{ old('date') ?? '' }}"
                         error="{{ errors('date') ?? '' }}" placeholder="Select Date" required />
-                    <c-input label="Time" type="time" name="time" value="{{ old('time') ?? '' }}"
-                        error="{{ errors('time') ?? '' }}" placeholder="Select Time" required />
+                    <c-input label="Start Time" type="time" name="start_time" value="{{ old('start_time') ?? '' }}"
+                        error="{{ errors('start_time') ?? '' }}" placeholder="Select Start Time" required />
+                    <c-input label="End Time" type="time" name="end_time" value="{{ old('end_time') ?? '' }}"
+                        error="{{ errors('end_time') ?? '' }}" placeholder="Select End Time" required />
                 </div>
                 <c-input type="text" label="Location" name="location" value="{{ old('location') ?? '' }}"
                     error="{{ errors('location') ?? '' }}" placeholder="Enter event location" required />
@@ -114,7 +116,7 @@ Events & Campaigns
                 <c-table.tr>
                     <c-table.td class="title-event-tdata" col="title">{{ $event['title'] }}</c-table.td>
                     <c-table.td class="event-tdata" col="date">{{ $event['event_date'] }} </c-table.td>
-                    <c-table.td class="event-tdata" col="time">{{ $event['event_start_time']}} - {{ $event['event_end_time'] }} </c-table.td>
+                    <c-table.td class="event-tdata" col="time">{{ $event['start_time']}} - {{ $event['end_time'] }} </c-table.td>
                     <c-table.td class="event-tdata" col="location">{{ $event['event_location'] }}</c-table.td>
                     <c-table.td class="event-tdata" col="visibility">
                         @if ($event["visible"])
@@ -157,7 +159,7 @@ Events & Campaigns
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                             title="Date" info="{{ $event['event_date'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                                            info="{{ $event['event_time'] }}" />
+                                            info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile-02.svg') }}"
                                             title="Event ID" info="{{ 'E-' . $event['id'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
@@ -227,10 +229,14 @@ Events & Campaigns
                                                 value="{{ flash('edit') == $event['id'] ? (old('e_date') ?? '') : $event['event_date'] }}"
                                                 error="{{ flash('edit') == $event['id'] ? (errors('e_date') ?? '') : '' }}"
                                                 placeholder="Select Date" required />
-                                            <c-input label="Time" type="time" name="e_time"
-                                                value="{{ flash('edit') == $event['id'] ? (old('e_time') ?? '') : $event['event_time'] }}"
-                                                error="{{ flash('edit') == $event['id'] ? (errors('e_time') ?? '') : '' }}"
-                                                placeholder="Select Time" required />
+                                            <c-input label="Start Time" type="time" name="e_start_time"
+                                                value="{{ flash('edit') == $event['id'] ? (old('e_start_time') ?? '') : $event['start_time'] }}"
+                                                error="{{ flash('edit') == $event['id'] ? (errors('e_start_time') ?? '') : '' }}"
+                                                placeholder="Select Start Time" required />
+                                            <c-input label="End Time" type="time" name="e_end_time"
+                                                value="{{ flash('edit') == $event['id'] ? (old('e_end_time') ?? '') : $event['end_time'] }}"
+                                                error="{{ flash('edit') == $event['id'] ? (errors('e_end_time') ?? '') : '' }}"
+                                                placeholder="Select End Time" required />
                                         </div>
                                         <c-input type="text" label="Location" name="e_location"
                                             value="{{ flash('edit') == $event['id'] ? (old('e_location') ?? '') : $event['event_location'] }}"
