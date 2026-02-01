@@ -40,28 +40,53 @@ trait DateRule
     /**
      * Validate a time field (HH:MM)
      */
-    private function validateTime(string $time, string $attributeName = 'Time', bool $mustBeFuture = false)
-    {
+   private function validateTime(
+    string $time,
+    string $attributeName = 'Time',
+    ?string $date =null,
+    ?string $startTime = null
+) {
+    $error = null;
 
-        $error = null;
-        if (!Validator::validateFieldExistence($time)) {
-            $error = "{$attributeName} field cannot be empty";
-        }
-
-        if (!Validator::validateTimeFormat($time)) {
-            $error = "{$attributeName} format is invalid (expected HH:MM)";
-        }
-
-        if ($mustBeFuture) {
-            $input = strtotime($time);
-            $now = time();
-            if ($input <= $now) {
-                $error = "{$attributeName} must be a future time";
-            }
-        }
-
-        return $error;
+    if (!Validator::validateFieldExistence($time)) {
+        return "{$attributeName} field cannot be empty";
     }
+
+    if (!Validator::validateTimeFormat($time)) {
+        return "{$attributeName} format is invalid (expected HH:MM)";
+    }
+
+   if ($date !== null) {
+
+        if (!Validator::validateDateFormat($date)) {
+            return "Date format is invalid (expected YYYY-MM-DD)";
+        }
+
+        $input = strtotime($date . ' ' . $time);
+        $now   = time();
+
+        if ($input <= $now) {
+            return "{$attributeName} must be in the future";
+        }
+    }
+
+    if ($startTime !== null) {
+
+        if (!Validator::validateTimeFormat($startTime)) {
+            return "Start time format is invalid (expected HH:MM)";
+        }
+
+        $end   = strtotime($time);
+        $start = strtotime($startTime);
+
+        if ($end <= $start) {
+            return "{$attributeName} must be later than start time";
+        }
+    }
+
+    return null;
+}
+
 
     private function validateDateTime(
         string $date,

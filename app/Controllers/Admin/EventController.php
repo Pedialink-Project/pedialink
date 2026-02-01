@@ -15,8 +15,7 @@ class EventController
     public function index($request)
     {
         $search = $request->input('search');
-        $filters = $request->input('filters');
-        [$events, $links] = $this->eventService->getAllEvents($search, $filters);
+        [$events, $links] = $this->eventService->getAllEvents($search);
 
         return view('admin/event', ['events' => $events, 'links' => $links]);
     }
@@ -26,13 +25,14 @@ class EventController
         $title = $request->input('title');
         $description = $request->input('description');
         $date = $request->input('date');
-        $time = $request->input('time');
+        $startTime = $request->input('start_time');
+        $endTime = $request->input('end_time');
         $location = $request->input('location');
         $maxCount = $request->input('max_count');
         $purpose = $request->input('purpose');
         $notes = $request->input('notes');
 
-        $errors = $this->eventService->validateCreateEventData($title, $description, $date, $time, $location, $maxCount);
+        $errors = $this->eventService->validateCreateEventData($title, $description, $date, $startTime, $endTime, $location, $maxCount);
 
         if (count($errors) !== 0) {
             return redirect(route("admin.event"))
@@ -40,7 +40,8 @@ class EventController
                     "title" => $title,
                     "description" => $description,
                     "date" => $date,
-                    "time" => $time,
+                    "start_time" => $startTime,
+                    "end_time" => $endTime,
                     "location" => $location,
                     "max_count" => $maxCount,
                     "purpose" => $purpose,
@@ -50,7 +51,7 @@ class EventController
                 ->with("create", true);
         }
 
-        $this->eventService->createEvent($title, $description, $date, $time, $location, $maxCount, $purpose, $notes);
+        $this->eventService->createEvent($title, $description, $date, $startTime, $endTime, $location, $maxCount, $purpose, $notes);
 
         return redirect(route('admin.event'))->withMessage('success', 'Event created successfully.', 'success');
     }
@@ -59,18 +60,20 @@ class EventController
     {
         $title = $request->input('e_title');
         $date = $request->input('e_date');
-        $time = $request->input('e_time');
+        $start_time = $request->input('e_start_time');
+        $end_time = $request->input('e_end_time');
         $location = $request->input('e_location');
         $maxCount = $request->input('e_max_count');
 
-        $errors = $this->eventService->validateEditEventData($title, $date, $time, $location, $maxCount);
+        $errors = $this->eventService->validateEditEventData($id,$title, $date, $start_time, $end_time, $location, $maxCount);
 
         if (count($errors) !== 0) {
             return redirect(route("admin.event"))
                 ->withInput([
                     "e_title" => $title,
                     "e_date" => $date,
-                    "e_time" => $time,
+                    "e_start_time" => $start_time,
+                    "e_end_time" => $end_time,
                     "e_location" => $location,
                     "e_max_count" => $maxCount,
                 ])
@@ -78,7 +81,7 @@ class EventController
                 ->with("edit", $id);
         }
 
-        $this->eventService->editEvent($id, $title, $date, $time, $location, $maxCount);
+        $this->eventService->editEvent($id, $title, $date, $start_time, $end_time, $location, $maxCount);
 
         return redirect(route('admin.event'))->withMessage('success', 'Event updated successfully.', 'success');
     }
