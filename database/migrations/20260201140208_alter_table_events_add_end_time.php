@@ -35,6 +35,22 @@ class Migration_20260201140208_alter_table_events_add_end_time implements \Libra
 
     public function down(): void
     {
-        // TODO: revert changes made in up()
-    }
+     QueryBuilder::raw("
+            CREATE TYPE event_status AS ENUM ('upcoming', 'ongoing', 'completed', 'cancelled');
+        ");
+
+        QueryBuilder::raw("
+            ALTER TABLE events
+            ADD COLUMN event_status event_status DEFAULT 'upcoming';
+        ");
+
+        QueryBuilder::raw("
+            ALTER TABLE events
+            DROP COLUMN IF EXISTS end_time;
+        ");
+
+        QueryBuilder::raw("
+            ALTER TABLE events
+            RENAME COLUMN start_time TO event_time;
+        ");    }
 }
