@@ -167,27 +167,7 @@ class EventService
         return $error;
     }
 
-    public function validateEventBookingData($name, $email, $phone)
-    {
-        $errors = [];
-
-        $nameError = $this->validateName($name, "Participant Name");
-        if ($nameError) {
-            $errors['name'] = $nameError;
-        }
-
-        $emailError = $this->validateEmail($email);
-        if ($emailError) {
-            $errors['email'] = $emailError;
-        }
-
-        $phoneError = $this->validatePhone($phone);
-        if ($phoneError) {
-            $errors['phone'] = $phoneError;
-        }
-
-        return $errors;
-    }
+  
 
     public function validateEventCancelData($reason)
     {
@@ -219,14 +199,11 @@ class EventService
         }
     }
 
-    public function bookEvent($eventId, $userId, $name, $email, $phone)
+    public function bookEvent($eventId, $userId)
     {
         $eventRegistration = new EventRegistrations();
         $eventRegistration->event_id = $eventId;
         $eventRegistration->user_id = $userId;
-        $eventRegistration->name = $name;
-        $eventRegistration->email = $email;
-        $eventRegistration->phone = $phone;
         $eventRegistration->booking_status = 'booked';
 
         $booked = $eventRegistration->save();
