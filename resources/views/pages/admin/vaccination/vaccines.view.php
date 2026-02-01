@@ -13,22 +13,7 @@
 @endsection
 
 @section('content')
-    <?php
-    $vaccines = [
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-    ];
-    ?>
-
-    <c-table.controls :columns='["ID","Name","Code"]'>
+    <c-table.controls>
         <c-slot name="extrabtn">
             <c-modal id="add-vaccine-modal" size="sm" :initOpen="false">
                 <c-slot name="trigger">
@@ -176,13 +161,17 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($vaccines) === 0)
-                        <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
-                    @endif
+                    
                 </c-table.tbody>
             </c-table.main>
         </div>
     </c-table.wrapper>
-
-    <c-table.pagination />
+    @if(count($vaccines) <= 0)
+        <c-emptytable
+            alt="No vaccine data"
+            title="Vaccine data not found"
+            description="Vaccine data is unavailable for this page"
+        />
+    @endif
+    <c-table.pagination :links="$links" />
 @endsection
