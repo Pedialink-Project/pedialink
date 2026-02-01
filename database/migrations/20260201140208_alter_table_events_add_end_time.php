@@ -13,6 +13,15 @@ class Migration_20260201140208_alter_table_events_add_end_time implements \Libra
 {
     public function up(): void
     {
+        QueryBuilder::raw("
+           TRUNCATE TABLE events_registrations;
+        ");
+
+        QueryBuilder::raw("
+           TRUNCATE TABLE events CASCADE;
+        ");
+
+
          QueryBuilder::raw("
             ALTER TABLE events
             DROP COLUMN IF EXISTS event_status;
@@ -31,10 +40,18 @@ class Migration_20260201140208_alter_table_events_add_end_time implements \Libra
             ALTER TABLE events
             ADD COLUMN end_time TIME NOT NULL;
         ");
+
+        QueryBuilder::raw("
+           ALTER TABLE events
+           ADD COLUMN is_cancelled BOOLEAN DEFAULT FALSE;
+     ");
+
+
     }
 
     public function down(): void
     {
+
      QueryBuilder::raw("
             CREATE TYPE event_status AS ENUM ('upcoming', 'ongoing', 'completed', 'cancelled');
         ");
@@ -52,5 +69,12 @@ class Migration_20260201140208_alter_table_events_add_end_time implements \Libra
         QueryBuilder::raw("
             ALTER TABLE events
             RENAME COLUMN start_time TO event_time;
-        ");    }
+        ");   
+        QueryBuilder::raw("
+           ALTER TABLE events
+           DROP COLUMN IF EXISTS is_cancelled;
+     ");
+
+
+    }
 }
