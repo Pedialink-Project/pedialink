@@ -131,8 +131,10 @@ docker compose exec app id www-data
 
 This will change the owner of the storage folder. In my case the id was 33.
 
+**NOTE**: Remember to also give group access to your own user to prevent permission issues
+
 ```bash
-sudo chown -R 33:33 ./storage
+sudo chown -R 33:$USER ./storage
 ```
 
 ### 3. Change the permissions for storage folder
