@@ -139,7 +139,7 @@
                                 <span class="approve-text">"{{ $request["maternal"]["name"] }}"</span> of id <span class="approve-text">P-{{ $request["maternal"]["id"] }}</span>?
                             </p>
 
-                            <form id="approve-account-{{ $key }}" action="" class="hidden"></form>
+                            <form id="approve-account-{{ $key }}" method="POST" action="{{ route('admin.maternal.access.requests.approve', ['id' => $request['id']]) }}" class="hidden"></form>
 
                             <c-slot name="close">
                                 Cancel
@@ -173,7 +173,7 @@
                                 <span class="deny-text">"{{ $request["maternal"]["name"] }}"</span> of id <span class="deny-text">P-{{ $request["maternal"]["id"] }}</span>?
                             </p>
                             
-                            <form id="deny-account-{{ $key }}" action="" class="hidden"></form>
+                            <form id="deny-account-{{ $key }}" method="POST" action="{{ route('admin.maternal.access.requests.deny', ['id' => $request['id']]) }}" class="hidden"></form>
 
                             <c-slot name="close">
                                 Cancel
