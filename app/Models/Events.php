@@ -7,7 +7,7 @@ use Library\Framework\Core\Model;
 class Events extends Model
 {
     protected static string $table = "events";
-    protected array $fillable = ["admin_id","title", "description", "purpose", "notes", "event_date", "event_time", "event_location", "max_count", "event_status", "participants_count"];
+    protected array $fillable = ["admin_id","title", "description", "purpose", "notes", "event_date", "strat_time","end-time", "event_location", "max_count", "is_cancelled", "participants_count"];
 
     
     public function getAdmin(): object|null
