@@ -15,7 +15,7 @@
 @section('content')
     <c-table.controls>
         <c-slot name="extrabtn">
-            <c-modal id="add-vaccine-modal" size="sm" :initOpen="false">
+            <c-modal id="add-vaccine-modal" size="sm" :initOpen="flash('add') ? true : false">
                 <c-slot name="trigger">
                     <c-button class="add-vaccine-btn" variant="primary">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -52,9 +52,25 @@
                     <div>Create Vaccine</div>
                 </c-slot>
 
-                <form id="add-vaccine" class="vaccine-form" action="">
-                    <c-input type="text" label="Vaccine Name" placeholder="Enter vaccine name" required />
-                    <c-input type="text" label="Vaccine Code" placeholder="Enter vaccine code" required />
+                <form id="add-vaccine" class="vaccine-form" method="POST" action="{{ route("admin.vaccination.vaccines.create") }}">
+                    <c-input
+                        type="text"
+                        name="name"
+                        label="Vaccine Name"
+                        placeholder="Enter vaccine name"
+                        value="{{ old('name') ?? '' }}"
+                        error="{{ errors('name') ?? '' }}"
+                        required
+                    />
+                    <c-input
+                        type="text"
+                        name="code"
+                        label="Vaccine Code"
+                        placeholder="Enter vaccine code"
+                        value="{{ old('code') ?? '' }}"
+                        error="{{ errors('code') ?? '' }}"
+                        required
+                    />
                 </form>
 
                 <c-slot name="close">
