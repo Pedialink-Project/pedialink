@@ -114,7 +114,7 @@ Events & Campaigns
                 <c-table.tr>
                     <c-table.td class="title-event-tdata" col="title">{{ $event['title'] }}</c-table.td>
                     <c-table.td class="event-tdata" col="date">{{ $event['event_date'] }} </c-table.td>
-                    <c-table.td class="event-tdata" col="time">{{ $event['event_time'] }} </c-table.td>
+                    <c-table.td class="event-tdata" col="time">{{ $event['event_start_time']}} - {{ $event['event_end_time'] }} </c-table.td>
                     <c-table.td class="event-tdata" col="location">{{ $event['event_location'] }}</c-table.td>
                     <c-table.td class="event-tdata" col="visibility">
                         @if ($event["visible"])
