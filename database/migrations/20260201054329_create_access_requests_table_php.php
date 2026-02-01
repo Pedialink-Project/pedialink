@@ -19,7 +19,8 @@ class Migration_20260201054329_create_access_requests_table_php implements \Libr
                 staff_id INT REFERENCES staffs(id) NOT NULL,
                 maternal_id INT REFERENCES parents(id) NOT NULL,
                 reason_title TEXT NOT NULL,
-                reason_description TEXT NOT NULL
+                reason_description TEXT NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
             );"
         );
 
@@ -29,7 +30,8 @@ class Migration_20260201054329_create_access_requests_table_php implements \Libr
                 staff_id INT REFERENCES staffs(id) NOT NULL,
                 child_id INT REFERENCES children(id) NOT NULL,
                 reason_title TEXT NOT NULL,
-                reason_description TEXT NOT NULL
+                reason_description TEXT NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
             );"
         );
     }
