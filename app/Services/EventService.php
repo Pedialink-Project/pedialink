@@ -292,12 +292,12 @@ class EventService
             $errors['date'] = $dateError;
         }
 
-        $startTimeError = $this->validateTime($eventStartTime, "Event Start Time", true);
+        $startTimeError = $this->validateTime($eventStartTime, "Event Start Time", $eventDate);
         if ($startTimeError) {
             $errors['start_time'] = $startTimeError;
         }
 
-        $endTimeError = $this->validateTime($eventEndTime, "Event End Time", true, $eventStartTime);
+        $endTimeError = $this->validateTime($eventEndTime, "Event End Time", $eventDate, $eventStartTime);
         if ($endTimeError) {
             $errors['end_time'] = $endTimeError;
         }
@@ -332,12 +332,12 @@ class EventService
             $errors['e_date'] = $dateError;
         }
 
-        $startTimeError = $this->validateTime($eventStartTime, "Event Start Time", true);
+        $startTimeError = $this->validateTime($eventStartTime, "Event Start Time", $eventDate);
         if ($startTimeError) {
             $errors['e_start_time'] = $startTimeError;
         }
 
-        $endTimeError = $this->validateTime($eventEndTime, "Event End Time", true, $eventStartTime);
+        $endTimeError = $this->validateTime($eventEndTime, "Event End Time", $eventDate, $eventStartTime);
         if ($endTimeError) {
             $errors['e_end_time'] = $endTimeError;
         }
@@ -383,7 +383,7 @@ class EventService
     }
 
 
-    public function validateEditEventVisible($eventId, $participantMaxCount)
+    public function validateEditEventVisible($eventId)
     {
 
         $event = Events::find($eventId);
