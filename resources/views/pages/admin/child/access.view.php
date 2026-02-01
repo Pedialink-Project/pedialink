@@ -139,7 +139,7 @@
                                 <span class="approve-text">"{{ $request["child"]["name"] }}"</span> of id <span class="approve-text">C-{{ $request["child"]["id"] }}</span>?
                             </p>
 
-                            <form id="approve-account-{{ $key }}" action="" class="hidden"></form>
+                            <form id="approve-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.requests.approve', ['id' => $request['id']]) }}" class="hidden"></form>
 
                             <c-slot name="close">
                                 Cancel
@@ -173,7 +173,7 @@
                                 <span class="deny-text">"{{ $request["child"]["name"] }}"</span> of id <span class="deny-text">C-{{ $request["child"]["id"] }}</span>?
                             </p>
                             
-                            <form id="deny-account-{{ $key }}" action="" class="hidden"></form>
+                            <form id="deny-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.requests.deny', ['id' => $request['id']]) }}" class="hidden"></form>
 
                             <c-slot name="close">
                                 Cancel
