@@ -37,8 +37,12 @@ class EventService
     }
 
 
-    function getEventStatus(object $event): string
+    function getEventStatus($eventId): string
     {
+
+    $event = Events::query()->where('id', '=', $eventId)->first();
+
+
         if (!empty($event->is_cancelled)) {
             return 'cancelled';
         }
@@ -87,7 +91,7 @@ class EventService
                 'event_date' => $event->event_date,
                 'event_start_time' => date('H:i', strtotime($event->start_time)),
                 'event_end_time' => date('H:i', strtotime($event->end_time)),
-                'event_status' => $this->getEventStatus($event),
+                'event_status' => $this->getEventStatus($event->id),
                 'event_location' => $event->event_location,
                 'max_count' => $event->max_count,
                 'participants_count' => $event->participants_count,
@@ -137,7 +141,7 @@ class EventService
                     'event_date' => $event->event_date,
                     'event_start_time' => date('H:i', strtotime($event->start_time)),
                     'event_end_time' => date('H:i', strtotime($event->end_time)),
-                    'event_status' => $this->getEventStatus($event),
+                    'event_status' => $this->getEventStatus($event->id),
                     'event_location' => $event->event_location,
                     'max_count' => $event->max_count,
                     'participants_count' => $event->participants_count,
@@ -269,7 +273,7 @@ class EventService
     }
 
 
-    public function validateCreateEventData($title, $description, $eventDate, $eventTime, $eventLocation, $maxCount)
+    public function validateCreateEventData($title, $description, $eventDate, $eventStartTime, $eventEndTime, $eventLocation, $maxCount)
     {
         $errors = [];
 
@@ -288,9 +292,14 @@ class EventService
             $errors['date'] = $dateError;
         }
 
-        $timeError = $this->validateTime($eventTime, "Event Time");
-        if ($timeError) {
-            $errors['time'] = $timeError;
+        $startTimeError = $this->validateTime($eventStartTime, "Event Start Time", true);
+        if ($startTimeError) {
+            $errors['start_time'] = $startTimeError;
+        }
+
+         $endTimeError = $this->validateTime($eventEndTime, "Event End Time", true, $eventStartTime);
+        if ($endTimeError) {
+            $errors['end_time'] = $endTimeError;
         }
 
         $locationError = $this->validateText($eventLocation, "Event Location");
@@ -306,7 +315,7 @@ class EventService
         return $errors;
     }
 
-    public function validateEditEventData($title, $eventDate, $eventTime, $eventLocation, $maxCount)
+    public function validateEditEventData($title, $eventDate, $eventStartTime, $eventEndTime, $eventLocation, $maxCount)
     {
         $errors = [];
 
@@ -321,9 +330,14 @@ class EventService
             $errors['e_date'] = $dateError;
         }
 
-        $timeError = $this->validateTime($eventTime, "Event Time");
-        if ($timeError) {
-            $errors['e_time'] = $timeError;
+        $startTimeError = $this->validateTime($eventStartTime, "Event Start Time", true);
+        if ($startTimeError) {
+            $errors['e_start_time'] = $startTimeError;
+        }
+
+         $endTimeError = $this->validateTime($eventEndTime, "Event End Time", true, $eventStartTime);
+        if ($endTimeError) {
+            $errors['e_end_time'] = $endTimeError;
         }
 
         $locationError = $this->validateText($eventLocation, "Event Location");
@@ -351,7 +365,7 @@ class EventService
             return $error;
         }
 
-        if ($event->event_status == 'ongoning') {
+        if ($this->getEventStatus($eventId) == 'ongoning') {
             $error = "Cannot delete ongoing events";
             return $error;
         }
