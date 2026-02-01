@@ -50,11 +50,11 @@ Parent - My Childern
 @section('content')
 
 @if(empty($childDetails))
-<div class="no-data">
-   <img src="{{ asset('assets/icons/empty-data.svg') }}" alt="No Children" />
-   <h2>No Children Linked Yet</h2>
-   <p>You have not linked any children to your account. Please link a child to view their details here.</p>
-</div>
+<c-emptytable
+   alt="No Children"
+   title="No Children Linked Yet"
+   description="You have not linked any children to your account. Please link a child to view their details here."
+/>
 @endif
 
 <div class="card-container">
