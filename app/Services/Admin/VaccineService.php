@@ -58,18 +58,23 @@ class VaccineService
         return $error;
     }
 
-    public function validateVaccineData(string $name, string $code)
+    public function validateVaccineData(string $name, string $code, bool $edit = false)
     {
         $errors = [];
+        $prefix = "";
+
+        if ($edit) {
+            $prefix = "e_";
+        }
 
         $nameError = $this->validateVaccineName($name);
         if ($nameError) {
-            $errors["name"] = $nameError;
+            $errors["{$prefix}name"] = $nameError;
         }
 
         $codeError = $this->validateVaccineCode($code);
         if ($codeError) {
-            $errors["code"] = $codeError;
+            $errors["{$prefix}code"] = $codeError;
         }
 
         return $errors;
