@@ -53,6 +53,39 @@ class VaccineController
             ->withMessage("Added vaccine", "Success", "success");
     }
 
+    public function editVaccine(Request $request, int $id)
+    {
+        $data = [
+            "e_name" => $request->input("e_name") ?? "",
+            "e_code" => $request->input("e_code") ?? ""
+        ];
+
+        $errors = $this->vaccineService->validateVaccineData(
+            $data["e_name"], $data["e_code"], true
+        );
+
+        if (count($errors) !== 0) {
+            return redirect(route("admin.vaccination.vaccines"))
+                ->withInput($data)
+                ->withErrors($errors)
+                ->with("edit", $id);
+        }
+
+        $vaccine = Vaccine::find($id);
+
+        if ($vaccine) {
+            $vaccine->name = $data['e_name'];
+            $vaccine->code = $data['e_code'];
+            $vaccine->save();
+
+            return redirect(route("admin.vaccination.vaccines"))
+                ->withMessage("Edited vaccine", "Success", "success");
+        }
+
+        return redirect(route("admin.vaccination.vaccines"))
+                ->withMessage("An unexpected error occured", "Fail", "error");
+    }
+
     public function schedule(Request $request)
     {
         return view("admin/vaccination/schedule");
