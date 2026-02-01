@@ -36,6 +36,8 @@ return [
     ['POST', '/admin/child/{id}/access-control/revoke', [ChildController::class, 'removeLinkage'], 'admin.child.access.control.revoke', ['admin', 'verified']],
     ['GET', '/admin/child-profiles/linkage-requests', [ChildController::class, 'linkageRequests'], 'admin.child.linkage.requests', ['admin', 'verified']],
     ['GET', '/admin/child-profiles/access-requests', [ChildController::class, 'accessRequests'], 'admin.child.access.requests', ['admin', 'verified']],
+    ['POST', '/admin/child-profiles/access-requests/{id}/approve', [ChildController::class, 'approveAccessRequest'], 'admin.child.access.requests.approve', ['admin', 'verified']],
+    ['POST', '/admin/child-profiles/access-requests/{id}/deny', [ChildController::class, 'denyAccessRequest'], 'admin.child.access.requests.deny', ['admin', 'verified']],
 
     // Admin maternal profile
     ['GET', '/admin/maternal-profiles/overview', [MaternalController::class, 'overview'], 'admin.maternal.overview', ['admin', 'verified']],
