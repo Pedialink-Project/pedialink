@@ -11,6 +11,7 @@ class ChildAccessRequestsService
     public function getAccessRequestsData(): array
     {
         $accessRequests = ChildAccessRequest::query()
+            ->where("accepted", "=", 0)
             ->orderBy("id", "ASC")
             ->paginate(6)
             ->toArray();
