@@ -7,7 +7,7 @@ class ChildAccessRequest extends Model
 {
     protected static string $table = "children_access_requests";
 
-    protected array $fillable = ["staff_id", "child_id", "reason_title", "reason_description"];
+    protected array $fillable = ["staff_id", "child_id", "reason_title", "accepted", "reason_description"];
 
     public function getChild()
     {
