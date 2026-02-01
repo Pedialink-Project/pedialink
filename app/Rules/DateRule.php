@@ -43,7 +43,7 @@ trait DateRule
    private function validateTime(
     string $time,
     string $attributeName = 'Time',
-    bool $mustBeFuture = false,
+    ?string $date =null,
     ?string $startTime = null
 ) {
     $error = null;
@@ -56,12 +56,17 @@ trait DateRule
         return "{$attributeName} format is invalid (expected HH:MM)";
     }
 
-    if ($mustBeFuture) {
-        $input = strtotime($time);
+   if ($date !== null) {
+
+        if (!Validator::validateDateFormat($date)) {
+            return "Date format is invalid (expected YYYY-MM-DD)";
+        }
+
+        $input = strtotime($date . ' ' . $time);
         $now   = time();
 
         if ($input <= $now) {
-            return "{$attributeName} must be a future time";
+            return "{$attributeName} must be in the future";
         }
     }
 
