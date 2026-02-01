@@ -3,16 +3,19 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Child;
+use App\Services\Admin\ChildAccessRequestsService;
 use App\Services\Admin\ChildService;
 use Library\Framework\Http\Request;
 
 class ChildController
 {
     private ChildService $childService;
+    private ChildAccessRequestsService $childAccessRequestsService;
 
     public function __construct()
     {
         $this->childService = new ChildService();
+        $this->childAccessRequestsService = new ChildAccessRequestsService();
     }
 
     public function overview(Request $request)
@@ -74,6 +77,12 @@ class ChildController
 
     public function accessRequests(Request $request)
     {
-        return view("admin/child/access");
+        [$accessRequests, $links] = $this->childAccessRequestsService
+            ->getAccessRequestsData();
+
+        return view("admin/child/access", [
+            "accessRequests" => $accessRequests,
+            "links" => $links
+        ]);
     }
 }
