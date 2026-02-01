@@ -19,7 +19,7 @@
                         <c-table.th sortable="1">ID</c-table.th>
                         <c-table.th sortable="1">Name</c-table.th>
                         <c-table.th sortable="1" width="200px">Age</c-table.th>
-                        <c-table.th>Status</c-table.th>
+                        <c-table.th>GS Division</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
                 </c-table.thead>
