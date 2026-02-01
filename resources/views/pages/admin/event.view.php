@@ -15,7 +15,7 @@ Events & Campaigns
 @section('content')
 
 
-<c-table.controls action="{{ route('admin.event') }}" :filters="['Status' => ['upcoming', 'ongoing', 'completed', 'cancelled']]">
+<c-table.controls action="{{ route('admin.event') }}" >
 
 
     <c-slot name="extrabtn">
