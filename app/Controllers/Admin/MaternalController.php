@@ -27,6 +27,11 @@ class MaternalController
 
     public function accessRequests()
     {
-        return view("admin/maternal/access");
+        [$accessRequests, $links] = $this->maternalService->getAccessRequestData();
+
+        return view("admin/maternal/access", [
+            "accessRequests" => $accessRequests,
+            "links" => $links
+        ]);
     }
 }
