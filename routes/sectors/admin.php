@@ -47,6 +47,7 @@ return [
 
     // Admin vaccinations
     ['GET', '/admin/vaccination/vaccines', [VaccineController::class, 'vaccines'], 'admin.vaccination.vaccines', ['admin', 'verified']],
+    ['POST', '/admin/vaccination/vaccines/create', [VaccineController::class, 'addVaccine'], 'admin.vaccination.vaccines.create', ['admin', 'verified']],
     ['GET', '/admin/vaccination/schedule', [VaccineController::class, 'schedule'], 'admin.vaccination.schedule', ['admin', 'verified']],
     ['GET', '/admin/vaccination/schedule/{schedule_id}/manage', [VaccineController::class, 'manageSchedule'], 'admin.vaccination.schedule.manage', ['admin', 'verified']],
 
