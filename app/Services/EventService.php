@@ -33,7 +33,7 @@ class EventService
         $event = Events::query()->where('id', '=', $eventId)->first();
 
 
-        if (!empty($event->is_cancelled)) {
+        if ($event->is_cancelled) {
             return 'cancelled';
         }
 
@@ -356,20 +356,6 @@ class EventService
             return "Event not found";
         }
 
-        $eventStart = new \DateTime(
-            $event->event_date . ' ' . $event->start_time
-        );
-
-        $now = new \DateTime();
-        $limit = (clone $now)->modify('+24 hours');
-
-        if ($eventStart <= $limit) {
-            return "Cannot delete an event within 24 hours of its start time";
-        }
-
-        if ($event->participants_count > 0) {
-            return "Cannot delete an event with registered participants";
-        }
     }
 
 
@@ -451,6 +437,34 @@ class EventService
 
         $event->save();
     }
+
+    public function cancelEvent($eventId)
+{
+    $event = Events::find($eventId);
+    if (!$event) {
+        return "Event not found";
+    }
+
+    if ($event->is_cancelled) {
+        return "Event is already cancelled";
+    }
+
+    $event->is_cancelled = true;
+    $event->visible = false; 
+    $event->save();
+
+    EventRegistrations::query()
+        ->where('event_id', "=", $eventId)
+        ->where('booking_status', "=",'booked')
+        ->update([
+            'booking_status' => 'cancelled',
+            'cancel_reason' => 'Event cancelled by administrator',
+            'cancelled_at' => date('Y-m-d H:i:s'),
+        ]);
+
+    return null; 
+}
+
 
     public function deleteEvent($eventId)
     {
