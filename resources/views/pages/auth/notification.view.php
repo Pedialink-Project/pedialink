@@ -13,20 +13,7 @@
 @endsection
 
 @section('content')
-    <?php
-        $notifications = [
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => false],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => false],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => false],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => false],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-        ];
-    ?>
+  
 
     <div class="notification-main">
         <div class="notification-btn-group">
@@ -39,10 +26,10 @@
         <div class="notification-card-group">
 
             @foreach ($notifications as $notification)
-                <c-card class="notification-card {{ !$notification['read'] ? 'unread-card' : ''}}">
+                <c-card class="notification-card {{ !$notification['is_read'] ? 'unread-card' : ''}}">
                     <c-slot name="header">
                         <div class="notification-title">
-                            <h4>{{ $notification['title'] }}</h6>
+                            <h4>{{ $notification['title'] }}</h4>
                             <span class="notification-time">{{ $notification['time'] }}</span>
                         </div>
                     </c-slot>
@@ -86,7 +73,7 @@
                         </c-dropdown.main>
                     </c-slot>
                     <div class="notification-body">
-                        {{ $notification['content'] }}
+                        {{ $notification['message'] }}
                     </div>
                 </c-card>
             @endforeach

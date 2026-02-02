@@ -39,4 +39,15 @@ class NotificationService
             $this->notify($userId, $title, $message, $entityType, $entityId);
         }
     }
+
+    /**
+     * Get notifications for logged-in user (latest first)
+     */
+    public function getUserNotifications(int $userId,): array
+    {
+        return Notification::query()
+            ->where('recipient_id', '=', $userId)
+            ->orderBy('created_at', 'DESC')
+            ->get();
+    }
 }
