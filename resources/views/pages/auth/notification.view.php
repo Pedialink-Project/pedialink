@@ -1,95 +1,171 @@
 @extends("layout/portal")
 
 @section('title')
-    Notification
+Notification
 @endsection
 
 @section('header')
-    Notification
+Notification
 @endsection
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/pages/auth/notification.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/auth/notification.css') }}">
 @endsection
 
 @section('content')
-    <?php
-        $notifications = [
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => false],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => false],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => false],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => false],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-            ["title" => "Notification title", "content" => "Lorem Ipsum Lorem Ipsum", "time" => "30 mins ago", "read" => true],
-        ];
-    ?>
 
-    <div class="notification-main">
-        <div class="notification-btn-group">
-            <c-button variant="secondary">
+
+<div class="notification-main">
+    @if(!empty($notifications))
+    <div class="notification-btn-group">
+
+
+        <c-modal id="mark-read-all-modal" size="sm">
+            <c-slot name="trigger">
+                <c-button variant="secondary">
+                    Mark All As Read
+                </c-button>
+            </c-slot>
+
+            <c-slot name="header">
                 Mark All As Read
-            </c-button>
-            <c-button variant="destructive">Clear All Notifications</c-button>
-        </div>
+            </c-slot>
 
-        <div class="notification-card-group">
+            <p>
+                Do you want to mark all notifications as read?
+            </p>
+            <form method="POST" id="form-mark-as-all-read" action="{{ route( 'notification.mark.read.all') }}">
+            </form>
 
-            @foreach ($notifications as $notification)
-                <c-card class="notification-card {{ !$notification['read'] ? 'unread-card' : ''}}">
-                    <c-slot name="header">
-                        <div class="notification-title">
-                            <h4>{{ $notification['title'] }}</h6>
-                            <span class="notification-time">{{ $notification['time'] }}</span>
-                        </div>
-                    </c-slot>
-                    <c-slot name="headerSuffix">
-                        <c-dropdown.main>
-                            <c-slot name="trigger">
-                                <button class="options-btn" variant="ghost">
-                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
-                                </button>
-                            </c-slot>
-                            <c-slot name="menu">
-                                <c-dropdown.item>
-                                    Mark as Read
-                                </c-dropdown.item>
-                                <c-modal>
-                                    <c-slot name="trigger">
-                                        <c-dropdown.item>
-                                            Delete
-                                        </c-dropdown.item>
-                                    </c-slot>
+            <c-slot name="close">
+                Cancel
+            </c-slot>
 
-                                    <c-slot name="header">
-                                        Delete Notification
-                                    </c-slot>
+            <c-slot name="footer">
+                <c-button variant="primary" type="submit" form="form-mark-as-all-read">
+                    Mark as All Read
+                </c-button>
+            </c-slot>
+        </c-modal>
 
-                                    <p>
-                                        Do you want to delete this notification?
-                                    </p>
+        <c-modal id="delete-all-modal" size="sm">
+            <c-slot name="trigger">
+                <c-button variant="destructive">Clear All Notifications</c-button>
 
-                                    <c-slot name="close">
-                                        Cancel
-                                    </c-slot>
+            </c-slot>
 
-                                    <c-slot name="footer">
-                                        <c-button variant="destructive">
-                                            Delete
-                                        </c-button>
-                                    </c-slot>
-                                </c-modal>
-                            </c-slot>
-                        </c-dropdown.main>
-                    </c-slot>
-                    <div class="notification-body">
-                        {{ $notification['content'] }}
-                    </div>
-                </c-card>
-            @endforeach
-        </div>
+            <c-slot name="header">
+                Delete Notification
+            </c-slot>
+
+            <p>
+                Do you want to delete all notifications?
+            </p>
+            <form method="POST" id="form-delete-all" action="{{ route('notification.delete.all') }}">
+
+            </form>
+
+            <c-slot name="close">
+                Cancel
+            </c-slot>
+
+            <c-slot name="footer">
+                <c-button variant="destructive" type="submit" form="form-delete-all">
+                    Delete All
+                </c-button>
+            </c-slot>
+        </c-modal>
     </div>
+
+
+    <div class="notification-card-group">
+
+        @foreach ($notifications as $notification)
+        <c-card class="notification-card {{ !$notification['is_read'] ? 'unread-card' : ''}}">
+            <c-slot name="header">
+                <div class="notification-title">
+                    <h4>{{ $notification['title'] }}</h4>
+                    <span class="notification-time">{{ $notification['time'] }}</span>
+                </div>
+            </c-slot>
+            <c-slot name="headerSuffix">
+                <c-dropdown.main>
+                    <c-slot name="trigger">
+                        <button class="options-btn" variant="ghost">
+                            <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                        </button>
+                    </c-slot>
+                    <c-slot name="menu">
+                        <c-modal>
+                            <c-slot name="trigger">
+                                <c-dropdown.item>
+                                    Mark As Read
+                                </c-dropdown.item>
+                            </c-slot>
+
+                            <c-slot name="header">
+                                Mark As Read
+                            </c-slot>
+
+                            <p>
+                                Do you want to mark this notification as read?
+                            </p>
+                            <form method="POST" id="form-mark-as-read-{{$notification['id']}}" action="{{ route('notification.mark.read', ['id' => $notification['id']]) }}">
+                            </form>
+
+                            <c-slot name="close">
+                                Cancel
+                            </c-slot>
+
+                            <c-slot name="footer">
+                                <c-button variant="primary" type="submit" form="form-mark-as-read-{{$notification['id']}}">
+                                    Mark as Read
+                                </c-button>
+                            </c-slot>
+                        </c-modal>
+                        <c-modal>
+                            <c-slot name="trigger">
+                                <c-dropdown.item>
+                                    Delete
+                                </c-dropdown.item>
+                            </c-slot>
+
+                            <c-slot name="header">
+                                Delete Notification
+                            </c-slot>
+
+                            <p>
+                                Do you want to delete this notification?
+                            </p>
+                            <form method="POST" id="form-delete-{{$notification['id']}}" action="{{ route( 'notification.delete', ['id' => $notification['id']]) }}">
+
+                            </form>
+
+                            <c-slot name="close">
+                                Cancel
+                            </c-slot>
+
+                            <c-slot name="footer">
+                                <c-button variant="destructive" type="submit" form="form-delete-{{$notification['id']}}">
+                                    Delete
+                                </c-button>
+                            </c-slot>
+                        </c-modal>
+                    </c-slot>
+                </c-dropdown.main>
+            </c-slot>
+            <div class="notification-body">
+                {{ $notification['message'] }}
+            </div>
+        </c-card>
+        @endforeach
+    </div>
+    @else
+
+    <c-emptytable
+        alt="No Notifications"
+        title="No Notifications"
+        description="You have no notifications at this time." />
+    @endif
+</div>
 @endsection

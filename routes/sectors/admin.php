@@ -65,5 +65,7 @@ return [
     ['GET', '/admin/settings', [SettingController::class, 'index'], 'admin.settings', ['admin']],
 
     // Admin notification
-    ['GET', '/admin/notification', [NotificationController::class, 'index'], 'admin.notification', ['admin', 'verified']]
+    ['GET', '/admin/notification', [NotificationController::class, 'index'], 'admin.notification', ['admin', 'verified']],
+   
+
 ];
