@@ -97,7 +97,7 @@ class EventService
         return [$resource, $links];
     }
 
-    public function getVisibleEvents(?string $search)
+    public function getVisibleEvents(?string $search=null)
     {
 
         $events = Events::query();
@@ -142,6 +142,33 @@ class EventService
 
         return $resource;
     }
+
+
+    public function getDashboardEvents(int $limit = 3)
+{
+    $events = Events::query()
+        ->where('visible','=', true)
+        ->orderBy('event_date', 'ASC')
+        ->limit($limit)
+        ->get();
+
+    $resource = [];
+
+    foreach ($events as $event) {
+        $resource[] = [
+            'id' => $event->id,
+            'title' => $event->title,
+            'event_date' => $event->event_date,
+            'start_time' => date('H:i', strtotime($event->start_time)),
+            'end_time' => date('H:i', strtotime($event->end_time)),
+            'event_status' => $this->getEventStatus($event->id),
+            'event_location' => $event->event_location,
+            'participants_count' => $event->participants_count,
+        ];
+    }
+
+    return $resource;
+}
 
     public function getEventBookingStatus($eventId)
     {
