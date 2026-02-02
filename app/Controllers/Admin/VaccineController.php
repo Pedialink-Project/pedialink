@@ -160,6 +160,43 @@ class VaccineController
             );
     }
 
+    public function editSchedule(Request $request, int $id)
+    {
+        $data = [
+            "e_name" => $request->input("e_name"),
+            "e_version" => $request->input("e_version"),
+            "e_effective_from" => $request->input("e_effective_from"),
+        ];
+
+        $errors = $this->scheduleService->validateScheduleData(
+            $data['e_name'], $data['e_version'], $data['e_effective_from'],
+            true
+        );
+
+        if (count($errors) !== 0) {
+            return redirect(route("admin.vaccination.schedule"))
+                ->withInput($data)
+                ->withErrors($errors)
+                ->with("edit", $id);
+        }
+
+        $schedule = Schedule::find($id);
+
+        if ($schedule) {
+            $schedule->name = $data['e_name'];
+            $schedule->version = $data['e_version'];
+            $schedule->effective_from = $data['e_effective_from'];
+            $schedule->save();
+        }
+
+        return redirect(route("admin.vaccination.schedule"))
+            ->withMessage(
+                "Successfully modified schedule",
+                "Success",
+                "success"
+            );
+    }
+
     public function manageSchedule(Request $request, int $schedule_id)
     {
         return view("admin/vaccination/manage", [
