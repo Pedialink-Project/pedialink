@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Models\Vaccine;
 use App\Services\Admin\VaccineService;
+use Exception;
 use Library\Framework\Http\Request;
 
 class VaccineController
@@ -84,6 +85,31 @@ class VaccineController
 
         return redirect(route("admin.vaccination.vaccines"))
                 ->withMessage("An unexpected error occured", "Fail", "error");
+    }
+
+    public function deleteVaccine(Request $request, int $id)
+    {
+        $vaccine = Vaccine::find($id);
+
+        try {
+            if ($vaccine) {
+                $vaccine->delete();
+
+                return redirect(route("admin.vaccination.vaccines"))
+                    ->withMessage(
+                        "Vaccine removed successfully", 
+                        "Success",
+                        "success"
+                    );
+            }
+        } catch (Exception $e) {
+            return redirect(route("admin.vaccination.vaccines"))
+                ->withMessage(
+                    "Failed to remove vaccine", 
+                    "Fail",
+                    "error"
+                );
+        }
     }
 
     public function schedule(Request $request)
