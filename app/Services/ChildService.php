@@ -13,6 +13,14 @@ use DateTime;
 
 class ChildService
 {
+
+    private  $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = new NotificationService();
+    }
+
     private function calculateAge($dob): string
     {
         $dobDt = $dob instanceof DateTime ? clone $dob : new DateTime($dob);
@@ -358,7 +366,7 @@ class ChildService
         }
     }
 
-    public function validateRequestAccess( $childId,$reasonTitle, $reasonDescription)
+    public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
     {
         $errors = [];
 
@@ -400,33 +408,43 @@ class ChildService
         $request->reason_description = $reasonDescription;
         $request->save();
 
+        $staff = User::find($staffId);
+        $child = Child::find($childId);
+
+        $this->notificationService->notifyAdmins(
+            "Child Access Request",
+            "{$staff->name} requested access to child profile {$child->name}. Reason: {$reasonTitle}",
+            "child_access_request",
+            $request->id
+        );
+
         return null;
     }
 
     public function getUnaccessedChildrenForStaff(int $staffId): array
-{
-    $requestedChildIds = ChildAccessRequest::query()
-        ->where('staff_id', '=', $staffId)
-        ->pluck('child_id');
+    {
+        $requestedChildIds = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->pluck('child_id');
 
-    $childrenQuery = Child::query();
+        $childrenQuery = Child::query();
 
-    if (!empty($requestedChildIds)) {
-        $childrenQuery->whereNotIn('id', $requestedChildIds);
+        if (!empty($requestedChildIds)) {
+            $childrenQuery->whereNotIn('id', $requestedChildIds);
+        }
+
+        $children = $childrenQuery->get();
+
+        $resource = [];
+        foreach ($children as $child) {
+            $resource[] = [
+                'id'   => $child->id,
+                'name' => $child->name,
+            ];
+        }
+
+        return $resource;
     }
-
-    $children = $childrenQuery->get();
-
-    $resource = [];
-    foreach ($children as $child) {
-        $resource[] = [
-            'id'   => $child->id,
-            'name' => $child->name,
-        ];
-    }
-
-    return $resource;
-}
 
 
     // public function deleteChildProfile(int $id)
