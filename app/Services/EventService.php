@@ -461,6 +461,24 @@ class EventService
 
         $event->save();
 
+        $registrations = EventRegistrations::query()
+            ->where('event_id', '=', $eventId)
+            ->where('booking_status', '=', 'booked')
+            ->get();
+
+        if (!empty($registrations)) {
+
+            foreach ($registrations as $registration) {
+                $this->notificationService->notify(
+                    $registration->user_id,
+                    "Event Updated",
+                    "Details of the event '{$event->title}' have been updated. Please review the latest information.",
+                    "event",
+                    $eventId
+                );
+            }
+        }
+
         return null;
     }
 
@@ -494,14 +512,31 @@ class EventService
         $event->visible = false;
         $event->save();
 
-        EventRegistrations::query()
-            ->where('event_id', "=", $eventId)
-            ->where('booking_status', "=", 'booked')
-            ->update([
-                'booking_status' => 'cancelled',
-                'cancel_reason' => 'Event cancelled by administrator',
-                'cancelled_at' => date('Y-m-d H:i:s'),
-            ]);
+
+
+        $registrations = EventRegistrations::query()
+            ->where('event_id', '=', $eventId)
+            ->where('booking_status', '=', 'booked')
+            ->get();
+
+        if (!empty($registrations)) {
+
+            foreach ($registrations as $registration) {
+
+                $registration->booking_status = 'cancelled';
+                $registration->cancel_reason = 'Event cancelled by administrator';
+                $registration->cancelled_at = date('Y-m-d H:i:s');
+                $registration->save();
+
+                $this->notificationService->notify(
+                    $registration->user_id,
+                    "Event Cancelled",
+                    "The event '{$event->title}' has been cancelled. Reason: Event cancelled by administrator",
+                    "event",
+                    $eventId
+                );
+            }
+        }
 
         return null;
     }
