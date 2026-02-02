@@ -30,16 +30,21 @@ class NotificationController
             return redirect(route("{$userRole}.notification"))->withMessage($error, 'Notification not marked as read.', 'error');
         }
 
-        return redirect(route("{$userRole}.notification"))->withMessage('success', 'Notification marked as read.', 'success');
+        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'Notification marked as read.', 'success');
     }
 
     public function markAsReadAll($request)
     {
         $user = auth()->user()->id;
-        $this->notificationService->markAllAsRead($user);
+       $updated = $this->notificationService->markAllAsRead($user);
         $userRole = auth()->user()->role;
 
-        return redirect(route("{$userRole}.notification"))->withMessage('success', 'Notification marked all as read.', 'success');
+        if ($updated) {
+        return redirect(url: route("{$userRole}.notification"))->withMessage('You have no unread notifications', 'You have no unread notifications', 'success');
+
+        }
+
+        return redirect(url: route("{$userRole}.notification"))->withMessage('Success', 'All notifications have been marked as read', 'success');
     }
 
 
@@ -55,7 +60,7 @@ class NotificationController
             return redirect(route("{$userRole}.notification"))->withMessage($error, 'Notification not Deleted.', 'error');
         }
 
-        return redirect(route("{$userRole}.notification"))->withMessage('success', 'Notification deleted successfully.', 'success');
+        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'Notification deleted successfully.', 'success');
     }
 
      public function deleteAllNotification($request)
@@ -66,7 +71,7 @@ class NotificationController
         $userRole = auth()->user()->role;
 
         
-        return redirect(route("{$userRole}.notification"))->withMessage('success', 'All Notifications deleted successfully.', 'success');
+        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'All Notifications deleted successfully.', 'success');
     }
 
     
