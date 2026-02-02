@@ -151,23 +151,6 @@ class EventService
     }
 
 
-    private function validateEmail(string $email)
-    {
-        $error = null;
-        if (!Validator::validateFieldExistence($email)) {
-            $error = "Email field cannot be empty";
-            return $error;
-        }
-
-        if (!Validator::validateEmailFormat($email)) {
-            $error = "Email format is invalid";
-            return $error;
-        }
-
-        return $error;
-    }
-
-
 
     public function validateEventCancelData($reason)
     {
@@ -352,8 +335,14 @@ class EventService
     {
         $event = Events::find($eventId);
 
+
+
         if (!$event) {
             return "Event not found";
+        }
+
+        if(!($event->is_cancelled)) {
+            return "Only cancelled events can be deleted";
         }
 
     }
