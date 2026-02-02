@@ -1,11 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Maternal Profiles
-@endsection
-
-@section('css')
-    <link rel="stylesheet" href="{{ asset('css/pages/doctor/maternal.css') }}">
+Doctor Maternal Profiles
 @endsection
 
 @section('header')
@@ -35,24 +31,7 @@ Maternal Profiles - Overview
 @endsection
 
 @section('content')
-<?php
-// $items = [
-//     ['id' => 'P-1345', 'name' => 'Nancy Drew', 'Age' => '28 yrs', 'Address' => 'No 1, Main Street, Colombo', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-//     ['id' => 'F-7213', 'name' => 'Femke Bol', 'Age' => '22 yrs', 'Address' => 'No 2, Lake Road, Kandy', 'Type' => 'Antenatal', 'Stage' => 'Second Trimester'],
-//     ['id' => 'S-3456', 'name' => 'Sophia Devs', 'Age' => '32 yrs', 'Address' => 'No 3, Park Avenue, Galle', 'Type' => 'Antenatal', 'Stage' => 'Third Trimester'],
-//     ['id' => 'S-6543', 'name' => 'Sarah Peter', 'Age' => '23 yrs', 'Address' => 'No 4, Beach Road, Negombo', 'Type' => 'Postnatal', 'Stage' => 'First Trimester'],
-//     ['id' => 'S-2345', 'name' => 'Shelly Ann', 'Age' => '29 yrs', 'Address' => 'No 5, Temple Lane, Matara', 'Type' => 'Antenatal', 'Stage' => 'Second Trimester'],
-//     ['id' => 'E-4321', 'name' => 'Elain Thompson', 'Age' => '19 yrs', 'Address' => 'No 6, Hill Street, Jaffna', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-//     ['id' => 'J-1235', 'name' => 'Jesica Colns', 'Age' => '25 yrs', 'Address' => 'No 7, River Road, Kurunegala', 'Type' => 'Postnatal', 'Stage' => 'Second Trimester'],
-//     ['id' => 'S-4325', 'name' => 'Shacarri Richardson', 'Age' => '22 yrs', 'Address' => 'No 8, Market Street, Anuradhapura', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-//     ['id' => 'S-4567', 'name' => 'Sherika Jackson', 'Age' => '36 yrs', 'Address' => 'No 9, Garden Road, Badulla', 'Type' => 'Postnatal', 'Stage' => 'First Trimester'],
-//     ['id' => 'J-1345', 'name' => 'Julia Ann', 'Age' => '21 yrs', 'Address' => 'No 10, College Avenue, Trincomalee', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-//     ['id' => 'S-2346', 'name' => 'Shiffan Hassan', 'Age' => '28 yrs', 'Address' => 'No 11, Station Road, Batticaloa', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-//     ['id' => 'F-7213', 'name' => 'Femke Bol', 'Age' => '22 yrs', 'Address' => 'No 12, Circular Road, Polonnaruwa', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-// ];
-?>
-
-<c-table.controls :columns='["ID","Name","Age","Type","Stage"]'>
+<c-table.controls :columns='["ID","Name","Age","Type","GS Devision"]'>
 
     <c-slot name="filter">
         <c-button variant="outline">
@@ -63,48 +42,6 @@ Maternal Profiles - Overview
             <img src="{{ asset('assets/icons/filter.svg') }}" />
             Stage
         </c-button>
-    </c-slot>
-
-    <c-slot name="extrabtn">
-        <c-modal id="requestMaternal" size="sm" :initOpen="false">
-            <c-slot name="trigger">
-                <c-button class="maternal-request-access-btn" variant="primary">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_1044_31547)">
-                            <path d="M10.417 18.3337H5.49272C4.2049 18.3337 3.18058 17.707 2.26088 16.8308C0.378129 15.0371 3.46933 13.6037 4.6483 12.9016C6.39897 11.8592 8.44769 11.4769 10.417 11.7546C11.1316 11.8554 11.8275 12.0431 12.5003 12.3177" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M13.75 5.41699C13.75 7.48806 12.0711 9.16699 10 9.16699C7.92893 9.16699 6.25 7.48806 6.25 5.41699C6.25 3.34592 7.92893 1.66699 10 1.66699C12.0711 1.66699 13.75 3.34592 13.75 5.41699Z" stroke="#FAFAFA" stroke-width="1.5"/>
-                            <path d="M15.4167 18.3333L15.4167 12.5M12.5 15.4167H18.3333" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round"/>
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_1044_31547">
-                                <rect width="20" height="20" fill="white"/>
-                            </clipPath>
-                        </defs>
-                    </svg>
-                    <span>Request Access</span>
-                </c-button>
-            </c-slot>
-            <c-slot name="headerPrefix">
-                <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
-            </c-slot>
-            <c-slot name="header">
-                <div>Request Maternal Profile Access</div>
-            </c-slot>
-
-            <form id="request-maternal-form" class="maternal-form" action="">
-                <c-select label="Maternal Profile" name="options" searchable="1" placeholder="Select Mother" required>
-                    <li class="select-item" data-value="option1">Mother Sara</li>
-                    <li class="select-item" data-value="option2">Mother Nancy</li>
-                </c-select>
-                <c-textarea label="Reason" placeholder="Enter reason for request" required></c-textarea>
-            </form>
-            <c-slot name="close">
-                Close
-            </c-slot>
-            <c-slot name="footer">
-                <c-button type="submit" form="request-maternal-form" variant="primary">Request Access</c-button>
-            </c-slot>
-        </c-modal>
     </c-slot>
 </c-table.controls>
 
@@ -117,7 +54,7 @@ Maternal Profiles - Overview
                     <c-table.th sortable="1" width="210px">Name</c-table.th>
                     <c-table.th sortable="1" width="200px">Age</c-table.th>
                     <c-table.th align="left" sortable="1" width="220px">Type</c-table.th>
-                    <c-table.th align="left" sortable="1">Stage</c-table.th>
+                    <c-table.th align="left" sortable="1" width="220px">GS Devision</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -127,9 +64,9 @@ Maternal Profiles - Overview
                 <c-table.tr>
                     <c-table.td col="id">{{ $item['id'] }}</c-table.td>
                     <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                    <c-table.td col="age">{{ $item['age'] }}</c-table.td>
-                    <c-table.td col="type">{{ $item['type'] }}</c-table.td>
-                    <c-table.td col="stage">{{ $item['stage'] }}</c-table.td>
+                    <c-table.td col="age">{{ $item['age'] ?? '-' }}</c-table.td>
+                    <c-table.td col="type">{{ $item['type'] ?? '-' }}</c-table.td>
+                    <c-table.td col="gs_devision">{{ $item['gs_devision'] ?? '-' }}</c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
                             <c-slot name="trigger">
@@ -146,7 +83,19 @@ Maternal Profiles - Overview
                                     </c-slot>
 
                                     <c-slot name="headerSuffix">
-                                        <c-badge type="green">Good</c-badge>
+                                        @if($item['latest_health_record'])
+                                            @if (strtolower($item['latest_health_record']['health_status']) === 'good')
+                                                <c-badge type="green">{{ $item['latest_health_record']['health_status'] }}</c-badge>
+                                            @elseif (strtolower($item['latest_health_record']['health_status']) === 'critical')
+                                                <c-badge type="purple">{{ $item['latest_health_record']['health_status'] }}</c-badge>
+                                            @elseif (strtolower($item['latest_health_record']['health_status']) === 'bad')
+                                                <c-badge type="red">{{ $item['latest_health_record']['health_status'] }}</c-badge>
+                                            @else
+                                                <c-badge type="gray">No Record</c-badge>
+                                            @endif
+                                        @else
+                                            <c-badge type="gray">No Record</c-badge>
+                                        @endif
                                     </c-slot>
 
                                     <c-slot name="headerPrefix">
@@ -158,54 +107,63 @@ Maternal Profiles - Overview
                                     </c-slot>
 
                                     <c-modal.viewcard>
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
-                                            info="{{ $item['name'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
+                                            info="{{ $item['name'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                            title="Age" info="{{ $item['age'] }}" />
+                                            title="Age" info="{{ $item['age'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="Address" info="{{ $item['address'] }}" />
+                                            title="Address" info="{{ $item['address'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="GS Devision" info="Mallakam" />
+                                            title="GS Devision" info="{{ $item['gs_devision'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="NIC Number" info="2300567890V" />
+                                            title="NIC Number" info="{{ $item['nic'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}" title="Type"
-                                            info="{{ ucfirst($item['type']) }}" />
+                                            info="{{ $item['type'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Stage" info="{{ ucfirst($item['stage']) }}" />
+                                            title="Pregnancy Stage" info="{{ $item['stage'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Duration" info="5 weeks and 2 days" />
+                                            title="Pregnancy Duration" info="10 weeks" />
                                     </c-modal.viewcard>
 
                                     <c-modal.viewlist title="Medical Records">
                                         <c-slot name="list">
-                                            <li>Height:160cm</li>
-                                            <li>Weight:67kg</li>
-                                            <li>Blood Group: O+</li>
-                                            <li>Blood Sugar:110 mg/dL</li>
-                                            <li>Blood Presure:120 mmHg</li>
-                                            <li>Width of Belly: 32 cm</li>
+                                            @if($item['latest_health_record'])
+                                                <li>Weight: {{ $item['latest_health_record']['weight'] ?? '-' }} kg</li>
+                                                <li>BMI: {{ $item['latest_health_record']['bmi'] ?? '-' }}</li>
+                                                <li>Blood Sugar: {{ $item['latest_health_record']['blood_sugar'] ?? '-' }} mg/dL</li>
+                                                <li>Blood Pressure: {{ $item['latest_health_record']['blood_pressure'] ?? '-' }} mmHg</li>
+                                                <li>Trimester: {{ $item['latest_health_record']['trimester'] ?? '-' }}</li>
+                                                <li>Last Visit Date: {{ $item['latest_health_record']['visit_date'] ?? '-' }}</li>
+                                            @else
+                                                <li>No health records found</li>
+                                            @endif
                                         </c-slot>
                                     </c-modal.viewlist>
 
                                     <c-modal.viewlist title="Additional Information">
                                         <c-slot name="list">
-                                            <li>Nutrition Facts: Good</li>
-                                            <li>Allergies: None</li>
+                                            @if($item['latest_health_record'])
+                                                <li>Health Status: 
+                                                    @if (strtolower($item['latest_health_record']['health_status']) === 'good')
+                                                        <strong style="color: green;">{{ $item['latest_health_record']['health_status'] }}</strong>
+                                                    @elseif (strtolower($item['latest_health_record']['health_status']) === 'critical')
+                                                        <strong style="color: purple;">{{ $item['latest_health_record']['health_status'] }}</strong>
+                                                    @elseif (strtolower($item['latest_health_record']['health_status']) === 'bad')
+                                                        <strong style="color: red;">{{ $item['latest_health_record']['health_status'] }}</strong>
+                                                    @endif
+                                                </li>
+                                                <li>Notes: {{ $item['latest_health_record']['notes'] ?? '-' }}</li>
+                                            @else
+                                                <li>No additional information available</li>
+                                            @endif
                                         </c-slot>
                                     </c-modal.viewlist>
 
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
-
-                                    <c-slot name="footer">
-                                        <c-button variant="primary">
-                                            <img src="{{ asset('assets/icons/download-04.svg')}}" />
-                                            Download Documents
-                                        </c-button>
-                                    </c-slot>
                                 </c-modal>
-                                <c-dropdown.item href="{{ route('doctor.maternal.health', ['id' => $item['id']]) }}">
+                                <c-dropdown.item href="{{ route('doctor.maternal.health',['id'=>$item['id'],])}}">
                                     View Health Records
                                 </c-dropdown.item>
                             </c-slot>

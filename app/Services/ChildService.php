@@ -8,10 +8,19 @@ use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
+use App\Models\ChildAccessRequest;
 use DateTime;
 
 class ChildService
 {
+
+    private  $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = new NotificationService();
+    }
+
     private function calculateAge($dob): string
     {
         $dobDt = $dob instanceof DateTime ? clone $dob : new DateTime($dob);
@@ -35,8 +44,6 @@ class ChildService
 
         $d = $diff->d;
         return $d . ' day' . ($d === 1 ? '' : 's');
-
-
     }
 
     public function getAllChildren()
@@ -115,8 +122,57 @@ class ChildService
                 'notes' => $child->notes,
                 'parent' => $parentResource,
                 'phm' => $phmResource,
-            ]
-            ;
+            ];
+        }
+
+        return $resource;
+    }
+
+    public function getChildrenByStaffId(int $staffId)
+    {
+        $accessRequests = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->where('accepted', '=', 1)
+            ->get();
+
+        if (empty($accessRequests)) {
+            return [];
+        }
+
+        $resource = [];
+
+        foreach ($accessRequests as $request) {
+            $child = $request->getChild();
+
+            if (!$child) {
+                continue;
+            }
+
+            $parent = ParentM::find($child->parent_id);
+            $phm    = PublicHealthMidwife::find($child->phm_id);
+
+            $resource[] = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'date_of_birth' => $child->date_of_birth,
+                'age' => $this->calculateAge($child->date_of_birth),
+                'gender' => $child->gender,
+                'health_status' => $child->health_status,
+                'area' => $child->getArea()->code,
+                'blood_type' => $child->blood_type,
+                'notes' => $child->notes,
+
+                'parent' => $parent ? [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                    'email' => User::find($parent->id)->email,
+                ] : null,
+
+                'phm' => $phm ? [
+                    'id' => $phm->id,
+                    'name' => User::find($phm->id)->name,
+                ] : null,
+            ];
         }
 
         return $resource;
@@ -129,7 +185,7 @@ class ChildService
         $childRecord = ChildRecord::query()->where('child_id', '=', $id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
 
         $childRecordResource = null;
-        if($childRecord) {
+        if ($childRecord) {
             $childRecordResource = [
                 'id' => $childRecord->id,
                 'visit_date' => $childRecord->visit_date,
@@ -176,9 +232,8 @@ class ChildService
             'notes' => $child->notes,
             'parent' => $parentResource,
             'phm' => $phmResource,
-            'record'=>$childRecordResource
-        ]
-        ;
+            'record' => $childRecordResource
+        ];
 
 
         return $resource;
@@ -287,7 +342,7 @@ class ChildService
     {
         $phmId = auth()->id();
 
-        
+
         $child = new Child();
         $child->name = $name;
         $child->date_of_birth = $dob;
@@ -310,6 +365,87 @@ class ChildService
             $child->save();
         }
     }
+
+    public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
+    {
+        $errors = [];
+
+        if (!Validator::validateFieldExistence($childId)) {
+            $errors['child_id'] = "Child Profile field cannot be empty";
+        }
+
+        if (!Validator::validateFieldExistence($reasonTitle)) {
+            $errors['reason_title'] = "Reason Title field cannot be empty";
+        }
+
+        if (!Validator::validateFieldExistence($reasonDescription)) {
+            $errors['reason_description'] = "Reason Description field cannot be empty";
+        }
+
+        return $errors;
+    }
+
+    public function requestChildAccess(
+        int $staffId,
+        int $childId,
+        string $reasonTitle,
+        string $reasonDescription
+    ): ?string {
+        // Prevent duplicate requests
+        $existing = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->where('child_id', '=', $childId)
+            ->first();
+
+        if ($existing) {
+            return "Access request already exists";
+        }
+
+        $request = new ChildAccessRequest();
+        $request->staff_id = $staffId;
+        $request->child_id = $childId;
+        $request->reason_title = $reasonTitle;
+        $request->reason_description = $reasonDescription;
+        $request->save();
+
+        $staff = User::find($staffId);
+        $child = Child::find($childId);
+
+        $this->notificationService->notifyAdmins(
+            "Child Access Request",
+            "{$staff->name} requested access to child profile {$child->name}. Reason: {$reasonTitle}",
+            "child_access_request",
+            $request->id
+        );
+
+        return null;
+    }
+
+    public function getUnaccessedChildrenForStaff(int $staffId): array
+    {
+        $requestedChildIds = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->pluck('child_id');
+
+        $childrenQuery = Child::query();
+
+        if (!empty($requestedChildIds)) {
+            $childrenQuery->whereNotIn('id', $requestedChildIds);
+        }
+
+        $children = $childrenQuery->get();
+
+        $resource = [];
+        foreach ($children as $child) {
+            $resource[] = [
+                'id'   => $child->id,
+                'name' => $child->name,
+            ];
+        }
+
+        return $resource;
+    }
+
 
     // public function deleteChildProfile(int $id)
     // {
