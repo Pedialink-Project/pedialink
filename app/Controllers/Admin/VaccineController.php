@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Vaccine;
+use App\Services\Admin\ScheduleService;
 use App\Services\Admin\VaccineService;
 use Exception;
 use Library\Framework\Http\Request;
@@ -10,10 +11,12 @@ use Library\Framework\Http\Request;
 class VaccineController
 {
     private VaccineService $vaccineService;
+    private ScheduleService $scheduleService;
 
     public function __construct()
     {
         $this->vaccineService = new VaccineService();
+        $this->scheduleService = new ScheduleService();
     }
 
     public function vaccines(Request $request)
@@ -114,7 +117,13 @@ class VaccineController
 
     public function schedule(Request $request)
     {
-        return view("admin/vaccination/schedule");
+        $search = $request->query("search") ?? "";
+        [$schedules, $links] = $this->scheduleService
+            ->getScheduleData($search);
+        return view("admin/vaccination/schedule", [
+            "schedules" => $schedules,
+            "links" => $links
+        ]);
     }
 
     public function manageSchedule(Request $request, int $schedule_id)
