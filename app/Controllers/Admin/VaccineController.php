@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Admin;
 
+use App\Models\Schedule;
 use App\Models\Vaccine;
 use App\Services\Admin\ScheduleService;
 use App\Services\Admin\VaccineService;
@@ -124,6 +125,39 @@ class VaccineController
             "schedules" => $schedules,
             "links" => $links
         ]);
+    }
+
+    public function addSchedule(Request $request)
+    {
+        $data = [
+            "name" => $request->input("name"),
+            "version" => $request->input("version"),
+            "effective_from" => $request->input("effective_from"),
+        ];
+
+        $errors = $this->scheduleService->validateScheduleData(
+            $data['name'], $data['version'], $data['effective_from']
+        );
+
+        if (count($errors) !== 0) {
+            return redirect(route("admin.vaccination.schedule"))
+                ->withInput($data)
+                ->withErrors($errors)
+                ->with("add", true);
+        }
+
+        $schedule = new Schedule();
+        $schedule->name = $data['name'];
+        $schedule->version = $data['version'];
+        $schedule->effective_from = $data['effective_from'];
+        $schedule->save();
+
+        return redirect(route("admin.vaccination.schedule"))
+            ->withMessage(
+                "Successfully created schedule",
+                "Success",
+                "success"
+            );
     }
 
     public function manageSchedule(Request $request, int $schedule_id)
