@@ -45,9 +45,22 @@ class NotificationService
      */
     public function getUserNotifications(int $userId,): array
     {
-        return Notification::query()
+        $notifications = Notification::query()
             ->where('recipient_id', '=', $userId)
             ->orderBy('created_at', 'DESC')
             ->get();
+
+        $resource = [];
+        foreach ($notifications as $notification) {
+            $resource[] = [
+                'title' => $notification->title,
+                'message' => $notification->message,
+                'time'=> date('h:i A', strtotime($notification->created_at)),
+                'is_read' => $notification->is_read
+,
+            ];
+        }
+
+        return $resource;
     }
 }
