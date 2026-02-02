@@ -13,15 +13,6 @@
 @endsection
 
 @section('content')
-    <?php
-    $schedules = [
-        ["id" => "0001", "name" => "Sri Lanka National EPI v1", "version" => "2015_v0001", "enabled" => true, "effective_from" => "2020-05-10"],
-        ["id" => "0001", "name" => "Sri Lanka National EPI v2", "version" => "2015_v0001", "enabled" => false, "effective_from" => "2020-05-10"],
-        ["id" => "0001", "name" => "Sri Lanka National EPI v1", "version" => "2015_v0001", "enabled" => false, "effective_from" => "2020-05-10"],
-        ["id" => "0001", "name" => "Sri Lanka National EPI v1", "version" => "2015_v0001", "enabled" => false, "effective_from" => "2020-05-10"],
-    ];
-    ?>
-
     <c-table.controls :columns='["ID","Name","Version","Status","Effective From"]'>
         <c-slot name="filter">
             <c-button variant="outline">
@@ -99,7 +90,7 @@
                             <c-table.td col="name">{{ $schedule['name'] }}</c-table.td>
                             <c-table.td col="version">{{ $schedule['version'] }}</c-table.td>
                             <c-table.td col="status">
-                                @if ($schedule["enabled"])
+                                @if ($schedule["active"])
                                     <c-badge type="green">
                                         Enabled
                                     </c-badge>
@@ -225,13 +216,16 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($schedules) === 0)
-                        <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
-                    @endif
                 </c-table.tbody>
             </c-table.main>
         </div>
     </c-table.wrapper>
-
-    <c-table.pagination />
+    @if (count($schedules) <= 0)
+        <c-emptytable
+            alt="No data"
+            title="No schedule data"
+            description="Schedule data is currently unavailable"
+        />
+    @endif
+    <c-table.pagination :links="$links" />
 @endsection
