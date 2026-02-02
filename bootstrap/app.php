@@ -19,6 +19,9 @@ require_once __DIR__ . '/../library/helpers/global.php';
 require_once __DIR__ . '/../library/helpers/filters-data-table.php';
 require_once __DIR__ . '/../library/helpers/time.php';
 
+// Set default timezone for the entire application
+date_default_timezone_set('Asia/Colombo');
+
 // Load env values from .env file
 $env = new Env(__DIR__ . '/../.env');
 $app->singleton(Env::class, fn() => $env);
