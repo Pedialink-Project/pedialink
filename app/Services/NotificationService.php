@@ -53,14 +53,33 @@ class NotificationService
         $resource = [];
         foreach ($notifications as $notification) {
             $resource[] = [
+                'id'=> $notification->id,
                 'title' => $notification->title,
                 'message' => $notification->message,
-                'time'=> date('h:i A', strtotime($notification->created_at)),
-                'is_read' => $notification->is_read
-,
+                'time' => date('h:i A', strtotime($notification->created_at)),
+                'is_read' => $notification->is_read,
             ];
         }
 
         return $resource;
+    }
+
+    public function markAsRead(int $notificationId, int $userId)
+    {
+        $notification = Notification::query()
+            ->where('id', '=', $notificationId)
+            ->where('recipient_id', '=', $userId)
+            ->first();
+
+        if (!$notification) {
+            return "Notification not found.";
+        }
+
+        if ($notification->is_read) {
+            return "Notification is already marked as read.";
+        }
+
+        $notification->is_read = true;
+        $notification->save();
     }
 }
