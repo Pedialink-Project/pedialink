@@ -44,9 +44,18 @@ class ScheduleService
         return $error;
     }
 
-    public function validateScheduleData(string $name, string $version, string $date)
+    public function validateScheduleData(
+        string $name,
+        string $version,
+        string $date,
+        bool $edit = false
+    )
     {
         $errors = [];
+        $prefix = "";
+        if ($edit) {
+            $prefix = "e_";
+        }
 
         $scheduleNameError = $this->validateScheduleField(
             $name, 
@@ -54,7 +63,7 @@ class ScheduleService
         );
 
         if ($scheduleNameError) {
-            $errors["name"] = $scheduleNameError;
+            $errors["{$prefix}name"] = $scheduleNameError;
         }
 
         $scheduleVersionError = $this->validateScheduleField(
@@ -63,7 +72,7 @@ class ScheduleService
         );
 
         if ($scheduleVersionError) {
-            $errors["version"] = $scheduleVersionError;
+            $errors["{$prefix}version"] = $scheduleVersionError;
         }
 
         $scheduleDateError = $this->validateScheduleField(
@@ -72,7 +81,7 @@ class ScheduleService
         );
 
         if ($scheduleDateError) {
-            $errors["effective_from"] = $scheduleDateError;
+            $errors["{$prefix}effective_from"] = $scheduleDateError;
         }
 
         return $errors;
