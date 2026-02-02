@@ -135,7 +135,7 @@
                                     <c-slot name="menu">
                                         <c-dropdown.item>Copy Schedule ID</c-dropdown.item>
                                         <c-dropdown.sep />
-                                        <c-modal size="md" :initOpen="false">
+                                        <c-modal size="md" :initOpen="flash('edit') === $schedule['id'] ? true : false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>Edit Schedule</c-dropdown.item>
                                             </c-slot>
@@ -154,10 +154,34 @@
                                                 <div>Edit Vaccine</div>
                                             </c-slot>
 
-                                            <form id="edit-schedule" class="schedule-form" action="">
-                                                <c-input type="text" label="Schedule Name" placeholder="Enter schedule name" value="{{ $schedule['name'] }}" required />
-                                                <c-input type="text" label="Schedule Version Number" placeholder="Enter schedule verison number" value="{{ $schedule['version'] }}" required />
-                                                <c-input type="date" label="Effective From" placeholder="Select Date" value="{{ $schedule['effective_from'] }}" required />
+                                            <form id="edit-schedule" class="schedule-form" method="POST" action="{{ route('admin.vaccination.schedule.edit', ['id' => $schedule['id']]) }}">
+                                                <c-input
+                                                    type="text"
+                                                    name="e_name"
+                                                    label="Schedule Name"
+                                                    placeholder="Enter schedule name"
+                                                    value="{{ flash('edit') === $schedule['id'] ? (old('e_name') ?? '') : $schedule['name'] }}"
+                                                    error="{{ flash('edit') === $schedule['id'] ? (errors('e_name') ?? '') : '' }}"
+                                                    required
+                                                />
+                                                <c-input
+                                                    type="text"
+                                                    name="e_version"
+                                                    label="Schedule Version Number"
+                                                    placeholder="Enter schedule verison number"
+                                                    value="{{ flash('edit') === $schedule['id'] ? (old('e_version') ?? '') : $schedule['version'] }}"
+                                                    error="{{ flash('edit') === $schedule['id'] ? (errors('e_version') ?? '') : '' }}"
+                                                    required
+                                                />
+                                                <c-input
+                                                    type="date"
+                                                    name="e_effective_from"
+                                                    label="Effective From"
+                                                    placeholder="Select Date"
+                                                    value="{{ flash('edit') === $schedule['id'] ? (old('e_effective_from') ?? '') : $schedule['effective_from'] }}"
+                                                    error="{{ flash('edit') === $schedule['id'] ? (errors('e_effective_from') ?? '') : '' }}"
+                                                    required
+                                                />
                                             </form>
                                             
                                             <c-slot name="close">
