@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\Validator;
 use App\Models\Schedule;
 
 class ScheduleService
@@ -29,5 +30,51 @@ class ScheduleService
         $links = array_diff_key($schedules, ['items' => true]);
 
         return [$resource, $links];
+    }
+
+    private function validateScheduleField(string $data, string $attributeName)
+    {
+        $error = null;
+
+        if (!Validator::validateFieldExistence($data)) {
+            $error = "{$attributeName} cannot be empty";
+            return $error;
+        }
+
+        return $error;
+    }
+
+    public function validateScheduleData(string $name, string $version, string $date)
+    {
+        $errors = [];
+
+        $scheduleNameError = $this->validateScheduleField(
+            $name, 
+            "Schedule name"
+        );
+
+        if ($scheduleNameError) {
+            $errors["name"] = $scheduleNameError;
+        }
+
+        $scheduleVersionError = $this->validateScheduleField(
+            $version, 
+            "Schedule version"
+        );
+
+        if ($scheduleVersionError) {
+            $errors["version"] = $scheduleVersionError;
+        }
+
+        $scheduleDateError = $this->validateScheduleField(
+            $date, 
+            "Date"
+        );
+
+        if ($scheduleDateError) {
+            $errors["effective_from"] = $scheduleDateError;
+        }
+
+        return $errors;
     }
 }
