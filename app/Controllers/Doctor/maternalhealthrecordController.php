@@ -19,7 +19,7 @@ class maternalhealthrecordController
     {
 
         $maternalrecords = $this->maternalrecordService->getMaternalRecordByMaternalId($id);
-        return view("phm/maternalhealth", [
+        return view("doctor/maternalhealth", [
             "items" => $maternalrecords,
             "parentId" => $id,
             ]);
