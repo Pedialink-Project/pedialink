@@ -38,6 +38,6 @@ class Migration_20260202074012_create_notifications_table implements \Library\Fr
 
     public function down(): void
     {
-        // TODO: revert changes made in up()
+        QueryBuilder::raw("DROP TABLE IF EXISTS notifications;");
     }
 }
