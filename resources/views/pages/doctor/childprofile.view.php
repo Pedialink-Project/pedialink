@@ -44,7 +44,7 @@ Child Profiles
 
 
     <c-slot name="extrabtn">
-        <c-modal id="addChild" size="sm" :initOpen="false">
+        <c-modal id="addChild" size="sm" :initOpen="flash('request') ? true : false">
             <c-slot name="trigger">
                 <c-button class="child-request-access-btn" variant="primary">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -76,7 +76,8 @@ Child Profiles
                     name="child_id"
                     searchable="1"
                     placeholder="Select Child"
-                    required>
+                    value="{{ old('child_id') ?? '' }}"
+                    error="{{ errors('child_id') ?? '' }}">
 
                     @if(!empty($unacessedChildren))
                     @foreach ($unacessedChildren as $child)
@@ -96,7 +97,8 @@ Child Profiles
                     name="reason_title"
                     searchable="1"
                     placeholder="Select Reason Category"
-                    required>
+                    value="{{ old('reason_title') ?? '' }}"
+                    error="{{ errors('reason_title') ?? '' }}">
                     @foreach ($accessReasons as $reason)
                     <li class="select-item" data-value="{{ $reason }}">
                         {{ $reason }}
@@ -104,7 +106,8 @@ Child Profiles
                     @endforeach
                 </c-select>
 
-                <c-textarea label="Reason " name='reason_description' placeholder="Enter reason for request" ></c-textarea>
+                <c-textarea label="Reason " value="{{ old('reason_description') ?? '' }}"
+                    error="{{ errors('reason_description') ?? '' }}" name='reason_description' placeholder="Enter reason for request"></c-textarea>
             </form>
             <c-slot name="close">
                 Close
