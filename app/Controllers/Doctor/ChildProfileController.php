@@ -31,6 +31,19 @@ class ChildProfileController
         $reasonTitle = $request->input('reason_title');
         $reasonDescription = $request->input('reason_description');
 
+        $validateError = $this->childService->validateRequestAccess($childId, $reasonTitle, $reasonDescription);
+        if (count(value: $validateError) !== 0) {
+            return redirect(route("doctor.child.profiles"))
+                ->withInput([
+                    "child_id" => $childId,
+                    "reason_title" => $reasonTitle,
+                    "reason_description" => $reasonDescription,
+                    
+                ])
+                ->withErrors($validateError)
+                ->with("request", true);
+        }
+
 
         $error = $this->childService->requestChildAccess(
             $staffId,
