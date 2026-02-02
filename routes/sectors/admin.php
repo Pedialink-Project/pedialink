@@ -66,10 +66,6 @@ return [
 
     // Admin notification
     ['GET', '/admin/notification', [NotificationController::class, 'index'], 'admin.notification', ['admin', 'verified']],
-    ['POST', '/admin/notification/{id}/mark-read', [NotificationController::class, 'markAsRead'], 'admin.notification.mark.read', ['admin', 'verified']],
-    ['POST', '/admin/notification/{id}/delete', [NotificationController::class,'deleteNotification'], 'admin.notification.delete', ['admin', 'verified']],
-        ['POST', '/admin/notification/delete-all', [NotificationController::class,'deleteAllNotification'], 'admin.notification.delete.all', ['admin', 'verified']],
-            ['POST', '/admin/notification/mark-read-all', [NotificationController::class, 'markAsReadAll'], 'admin.notification.mark.read.all', ['admin', 'verified']],
-
+   
 
 ];

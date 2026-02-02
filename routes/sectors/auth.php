@@ -2,7 +2,8 @@
 
 use App\Controllers\AuthController;
 use App\Controllers\SettingController;
-use App\Controllers\VerifyController;
+use App\Controllers\VerifyController;   
+use App\Controllers\NotificationController;
 
 return [
     ['GET', '/parent/register', [AuthController::class, 'parentRegisterInitial'], 'parent.register', ['guest']],
@@ -31,4 +32,11 @@ return [
     // Staff registration
     ['GET', '/staff/register', [AuthController::class, 'registerStaffView'], 'staff.register', ['guest']],
     ['POST', '/staff/register', [AuthController::class, 'registerStaff'], 'staff.register.submit', ['guest']],
+
+    // Notifications
+     ['POST', '/notification/{id}/mark-read', [NotificationController::class, 'markAsRead'], 'notification.mark.read', ['auth', 'verified']],
+    ['POST', '/notification/{id}/delete', [NotificationController::class, 'deleteNotification'], 'notification.delete', ['auth', 'verified']],
+    ['POST', '/notification/delete-all', [NotificationController::class, 'deleteAllNotification'], 'notification.delete.all', ['auth', 'verified']],
+    ['POST', '/notification/mark-read-all', [NotificationController::class, 'markAsReadAll'], 'notification.mark.read.all', ['auth', 'verified']],
+
 ];
