@@ -17,9 +17,8 @@ class EventController
     {
 
         $search = $request->input('search');
-        $filters = $request->input('filters');
 
-        $events = $this->eventService->getVisibleEvents($search,$filters);
+        $events = $this->eventService->getVisibleEvents($search);
 
         return view("parent/events-campaigns", ['events' => $events]);
     }
@@ -28,24 +27,18 @@ class EventController
     {
         $userId = auth()->user()->id;   
         $eventId = $id;
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $phone = $request->input('phone');
 
-        $errors = $this->eventService->validateEventBookingData($name, $email, $phone);
 
-        if (count($errors) !== 0) {
+        $error = $this->eventService->bookEvent($eventId, $userId);
+
+        if ($error) {
             return redirect(route("parent.events.campaigns"))
-                ->withInput([
-                    "name" => $name,
-                    "email" => $email,
-                    "phone" => $phone
-                ])
-                ->withErrors($errors)
-                ->with("booked", $id);
+                ->withMessage(
+                     $error,
+                    "Event not Booked",
+                    "error"
+                );
         }
-
-        $this->eventService->bookEvent($eventId, $userId, $name, $email, $phone);
 
         return redirect(route("parent.events.campaigns"))
             ->withMessage(

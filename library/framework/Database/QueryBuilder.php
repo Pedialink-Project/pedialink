@@ -1,6 +1,7 @@
 <?php
 
 namespace Library\Framework\Database;
+
 use PDO;
 use PDOException;
 
@@ -147,6 +148,14 @@ class QueryBuilder
             $sql .= ' ORDER BY ' . implode(', ', $this->orderBys);
         }
 
+        if ($this->limit !== null) {
+            $sql .= " LIMIT {$this->limit}";
+        }
+
+        if ($this->offset !== null) {
+            $sql .= " OFFSET {$this->offset}";
+        }
+
         $stmt = static::$pdo->prepare($sql);
         $stmt->execute($this->bindings);
 
@@ -268,7 +277,7 @@ class QueryBuilder
     {
         $sql = sprintf(
             "DELETE FROM %s" .
-            ($this->wheres ? ' WHERE ' . implode(' AND ', $this->wheres) : ''),
+                ($this->wheres ? ' WHERE ' . implode(' AND ', $this->wheres) : ''),
             $this->table
         );
 

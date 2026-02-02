@@ -15,7 +15,7 @@ Events & Campaigns
 @section('content')
 
 
-<c-table.controls action="{{ route('admin.event') }}" >
+<c-table.controls action="{{ route('admin.event') }}">
 
 
     <c-slot name="extrabtn">
@@ -105,6 +105,7 @@ Events & Campaigns
                     <c-table.th sortable="1">Date</c-table.th>
                     <c-table.th sortable="1">Time</c-table.th>
                     <c-table.th sortable="1">Location</c-table.th>
+                    <c-table.th sortable="1">Participants</c-table.th>
                     <c-table.th sortable="1">Visibility</c-table.th>
                     <c-table.th>Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
@@ -118,6 +119,9 @@ Events & Campaigns
                     <c-table.td class="event-tdata" col="date">{{ $event['event_date'] }} </c-table.td>
                     <c-table.td class="event-tdata" col="time">{{ $event['start_time']}} - {{ $event['end_time'] }} </c-table.td>
                     <c-table.td class="event-tdata" col="location">{{ $event['event_location'] }}</c-table.td>
+                     <c-table.td class="event-tdata" col="participants">{{ $event['participants_count'].' / '.$event['max_count'] }}</c-table.td>
+
+
                     <c-table.td class="event-tdata" col="visibility">
                         @if ($event["visible"])
                         <c-badge class="visibility-event" type="green">Visible</c-badge>
@@ -287,6 +291,53 @@ Events & Campaigns
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
+                                @if(strtolower($event['event_status']) !== 'cancelled')
+                                <c-modal id="cancel-event-modal-{{$key}}" size="sm"
+                                    :initOpen="flash('cancel') == $event['id'] ? true : false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Cancel Event</c-dropdown.item>
+                                    </c-slot>
+
+                                    <c-slot name="headerPrefix">
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clip-path="url(#clip0_717_10755)">
+                                                <path d="M9.99957 10L6 6M6.00043 10L10 6" stroke='#000000'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M14.6663 8.00008C14.6663 4.31818 11.6816 1.33341 7.99967 1.33341C4.31778 1.33341 1.33301 4.31818 1.33301 8.00008C1.33301 11.682 4.31778 14.6667 7.99967 14.6667C11.6816 14.6667 14.6663 11.682 14.6663 8.00008Z" stroke="#000000" stroke-width="1.5" />
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0_717_10755">
+                                                    <rect width="16" height="16" fill="white" />
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
+
+                                    </c-slot>
+                                    <c-slot name="header">
+                                        <div>Cancel Event</div>
+                                    </c-slot>
+
+                                    <form id="cancel-event-form-{{$event['id']}}" class="event-form"
+                                        action="{{ route('admin.event.cancel', ['id' => $event['id']]) }}" method="POST"
+                                        novalidate>
+                                        <p>
+                                            Do you want to cancel <span class="cancel-event-highlight">Event ID E-{{
+                                                $event['id'] }}</span>?
+                                        </p>
+                                       
+
+                                    </form>
+
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="cancel-event-form-{{$event['id']}}"
+                                            variant="destructive">
+                                            Cancel Event</c-button>
+                                    </c-slot>
+                                </c-modal>
+                                @else
                                 <c-modal>
                                     <c-slot name="trigger">
                                         <c-dropdown.item>Delete Event</c-dropdown.item>
@@ -315,6 +366,7 @@ Events & Campaigns
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
+                                @endif
                             </c-slot>
                         </c-dropdown.main>
                     </c-table.td>
@@ -326,10 +378,10 @@ Events & Campaigns
                         <div class="table-empty">No events found</div>
                     </td>
                 </tr>
-@endif
+                @endif
             </c-table.tbody>
         </c-table.main>
     </div>
 </c-table.wrapper>
- <c-table.pagination :links="$links" />
+<c-table.pagination :links="$links" />
 @endsection
