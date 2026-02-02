@@ -18,8 +18,10 @@ class ChildProfileController
     {
         $staffId = auth()->user()->id;
         $childern = $this->childService->getChildrenByStaffId($staffId);
+        $unacessedChildren = $this->childService->getUnaccessedChildrenForStaff($staffId);
+        $accessReasons = config('data.accessReason');
 
-        return view("doctor/childprofile", ["children" => $childern]);
+        return view("doctor/childprofile", ["children" => $childern,"unacessedChildren"=> $unacessedChildren,"accessReasons"=> $accessReasons]);
     }
 
     public function requestAccess(Request $request)
@@ -38,13 +40,15 @@ class ChildProfileController
         );
 
         if ($error) {
-            return redirect(route('doctor.childprofile'))->withMessage ($error, "Request Failed", "info");
+            return redirect(route('doctor.child.profiles'))->withMessage ($error, "Request Failed", "info");
         }
 
-        return redirect(route('doctor.childprofile'))->withMessage(
+        return redirect(route('doctor.child.profiles'))->withMessage(
             "Access request sent successfully",
             "Request Sent",
             "success"
         );
     }
+
+    
 }
