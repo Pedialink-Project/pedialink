@@ -82,4 +82,21 @@ class NotificationService
         $notification->is_read = true;
         $notification->save();
     }
+
+    public function deleteNotification(int $notificationId, int $userId): ?string
+    {
+        $notification = Notification::find($notificationId);
+
+        if (!$notification) {
+            return "Notification not found";
+        }
+
+        if ($notification->recipient_id !== $userId) {
+            return "Unauthorized action";
+        }
+
+        $notification->delete();
+
+        return null;
+    }
 }

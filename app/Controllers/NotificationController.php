@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\NotificationService;
+use App\Models\Notification;
 
 class NotificationController
 {
@@ -30,5 +31,20 @@ class NotificationController
         }
 
             return redirect(route("{$userRole}.notification"))->withMessage('success', 'Notification marked as read.', 'success');
+    }
+
+    public function deleteNotification($request,$notificationId)
+    {
+
+    $user = auth()->user()->id;
+    $error = $this->notificationService->deleteNotification($notificationId, $user);
+    $userRole = auth()->user()->role;
+
+    if ($error) {
+            return redirect(route("{$userRole}.notification"))->withMessage($error, 'Notification not Deleted.', 'error');
+        }
+
+            return redirect(route("{$userRole}.notification"))->withMessage('success', 'Notification deleted successfully.', 'success');
+        
     }
 }
