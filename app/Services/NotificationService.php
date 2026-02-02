@@ -109,4 +109,11 @@ class NotificationService
 
         return null;
     }
+
+    public function deleteAllNotification(int $userId): void
+    {
+        Notification::query()
+            ->where('recipient_id', '=', $userId)
+            ->delete();
+    }
 }
