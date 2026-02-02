@@ -379,7 +379,6 @@ class ChildService
         $request->child_id = $childId;
         $request->reason_title = $reasonTitle;
         $request->reason_description = $reasonDescription;
-        $request->accepted = false;
         $request->save();
 
         return null;
