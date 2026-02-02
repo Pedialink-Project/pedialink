@@ -65,5 +65,7 @@ return [
     ['GET', '/admin/settings', [SettingController::class, 'index'], 'admin.settings', ['admin']],
 
     // Admin notification
-    ['GET', '/admin/notification', [NotificationController::class, 'index'], 'admin.notification', ['admin', 'verified']]
+    ['GET', '/admin/notification', [NotificationController::class, 'index'], 'admin.notification', ['admin', 'verified']],
+    ['POST', '/admin/notification/{id}/mark-read', [NotificationController::class, 'markAsRead'], 'admin.notification.mark.read', ['admin', 'verified']],
+    ['POST', '/admin/notification/{id}/delete', [NotificationController::class,'deleteNotification'], 'admin.notification.delete', ['admin', 'verified']],
 ];
