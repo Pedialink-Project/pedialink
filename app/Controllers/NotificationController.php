@@ -36,10 +36,10 @@ class NotificationController
     public function markAsReadAll($request)
     {
         $user = auth()->user()->id;
-       $updated = $this->notificationService->markAllAsRead($user);
+        $updated = $this->notificationService->markAllAsRead($user);
         $userRole = auth()->user()->role;
 
-        if ($updated) {
+        if (!$updated) {
         return redirect(url: route("{$userRole}.notification"))->withMessage('You have no unread notifications', 'You have no unread notifications', 'success');
 
         }
