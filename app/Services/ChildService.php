@@ -358,6 +358,25 @@ class ChildService
         }
     }
 
+    public function validateRequestAccess( $childId,$reasonTitle, $reasonDescription)
+    {
+        $errors = [];
+
+        if (!Validator::validateFieldExistence($childId)) {
+            $errors['child_id'] = "Child Profile field cannot be empty";
+        }
+
+        if (!Validator::validateFieldExistence($reasonTitle)) {
+            $errors['reason_title'] = "Reason Title field cannot be empty";
+        }
+
+        if (!Validator::validateFieldExistence($reasonDescription)) {
+            $errors['reason_description'] = "Reason Description field cannot be empty";
+        }
+
+        return $errors;
+    }
+
     public function requestChildAccess(
         int $staffId,
         int $childId,
