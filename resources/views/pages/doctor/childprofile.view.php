@@ -42,16 +42,6 @@ Child Profiles
 
 <c-table.controls :columns='["ID","Name","Age","Vaccination Status","GN Devision"]'>
 
-    <c-slot name="filter">
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Category
-        </c-button>
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Status
-        </c-button>
-    </c-slot>
 
     <c-slot name="extrabtn">
         <c-modal id="addChild" size="sm" :initOpen="false">
@@ -59,13 +49,13 @@ Child Profiles
                 <c-button class="child-request-access-btn" variant="primary">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_1044_31547)">
-                            <path d="M10.417 18.3337H5.49272C4.2049 18.3337 3.18058 17.707 2.26088 16.8308C0.378129 15.0371 3.46933 13.6037 4.6483 12.9016C6.39897 11.8592 8.44769 11.4769 10.417 11.7546C11.1316 11.8554 11.8275 12.0431 12.5003 12.3177" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M13.75 5.41699C13.75 7.48806 12.0711 9.16699 10 9.16699C7.92893 9.16699 6.25 7.48806 6.25 5.41699C6.25 3.34592 7.92893 1.66699 10 1.66699C12.0711 1.66699 13.75 3.34592 13.75 5.41699Z" stroke="#FAFAFA" stroke-width="1.5"/>
-                            <path d="M15.4167 18.3333L15.4167 12.5M12.5 15.4167H18.3333" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M10.417 18.3337H5.49272C4.2049 18.3337 3.18058 17.707 2.26088 16.8308C0.378129 15.0371 3.46933 13.6037 4.6483 12.9016C6.39897 11.8592 8.44769 11.4769 10.417 11.7546C11.1316 11.8554 11.8275 12.0431 12.5003 12.3177" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M13.75 5.41699C13.75 7.48806 12.0711 9.16699 10 9.16699C7.92893 9.16699 6.25 7.48806 6.25 5.41699C6.25 3.34592 7.92893 1.66699 10 1.66699C12.0711 1.66699 13.75 3.34592 13.75 5.41699Z" stroke="#FAFAFA" stroke-width="1.5" />
+                            <path d="M15.4167 18.3333L15.4167 12.5M12.5 15.4167H18.3333" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" />
                         </g>
                         <defs>
                             <clipPath id="clip0_1044_31547">
-                                <rect width="20" height="20" fill="white"/>
+                                <rect width="20" height="20" fill="white" />
                             </clipPath>
                         </defs>
                     </svg>
@@ -79,12 +69,42 @@ Child Profiles
                 <div>Request Child Profile Access</div>
             </c-slot>
 
-            <form id="request-child-form" class="child-form" action="">
-                <c-select label="Child Profile" name="options" searchable="1" placeholder="Select Child" required>
-                    <li class="select-item" data-value="option1">Baby Sara</li>
-                    <li class="select-item" data-value="option2">Baby Nancy</li>
+            <form id="request-child-form" class="child-form" action="{{ route('doctor.childprofile.requestAccess') }}" method="POST">
+
+                <c-select
+                    label="Child Profile"
+                    name="child_id"
+                    searchable="1"
+                    placeholder="Select Child"
+                    required>
+
+                    @if(!empty($unacessedChildren))
+                    @foreach ($unacessedChildren as $child)
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }} ({{ 'C-00'.$child['id'] }})
+                    </li>
+                    @endforeach
+                    @else
+                    <li class="select-item disabled">
+                        No children available
+                    </li>
+                    @endif
                 </c-select>
-                <c-textarea label="Reason" placeholder="Enter reason for request" required></c-textarea>
+
+                <c-select
+                    label="Reason Category"
+                    name="reason_title"
+                    searchable="1"
+                    placeholder="Select Reason Category"
+                    required>
+                    @foreach ($accessReasons as $reason)
+                    <li class="select-item" data-value="{{ $reason }}">
+                        {{ $reason }}
+                    </li>
+                    @endforeach
+                </c-select>
+
+                <c-textarea label="Reason " name='reason_description' placeholder="Enter reason for request" ></c-textarea>
             </form>
             <c-slot name="close">
                 Close
@@ -111,142 +131,136 @@ Child Profiles
 
             <c-table.tbody>
                 @foreach ($children as $key => $child)
-                    <c-table.tr>
-                        <c-table.td col="id">C-00{{ $child['id'] }}</c-table.td>
-                        <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
-                        <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
-                        
-                        <c-table.td col="assigned_phm">{{ $child['phm']['name'] }}</c-table.td>
-                        <c-table.td class="table-actions" align="center">
-                            <c-dropdown.main>
-                                <c-slot name="trigger">
-                                    <c-button variant="ghost" class="dropdown-trigger">
-                                        <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
-                                    </c-button>
-                                </c-slot>
-                                <c-slot name="menu">
-                                    <c-dropdown.item>Copy Child ID</c-dropdown.item>
-                                    <c-dropdown.sep />
-                                    <c-modal id="View-Child-{{ $key }}" size="md" :initOpen="false">
-                                        <c-slot name="headerPrefix">
-                                            <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
-                                        </c-slot>
-                                        <c-slot name="trigger">
-                                            <c-dropdown.item>View Child Profile</c-dropdown.item>
-                                        </c-slot>
+                <c-table.tr>
+                    <c-table.td col="id">C-00{{ $child['id'] }}</c-table.td>
+                    <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
+                    <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
 
-                                        <c-slot name="headerSuffix">
-                                            <c-badge type="green">Good</c-badge>
-                                        </c-slot>
+                    <c-table.td col="assigned_phm">{{ $child['phm']['name'] }}</c-table.td>
+                    <c-table.td class="table-actions" align="center">
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
+                                <c-dropdown.item>Copy Child ID</c-dropdown.item>
+                                <c-dropdown.sep />
+                                <c-modal id="View-Child-{{ $key }}" size="md" :initOpen="false">
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
+                                    </c-slot>
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>View Child Profile</c-dropdown.item>
+                                    </c-slot>
 
-                                        <c-slot name="header">
-                                            <div>Child Profile Details</div>
-                                        </c-slot>
+                                    <c-slot name="headerSuffix">
+                                        <c-badge type="green">Good</c-badge>
+                                    </c-slot>
 
-                                        <c-modal.viewcard>
-                                            <c-modal.viewitem
-                                                icon="{{ asset('assets/icons/profile.svg') }}"
-                                                title="Child ID"
-                                                info="{{'C-00'. $child['id'] }}"
-                                            />
-                                            <c-modal.viewitem
-                                                icon="{{ asset('assets/icons/baby-01.svg') }}"
-                                                title="Name"
-                                                info="{{ $child['name'] }}"
-                                            />
-                                            <c-modal.viewitem
-                                                icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                                title="Total Vaccinations"
-                                                info="2"
-                                            />
-                                            <c-modal.viewitem
-                                                icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                                title="Age"
-                                                info="{{ $child['age'] }}"
-                                            />
-                                            <c-modal.viewitem
-                                                icon="{{ asset('assets/icons/location-05.svg') }}"
-                                                title="GS Division"
-                                                info="{{$child['area']}}"
-                                            />
-                                             <c-modal.viewitem
-                                                icon="{{ asset('assets/icons/user-add--01.svg') }}"
-                                                title="Assigned PHM"
-                                                info="{{ $child['phm']['name'] }}"
-                                            />
-                                        </c-modal.viewcard>
+                                    <c-slot name="header">
+                                        <div>Child Profile Details</div>
+                                    </c-slot>
 
-                                        <div class="parent-link-group">
-                                            <div class="parent-link-card">
-                                                <div class="name-group">
-                                                    <span class="parent-title">Nicole Sanders</span>
-                                                    <span class="parent-type">Mother</span>
-                                                </div>
-                                                <c-badge type="green">
-                                                    Linked
-                                                </c-badge>
+                                    <c-modal.viewcard>
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/profile.svg') }}"
+                                            title="Child ID"
+                                            info="{{'C-00'. $child['id'] }}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                            title="Name"
+                                            info="{{ $child['name'] }}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/vaccine.svg') }}"
+                                            title="Total Vaccinations"
+                                            info="2" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
+                                            title="Age"
+                                            info="{{ $child['age'] }}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/location-05.svg') }}"
+                                            title="GS Division"
+                                            info="{{$child['area']}}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/user-add--01.svg') }}"
+                                            title="Assigned PHM"
+                                            info="{{ $child['phm']['name'] }}" />
+                                    </c-modal.viewcard>
+
+                                    <div class="parent-link-group">
+                                        <div class="parent-link-card">
+                                            <div class="name-group">
+                                                <span class="parent-title">Nicole Sanders</span>
+                                                <span class="parent-type">Mother</span>
                                             </div>
-                                            <div class="parent-link-card">
-                                                <div class="name-group">
-                                                    <span class="parent-title">John Michael</span>
-                                                    <span class="parent-type">Father</span>
-                                                </div>
-                                                <c-badge type="green">
-                                                    Linked
-                                                </c-badge>
-                                            </div>
+                                            <c-badge type="green">
+                                                Linked
+                                            </c-badge>
                                         </div>
+                                        <div class="parent-link-card">
+                                            <div class="name-group">
+                                                <span class="parent-title">John Michael</span>
+                                                <span class="parent-type">Father</span>
+                                            </div>
+                                            <c-badge type="green">
+                                                Linked
+                                            </c-badge>
+                                        </div>
+                                    </div>
 
-                                        <c-modal.viewlist title="Medical Records">
-                                            <c-slot name="list">
-                                                <li>Height: 49.5 cm</li>
-                                                <li>Weight: 3.4 kg</li>
-                                                <li>BMI Value: 3.5</li>
-                                            </c-slot>
-                                        </c-modal.viewlist>
-
-                                        <c-modal.viewlist title="Recent Vaccinations">
-                                            <c-slot name="list">
-                                                <li>BCG - Dose 1 at 13th of July 2023</li>
-                                                <li>BCG - Dose 2 at 28th of September 2023</li>
-                                            </c-slot>
-                                        </c-modal.viewlist>
-
-                                        <c-modal.viewlist title="Other Information">
-                                            <c-slot name="list">
-                                                <li>Nutrition facts: Lorem Ipsum</li>
-                                                <li>Lorem Ipsum</li>
-                                            </c-slot>
-                                        </c-modal.viewlist>
-
-                                        <c-slot name="close">
-                                            Close
+                                    <c-modal.viewlist title="Medical Records">
+                                        <c-slot name="list">
+                                            <li>Height: 49.5 cm</li>
+                                            <li>Weight: 3.4 kg</li>
+                                            <li>BMI Value: 3.5</li>
                                         </c-slot>
+                                    </c-modal.viewlist>
 
-                                        <c-slot name="footer">
-                                            <c-button variant="primary">
-                                                <img src="{{ asset('assets/icons/download-04.svg')}}" />
-                                                Download documents
-                                            </c-button>
+                                    <c-modal.viewlist title="Recent Vaccinations">
+                                        <c-slot name="list">
+                                            <li>BCG - Dose 1 at 13th of July 2023</li>
+                                            <li>BCG - Dose 2 at 28th of September 2023</li>
                                         </c-slot>
-                                    </c-modal>                                    
-                                    <c-dropdown.item href="{{ route('doctor.child.health', ['id' => $key])}}">
-                                        View Health Records
-                                    </c-dropdown.item>
-                                    <c-dropdown.item href="{{ route('doctor.child.vaccination', ['id' => $key]) }}">
-                                        View Vaccination Records
-                                    </c-dropdown.item>
-                                </c-slot>
-                            </c-dropdown.main>
-                        </c-table.td>
-                    </c-table.tr>
+                                    </c-modal.viewlist>
+
+                                    <c-modal.viewlist title="Other Information">
+                                        <c-slot name="list">
+                                            <li>Nutrition facts: Lorem Ipsum</li>
+                                            <li>Lorem Ipsum</li>
+                                        </c-slot>
+                                    </c-modal.viewlist>
+
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button variant="primary">
+                                            <img src="{{ asset('assets/icons/download-04.svg')}}" />
+                                            Download documents
+                                        </c-button>
+                                    </c-slot>
+                                </c-modal>
+                                <c-dropdown.item href="{{ route('doctor.child.health', ['id' => $key])}}">
+                                    View Health Records
+                                </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('doctor.child.vaccination', ['id' => $key]) }}">
+                                    View Vaccination Records
+                                </c-dropdown.item>
+                            </c-slot>
+                        </c-dropdown.main>
+                    </c-table.td>
+                </c-table.tr>
                 @endforeach
                 @if(count($children) === 0)
-                    <tr>
-                        <td colspan="6">
-                            <div class="table-empty">No items found</div>
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="6">
+                        <div class="table-empty">No items found</div>
+                    </td>
+                </tr>
                 @endif
             </c-table.tbody>
         </c-table.main>
