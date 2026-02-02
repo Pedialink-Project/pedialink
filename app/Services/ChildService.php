@@ -385,6 +385,31 @@ class ChildService
         return null;
     }
 
+    public function getUnaccessedChildrenForStaff(int $staffId): array
+{
+    $requestedChildIds = ChildAccessRequest::query()
+        ->where('staff_id', '=', $staffId)
+        ->pluck('child_id');
+
+    $childrenQuery = Child::query();
+
+    if (!empty($requestedChildIds)) {
+        $childrenQuery->whereNotIn('id', $requestedChildIds);
+    }
+
+    $children = $childrenQuery->get();
+
+    $resource = [];
+    foreach ($children as $child) {
+        $resource[] = [
+            'id'   => $child->id,
+            'name' => $child->name,
+        ];
+    }
+
+    return $resource;
+}
+
 
     // public function deleteChildProfile(int $id)
     // {
