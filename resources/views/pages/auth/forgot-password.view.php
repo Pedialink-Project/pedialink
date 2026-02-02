@@ -26,7 +26,7 @@
             </div>
             <c-card class="form-content">
                 <div>
-                    <form id="forgot-password" method="POST" action="">
+                    <form id="forgot-password" method="POST" action="{{ route('reset.password.send')}}">
                         <c-input
                             label="Email:"
                             id="email"

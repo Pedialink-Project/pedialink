@@ -7,7 +7,7 @@ use Library\Framework\Core\Model;
 class User extends Model
 {
     protected static string $table = "users";
-    protected array $fillable = ["name", "role", "email"];
+    protected array $fillable = ["name", "role", "email", "email_verified"];
 
     public function isParent()
     {

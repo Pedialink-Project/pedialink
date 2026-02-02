@@ -11,7 +11,7 @@ use App\Controllers\ParentController;
 use App\Controllers\SettingController;
 
 return [
-    ['GET', '/parent/dashboard', [DashboardController::class, 'index'], 'parent.dashboard', ['parent']],
+    ['GET', '/parent/dashboard', [DashboardController::class, 'index'], 'parent.dashboard', ['parent', 'verified']],
     ['GET', '/parent/my-children', [MyChildrenController::class, 'index'], 'parent.my.children', ['parent']],
     ['GET', '/parent/my-children/{id}', [MyChildrenController::class, 'viewChildDetails'], 'parent.child.details', ['parent']],
     ['GET', '/parent/vaccination', [VaccinationController::class, 'index'], 'parent.vaccination', ['parent']],
@@ -21,6 +21,8 @@ return [
     ['POST', '/parent/appointment/{id}/reschedule', [AppointmentController::class, 'requestRescheduleAppointment'], 'parent.appointment.reschedule', ['parent']],
     ['POST', '/parent/appointment/{id}/cancel', [AppointmentController::class, 'requestCancelAppointment'], 'parent.appointment.cancel', ['parent']],
     ['GET', '/parent/events-campaigns', [EventController::class, 'index'], 'parent.events.campaigns', ['parent']],
-    ['GET', '/parent/notification', [NotificationController::class, 'index'], 'parent.notification', ['parent']],
-    ['GET', '/parent/settings', [SettingController::class, 'index'], 'parent.settings', ['parent']],
+    ['POST', '/parent/events-campaigns/{id}/book', [EventController::class, 'bookEvent'], 'parent.events.campaigns.book', ['parent']],
+    ['POST', '/parent/events-campaigns/{id}/cancel', [EventController::class, 'cancelEventBooking'], 'parent.events.campaigns.cancel', ['parent']],
+    ['GET', '/parent/notification', [NotificationController::class, 'index'], 'parent.notification', ['parent','verified']],
+    ['GET', '/parent/settings', [SettingController::class, 'index'], 'parent.settings', ['parent','verified']],
 ];

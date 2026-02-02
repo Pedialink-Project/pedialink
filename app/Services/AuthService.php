@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Helpers\NicExtractor;
+use App\Helpers\NicValidator;
 use App\Helpers\Validator;
+use App\Models\ParentM;
+use App\Models\User;
+use App\Rules\DivisionRule;
 use App\Rules\EmailRule;
 use App\Rules\NameRule;
 use App\Rules\PasswordRule;
-use App\Rules\ValidateDivision;
-use App\Rules\ValidateRule;
 
 /**
  * Service class that encapsulates logic
@@ -20,7 +23,7 @@ use App\Rules\ValidateRule;
  */
 class AuthService
 {
-    use NameRule, EmailRule, PasswordRule, ValidateRule;
+    use NameRule, EmailRule, PasswordRule, DivisionRule, NicValidator;
 
     /**
      * Validate account type
@@ -40,27 +43,6 @@ class AuthService
         $type = strtolower($type);
         if ($type !== "mother" && $type !== "father" && $type !== "guardian") {
             $error = "Account type is invalid";
-            return $error;
-        }
-
-        return $error;
-    }
-
-    /**
-     * Validate NIC
-     * 
-     * NOTE: Needs to be improved further. Currently does
-     * not strictly adhere unique constraints on NIC!
-     * 
-     * @param string $nic
-     * @return string|null
-     */
-    private function validateNic(string $nic)
-    {
-        $error = null;
-
-        if (!Validator::validateFieldExistence($nic)) {
-            $error = "NIC field cannot be empty";
             return $error;
         }
 
@@ -160,5 +142,29 @@ class AuthService
         }
 
         return $errors;
+    }
+
+    public function createParentAccount(array $data)
+    {
+        $user = new User();
+        $user->name = $data["firstName"] . " " . $data["lastName"];
+        $user->email = $data["email"];
+        $user->password_hash = $data["passwordHash"];
+        $user->role = "parent";
+        $userId = $user->save();
+
+        $nicExtractor = new NicExtractor($data["nic"]);
+        $extractedResults = $nicExtractor->getExtractedNic();
+
+        $parent = new ParentM();
+        $parent->id = $userId;
+        $parent->type = $data["type"];
+        $parent->address = $data["address"];
+        $parent->date_of_birth = $extractedResults["dob"];
+        $parent->nic = $data["nic"];
+        $parent->area_id = (int)$data["division"];
+        $parent->save();
+
+        return $user;
     }
 }

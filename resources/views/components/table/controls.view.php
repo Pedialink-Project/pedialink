@@ -44,9 +44,9 @@ $filters = isset($filters) ? $filters : null;
                   @foreach ($filterItems as $key => $item)
                     <c-dropdown.item asChild>
                       <c-checkbox
-                        name="filters[{{ $filterName }}][]"
-                        value="{{ $item }}"
-                        label="{{ $item }}"
+                        name="filters[{{ ucfirst($filterName) }}][]"
+                        value="{{ $item}}"
+                        label="{{ucfirst($item) }}"
                         :checked="isFilterChecked('filters[' . $filterName . '][]', $item)"
                       />
                     </c-dropdown.item>

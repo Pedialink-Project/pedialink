@@ -9,6 +9,7 @@ use App\Middleware\GuestMiddleware;
 use App\Middleware\ParentMiddleware;
 use App\Middleware\PublicHealthMidwifeMiddleware;
 use App\Middleware\StartSessionMiddleware;
+use App\Middleware\VerifiedMiddleware;
 use Library\Framework\Core\Application;
 use Library\Framework\Core\Provider;
 use Library\Framework\Routing\Router;
@@ -90,6 +91,7 @@ class RouteServiceProvider extends Provider
             'phm' => PublicHealthMidwifeMiddleware::class,
             'doctor' => DoctorMiddleware::class,
             'admin' => AdminMiddleware::class,
+            'verified' => VerifiedMiddleware::class,
         ], [
             'session',
         ]);

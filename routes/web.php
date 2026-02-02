@@ -9,6 +9,7 @@ $routeFiles = [
     'phm.php',
     'doctor.php',
     'admin.php',
+    'media.php',
     'test.php', // testing routes
 ];
 

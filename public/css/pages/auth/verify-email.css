@@ -1,0 +1,16 @@
+.verify-info {
+    color: var(--text-muted);
+}
+
+#resend-email {
+    justify-content: center;
+}
+
+#retry-info {
+    font-weight: var(--font-weight-medium);
+}
+
+#retry-info .seconds {
+    color: var(--color-red-500);
+    font-weight: var(--font-weight-bold);
+}

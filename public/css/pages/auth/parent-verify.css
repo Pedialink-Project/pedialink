@@ -1,0 +1,13 @@
+.form-content .form-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}
+
+#submit-documents, #go-back {
+    justify-content: center;
+}
+
+.submit-info {
+    color: var(--text-muted);
+}

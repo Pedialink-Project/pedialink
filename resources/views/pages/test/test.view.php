@@ -10,8 +10,11 @@ Test Table
 
 @section('content')
 
+<form method="POST" action="{{ route('test.mail') }}">
+    <c-button type="submit">Send mail</c-button>
+</form>
 
-<c-table.controls :columns='["ID","Name","Category","Date & Time","Status"]' action="{{ route('test.portal') }}" :filters="['Category' => ['Furniture','Footwear','Bedding'],'Status' => ['Active','Inactive','Draft']]">
+<c-table.controls :columns='["ID","Name","Category","Date & Time","Status"]' action="{{ route('test.portal') }}" :filters="['Category' => ['furniture','footwear','bedding'],'Status' => ['Active','Inactive','Draft']]">
     <c-slot name="extrabtn">
         <c-button variant="primary">
             Add Item
@@ -86,5 +89,5 @@ Test Table
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+ <c-table.pagination :links="$links" />
 @endsection

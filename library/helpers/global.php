@@ -5,8 +5,10 @@ use Library\Framework\Core\Application;
 use Library\Framework\Core\Env;
 use Library\Framework\Http\RedirectResponse;
 use Library\Framework\Http\Response;
+use Library\Framework\Mail\Mailer;
 use Library\Framework\Routing\Router;
 use Library\Framework\Session\SessionManager;
+use Library\Framework\Storage\Storage;
 use Library\Framework\View\View;
 use Library\Framework\Http\Request;
 
@@ -202,4 +204,24 @@ function request($key = null, $default = null)
     }
 
     return $req->input($key, $default);
+}
+
+/**
+ * Global helper to access storage class
+ */
+function storage(): Storage
+{
+    $storage = app(Storage::class);
+
+    return $storage;
+}
+
+/**
+ * Global helper to access mailer class
+ * @return Mailer
+ */
+function mailer(): Mailer
+{
+    $mailer = app(Mailer::class);
+    return $mailer;
 }
