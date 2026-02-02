@@ -105,6 +105,7 @@ Events & Campaigns
                     <c-table.th sortable="1">Date</c-table.th>
                     <c-table.th sortable="1">Time</c-table.th>
                     <c-table.th sortable="1">Location</c-table.th>
+                    <c-table.th sortable="1">Participants</c-table.th>
                     <c-table.th sortable="1">Visibility</c-table.th>
                     <c-table.th>Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
@@ -118,6 +119,9 @@ Events & Campaigns
                     <c-table.td class="event-tdata" col="date">{{ $event['event_date'] }} </c-table.td>
                     <c-table.td class="event-tdata" col="time">{{ $event['start_time']}} - {{ $event['end_time'] }} </c-table.td>
                     <c-table.td class="event-tdata" col="location">{{ $event['event_location'] }}</c-table.td>
+                     <c-table.td class="event-tdata" col="participants">{{ $event['participants_count'].' / '.$event['max_count'] }}</c-table.td>
+
+
                     <c-table.td class="event-tdata" col="visibility">
                         @if ($event["visible"])
                         <c-badge class="visibility-event" type="green">Visible</c-badge>
