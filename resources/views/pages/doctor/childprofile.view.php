@@ -38,21 +38,7 @@ Child Profiles
 @endsection
 
 @section('content')
-<?php
-$items = [
-    ['id' => 'C-123', 'name' => 'Sarah Peter', 'Age' => '4 months', 'Vaccination Status' => 'Completed', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'D-123', 'name' => 'John Peter', 'Age' => '7 months', 'Vaccination Status' => 'Overdue', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'B-123', 'name' => 'Daniel Parker', 'Age' => '5 months', 'Vaccination Status' => 'Completed', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'C-124', 'name' => 'Emily Stone', 'Age' => '6 months', 'Vaccination Status' => 'Pending', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'F-125', 'name' => 'Michael Lee', 'Age' => '8 months', 'Vaccination Status' => 'Completed', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'J-126', 'name' => 'Olivia Brown', 'Age' => '3 months', 'Vaccination Status' => 'Completed', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'L-127', 'name' => 'Liam Smith', 'Age' => '9 months', 'Vaccination Status' => 'Overdue', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'T-128', 'name' => 'Sophia Green', 'Age' => '2 months', 'Vaccination Status' => 'Completed', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'K-129', 'name' => 'Noah White', 'Age' => '10 months', 'Vaccination Status' => 'Pending', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'A-130', 'name' => 'Ava Black', 'Age' => '5 months', 'Vaccination Status' => 'Completed', 'assigned_phm' => 'Sarah Peters'],
-    ['id' => 'L-131', 'name' => 'Mason Gray', 'Age' => '7 months', 'Vaccination Status' => 'Completed', 'assigned_phm' => 'Sarah Peters'],
-];
-?>
+
 
 <c-table.controls :columns='["ID","Name","Age","Vaccination Status","GN Devision"]'>
 
@@ -118,39 +104,19 @@ $items = [
                     <c-table.th sortable="1">ID</c-table.th>
                     <c-table.th sortable="1">Name</c-table.th>
                     <c-table.th sortable="1">Age</c-table.th>
-                    <c-table.th>Vaccination Status</c-table.th>
                     <c-table.th>Assigned PHM</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
             <c-table.tbody>
-                @foreach ($items as $key => $item)
+                @foreach ($children as $key => $child)
                     <c-table.tr>
-                        <c-table.td col="id">{{ $item['id'] }}</c-table.td>
-                        <c-table.td col="name" class="child-col">{{ $item['name'] }}</c-table.td>
-                        <c-table.td col="Age" class="child-col">{{ $item['Age'] }}</c-table.td>
-                        <c-table.td col="Vaccination Status">
-                            @if (strtolower($item['Vaccination Status']) === "completed")
-                                <c-badge class="status-vaccination" type="green">
-                                    {{ ucfirst($item['Vaccination Status']) }}
-                                </c-badge>
-                            @elseif (strtolower($item['Vaccination Status']) === "upcoming")
-                                <c-badge class="status-vaccination" type="purple">
-                                    {{ ucfirst($item['Vaccination Status']) }}
-                                </c-badge>
-                            @elseif (strtolower($item['Vaccination Status']) === "overdue")
-                                <c-badge class="status-vaccination" type="red">
-                                    {{ ucfirst($item['Vaccination Status']) }}
-                                </c-badge>
-                            @elseif (strtolower($item['Vaccination Status']) === "pending")
-                                <c-badge class="status-vaccination" type="yellow">
-                                    {{ ucfirst($item['Vaccination Status']) }}
-                                </c-badge>
-                            @endif
-
-                        </c-table.td>
-                        <c-table.td col="assigned_phm">{{ $item['assigned_phm'] }}</c-table.td>
+                        <c-table.td col="id">C-00{{ $child['id'] }}</c-table.td>
+                        <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
+                        <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
+                        
+                        <c-table.td col="assigned_phm">{{ $child['phm']['name'] }}</c-table.td>
                         <c-table.td class="table-actions" align="center">
                             <c-dropdown.main>
                                 <c-slot name="trigger">
@@ -181,12 +147,12 @@ $items = [
                                             <c-modal.viewitem
                                                 icon="{{ asset('assets/icons/profile.svg') }}"
                                                 title="Child ID"
-                                                info="{{ $item['id'] }}"
+                                                info="{{'C-00'. $child['id'] }}"
                                             />
                                             <c-modal.viewitem
                                                 icon="{{ asset('assets/icons/baby-01.svg') }}"
                                                 title="Name"
-                                                info="{{ $item['name'] }}"
+                                                info="{{ $child['name'] }}"
                                             />
                                             <c-modal.viewitem
                                                 icon="{{ asset('assets/icons/vaccine.svg') }}"
@@ -196,17 +162,17 @@ $items = [
                                             <c-modal.viewitem
                                                 icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
                                                 title="Age"
-                                                info="{{ $item['Age'] }}"
+                                                info="{{ $child['age'] }}"
                                             />
                                             <c-modal.viewitem
                                                 icon="{{ asset('assets/icons/location-05.svg') }}"
                                                 title="GS Division"
-                                                info="Borella"
+                                                info="{{$child['area']}}"
                                             />
                                              <c-modal.viewitem
                                                 icon="{{ asset('assets/icons/user-add--01.svg') }}"
                                                 title="Assigned PHM"
-                                                info="{{ $item['assigned_phm'] }}"
+                                                info="{{ $child['phm']['name'] }}"
                                             />
                                         </c-modal.viewcard>
 
@@ -275,7 +241,7 @@ $items = [
                         </c-table.td>
                     </c-table.tr>
                 @endforeach
-                @if(count($items) === 0)
+                @if(count($children) === 0)
                     <tr>
                         <td colspan="6">
                             <div class="table-empty">No items found</div>
