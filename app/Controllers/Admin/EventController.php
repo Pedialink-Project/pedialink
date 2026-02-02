@@ -81,12 +81,22 @@ class EventController
                 ->with("edit", $id);
         }
 
-        $this->eventService->editEvent($id, $title, $date, $start_time, $end_time, $location, $maxCount);
+        $error = $this->eventService->editEvent($id, $title, $date, $start_time, $end_time, $location, $maxCount);
+
+        if ($error !== NULL) {
+            return redirect(route("admin.event"))
+                ->withMessage(
+                    $error,
+                    "Failed",
+                    "error",
+                );
+        }
+
 
         return redirect(route('admin.event'))->withMessage('success', 'Event updated successfully.', 'success');
     }
 
-    public function editEventVisible($requset, $id)
+    public function editEventVisible($request, $id)
     {
         $error = $this->eventService->validateEditEventVisible($id);
 
