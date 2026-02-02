@@ -53,7 +53,7 @@ class NotificationService
         $resource = [];
         foreach ($notifications as $notification) {
             $resource[] = [
-                'id'=> $notification->id,
+                'id' => $notification->id,
                 'title' => $notification->title,
                 'message' => $notification->message,
                 'time' => date('h:i A', strtotime($notification->created_at)),
@@ -82,10 +82,19 @@ class NotificationService
         $notification->is_read = true;
         $notification->save();
     }
+    public function countUnread(int $userId): int
+    {
+        return count(
+            Notification::query()
+                ->where('recipient_id', '=', $userId)
+                ->where('is_read', '=', 0)
+                ->get()
+        );
+    }
 
     public function markAllAsRead(int $userId)
     {
-       return Notification::query()
+        Notification::query()
             ->where('recipient_id', '=', $userId)
             ->where('is_read', '=', false)
             ->update([

@@ -30,21 +30,33 @@ class NotificationController
             return redirect(route("{$userRole}.notification"))->withMessage($error, 'Notification not marked as read.', 'error');
         }
 
-        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'Notification marked as read.', 'success');
+        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'Notification marked as read.', 'info');
     }
+
+
 
     public function markAsReadAll($request)
     {
         $user = auth()->user()->id;
-        $updated = $this->notificationService->markAllAsRead($user);
         $userRole = auth()->user()->role;
+        $unreadCount = $this->notificationService->countUnread($user);
 
-        if (!$updated) {
-        return redirect(url: route("{$userRole}.notification"))->withMessage('You have no unread notifications', 'You have no unread notifications', 'success');
-
+        if ($unreadCount === 0) {
+            return redirect(route("{$userRole}.notification"))
+                ->withMessage(
+                    'No unread notifications',
+                    'You have no unread notifications',
+                    'info'
+                );
         }
 
-        return redirect(url: route("{$userRole}.notification"))->withMessage('Success', 'All notifications have been marked as read', 'success');
+        $this->notificationService->markAllAsRead($user);
+
+
+
+
+
+        return redirect(url: route("{$userRole}.notification"))->withMessage('Success', 'All notifications have been marked as read', 'info');
     }
 
 
@@ -60,19 +72,17 @@ class NotificationController
             return redirect(route("{$userRole}.notification"))->withMessage($error, 'Notification not Deleted.', 'error');
         }
 
-        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'Notification deleted successfully.', 'success');
+        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'Notification deleted successfully.', 'info');
     }
 
-     public function deleteAllNotification($request)
+    public function deleteAllNotification($request)
     {
 
         $user = auth()->user()->id;
-     $this->notificationService->deleteAllNotification($user);
+        $this->notificationService->deleteAllNotification($user);
         $userRole = auth()->user()->role;
 
-        
-        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'All Notifications deleted successfully.', 'success');
-    }
 
-    
+        return redirect(route("{$userRole}.notification"))->withMessage('Success', 'All Notifications deleted successfully.', 'info');
+    }
 }
