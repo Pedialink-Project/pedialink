@@ -34,7 +34,7 @@ Notification
             <p>
                 Do you want to mark all notifications as read?
             </p>
-            <form method="POST" id="form-mark-as-all-read" action="{{ route( auth()->user()->role . '.notification.mark.read.all') }}">
+            <form method="POST" id="form-mark-as-all-read" action="{{ route( 'notification.mark.read.all') }}">
             </form>
 
             <c-slot name="close">
@@ -61,7 +61,7 @@ Notification
             <p>
                 Do you want to delete all notifications?
             </p>
-            <form method="POST" id="form-delete-all" action="{{ route( auth()->user()->role . '.notification.delete.all') }}">
+            <form method="POST" id="form-delete-all" action="{{ route('notification.delete.all') }}">
 
             </form>
 
@@ -110,7 +110,7 @@ Notification
                             <p>
                                 Do you want to mark this notification as read?
                             </p>
-                            <form method="POST" id="form-mark-as-read-{{$notification['id']}}" action="{{ route( auth()->user()->role . '.notification.mark.read', ['id' => $notification['id']]) }}">
+                            <form method="POST" id="form-mark-as-read-{{$notification['id']}}" action="{{ route('notification.mark.read', ['id' => $notification['id']]) }}">
                             </form>
 
                             <c-slot name="close">
@@ -137,7 +137,7 @@ Notification
                             <p>
                                 Do you want to delete this notification?
                             </p>
-                            <form method="POST" id="form-delete-{{$notification['id']}}" action="{{ route( auth()->user()->role . '.notification.delete', ['id' => $notification['id']]) }}">
+                            <form method="POST" id="form-delete-{{$notification['id']}}" action="{{ route( 'notification.delete', ['id' => $notification['id']]) }}">
 
                             </form>
 
