@@ -3,9 +3,15 @@
 namespace App\Services;
 
 use App\Models\Notification;
+use App\Models\User;
 
 class NotificationService
 {
+
+
+
+
+
     /**
      * Send notification to a single user
      */
@@ -39,6 +45,28 @@ class NotificationService
             $this->notify($userId, $title, $message, $entityType, $entityId);
         }
     }
+
+    public function notifyAdmins(
+        string $title,
+        string $message,
+        ?string $entityType = null,
+        ?int $entityId = null
+    ): void {
+        $admins = User::query()
+            ->where('role', '=', 'admin')
+            ->get();
+
+        foreach ($admins as $admin) {
+            $this->notify(
+                $admin->id,
+                $title,
+                $message,
+                $entityType,
+                $entityId
+            );
+        }
+    }
+
 
     /**
      * Get notifications for logged-in user (latest first)
