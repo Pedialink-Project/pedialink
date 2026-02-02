@@ -21,7 +21,7 @@
             </c-button>
         </c-slot>
         <c-slot name="extrabtn">
-            <c-modal id="add-schedule-modal" size="sm" :initOpen="false">
+            <c-modal id="add-schedule-modal" size="sm" :initOpen="flash('add') ? true : false">
                 <c-slot name="trigger">
                     <c-button class="add-schedule-btn" variant="primary">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -52,10 +52,34 @@
                     <div>Add New Schedule</div>
                 </c-slot>
 
-                <form id="add-schedule" class="schedule-form" action="">
-                    <c-input type="text" label="Schedule Name" placeholder="Enter schedule name" required />
-                    <c-input type="text" label="Schedule Version Number" placeholder="Enter schedule verison number" required />
-                    <c-input type="date" label="Effective From" placeholder="Select Date" required />
+                <form id="add-schedule" method="POST" class="schedule-form" action="{{ route('admin.vaccination.schedule.create') }}">
+                    <c-input
+                        type="text"
+                        name="name"
+                        value="{{ old('name') ?? '' }}"
+                        error="{{ errors('name') ?? '' }}"
+                        label="Schedule Name"
+                        placeholder="Enter schedule name"
+                        required
+                    />
+                    <c-input
+                        type="text"
+                        name="version"
+                        value="{{ old('version') ?? '' }}"
+                        error="{{ errors('version') ?? '' }}"
+                        label="Schedule Version Number"
+                        placeholder="Enter schedule verison number"
+                        required
+                    />
+                    <c-input
+                        type="date"
+                        name="effective_from"
+                        value="{{ old('effective_from') ?? '' }}"
+                        error="{{ errors('effective_from') ?? '' }}"
+                        label="Effective From"
+                        placeholder="Select Date"
+                        required
+                    />
                 </form>
 
                 <c-slot name="close">
@@ -146,13 +170,13 @@
                                         </c-modal>
                                         <c-modal>
                                             <c-slot name="trigger">
-                                                <c-dropdown.item>{{ !$schedule["enabled"] ? "Enable" : "Disable"}} Schedule</c-dropdown.item>
+                                                <c-dropdown.item>{{ !$schedule["active"] ? "Enable" : "Disable"}} Schedule</c-dropdown.item>
                                             </c-slot>
                                             <c-slot name="header">
-                                                {{ !$schedule["enabled"] ? "Enable" : "Disable"}} Schedule
+                                                {{ !$schedule["active"] ? "Enable" : "Disable"}} Schedule
                                             </c-slot>
 
-                                            @if ($schedule["enabled"])
+                                            @if ($schedule["active"])
                                                 <p>
                                                     <span class="schedule-warning-highlight">Warning:</span> Disabling a schedule must only be done during emergencies or maintenance mode. Prefer enabling a different schedule.
                                                 </p>
@@ -173,8 +197,8 @@
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="{{ !$schedule['enabled'] ? 'primary' : 'destructive' }}">
-                                                    {{ !$schedule["enabled"] ? "Enable" : "Disable"}} Schedule
+                                                <c-button type="submit" variant="{{ !$schedule['active'] ? 'primary' : 'destructive' }}">
+                                                    {{ !$schedule["active"] ? "Enable" : "Disable"}} Schedule
                                                 </c-button>
                                             </c-slot>
                                         </c-modal>  
@@ -187,7 +211,7 @@
                                                 <div>Delete Schedule</div>
                                             </c-slot>
 
-                                            @if ($schedule["enabled"])
+                                            @if ($schedule["active"])
                                                 <p>
                                                     <span class="schedule-warning-highlight">Warning:</span> You cannot delete a currently enabled schedule!
                                                 </p>
