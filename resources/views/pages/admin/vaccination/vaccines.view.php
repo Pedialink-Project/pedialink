@@ -178,12 +178,14 @@
                                                 Do you want to delete <span class="delete-vaccine-highlight">Vaccine Code: {{ $vaccine["code"] }}</span>?
                                             </p>
 
+                                            <form id="delete-vaccine-{{ $key }}" method="POST" action="{{ route('admin.vaccination.vaccines.delete', ['id' => $vaccine['id']]) }}"></form>
+
                                             <c-slot name="close">
                                                 Cancel
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="destructive">
+                                                <c-button type="submit" form="delete-vaccine-{{ $key }}" variant="destructive">
                                                     Delete Vaccine
                                                 </c-button>
                                             </c-slot>
