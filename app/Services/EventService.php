@@ -254,7 +254,6 @@ class EventService
         $registration->booking_status = 'booked';
         $registration->save();
 
-        if ($booked) {
             $this->addEventParticpantCount($eventId);
 
             $event = Events::find($eventId);
@@ -267,7 +266,7 @@ class EventService
                 "event",
                 $event->id
             );
-        }
+        
     }
 
 
