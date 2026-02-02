@@ -358,6 +358,34 @@ class ChildService
         }
     }
 
+    public function requestChildAccess(
+        int $staffId,
+        int $childId,
+        string $reasonTitle,
+        string $reasonDescription
+    ): ?string {
+        // Prevent duplicate requests
+        $existing = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->where('child_id', '=', $childId)
+            ->first();
+
+        if ($existing) {
+            return "Access request already exists";
+        }
+
+        $request = new ChildAccessRequest();
+        $request->staff_id = $staffId;
+        $request->child_id = $childId;
+        $request->reason_title = $reasonTitle;
+        $request->reason_description = $reasonDescription;
+        $request->accepted = false;
+        $request->save();
+
+        return null;
+    }
+
+
     // public function deleteChildProfile(int $id)
     // {
     //     $child = Child::find($id);
