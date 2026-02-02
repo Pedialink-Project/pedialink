@@ -16,6 +16,7 @@ Notification
 
 
 <div class="notification-main">
+    @if(!empty($notifications))
     <div class="notification-btn-group">
 
 
@@ -75,6 +76,7 @@ Notification
             </c-slot>
         </c-modal>
     </div>
+
 
     <div class="notification-card-group">
 
@@ -158,5 +160,12 @@ Notification
         </c-card>
         @endforeach
     </div>
+    @else
+
+    <c-emptytable
+        alt="No Notifications"
+        title="No Notifications"
+        description="You have no notifications at this time." />
+    @endif
 </div>
 @endsection
