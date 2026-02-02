@@ -8,6 +8,7 @@ use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
+use App\Models\ChildAccessRequest;
 use DateTime;
 
 class ChildService
@@ -35,8 +36,6 @@ class ChildService
 
         $d = $diff->d;
         return $d . ' day' . ($d === 1 ? '' : 's');
-
-
     }
 
     public function getAllChildren()
@@ -115,8 +114,57 @@ class ChildService
                 'notes' => $child->notes,
                 'parent' => $parentResource,
                 'phm' => $phmResource,
-            ]
-            ;
+            ];
+        }
+
+        return $resource;
+    }
+
+    public function getChildrenByStaffId(int $staffId)
+    {
+        $accessRequests = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->where('accepted', '=', 1)
+            ->get();
+
+        if (empty($accessRequests)) {
+            return [];
+        }
+
+        $resource = [];
+
+        foreach ($accessRequests as $request) {
+            $child = $request->getChild();
+
+            if (!$child) {
+                continue;
+            }
+
+            $parent = ParentM::find($child->parent_id);
+            $phm    = PublicHealthMidwife::find($child->phm_id);
+
+            $resource[] = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'date_of_birth' => $child->date_of_birth,
+                'age' => $this->calculateAge($child->date_of_birth),
+                'gender' => $child->gender,
+                'health_status' => $child->health_status,
+                'area' => $child->getArea()->code,
+                'blood_type' => $child->blood_type,
+                'notes' => $child->notes,
+
+                'parent' => $parent ? [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                    'email' => User::find($parent->id)->email,
+                ] : null,
+
+                'phm' => $phm ? [
+                    'id' => $phm->id,
+                    'name' => User::find($phm->id)->name,
+                ] : null,
+            ];
         }
 
         return $resource;
@@ -129,7 +177,7 @@ class ChildService
         $childRecord = ChildRecord::query()->where('child_id', '=', $id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
 
         $childRecordResource = null;
-        if($childRecord) {
+        if ($childRecord) {
             $childRecordResource = [
                 'id' => $childRecord->id,
                 'visit_date' => $childRecord->visit_date,
@@ -176,9 +224,8 @@ class ChildService
             'notes' => $child->notes,
             'parent' => $parentResource,
             'phm' => $phmResource,
-            'record'=>$childRecordResource
-        ]
-        ;
+            'record' => $childRecordResource
+        ];
 
 
         return $resource;
@@ -287,7 +334,7 @@ class ChildService
     {
         $phmId = auth()->id();
 
-        
+
         $child = new Child();
         $child->name = $name;
         $child->date_of_birth = $dob;
