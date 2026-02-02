@@ -10,12 +10,20 @@ use App\Rules\PhoneRule;
 use App\Rules\NameRule;
 use App\Rules\TextRule;
 use App\Rules\DateRule;
+use App\Services\NotificationService;
 use Library\Framework\Database\QueryBuilder;
 
 class EventService
 {
 
     use NameRule, PhoneRule, TextRule, DateRule, NumberRule;
+
+    private NotificationService $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = new NotificationService();
+    }
 
 
     private function applySearch(QueryBuilder $events, string $search)
@@ -60,7 +68,7 @@ class EventService
             $events = $this->applySearch($events, $search);
         }
 
-        
+
         $results = $events
             ->orderBy('id', 'ASC')
             ->paginate(8);
@@ -233,6 +241,17 @@ class EventService
 
         if ($booked) {
             $this->addEventParticpantCount($eventId);
+
+            $event = Events::find($eventId);
+            $adminId = $event->admin_id;
+
+            $this->notificationService->notify(
+                $adminId,
+                "New Event Booking",
+                "A user has booked your event '{$event->title}'.",
+                "event",
+                $event->id
+            );
         }
     }
 
