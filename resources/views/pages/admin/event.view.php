@@ -333,7 +333,7 @@ Events & Campaigns
                                             Cancel Event</c-button>
                                     </c-slot>
                                 </c-modal>
-                                @endif
+                                @else
                                 <c-modal>
                                     <c-slot name="trigger">
                                         <c-dropdown.item>Delete Event</c-dropdown.item>
@@ -362,6 +362,7 @@ Events & Campaigns
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
+                                @endif
                             </c-slot>
                         </c-dropdown.main>
                     </c-table.td>
