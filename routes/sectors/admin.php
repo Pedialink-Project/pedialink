@@ -51,6 +51,7 @@ return [
     ['POST', '/admin/vaccination/vaccines/{id}/edit', [VaccineController::class, 'editVaccine'], 'admin.vaccination.vaccines.edit', ['admin', 'verified']],
     ['POST', '/admin/vaccination/vaccines/{id}/delete', [VaccineController::class, 'deleteVaccine'], 'admin.vaccination.vaccines.delete', ['admin', 'verified']],
     ['GET', '/admin/vaccination/schedule', [VaccineController::class, 'schedule'], 'admin.vaccination.schedule', ['admin', 'verified']],
+    ['POST', '/admin/vaccination/schedule/create', [VaccineController::class, 'addSchedule'], 'admin.vaccination.schedule.create', ['admin', 'verified']],
     ['GET', '/admin/vaccination/schedule/{schedule_id}/manage', [VaccineController::class, 'manageSchedule'], 'admin.vaccination.schedule.manage', ['admin', 'verified']],
 
     // Admin appointment
