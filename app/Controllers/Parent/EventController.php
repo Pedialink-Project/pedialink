@@ -29,7 +29,16 @@ class EventController
         $eventId = $id;
 
 
-        $this->eventService->bookEvent($eventId, $userId);
+        $error = $this->eventService->bookEvent($eventId, $userId);
+
+        if ($error) {
+            return redirect(route("parent.events.campaigns"))
+                ->withMessage(
+                     $error,
+                    "Event not Booked",
+                    "error"
+                );
+        }
 
         return redirect(route("parent.events.campaigns"))
             ->withMessage(
