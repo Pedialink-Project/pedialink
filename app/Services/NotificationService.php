@@ -83,6 +83,16 @@ class NotificationService
         $notification->save();
     }
 
+    public function markAllAsRead(int $userId): void
+    {
+        Notification::query()
+            ->where('recipient_id', '=', $userId)
+            ->where('is_read', '=', false)
+            ->update([
+                'is_read' => true
+            ]);
+    }
+
     public function deleteNotification(int $notificationId, int $userId): ?string
     {
         $notification = Notification::find($notificationId);
