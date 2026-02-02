@@ -60,7 +60,7 @@ class EventService
             $events = $this->applySearch($events, $search);
         }
 
-        
+
         $results = $events
             ->orderBy('id', 'ASC')
             ->paginate(8);
@@ -167,7 +167,7 @@ class EventService
         return $error;
     }
 
-  
+
 
     public function validateEventCancelData($reason)
     {
@@ -201,17 +201,46 @@ class EventService
 
     public function bookEvent($eventId, $userId)
     {
-        $eventRegistration = new EventRegistrations();
-        $eventRegistration->event_id = $eventId;
-        $eventRegistration->user_id = $userId;
-        $eventRegistration->booking_status = 'booked';
+        $event = Events::find($eventId);
 
-        $booked = $eventRegistration->save();
-
-        if ($booked) {
-            $this->addEventParticpantCount($eventId);
+        if (!$event) {
+            return  "Event not found";
         }
+
+        if ($event->is_cancelled) {
+            return "Event is cancelled";
+        }
+
+        if ($event->participants_count >= $event->max_count) {
+            return "Event is fully booked";
+        }
+
+        $status = $this->getEventStatus($eventId);
+        if ($status !== 'upcoming') {
+            return "Cannot book this event";
+        }
+
+        $alreadyBooked = EventRegistrations::query()
+            ->where('event_id', '=', $eventId)
+            ->where('user_id', '=', $userId)
+            ->where('booking_status', '=', 'booked')
+            ->first();
+
+        if ($alreadyBooked) {
+            return "You have already booked this event";
+        }
+
+        $registration = new EventRegistrations();
+        $registration->event_id = $eventId;
+        $registration->user_id = $userId;
+        $registration->booking_status = 'booked';
+        $registration->save();
+
+        $this->addEventParticpantCount($eventId);
+
+        return null;
     }
+
 
     public function cancelEventBooking($eventId, $userId, $reason)
     {
@@ -378,6 +407,23 @@ class EventService
     {
 
         $event = Events::find($eventId);
+
+        if (!$event) {
+            $error = "Event not found";
+            return $error;
+        }
+
+        $eventStart = new \DateTime(
+            $event->event_date . ' ' . $event->start_time
+        );
+
+        $now   = new \DateTime();
+        $limit = (clone $now)->modify('+24 hours');
+
+        if ($eventStart <= $limit) {
+            $error = "Event details can only be edited more than 24 hours before the event starts";
+            return $error;
+        }
         $event->title = $title;
         $event->admin_id = auth()->user()->id;
         $event->event_date = $eventDate;
@@ -387,6 +433,8 @@ class EventService
         $event->max_count = $maxCount;
 
         $event->save();
+
+        return null;
     }
 
     public function editEventVisible($eventId)
