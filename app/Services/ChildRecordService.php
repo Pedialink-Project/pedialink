@@ -10,7 +10,11 @@ use App\Models\Child;
 class ChildRecordService
 {
 
+    private $notificationService;
 
+    public function __construct(){
+        $this->notificationService = new NotificationService();
+    }
     private function calculateBMI(?float $heightCm, ?float $weightKg): ?float
     {
         if (!$heightCm || !$weightKg) {
@@ -167,6 +171,50 @@ class ChildRecordService
     return $errors;
 }
 
+public function validateEditRecordData(
+    $visitDate,
+    $height,
+    $weight,
+    $headCircumference,
+): array {
+
+    $errors = [];
+
+    if (!$visitDate) {
+        $errors['e_visit_date'] = 'Visit date is required.';
+    } elseif (!strtotime($visitDate)) {
+        $errors['e_visit_date'] = 'Invalid visit date.';
+    } elseif ($visitDate > date('Y-m-d')) {
+        $errors['e_visit_date'] = 'Visit date cannot be in the future.';
+    }
+
+    if ($height !== null) {
+        if (!is_numeric($height)) {
+            $errors['e_height'] = 'Height must be numeric.';
+        } elseif ($height < 10 || $height > 250) {
+            $errors['e_height'] = 'Height must be between 10cm and 250cm.';
+        }
+    }
+
+    if ($weight !== null) {
+        if (!is_numeric($weight)) {
+            $errors['e_weight'] = 'Weight must be numeric.';
+        } elseif ($weight < 1 || $weight > 150) {
+            $errors['e_weight'] = 'Weight must be between 1kg and 150kg.';
+        }
+    }
+
+    if ($headCircumference !== null) {
+        if (!is_numeric($headCircumference)) {
+            $errors['e_head_circumference'] = 'Head circumference must be numeric.';
+        } elseif ($headCircumference < 20 || $headCircumference > 70) {
+            $errors['e_head_circumference'] = 'Head circumference must be between 20cm and 70cm.';
+        }
+    }
+
+    return $errors;
+}
+
 
     public function addHealthRecord(
         $childId,
@@ -204,6 +252,47 @@ class ChildRecordService
         $record->head_circumference = $headCircumference;
         $record->notes = $notes;
 
+
+        $record->save();
+
+        return $record;
+    }
+
+    public function editHealthRecord(
+        $recordId,
+        $visitDate,
+        $height,
+        $weight,
+        $headCircumference,
+    ) {
+
+        $record = ChildRecord::find($recordId);
+
+        $staffId = $record->staff_id;
+
+        if (!$record) {
+            return "Record not found.";
+        }
+
+        $bmi = $this->calculateBMI($height, $weight);
+
+        $childDob = Child::find($record->child_id)->date_of_birth;
+        $ageMonths = $this->calculateAgeInMonths($childDob);
+
+        $healthStatus = $this->evaluateHealthStatus(
+            $ageMonths,
+            $height,
+            $weight,
+            $headCircumference,
+            $bmi
+        );
+
+        $record->visit_date = $visitDate;
+
+        $record->height = $height;
+        $record->weight = $weight;
+        $record->bmi = $bmi;
+        $record->head_circumference = $headCircumference;
 
         $record->save();
 
