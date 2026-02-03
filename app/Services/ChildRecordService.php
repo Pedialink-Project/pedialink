@@ -6,6 +6,7 @@ use App\Models\ChildRecord;
 use App\Models\Staff;
 use App\Models\User;
 use App\Models\Child;
+use Library\Framework\Database\QueryBuilder;
 
 class ChildRecordService
 {
@@ -16,6 +17,9 @@ class ChildRecordService
     {
         $this->notificationService = new NotificationService();
     }
+
+
+
     private function calculateBMI(?float $heightCm, ?float $weightKg): ?float
     {
         if (!$heightCm || !$weightKg) {
@@ -71,23 +75,34 @@ class ChildRecordService
 
         return match (true) {
             $riskScore >= 4 => 'critical',
-            $riskScore >= 2 => 'at-risk',
+            $riskScore >= 2 => 'at_risk',
             default => 'good',
         };
     }
 
 
-    public function getChildRecordsByChildId(int $childId): array
-    {
-        $records = ChildRecord::query()
-            ->where('child_id', '=', $childId)
+    public function getChildRecordsByChildId(
+        int $childId,
+        ?string $search = null,
+        ?array $filters = null
+    ): array {
+
+        $recordsQuery = ChildRecord::query()
+            ->where('child_id', '=', $childId);
+
+        if ($search) {
+            $recordsQuery->where('notes', 'ILIKE', "%{$search}%");
+        }
+
+        $results = $recordsQuery
             ->orderBy('visit_date', 'DESC')
             ->orderBy('created_at', 'DESC')
-            ->get();
+            ->paginate(10)
+            ->toArray();
 
         $resource = [];
 
-        foreach ($records as $record) {
+        foreach ($results['items'] as $record) {
 
             $staff = Staff::find($record->staff_id);
 
@@ -120,12 +135,15 @@ class ChildRecordService
                 ),
                 'notes' => $record->notes,
                 'created_at' => $record->created_at,
-
                 'staff' => $staffResource
             ];
         }
 
-        return $resource;
+
+        $links = array_diff_key($results, ['items' => true]);
+
+
+        return [$resource, $links];
     }
 
     public function validateRecordData(
