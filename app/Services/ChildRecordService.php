@@ -111,7 +111,7 @@ class ChildRecordService
             $resource[] = [
                 'id' => $record->id,
                 'visit_date' => $record->visit_date,
-                'age_recorded_at' => $record->age_recorded_at,
+                'age_recorded_at' => $this->calculateAgeInMonths(Child::find($childId)->date_of_birth ,$record->visit_date),
                 'height' => $record->height,
                 'weight' => $record->weight,
                 'bmi' => $record->bmi,
@@ -234,8 +234,8 @@ class ChildRecordService
 
         $bmi = $this->calculateBMI($height, $weight);
 
-        $childDob = Child::find($childId)->date_of_birth;
-        $ageMonths = $this->calculateAgeInMonths($childDob);
+            $childDob = Child::find($childId)->date_of_birth;
+            $ageMonths = $this->calculateAgeInMonths($childDob, $visitDate);
 
         $healthStatus = $this->evaluateHealthStatus(
             $ageMonths,
@@ -250,8 +250,7 @@ class ChildRecordService
         $record->child_id = $childId;
         $record->staff_id = $staffId;
         $record->visit_date = $visitDate;
-        $record->age_recorded_at = $ageMonths;
-
+        $record->health_statud = $healthStatus;
         $record->height = $height;
         $record->weight = $weight;
         $record->bmi = $bmi;
@@ -282,19 +281,7 @@ class ChildRecordService
 
         $bmi = $this->calculateBMI($height, $weight);
 
-        $childDob = Child::find($record->child_id)->date_of_birth;
-        $ageMonths = $this->calculateAgeInMonths($childDob);
-
-        $healthStatus = $this->evaluateHealthStatus(
-            $ageMonths,
-            $height,
-            $weight,
-            $headCircumference,
-            $bmi
-        );
-
         $record->visit_date = $visitDate;
-
         $record->height = $height;
         $record->weight = $weight;
         $record->bmi = $bmi;
@@ -323,10 +310,10 @@ class ChildRecordService
         return $child->name;
     }
 
-    private function calculateAgeInMonths(string $dob): int
+    private function calculateAgeInMonths(string $dob,string $visitDate): int
     {
         $dobDate = new \DateTime($dob);
-        $now = new \DateTime();
+        $now = new \DateTime($visitDate);
 
         if ($dobDate > $now) {
             return 0;
