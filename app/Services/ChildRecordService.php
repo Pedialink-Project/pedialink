@@ -9,6 +9,24 @@ use App\Models\User;
 class ChildRecordService
 {
 
+
+    private function calculateBMI(?float $heightCm, ?float $weightKg): ?float
+    {
+        if (!$heightCm || !$weightKg) {
+            return null;
+        }
+
+        $heightM = $heightCm / 100;
+
+        if ($heightM <= 0) {
+            return null;
+        }
+
+        $bmi = $weightKg / ($heightM * $heightM);
+
+        return round($bmi, 2);
+    }
+
     public function getChildRecordsByChildId(int $childId): array
     {
         $records = ChildRecord::query()
@@ -43,7 +61,7 @@ class ChildRecordService
                 'weight' => $record->weight,
                 'bmi' => $record->bmi,
                 'head_circumference' => $record->head_circumference,
-                'health_status'=> "good",
+                'health_status' => "good",
                 'notes' => $record->notes,
                 'created_at' => $record->created_at,
 
