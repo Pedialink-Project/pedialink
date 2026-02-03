@@ -247,6 +247,8 @@
                                                 <p>
                                                     Do you want to delete <span class="delete-schedule-highlight">Schedule ID: {{ $schedule["id"] }}</span>?
                                                 </p>
+
+                                                <form id="delete-schedule-{{ $key }}" method="POST" action="{{ route('admin.vaccination.schedule.delete', ['id' => $schedule['id']]) }}"></form>
                                             @endif
 
                                             <c-slot name="close">
@@ -254,9 +256,11 @@
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="destructive">
-                                                    Delete Schedule
-                                                </c-button>
+                                                @if (!$schedule['active'])
+                                                    <c-button type="submit" variant="destructive" form="delete-schedule-{{ $key }}">
+                                                        Delete Schedule
+                                                    </c-button>
+                                                @endif
                                             </c-slot>
                                         </c-modal>                                    
                                     </c-slot>
