@@ -259,5 +259,5 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection

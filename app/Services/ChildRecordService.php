@@ -97,7 +97,7 @@ class ChildRecordService
         $results = $recordsQuery
             ->orderBy('visit_date', 'DESC')
             ->orderBy('created_at', 'DESC')
-            ->paginate(10)
+            ->paginate(7)
             ->toArray();
 
         $resource = [];

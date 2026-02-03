@@ -26,6 +26,7 @@ class ChildHealthController
             "id" => $id,
             'name'=>$name,
             "records" => $records,
+            "links"=> $links
         ]);
     }
 
