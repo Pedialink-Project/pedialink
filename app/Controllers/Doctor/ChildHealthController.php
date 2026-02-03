@@ -72,6 +72,44 @@ class ChildHealthController
             ->withMessage("Health record added successfully.", "Success", "success");
     }
 
+    public function editHealthRecord(Request $request, int $id, int $recordId)
+    {
+        $height = $request->input('e_height');
+        $weight = $request->input('e_weight');
+        $headCircumference = $request->input('e_head_circumference');
+        $visitDate = $request->input('e_visit_date');
+
+        $errors = $this->childRecordService->validateEditRecordData(
+            $visitDate,
+            $height,
+            $weight,
+            $headCircumference,
+        );
+
+        if (count($errors) > 0) {
+            return redirect(route("doctor.child.health", ["id" => $id]))
+                ->withInput([
+                    "e_height" => $height,
+                    "e_weight" => $weight,
+                    "e_head_circumference" => $headCircumference,
+                    "e_visit_date" => $visitDate,
+                ])
+                ->withErrors($errors)
+                ->with("edit", $recordId);
+        }
+
+        $this->childRecordService->editHealthRecord(
+            $recordId,
+            $visitDate,
+            $height,
+            $weight,
+            $headCircumference,
+        );
+
+        return redirect(route("doctor.child.health", ["id" => $id]))
+            ->withMessage("Health record updated successfully.", "Success", "success");
+    }
+
 
     public function vaccinationIndex(Request $request, int $id)
     {
