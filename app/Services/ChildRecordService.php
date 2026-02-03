@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ChildRecord;
 use App\Models\Staff;
 use App\Models\User;
+use App\Models\Child;
 
 class ChildRecordService
 {
@@ -120,5 +121,15 @@ class ChildRecordService
         }
 
         return $resource;
+    }
+
+    public function getChildNameById($id){
+
+        $child = Child::find($id);
+
+        return $child->name;
+
+    
+
     }
 }
