@@ -210,14 +210,14 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                                         <c-input type="date" name="e_visit_date" label="Visit Date" value="{{ flash('edit') == $record['id'] ? (old('e_visit_date') ?? '') : $record['visit_date'] }}"
                                             error="{{ errors('e_visit_date') ?? '' }}" placeholder="Select the Visit Date" />
 
-                        
 
-                                    <c-slot name="close">
-                                        Cancel
-                                    </c-slot>
-                                    <c-slot name="footer">
-                                        <c-button type="submit" form="edit-health-record-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
-                                    </c-slot>
+
+                                        <c-slot name="close">
+                                            Cancel
+                                        </c-slot>
+                                        <c-slot name="footer">
+                                            <c-button type="submit" form="edit-health-record-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
+                                        </c-slot>
                                 </c-modal>
                                 <c-modal id="mark-as-invalid-record-{{ $key }}" size="sm" :initOpen="false">
                                     <c-slot name="trigger">
@@ -250,7 +250,11 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                 @if(count($records) === 0)
                 <tr>
                     <td colspan="6">
-                        <div class="table-empty">No items found</div>
+                        <c-emptytable
+                            alt="No Health Records found"
+                            title="No Health Records Available"
+                            description="No health records match your current search or filters. Try adjusting them to see more results." />
+
                     </td>
                 </tr>
                 @endif
