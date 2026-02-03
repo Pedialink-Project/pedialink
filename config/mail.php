@@ -23,10 +23,10 @@ return [
     |--------------------------------------------------------------------------
     */
     'smtp' => [
-        'host'       => env('SMTP_HOST', 'sandbox.smtp.mailtrap.io'),
+        'host'       => env('SMTP_HOST', 'smtp.gmail.com'),
         'port'       => (int) (env('SMTP_PORT', 587)),
-        'username'   => env('SMTP_USER', 'fc402512f1b937'),
-        'password'   => env('SMTP_PASS', '****1b8f'),
+        'username'   => env('SMTP_USER', null),
+        'password'   => env('SMTP_PASS', null),
         // 'tls' uses STARTTLS on port 587; 'ssl' uses direct SSL on port 465
         'encryption' => env('SMTP_ENCRYPTION', 'tls'),
         'timeout'    => (int) (env('SMTP_TIMEOUT', 30)),
