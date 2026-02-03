@@ -207,6 +207,7 @@
                                                 <p>
                                                     Do you want to disable <span class="delete-schedule-highlight">Schedule ID: {{ $schedule["id"] }}</span>?
                                                 </p>
+                                                <form id="schedule-status-{{ $key }}" method="POST" action="{{ route('admin.vaccination.schedule.disable', ['id' => $schedule['id']]) }}"></form>
                                             @else 
                                                 <p>
                                                     <span class="schedule-warning-highlight">Warning:</span> Enabling this schedule will disable previously enabled schedule!
@@ -214,6 +215,7 @@
                                                 <p>
                                                     Do you want to enable <span class="delete-schedule-highlight">Schedule ID: {{ $schedule["id"] }}</span>?
                                                 </p>
+                                                <form id="schedule-status-{{ $key }}" method="POST" action="{{ route('admin.vaccination.schedule.enable', ['id' => $schedule['id']]) }}"></form>
                                             @endif
 
                                             <c-slot name="close">
@@ -221,7 +223,7 @@
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="{{ !$schedule['active'] ? 'primary' : 'destructive' }}">
+                                                <c-button type="submit" form="schedule-status-{{ $key }}" variant="{{ !$schedule['active'] ? 'primary' : 'destructive' }}">
                                                     {{ !$schedule["active"] ? "Enable" : "Disable"}} Schedule
                                                 </c-button>
                                             </c-slot>
