@@ -40,7 +40,9 @@ Child Profiles
 @section('content')
 
 
-<c-table.controls :columns='["ID","Name","Age","Vaccination Status","GN Devision"]'>
+
+
+<c-table.controls action="{{ route('doctor.child.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected']]">
 
 
     <c-slot name="extrabtn">
@@ -133,7 +135,10 @@ Child Profiles
                 </c-table.tr>
             </c-table.thead>
 
+
+
             <c-table.tbody>
+
                 @foreach ($children as $key => $child)
                 <c-table.tr>
                     <c-table.td col="id">C-00{{ $child['id'] }}</c-table.td>
@@ -180,7 +185,7 @@ Child Profiles
                                             name="child_id_display"
                                             searchable="0"
                                             value="{{ $child['name'] }} ({{ 'C-00'.$child['id'] }})"
-                                            disabled="0">  
+                                            disabled="0">
                                         </c-select>
 
                                         <c-select
@@ -368,14 +373,20 @@ Child Profiles
                 @if(count($children) === 0)
                 <tr>
                     <td colspan="6">
-                        <div class="table-empty">No items found</div>
+                        <c-emptytable
+                            alt="No children found"
+                            title="No Child Profiles Available"
+                            description="No child profiles match your current search or filters. Try adjusting them to see more results." />
+
+
                     </td>
                 </tr>
-                @endif
+            @endif
+
             </c-table.tbody>
         </c-table.main>
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection

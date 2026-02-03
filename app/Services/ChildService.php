@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
 use App\Models\ChildAccessRequest;
+use Library\Framework\Database\QueryBuilder;
 use DateTime;
 
 class ChildService
@@ -20,6 +21,13 @@ class ChildService
     {
         $this->notificationService = new NotificationService();
     }
+
+    private function applyChildSearch(QueryBuilder $children, string $search)
+{
+    $children->where('name', 'ILIKE', "$search%");
+    return $children;
+}
+
 
     private function calculateAge($dob): string
     {
@@ -128,80 +136,101 @@ class ChildService
         return $resource;
     }
 
-    public function getChildrenByStaffId(int $staffId)
-    {
-        $accessRequestsRaw = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->get();
+   public function getChildrenByStaffId(
+    int $staffId,
+    ?string $search = null,
+    ?array $filters = null
+) {
 
-        $accessRequests = [];
-        foreach ($accessRequestsRaw as $req) {
-            $accessRequests[$req->child_id] = $req;
-        }
+    $childrenQuery = Child::query();
 
-        $children = Child::all();
-
-        $resource = [];
-
-        foreach ($children as $child) {
-
-            $parent = ParentM::find($child->parent_id);
-            $phm    = PublicHealthMidwife::find($child->phm_id);
-
-            $accessStatus = 'not_requested';
-            $hasFullAccess = false;
-
-            if (isset($accessRequests[$child->id])) {
-                $request = $accessRequests[$child->id];
-
-                if ($request->accepted === true) {
-                    $accessStatus = 'accepted';
-                    $hasFullAccess = true;
-                } elseif ($request->accepted === false) {
-                    $accessStatus = 'pending';
-                } else {
-                    $accessStatus = 'rejected';
-                }
-            }
-
-            $childData = [
-                'id'   => $child->id,
-                'name' => $child->name,
-                'age'  => $this->calculateAge($child->date_of_birth),
-
-                'phm' => $phm ? [
-                    'id'   => $phm->id,
-                    'name' => User::find($phm->id)->name,
-                ] : null,
-
-                'access_status' => $accessStatus,
-            ];
-
-            if ($hasFullAccess) {
-                $childData = array_merge($childData, [
-                    'date_of_birth' => $child->date_of_birth,
-                    'gender'        => $child->gender,
-                    'health_status' => $child->health_status,
-                    'blood_type'    => $child->blood_type,
-                    'notes'         => $child->notes,
-                    'area'          => $child->getArea()->code,
-
-                    'parent' => $parent ? [
-                        'id'    => $parent->id,
-                        'name'  => User::find($parent->id)->name,
-                        'email' => User::find($parent->id)->email,
-                    ] : null,
-                ]);
-            }
-
-            $resource[] = $childData;
-        }
-
-        return $resource;
+    if ($search) {
+        $childrenQuery = $this->applyChildSearch($childrenQuery, $search);
     }
 
+    $results = $childrenQuery
+        ->orderBy('id', 'ASC')
+        ->paginate(10)
+        ->toArray();
 
-    public function getChildrenById(int $id)
+    $resource = [];
+
+    $requests = ChildAccessRequest::query()
+        ->where('staff_id', '=', $staffId)
+        ->get();
+
+    foreach ($results['items'] as $child) {
+
+        $request = null;
+
+        foreach ($requests as $req) {
+            if ($req->child_id == $child->id) {
+                $request = $req;
+                break;
+            }
+        }
+
+        $accessStatus = 'not_requested';
+        $hasFullAccess = false;
+
+        if ($request) {
+            if ($request->accepted === true) {
+                $accessStatus = 'accepted';
+                $hasFullAccess = true;
+            } elseif ($request->accepted === false) {
+                $accessStatus = 'pending';
+            } else {
+                $accessStatus = 'rejected';
+            }
+        }
+
+        if (!empty($filters['access_status'])) {
+            if (!in_array($accessStatus, $filters['access_status'])) {
+                continue;
+            }
+        }
+
+        $parent = ParentM::find($child->parent_id);
+        $phm    = PublicHealthMidwife::find($child->phm_id);
+
+        $childData = [
+            'id' => $child->id,
+            'name' => $child->name,
+            'age' => $this->calculateAge($child->date_of_birth),
+            'access_status' => $accessStatus,
+
+            'phm' => $phm ? [
+                'id' => $phm->id,
+                'name' => User::find($phm->id)->name,
+            ] : null,
+        ];
+
+        if ($hasFullAccess) {
+            $childData = array_merge($childData, [
+                'gender' => $child->gender,
+                'health_status' => $child->health_status,
+                'blood_type' => $child->blood_type,
+                'notes' => $child->notes,
+                'area' => $child->getArea()->code,
+
+                'parent' => $parent ? [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                    'email' => User::find($parent->id)->email,
+                ] : null,
+            ]);
+        }
+
+        $resource[] = $childData;
+    }
+
+    $links = array_diff_key($results, ['items' => true]);
+
+    return [$resource, $links];
+}
+
+
+    public function getChildernById(int $id)
     {
         $child = Child::find($id);
 
