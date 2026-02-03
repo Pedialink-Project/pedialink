@@ -180,7 +180,13 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
 
                                     <c-modal.viewlist title="Additional Information">
                                         <c-slot name="list">
-                                            <li>{{ $record['notes'] }}</li>
+                                            <li>
+                                                @if($record['notes'])
+                                                {{ $record['notes'] }}
+                                                @else
+                                                No additional information available.
+                                                @endif
+                                            </li>
                                         </c-slot>
                                     </c-modal.viewlist>
 
@@ -209,15 +215,14 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                                             error="{{ flash('edit') == $record['id'] ? (errors('e_head_circumference') ?? '') : '' }}" placeholder="Enter Head Circumference of the Child (in cm)" />
                                         <c-input type="date" name="e_visit_date" label="Visit Date" value="{{ flash('edit') == $record['id'] ? (old('e_visit_date') ?? '') : $record['visit_date'] }}"
                                             error="{{ errors('e_visit_date') ?? '' }}" placeholder="Select the Visit Date" />
+                                    </form>
 
-
-
-                                        <c-slot name="close">
-                                            Cancel
-                                        </c-slot>
-                                        <c-slot name="footer">
-                                            <c-button type="submit" form="edit-health-record-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
-                                        </c-slot>
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="edit-health-record-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
+                                    </c-slot>
                                 </c-modal>
                                 <c-modal id="mark-as-invalid-record-{{ $key }}" size="sm" :initOpen="false">
                                     <c-slot name="trigger">
@@ -231,14 +236,16 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                                         <div>Mark as Invalid</div>
                                     </c-slot>
 
-                                    <p>Are you sure you want to mark this record as invalid?</p>
-
+                                    <form id="mark-as-invalid-record-form-{{$record['id']}}" class="child-health-form" action="{{route('doctor.child.health.markinvalid', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
+                                        <p>This action will mark the health record as invalid and it will no longer be considered in the child's health assessments.</p>
+                                        <p>Are you sure you want to mark this record as invalid?</p>
+                                    </form>
                                     <c-slot name="close">
                                         Cancel
                                     </c-slot>
 
                                     <c-slot name="footer">
-                                        <c-button size="sm" variant="destructive">Mark</c-button>
+                                        <c-button size="sm" type="submit" form="mark-as-invalid-record-form-{{$record['id']}}" variant="destructive">Mark</c-button>
                                     </c-slot>
                                 </c-modal>
                             </c-slot>
