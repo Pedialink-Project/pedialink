@@ -25,7 +25,7 @@ class ChildProfileController
         $unacessedChildren = $this->childService->getUnaccessedChildrenForStaff($staffId);
         $accessReasons = config('data.accessReason');
 
-        return view("doctor/childprofile", ["children" => $children, "unacessedChildren" => $unacessedChildren, "accessReasons" => $accessReasons]);
+        return view("doctor/childprofile", ["children" => $children, "unacessedChildren" => $unacessedChildren, "accessReasons" => $accessReasons,"links"=> $links]);
     }
 
     public function requestAccess(Request $request)
