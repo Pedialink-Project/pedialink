@@ -469,6 +469,27 @@ class ChildService
         return $resource;
     }
 
+    public function cancelChildAccessRequest(int $staffId, int $childId): ?string
+{
+    $request = ChildAccessRequest::query()
+        ->where('staff_id', '=', $staffId)
+        ->where('child_id', '=', $childId)
+        ->first();
+
+    if (!$request) {
+        return "Access request not found";
+    }
+
+    if ($request->accepted === true) {
+        return "Cannot cancel an already accepted request";
+    }
+
+    $request->delete();
+
+    return null; 
+}
+
+
 
     // public function deleteChildProfile(int $id)
     // {

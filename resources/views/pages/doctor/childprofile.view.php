@@ -152,7 +152,7 @@ Child Profiles
                             @endif
                     </c-table.td>
                     <c-table.td class="table-actions" align="center">
-                        @if($child['access_status'] !== 'accepted')
+                        @if($child['access_status'] == 'not_requested')
                         <c-dropdown.main>
                             <c-slot name="trigger">
                                 <c-button variant="ghost" class="dropdown-trigger">
@@ -177,7 +177,43 @@ Child Profiles
 
                             </c-slot>
                         </c-dropdown.main>
-                        @else
+                        @elseif($child['access_status'] === 'pending')
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
+                                <c-modal id="cancel-request-{{$child['id']}}" size="sm" :initOpen="flash('request') ? true : false">
+                                  
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/cancel-circle.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Cancel Request</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="header">
+                                        <div>Cancel Child Access Request</div>
+                                    </c-slot>
+
+                                    <form id="cancel-request-child-form-{{$child['id']}}" class="child-form" action="{{ route('doctor.childprofile.cancel.requestAccess',['id' => $child['id']]) }}" method="POST">
+<p>
+                                        Do you want to cancel <span class="delete-event-highlight">Child ID C-00{{
+                                            $child['id'] }} access request</span>?
+                                    </p>
+                                       
+                                    </form>
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="cancel-request-child-form-{{$child['id']}}" variant="destructive">Cancel Request</c-button>
+                                    </c-slot>
+                                </c-modal> </c-slot>
+                        </c-dropdown.main>
+                        @elseif($child['access_status'] === 'accepted')
                         <c-dropdown.main>
                             <c-slot name="trigger">
                                 <c-button variant="ghost" class="dropdown-trigger">
