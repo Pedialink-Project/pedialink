@@ -16,12 +16,16 @@ class ChildProfileController
 
     public function index(Request $request)
     {
+
+        $search = $request->input('search');
+        $filters = $request->input('filters');
+
         $staffId = auth()->user()->id;
-        $childern = $this->childService->getChildrenByStaffId($staffId);
+        [$children,$links] = $this->childService->getChildrenByStaffId($staffId, $search, $filters);
         $unacessedChildren = $this->childService->getUnaccessedChildrenForStaff($staffId);
         $accessReasons = config('data.accessReason');
 
-        return view("doctor/childprofile", ["children" => $childern, "unacessedChildren" => $unacessedChildren, "accessReasons" => $accessReasons]);
+        return view("doctor/childprofile", ["children" => $children, "unacessedChildren" => $unacessedChildren, "accessReasons" => $accessReasons]);
     }
 
     public function requestAccess(Request $request)
