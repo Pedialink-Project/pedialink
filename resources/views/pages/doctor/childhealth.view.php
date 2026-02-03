@@ -37,7 +37,7 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
 @section('content')
 
 
-<c-table.controls :columns='["Recorded at","Height","Weight","Head Circumference","Health Status"]'>
+<c-table.controls action="{{route('doctor.child.health',['id' => $id])}}">
 
     <c-slot name="extrabtn">
         <c-modal id="add-health-record-modal" size="sm" :initOpen="flash('add') ? true : false">
