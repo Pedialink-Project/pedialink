@@ -16,7 +16,9 @@ class ChildHealthController
     }
     public function index(Request $request, int $id)
     {
-        $records = $this->childRecordService->getChildRecordsByChildId($id);
+
+    $search = $request->input("search");
+        [$records, $links] = $this->childRecordService->getChildRecordsByChildId($id, $search);
         $name = $this->childRecordService->getChildNameById($id);
 
 
