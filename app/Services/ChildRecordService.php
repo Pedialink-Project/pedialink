@@ -108,10 +108,14 @@ class ChildRecordService
 
         foreach ($results['items'] as $record) {
 
+            if ($record->mark_as_invalid) {
+                continue;
+            }
+
             $resource[] = [
                 'id' => $record->id,
                 'visit_date' => $record->visit_date,
-                'age_recorded_at' => $this->calculateAgeInMonths(Child::find($childId)->date_of_birth ,$record->visit_date),
+                'age_recorded_at' => $this->calculateAgeInMonths(Child::find($childId)->date_of_birth, $record->visit_date),
                 'height' => $record->height,
                 'weight' => $record->weight,
                 'bmi' => $record->bmi,
@@ -234,8 +238,8 @@ class ChildRecordService
 
         $bmi = $this->calculateBMI($height, $weight);
 
-            $childDob = Child::find($childId)->date_of_birth;
-            $ageMonths = $this->calculateAgeInMonths($childDob, $visitDate);
+        $childDob = Child::find($childId)->date_of_birth;
+        $ageMonths = $this->calculateAgeInMonths($childDob, $visitDate);
 
         $healthStatus = $this->evaluateHealthStatus(
             $ageMonths,
@@ -250,7 +254,7 @@ class ChildRecordService
         $record->child_id = $childId;
         $record->staff_id = $staffId;
         $record->visit_date = $visitDate;
-        $record->health_statud = $healthStatus;
+        $record->health_status = $healthStatus;
         $record->height = $height;
         $record->weight = $weight;
         $record->bmi = $bmi;
@@ -265,6 +269,7 @@ class ChildRecordService
 
     public function editHealthRecord(
         $recordId,
+        $staffId,
         $visitDate,
         $height,
         $weight,
@@ -273,7 +278,7 @@ class ChildRecordService
 
         $record = ChildRecord::find($recordId);
 
-        $staffId = $record->staff_id;
+        $recordStaffId = $record->staff_id;
 
         if (!$record) {
             return "Record not found.";
@@ -288,15 +293,46 @@ class ChildRecordService
         $record->head_circumference = $headCircumference;
 
         $record->save();
+        if ($recordStaffId !== $staffId) {
+            $this->notificationService->notify(
+                $staffId,
+                "Health record updated",
+                "The health record of child C-00 " . $record->child_id . " has been updated.",
+                "child_record_updated",
+                $record->child_id . "" . $record->child_id
 
-        $this->notificationService->notify(
-            $staffId,
-            "Health record updated",
-            "The health record of child C-00 " . $record->child_id . " has been updated.",
-            "child_record_updated",
-            $record->child_id . "" . $record->child_id
+            );
+        }
 
-        );
+        return null;
+    }
+
+    public function markAsInvalidRecord($recordId, $staffId)
+    {
+        $record = ChildRecord::find($recordId);
+
+
+        $recordStaffId = $record->staff_id;
+
+        if (!$record) {
+            return "Record not found.";
+        }
+
+        $record->mark_as_invalid = true;
+
+        $record->save();
+
+        if ($recordStaffId !== $staffId) {
+
+            $this->notificationService->notify(
+                $recordStaffId,
+                "Health record marked as invalid",
+                "The health record of child C-00 " . $record->child_id . " has been marked as invalid.",
+                "child_record_updated",
+                $record->child_id . "" . $record->child_id
+
+            );
+        }
 
         return null;
     }
@@ -310,7 +346,7 @@ class ChildRecordService
         return $child->name;
     }
 
-    private function calculateAgeInMonths(string $dob,string $visitDate): int
+    private function calculateAgeInMonths(string $dob, string $visitDate): int
     {
         $dobDate = new \DateTime($dob);
         $now = new \DateTime($visitDate);
