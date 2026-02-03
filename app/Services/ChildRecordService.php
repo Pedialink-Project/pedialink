@@ -93,6 +93,10 @@ class ChildRecordService
         if ($search) {
             $recordsQuery->where('notes', 'ILIKE', "%{$search}%");
         }
+        if (!empty($filters['health_status'])) {
+            $recordsQuery->whereIn('health_status', $filters['health_status']);
+        }
+
 
         $results = $recordsQuery
             ->orderBy('visit_date', 'DESC')
@@ -104,20 +108,6 @@ class ChildRecordService
 
         foreach ($results['items'] as $record) {
 
-            $staff = Staff::find($record->staff_id);
-
-            $staffResource = null;
-
-            if ($staff) {
-                $user = User::find($staff->id);
-
-                $staffResource = [
-                    'id' => $staff->id,
-                    'name' => $user?->name,
-                    'role' => $staff->role,
-                ];
-            }
-
             $resource[] = [
                 'id' => $record->id,
                 'visit_date' => $record->visit_date,
@@ -126,16 +116,9 @@ class ChildRecordService
                 'weight' => $record->weight,
                 'bmi' => $record->bmi,
                 'head_circumference' => $record->head_circumference,
-                'health_status' => $this->evaluateHealthStatus(
-                    $record->age_recorded_at,
-                    $record->height,
-                    $record->weight,
-                    $record->head_circumference,
-                    $record->bmi
-                ),
+                'health_status' => $record->health_status,
                 'notes' => $record->notes,
                 'created_at' => $record->created_at,
-                'staff' => $staffResource
             ];
         }
 
