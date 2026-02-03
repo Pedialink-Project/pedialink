@@ -31,7 +31,7 @@ Child Health Records
         </clipPath>
     </defs>
 </svg>
-Health Records &#8594; Baby Sarah &middot; C-000{{ $id }}
+Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
 @endsection
 
 @section('content')
