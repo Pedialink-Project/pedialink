@@ -35,22 +35,7 @@
 @endsection
 
 @section('content')
-    <?php
-    $items = [
-        ['Recorded at' => '2024-01-15 at 09.00 AM', 'Height' => '49.5 cm','Weight' => '3.3 kg', 'Head Circumference' =>'20 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-16 at 09.15 AM', 'Height' => '42.5 cm','Weight' => '2.3 kg', 'Head Circumference' =>'23 cm', 'Health Status' => 'Bad'],
-        ['Recorded at' => '2024-01-17 at 09.28 AM', 'Height' => '48.5 cm','Weight' => '3.4 kg', 'Head Circumference' =>'24 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-13 at 08.00 AM', 'Height' => '43.6 cm','Weight' => '3.6 kg', 'Head Circumference' =>'20 cm', 'Health Status' => 'Bad'],
-        ['Recorded at' => '2024-01-22 at 08.30 AM', 'Height' => '46.5 cm','Weight' => '3.4 kg', 'Head Circumference' =>'26 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-18 at 09.45 AM', 'Height' => '41.7 cm','Weight' => '3.7 kg', 'Head Circumference' =>'22 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-25 at 09.10 AM', 'Height' => '44.9 cm','Weight' => '3.9 kg', 'Head Circumference' =>'21 cm', 'Health Status' => 'Bad'],
-        ['Recorded at' => '2024-01-12 at 09.00 AM', 'Height' => '43.5 cm','Weight' => '3.4 kg', 'Head Circumference' =>'22 cm', 'Health Status' => 'Bad'],
-        ['Recorded at' => '2024-01-21 at 09.24 AM', 'Height' => '46.5 cm','Weight' => '3.5 kg', 'Head Circumference' =>'22 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-14 at 09.00 AM', 'Height' => '48.5 cm','Weight' => '3.6 kg', 'Head Circumference' =>'20 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-16 at 09.00 AM', 'Height' => '48.5 cm','Weight' => '2.9 kg', 'Head Circumference' =>'25 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-22 at 09.00 AM', 'Height' => '43.5 cm','Weight' => '3.3 kg', 'Head Circumference' =>'23 cm', 'Health Status' => 'Good'],
-    ];
-    ?>
+   
 
     <c-table.controls :columns='["Recorded at","Height","Weight","Head Circumference","Health Status"]'>
 
@@ -105,24 +90,24 @@
                 </c-table.thead>
 
                 <c-table.tbody>
-                    @foreach ($items as $key=>$item)
+                    @foreach ($records as $key=>$record)
                         <c-table.tr>
-                            <c-table.td col="Recorded at">{{ $item['Recorded at'] }}</c-table.td>
-                            <c-table.td col="Height">{{ $item['Height'] }}</c-table.td>
-                            <c-table.td col="Weight">{{ $item['Weight'] }}</c-table.td>
-                            <c-table.td col="Head Circumference">{{ $item['Head Circumference'] }}</c-table.td>
+                            <c-table.td col="Recorded at">{{ $record['visit_date'] }}</c-table.td>
+                            <c-table.td col="Height">{{ $record['height'] }}</c-table.td>
+                            <c-table.td col="Weight">{{ $record['weight'] }}</c-table.td>
+                            <c-table.td col="Head Circumference">{{ $record['head_circumference'] }}</c-table.td>
                             <c-table.td col="Health Status">
-                                @if (strtolower($item['Health Status']) === "good")
+                                @if (strtolower($record['health_status']) === "good")
                                     <c-badge type="green">
-                                        {{ $item['Health Status'] }}
+                                        {{ $record['health_status'] }}
                                     </c-badge>
-                                @elseif (strtolower($item['Health Status']) === "critical")
+                                @elseif (strtolower($record['health_status']) === "critical")
                                     <c-badge type="purple">
-                                        {{ $item['Health Status'] }}
+                                        {{ $record['health_status'] }}
                                     </c-badge>
-                                @elseif (strtolower($item['Health Status']) === "bad")
+                                @elseif (strtolower($record['health_status']) === "bad")
                                     <c-badge type="red">
-                                        {{ $item['Health Status'] }}
+                                        {{ $record['health_status'] }}
                                     </c-badge>
                                 @endif
                             </c-table.td>
@@ -144,7 +129,7 @@
                                             </c-slot>
 
                                             <c-slot name="headerSuffix">
-                                                    <c-badge type="success">{{$item['Health Status']}}</c-badge>
+                                                    <c-badge type="success">{{$record['health_status']}}</c-badge>
                                             </c-slot>
 
                                             <c-slot name="header">
@@ -160,7 +145,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/ruler.svg') }}"
                                                     title="Height"
-                                                    info="{{ $item['Height'] }}"
+                                                    info="{{ $record['height'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/vaccine.svg') }}"
@@ -170,17 +155,17 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/body-weight.svg') }}"
                                                     title="Weight"
-                                                    info="{{ $item['Weight'] }}"
+                                                    info="{{ $record['weight'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/calendar-02.svg') }}"
-                                                    title="Recorded At"
-                                                    info="{{ $item['Recorded at'] }}"
+                                                    title="Visit Date"
+                                                    info="{{ $record['visit_date'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/ruler.svg') }}"
                                                     title="Head Circumference"
-                                                    info="{{ $item['Head Circumference'] }} "
+                                                    info="{{ $record['head_circumference'] }} "
                                                 />
                                             </c-modal.viewcard>
 
@@ -253,7 +238,7 @@
                         </c-table.tr>
                     @endforeach
                     
-                    @if(count($items) === 0)
+                    @if(count($records) === 0)
                         <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
                     @endif
                 </c-table.tbody>
