@@ -240,6 +240,81 @@ class VaccineController
             );
     }
 
+    public function enableSchedule(Request $request, int $id)
+    {
+        
+        $schedule = Schedule::find($id);
+        if ($schedule) {
+            try {
+                $schedules = Schedule::query()
+                    ->where("id", "!=", $id)
+                    ->get();
+
+                foreach ($schedules as $otherSchedule) {
+                    $otherSchedule->active = 0;
+                    $otherSchedule->save();
+                }
+
+                $schedule->active = 1;
+                $schedule->save();
+
+                 return redirect(route("admin.vaccination.schedule"))
+                    ->withMessage(
+                        "Schedule successfully enabled",
+                        "Success",
+                        "success"
+                    );
+            } catch (Exception $e) {
+                 return redirect(route("admin.vaccination.schedule"))
+                    ->withMessage(
+                        "An unexpected error occured",
+                        "Failed",
+                        "error"
+                    );
+            }
+        }
+
+         return redirect(route("admin.vaccination.schedule"))
+            ->withMessage(
+                "Schedule does not exist",
+                "Failed",
+                "error"
+            );
+    }
+
+    public function disableSchedule(Request $request, int $id)
+    {
+        $schedule = Schedule::find($id);
+
+        if ($schedule) {
+            try {
+                $schedule->active = 0;
+                $schedule->save();
+
+                return redirect(route("admin.vaccination.schedule"))
+                    ->withMessage(
+                        "Successfully disabled schedule",
+                        "Success",
+                        "success"
+                    );
+            } catch (Exception $e) {
+                return redirect(route("admin.vaccination.schedule"))
+                    ->withMessage(
+                        "Failed to disable schedule",
+                        "Failed",
+                        "error"
+                    );
+            }
+        }
+
+        return redirect(route("admin.vaccination.schedule"))
+            ->withMessage(
+                "Schedule does not exist",
+                "Failed",
+                "error"
+            );
+    }
+
     public function manageSchedule(Request $request, int $schedule_id)
     {
         return view("admin/vaccination/manage", [
