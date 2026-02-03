@@ -358,10 +358,10 @@ Child Profiles
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
-                                <c-dropdown.item href="{{ route('doctor.child.health', ['id' => $key])}}">
+                                <c-dropdown.item href="{{ route('doctor.child.health', ['id' => $child['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
-                                <c-dropdown.item href="{{ route('doctor.child.vaccination', ['id' => $key]) }}">
+                                <c-dropdown.item href="{{ route('doctor.child.vaccination', ['id' => $child['id']]) }}">
                                     View Vaccination Records
                                 </c-dropdown.item>
                             </c-slot>
