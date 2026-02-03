@@ -182,6 +182,10 @@ PHM Child Profiles
                                             title="Age" info="{{ $child['age'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
                                             title="Area" info="{{ ucfirst($child['area']) }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
+                                            title="Birth Certificate No" info="{{ $child['birth_certificate'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
+                                            info="{{ date('d M, Y', strtotime($child['date_of_birth'])) }}" />    
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Gender"
                                             info="{{ strtolower($child['gender']) === 'm' ? 'Male' : 'Female' }}"
                                             />
@@ -329,15 +333,15 @@ PHM Child Profiles
                                     </c-slot>
                                 </c-modal>
                                 <c-dropdown.sep />
-                                <c-dropdown.item href="{{ route('phm.growth.monitoring.child',['id'=>$child['id'],])}}">
+                                <!-- <c-dropdown.item href="{{ route('phm.growth.monitoring.child',['id'=>$child['id'],])}}">
                                     View Growth Records
-                                </c-dropdown.item>
+                                </c-dropdown.item> -->
                                 <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$child['id'],])}}">
                                     View Health Records
                                 </c-dropdown.item>
-                                <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$child['id'],])}}">
+                                <!-- <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$child['id'],])}}">
                                     View Vaccination Records
-                                </c-dropdown.item>
+                                </c-dropdown.item> -->
                                 <c-dropdown-sep />
                                 <c-modal>
                                     <c-slot name="trigger">

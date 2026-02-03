@@ -7,6 +7,7 @@ use App\Models\ParentM;
 use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
+// use App\Models\Patient;
 use App\Helpers\Validator;
 use DateTime;
 
@@ -326,13 +327,16 @@ class ChildService
         }
     }
 
-    // public function deleteChildProfile(int $id)
-    // {
-    //     $child = Child::find($id);
+     public function deleteChildProfile(int $id)
+     {
+         $child = Child::find($id);
 
-    //     $patient = Patient::find($child->id);
-    //     $patient->delete();
+         // If Patient model exists and is related, uncomment and use the following lines:
+         // $patient = Patient::find($child->id);
+         // if ($patient) {
+         //     $patient->delete();
+         // }
 
-    //     $child->delete();
-    // }
+         $child->delete();
+ }
 }

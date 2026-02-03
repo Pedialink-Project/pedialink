@@ -84,53 +84,127 @@ class ChildRecordService
     }
 
 
-    public function determineChildHealthStatus($bmi, $ageInMonths, $weight, $height)
+    public function determineChildHealthStatus($bmi, $ageInMonths, $weight, $height, $headCircumference = null)
     {
         /**
-         * Determine child health status based on BMI and age
+         * Determine child health status based on BMI, age, height, weight, and head circumference
          * For children, BMI interpretation varies by age
          * 
          * Returns: 'critical', 'bad', or 'good'
          */
-        
-        if (empty($bmi) || empty($ageInMonths)) {
-            return 'good'; // Default if insufficient data
-        }
-        
-        $bmiValue = (float)$bmi;
-        $age = (int)$ageInMonths;
-        
-        // For infants (0-24 months), focus on severe cases only
-        if ($age <= 24) {
-            if ($bmiValue < 12 || $bmiValue > 20) {
-                return 'critical';
-            } elseif ($bmiValue < 13 || $bmiValue > 18) {
-                return 'bad';
+        $criticalCount = 0;
+        $badCount = 0;
+
+        $age = !empty($ageInMonths) ? (int)$ageInMonths : null;
+
+        // BMI checks (age-based)
+        if (!empty($bmi) && $age !== null) {
+            $bmiValue = (float)$bmi;
+
+            if ($age <= 24) {
+                if ($bmiValue < 12 || $bmiValue > 20) {
+                    $criticalCount++;
+                } elseif ($bmiValue < 13 || $bmiValue > 18) {
+                    $badCount++;
+                }
+            } elseif ($age <= 60) {
+                if ($bmiValue < 13 || $bmiValue > 19) {
+                    $criticalCount++;
+                } elseif ($bmiValue < 14 || $bmiValue > 17.5) {
+                    $badCount++;
+                }
+            } else {
+                if ($bmiValue < 14 || $bmiValue > 25) {
+                    $criticalCount++;
+                } elseif ($bmiValue < 15.5 || $bmiValue > 23) {
+                    $badCount++;
+                }
             }
-            return 'good';
         }
-        
-        // For toddlers and preschoolers (25-60 months / 2-5 years)
-        if ($age <= 60) {
-            if ($bmiValue < 13 || $bmiValue > 19) {
-                return 'critical';
-            } elseif ($bmiValue < 14 || $bmiValue > 17.5) {
-                return 'bad';
+
+        // Weight checks (kg)
+        if (!empty($weight) && $age !== null) {
+            $w = (float)$weight;
+
+            if ($age <= 24) {
+                if ($w < 2.5 || $w > 18) {
+                    $criticalCount++;
+                } elseif ($w < 3 || $w > 16) {
+                    $badCount++;
+                }
+            } elseif ($age <= 60) {
+                if ($w < 8 || $w > 28) {
+                    $criticalCount++;
+                } elseif ($w < 9 || $w > 25) {
+                    $badCount++;
+                }
+            } else {
+                if ($w < 12 || $w > 50) {
+                    $criticalCount++;
+                } elseif ($w < 14 || $w > 45) {
+                    $badCount++;
+                }
             }
-            return 'good';
         }
-        
-        // For children (5+ years), use simplified thresholds
-        if ($bmiValue < 14) {
-            return 'critical'; // Severe underweight
-        } elseif ($bmiValue < 15.5) {
-            return 'bad'; // Underweight
-        } elseif ($bmiValue > 25) {
-            return 'critical'; // Obese
-        } elseif ($bmiValue > 23) {
-            return 'bad'; // Overweight
+
+        // Height checks (cm)
+        if (!empty($height) && $age !== null) {
+            $h = (float)$height;
+
+            if ($age <= 24) {
+                if ($h < 45 || $h > 100) {
+                    $criticalCount++;
+                } elseif ($h < 50 || $h > 95) {
+                    $badCount++;
+                }
+            } elseif ($age <= 60) {
+                if ($h < 70 || $h > 125) {
+                    $criticalCount++;
+                } elseif ($h < 75 || $h > 120) {
+                    $badCount++;
+                }
+            } else {
+                if ($h < 90 || $h > 180) {
+                    $criticalCount++;
+                } elseif ($h < 100 || $h > 170) {
+                    $badCount++;
+                }
+            }
         }
-        
+
+        // Head circumference checks (cm)
+        if (!empty($headCircumference) && $age !== null) {
+            $hc = (float)$headCircumference;
+
+            if ($age <= 24) {
+                if ($hc < 32 || $hc > 52) {
+                    $criticalCount++;
+                } elseif ($hc < 34 || $hc > 50) {
+                    $badCount++;
+                }
+            } elseif ($age <= 60) {
+                if ($hc < 42 || $hc > 56) {
+                    $criticalCount++;
+                } elseif ($hc < 44 || $hc > 54) {
+                    $badCount++;
+                }
+            } else {
+                if ($hc < 46 || $hc > 60) {
+                    $criticalCount++;
+                } elseif ($hc < 48 || $hc > 58) {
+                    $badCount++;
+                }
+            }
+        }
+
+        if ($criticalCount > 0) {
+            return 'critical';
+        }
+
+        if ($badCount > 0) {
+            return 'bad';
+        }
+
         return 'good';
     }
 
@@ -255,7 +329,7 @@ class ChildRecordService
         $bmi = $this->calculateBMI($weight, $height);
         
         // Determine health status based on BMI and age
-        $calculatedHealthStatus = $this->determineChildHealthStatus($bmi, $ageInMonths, $weight, $height);
+        $calculatedHealthStatus = $this->determineChildHealthStatus($bmi, $ageInMonths, $weight, $height, $head_circumference);
         
         $childrecord = new ChildRecord();
         $childrecord->child_id = $childId;
@@ -318,6 +392,7 @@ class ChildRecordService
 
     //     if (!$childRecord) {
     //         return null;
+    
     //     }
 
     //     return [

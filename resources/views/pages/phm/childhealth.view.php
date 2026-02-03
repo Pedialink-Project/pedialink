@@ -91,7 +91,7 @@
                     placeholder="Enter Weight of the Child (in kg)" error="{{ errors('weight') ?? '' }}"
                     value="{{ old('weight')??'' }}" />
                 <c-input type="text" name="head_circumference" label="Head Circumference:"
-                    placeholder="Enter Head Circumference (in cm)" error="{{ errors('head_circumference') ?? '' }}"
+                    placeholder="Enter Head Circumference of the Child (in cm)" error="{{ errors('head_circumference') ?? '' }}"
                     value="{{ old('head_circumference')??'' }}" />
                 <c-textarea name="notes" label="Additional Notes:"
                     placeholder="Enter any additional notes" error="{{ errors('notes') ?? '' }}"
@@ -101,7 +101,27 @@
                 Close
             </c-slot>
             <c-slot name="footer">
-                <c-button type="submit" form="add-health-record-form" variant="primary">Add Record</c-button>
+                <button type="button" class="btn btn-primary" data-modal-trigger="confirm-add-health-record-modal">Add Record</button>
+            </c-slot>
+        </c-modal>
+
+        <c-modal id="confirm-add-health-record-modal" size="md" :initOpen="false">
+            <c-slot name="headerPrefix">
+                <img src="{{ asset('assets/icons/profile.svg' )}}" />
+            </c-slot>
+
+            <c-slot name="header">
+                <div>Confirm Health Record</div>
+            </c-slot>
+
+            <p><b>Are you sure you want to add this data?</b></p>
+
+            <c-slot name="close">
+                Cancel
+            </c-slot>
+
+            <c-slot name="footer">
+                <button type="submit" form="add-health-record-form" class="btn btn-primary">Confirm</button>
             </c-slot>
         </c-modal>
     </c-slot>
@@ -226,3 +246,4 @@
 
     <c-table.pagination />
 @endsection
+
