@@ -345,4 +345,173 @@ class maternalrecordService
             'notes' => $maternalRecord->notes ? json_decode($maternalRecord->notes) : null,
         ];
     }
+
+    /**
+     * Analyze maternal health status grouped by age group based on LATEST health record per maternal
+     * Returns counts for all statuses (good, bad, critical) by age groups: <20, 20-24, 25-29, 30-34, 35+
+     */
+    public function getAntenatalRiskByAgeGroup()
+    {
+        $ageGroups = [
+            'under_20' => ['label' => '<20 years', 'min' => 0, 'max' => 19, 'good' => 0, 'bad' => 0, 'critical' => 0],
+            '20_24' => ['label' => '20-24 years', 'min' => 20, 'max' => 24, 'good' => 0, 'bad' => 0, 'critical' => 0],
+            '25_29' => ['label' => '25-29 years', 'min' => 25, 'max' => 29, 'good' => 0, 'bad' => 0, 'critical' => 0],
+            '30_34' => ['label' => '30-34 years', 'min' => 30, 'max' => 34, 'good' => 0, 'bad' => 0, 'critical' => 0],
+            'over_35' => ['label' => '35+ years', 'min' => 35, 'max' => 150, 'good' => 0, 'bad' => 0, 'critical' => 0],
+        ];
+
+        // Get all maternal profiles
+        $maternalProfiles = \App\Models\ParentM::all();
+
+        foreach ($maternalProfiles as $parent) {
+            // Get the latest health record for this maternal
+            $latestRecord = MaternalRecord::query()
+                ->where('parent_id', '=', $parent->id)
+                ->where('health_status', '!=', 'invalid')
+                ->orderBy('visit_date', 'DESC')
+                ->first();
+
+            if (!$latestRecord) {
+                continue;
+            }
+
+            // Count ALL statuses (good, bad, critical)
+            $dob = $parent->date_of_birth ?? null;
+
+            if (empty($dob) && !empty($parent->nic)) {
+                $extractor = new \App\Helpers\NicExtractor($parent->nic);
+                $nicData = $extractor->getExtractedNic();
+                if (!empty($nicData['dob'])) {
+                    $dob = $nicData['dob'];
+                }
+            }
+
+            if (!empty($dob)) {
+                try {
+                    // Calculate age
+                    $dateOfBirth = new \DateTime($dob);
+                    $today = new \DateTime();
+                    $age = $today->diff($dateOfBirth)->y;
+
+                    // Increment the appropriate age group based on status
+                    foreach ($ageGroups as $key => $group) {
+                        if ($age >= $group['min'] && $age <= $group['max']) {
+                            $status = strtolower($latestRecord->health_status ?? 'good');
+                            if ($status === 'critical') {
+                                $ageGroups[$key]['critical']++;
+                            } elseif ($status === 'bad') {
+                                $ageGroups[$key]['bad']++;
+                            } else {
+                                $ageGroups[$key]['good']++;
+                            }
+                            break;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Skip if date parsing fails
+                    continue;
+                }
+            }
+        }
+
+        // Return counts for all statuses per age group
+        return [
+            'good' => [
+                $ageGroups['under_20']['good'],
+                $ageGroups['20_24']['good'],
+                $ageGroups['25_29']['good'],
+                $ageGroups['30_34']['good'],
+                $ageGroups['over_35']['good'],
+            ],
+            'bad' => [
+                $ageGroups['under_20']['bad'],
+                $ageGroups['20_24']['bad'],
+                $ageGroups['25_29']['bad'],
+                $ageGroups['30_34']['bad'],
+                $ageGroups['over_35']['bad'],
+            ],
+            'critical' => [
+                $ageGroups['under_20']['critical'],
+                $ageGroups['20_24']['critical'],
+                $ageGroups['25_29']['critical'],
+                $ageGroups['30_34']['critical'],
+                $ageGroups['over_35']['critical'],
+            ],
+        ];
+    }
+
+    /**
+     * Get comprehensive antenatal risk analysis based on LATEST health record per maternal
+     * Includes labels and counts for chart display
+     */
+    public function getAntenatalRiskAnalysis()
+    {
+        $ageGroups = [
+            'under_20' => ['label' => '<20 years', 'min' => 0, 'max' => 19, 'count' => 0, 'risk_cases' => []],
+            '20_24' => ['label' => '20-24 years', 'min' => 20, 'max' => 24, 'count' => 0, 'risk_cases' => []],
+            '25_29' => ['label' => '25-29 years', 'min' => 25, 'max' => 29, 'count' => 0, 'risk_cases' => []],
+            '30_34' => ['label' => '30-34 years', 'min' => 30, 'max' => 34, 'count' => 0, 'risk_cases' => []],
+            'over_35' => ['label' => '35+ years', 'min' => 35, 'max' => 150, 'count' => 0, 'risk_cases' => []],
+        ];
+
+        // Get all maternal profiles
+        $maternalProfiles = \App\Models\ParentM::all();
+
+        foreach ($maternalProfiles as $parent) {
+            // Get the latest health record for this maternal
+            $latestRecord = MaternalRecord::query()
+                ->where('parent_id', '=', $parent->id)
+                ->where('health_status', '!=', 'invalid')
+                ->orderBy('visit_date', 'DESC')
+                ->first();
+
+            if (!$latestRecord) {
+                continue;
+            }
+
+            $dob = $parent->date_of_birth ?? null;
+
+            if (empty($dob) && !empty($parent->nic)) {
+                $extractor = new \App\Helpers\NicExtractor($parent->nic);
+                $nicData = $extractor->getExtractedNic();
+                if (!empty($nicData['dob'])) {
+                    $dob = $nicData['dob'];
+                }
+            }
+
+            if (!empty($dob)) {
+                try {
+                    // Calculate age
+                    $dateOfBirth = new \DateTime($dob);
+                    $today = new \DateTime();
+                    $age = $today->diff($dateOfBirth)->y;
+
+                    // Categorize by age group
+                    foreach ($ageGroups as $key => $group) {
+                        if ($age >= $group['min'] && $age <= $group['max']) {
+                            // Only count "bad" and "critical" as risk cases
+                            if ($latestRecord->health_status === 'bad' || $latestRecord->health_status === 'critical') {
+                                $ageGroups[$key]['count']++;
+                                $ageGroups[$key]['risk_cases'][] = [
+                                    'name' => $parent->name ?? 'Unknown',
+                                    'age' => $age,
+                                    'health_status' => $latestRecord->health_status,
+                                    'visit_date' => $latestRecord->visit_date,
+                                    'bmi' => $latestRecord->bmi,
+                                    'blood_pressure' => $latestRecord->blood_pressure,
+                                    'blood_sugar' => $latestRecord->blood_sugar,
+                                ];
+                            }
+                            break;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Skip if date parsing fails
+                    continue;
+                }
+            }
+        }
+
+        return $ageGroups;
+    }
 }

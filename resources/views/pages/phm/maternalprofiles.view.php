@@ -62,7 +62,7 @@ Maternal Profiles - Overview
             <c-table.tbody>
                 @foreach ($items as $key => $item)
                 <c-table.tr>
-                    <c-table.td col="id">{{ $item['id'] }}</c-table.td>
+                    <c-table.td col="id">{{ 'M-00'.$item['id'] }}</c-table.td>
                     <c-table.td col="name">{{ $item['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $item['age'] ?? '-' }}</c-table.td>
                     <!-- <c-table.td col="type">{{ $item['type'] ?? '-' }}</c-table.td> -->
@@ -120,8 +120,8 @@ Maternal Profiles - Overview
                                             info="{{ $item['type'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
                                             title="Pregnancy Stage" info="{{ $item['stage'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Duration" info="5 weeks and 2 days" />
+                                        <!-- <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
+                                            title="Pregnancy Duration" info="5 weeks and 2 days" /> -->
                                         <!-- <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}" title="Latest Health Status"
                                             info="{{ isset($item['latest_health_record']) ? ($item['latest_health_record']['health_status'] ?? '-') : '-' }}" /> -->
                                     </c-modal.viewcard>
