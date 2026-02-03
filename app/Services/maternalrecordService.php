@@ -22,7 +22,7 @@ class maternalrecordService
                 'blood_pressure' => $record->blood_pressure,
                 'weight' => $record->weight,
                 'trimester' => $record->trimester,
-                'health_status' => $record->health_status,
+                'health_status' => $this->determineHealthStatus($record->blood_sugar, $record->blood_pressure, $record->bmi),
                 'notes' => $record->notes,
             ];
         }
@@ -48,7 +48,7 @@ class maternalrecordService
                 'blood_pressure' => $record->blood_pressure,
                 'weight' => $record->weight,
                 'trimester' => $record->trimester,
-                'health_status' => $record->health_status,
+                 'health_status' => $this->determineHealthStatus($record->blood_sugar, $record->blood_pressure, $record->bmi),
                 'notes' => $record->notes,
             ];
         }
@@ -323,7 +323,6 @@ class maternalrecordService
     {
         $maternalRecord = MaternalRecord::query()
             ->where('parent_id', '=', $maternalId)
-            ->where('health_status', '!=', 'invalid')
             ->orderBy('visit_date', 'DESC')
             ->first();
 
@@ -341,7 +340,7 @@ class maternalrecordService
             'weight' => $maternalRecord->weight ?? '-',
             'blood_sugar' => $maternalRecord->blood_sugar ?? '-',
             'blood_pressure' => $maternalRecord->blood_pressure ?? '-',
-            'health_status' => $maternalRecord->health_status ?? '-',
+                 'health_status' => $this->determineHealthStatus($maternalRecord->blood_sugar, $maternalRecord->blood_pressure, $maternalRecord->bmi),
             'notes' => $maternalRecord->notes ? json_decode($maternalRecord->notes) : null,
         ];
     }
