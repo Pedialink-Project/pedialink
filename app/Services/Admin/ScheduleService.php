@@ -86,4 +86,16 @@ class ScheduleService
 
         return $errors;
     }
+
+    public function validateDelete(int $id)
+    {
+        $schedule = Schedule::find($id);
+
+        // prevent delete if schedule already exists
+        if ($schedule && $schedule->active) {
+            return false;
+        }
+
+        return true;
+    }
 }
