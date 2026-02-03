@@ -486,6 +486,17 @@ class ChildService
 
     $request->delete();
 
+    $staff = User::find($staffId);
+        $child = Child::find($childId);
+
+     $this->notificationService->notifyAdmins(
+            "Child Access Request Cancelled",
+            "{$staff->name} requested access to child profile {$child->name} has been cancelled.",
+            "child_access_request_canclled",
+            $request->id
+        );
+
+
     return null; 
 }
 
