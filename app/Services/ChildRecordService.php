@@ -29,47 +29,47 @@ class ChildRecordService
     }
 
     private function evaluateHealthStatus(
-    int $ageMonths,
-    ?float $heightCm,
-    ?float $weightKg,
-    ?float $headCircumference,
-    ?float $bmi
-): string {
+        int $ageMonths,
+        ?float $heightCm,
+        ?float $weightKg,
+        ?float $headCircumference,
+        ?float $bmi
+    ): string {
 
-    $riskScore = 0;
+        $riskScore = 0;
 
-    if ($bmi !== null) {
-        if ($bmi < 14 || $bmi > 25) {
-            $riskScore += 2; 
-        } elseif ($bmi < 15 || $bmi > 23) {
-            $riskScore += 1;
+        if ($bmi !== null) {
+            if ($bmi < 14 || $bmi > 25) {
+                $riskScore += 2;
+            } elseif ($bmi < 15 || $bmi > 23) {
+                $riskScore += 1;
+            }
         }
-    }
 
-    if ($weightKg !== null) {
-        if ($weightKg < 2 || $weightKg > 80) {
-            $riskScore += 2;
+        if ($weightKg !== null) {
+            if ($weightKg < 2 || $weightKg > 80) {
+                $riskScore += 2;
+            }
         }
-    }
 
-    if ($heightCm !== null) {
-        if ($heightCm < 45 || $heightCm > 200) {
-            $riskScore += 2;
+        if ($heightCm !== null) {
+            if ($heightCm < 45 || $heightCm > 200) {
+                $riskScore += 2;
+            }
         }
-    }
 
-    if ($ageMonths <= 60 && $headCircumference !== null) {
-        if ($headCircumference < 40 || $headCircumference > 55) {
-            $riskScore += 2;
+        if ($ageMonths <= 60 && $headCircumference !== null) {
+            if ($headCircumference < 40 || $headCircumference > 55) {
+                $riskScore += 2;
+            }
         }
-    }
 
-    return match (true) {
-        $riskScore >= 4 => 'critical',
-        $riskScore >= 2 => 'at-risk',
-        default => 'good',
-    };
-}
+        return match (true) {
+            $riskScore >= 4 => 'critical',
+            $riskScore >= 2 => 'at-risk',
+            default => 'good',
+        };
+    }
 
 
     public function getChildRecordsByChildId(int $childId): array
@@ -123,13 +123,120 @@ class ChildRecordService
         return $resource;
     }
 
-    public function getChildNameById($id){
+  public function validateRecordData(
+    $visitDate,
+    $height,
+    $weight,
+    $headCircumference,
+): array {
+
+    $errors = [];
+
+    if (!$visitDate) {
+        $errors['visit_date'] = 'Visit date is required.';
+    } elseif (!strtotime($visitDate)) {
+        $errors['visit_date'] = 'Invalid visit date.';
+    } elseif ($visitDate > date('Y-m-d')) {
+        $errors['visit_date'] = 'Visit date cannot be in the future.';
+    }
+
+    if ($height !== null) {
+        if (!is_numeric($height)) {
+            $errors['height'] = 'Height must be numeric.';
+        } elseif ($height < 10 || $height > 250) {
+            $errors['height'] = 'Height must be between 10cm and 250cm.';
+        }
+    }
+
+    if ($weight !== null) {
+        if (!is_numeric($weight)) {
+            $errors['weight'] = 'Weight must be numeric.';
+        } elseif ($weight < 1 || $weight > 150) {
+            $errors['weight'] = 'Weight must be between 1kg and 150kg.';
+        }
+    }
+
+    if ($headCircumference !== null) {
+        if (!is_numeric($headCircumference)) {
+            $errors['head_circumference'] = 'Head circumference must be numeric.';
+        } elseif ($headCircumference < 20 || $headCircumference > 70) {
+            $errors['head_circumference'] = 'Head circumference must be between 20cm and 70cm.';
+        }
+    }
+
+    return $errors;
+}
+
+
+    public function addHealthRecord(
+        $childId,
+        $staffId,
+        $visitDate,
+        $height,
+        $weight,
+        $headCircumference,
+        $notes
+    ) {
+
+        $bmi = $this->calculateBMI($height, $weight);
+
+        $childDob = Child::find($childId)->date_of_birth;
+        $ageMonths = $this->calculateAgeInMonths($childDob);
+
+        $healthStatus = $this->evaluateHealthStatus(
+            $ageMonths,
+            $height,
+            $weight,
+            $headCircumference,
+            $bmi
+        );
+
+        $record = new ChildRecord();
+
+        $record->child_id = $childId;
+        $record->staff_id = $staffId;
+        $record->visit_date = $visitDate;
+        $record->age_recorded_at = $ageMonths;
+
+        $record->height = $height;
+        $record->weight = $weight;
+        $record->bmi = $bmi;
+        $record->head_circumference = $headCircumference;
+        $record->notes = $notes;
+
+        $record->health_status = $healthStatus;
+
+        $record->save();
+
+        return $record;
+    }
+
+
+    public function getChildNameById($id)
+    {
 
         $child = Child::find($id);
 
         return $child->name;
+    }
 
-    
+    private function calculateAgeInMonths(string $dob): int
+    {
+        $dobDate = new \DateTime($dob);
+        $now = new \DateTime();
 
+        if ($dobDate > $now) {
+            return 0;
+        }
+
+        $diff = $now->diff($dobDate);
+
+        $months = ($diff->y * 12) + $diff->m;
+
+        if ($diff->d >= 15) {
+            $months++;
+        }
+
+        return $months;
     }
 }
