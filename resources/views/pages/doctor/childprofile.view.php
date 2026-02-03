@@ -128,6 +128,7 @@ Child Profiles
                     <c-table.th sortable="1">Name</c-table.th>
                     <c-table.th sortable="1">Age</c-table.th>
                     <c-table.th>Assigned PHM</c-table.th>
+                    <c-table.th>Access Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -137,10 +138,21 @@ Child Profiles
                 <c-table.tr>
                     <c-table.td col="id">C-00{{ $child['id'] }}</c-table.td>
                     <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
-                    <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
+                    <c-table.td col="age" class="child-col">{{ $child['age'] }}</c-table.td>
 
                     <c-table.td col="assigned_phm">{{ $child['phm']['name'] }}</c-table.td>
+                    <c-table.td col="access_status"> @if (strtolower($child['access_status']) === "accepted")
+                        <c-badge class="status-event" type="green">{{ ucfirst($child['access_status']) }}</c-badge>
+                        @elseif (strtolower($child['access_status']) === "pending")
+                        <c-badge class="status-event" type="yellow">{{ ucfirst($child['access_status']) }}</c-badge>
+                        @elseif (strtolower($child['access_status']) === "not_requested")
+                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
+                        @elseif (strtolower($child['access_status']) === "rejected")
+                        <c-badge class="status-event" type="red">{{ ucfirst($child['access_status'])}}
+                            @endif
+                    </c-table.td>
                     <c-table.td class="table-actions" align="center">
+                        @if($child['access_status'] == 'not_requested')
                         <c-dropdown.main>
                             <c-slot name="trigger">
                                 <c-button variant="ghost" class="dropdown-trigger">
@@ -148,8 +160,102 @@ Child Profiles
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-dropdown.item>Copy Child ID</c-dropdown.item>
-                                <c-dropdown.sep />
+                                <c-modal id="addChild-{{ $child['id'] }}" size="sm" :initOpen="flash('request') ? true : false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Request Access</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
+                                    </c-slot>
+                                    <c-slot name="header">
+                                        <div>Request Child Profile Access</div>
+                                    </c-slot>
+
+                                    <form id="request-child-form-{{ $child['id'] }}" class="child-form" action="{{ route('doctor.childprofile.requestAccess') }}" method="POST">
+
+                                        <input type="hidden" name="child_id" value="{{ $child['id'] }}">
+
+                                        <c-select
+                                            label="Child Profile"
+                                            name="child_id_display"
+                                            searchable="0"
+                                            value="{{ $child['name'] }} ({{ 'C-00'.$child['id'] }})"
+                                            disabled="0">  
+                                        </c-select>
+
+                                        <c-select
+                                            label="Reason Category"
+                                            name="reason_title"
+                                            searchable="1"
+                                            placeholder="Select Reason Category"
+                                            value="{{ old('reason_title') ?? '' }}"
+                                            error="{{ errors('reason_title') ?? '' }}">
+                                            @foreach ($accessReasons as $reason)
+                                            <li class="select-item" data-value="{{ $reason }}">
+                                                {{ $reason }}
+                                            </li>
+                                            @endforeach
+                                        </c-select>
+
+                                        <c-textarea label="Reason " value="{{ old('reason_description') ?? '' }}"
+                                            error="{{ errors('reason_description') ?? '' }}" name='reason_description' placeholder="Enter reason for request"></c-textarea>
+                                    </form>
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="request-child-form-{{ $child['id'] }}" variant="primary">Request Access</c-button>
+                                    </c-slot>
+                                </c-modal>
+
+
+                            </c-slot>
+                        </c-dropdown.main>
+                        @elseif($child['access_status'] === 'pending')
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
+                                <c-modal id="cancel-request-{{$child['id']}}" size="sm" :initOpen="flash('request') ? true : false">
+
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/cancel-circle.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Cancel Request</c-dropdown.item>
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Cancel Child Access Request</div>
+                                    </c-slot>
+
+                                    <form id="cancel-request-child-form-{{$child['id']}}" class="child-form" action="{{ route('doctor.childprofile.cancel.requestAccess',['id' => $child['id']]) }}" method="POST">
+                                        <p>
+                                            Do you want to cancel <span class="delete-event-highlight">Child ID C-00{{
+                                            $child['id'] }} access request</span>?
+                                        </p>
+
+                                    </form>
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="cancel-request-child-form-{{$child['id']}}" variant="destructive">Cancel Request</c-button>
+                                    </c-slot>
+                                </c-modal> </c-slot>
+                        </c-dropdown.main>
+                        @elseif($child['access_status'] === 'accepted')
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
                                 <c-modal id="View-Child-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
@@ -255,6 +361,7 @@ Child Profiles
                                 </c-dropdown.item>
                             </c-slot>
                         </c-dropdown.main>
+                        @endif
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
