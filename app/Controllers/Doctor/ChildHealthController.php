@@ -17,10 +17,12 @@ class ChildHealthController
     public function index(Request $request, int $id)
     {
         $records = $this->childRecordService->getChildRecordsByChildId($id);
+        $name = $this->childRecordService->getChildNameById($id);
 
 
         return view("doctor/childhealth", [
             "id" => $id,
+            'name'=>$name,
             "records" => $records,
         ]);
     }
