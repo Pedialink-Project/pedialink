@@ -128,6 +128,7 @@ Child Profiles
                     <c-table.th sortable="1">Name</c-table.th>
                     <c-table.th sortable="1">Age</c-table.th>
                     <c-table.th>Assigned PHM</c-table.th>
+                    <c-table.th>Access Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -137,10 +138,21 @@ Child Profiles
                 <c-table.tr>
                     <c-table.td col="id">C-00{{ $child['id'] }}</c-table.td>
                     <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
-                    <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
+                    <c-table.td col="age" class="child-col">{{ $child['age'] }}</c-table.td>
 
                     <c-table.td col="assigned_phm">{{ $child['phm']['name'] }}</c-table.td>
+                    <c-table.td col="access_status"> @if (strtolower($child['access_status']) === "accepted")
+                        <c-badge class="status-event" type="green">{{ ucfirst($child['access_status']) }}</c-badge>
+                        @elseif (strtolower($child['access_status']) === "pending")
+                        <c-badge class="status-event" type="yellow">{{ ucfirst($child['access_status']) }}</c-badge>
+                        @elseif (strtolower($child['access_status']) === "not_requested")
+                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
+                        @elseif (strtolower($child['access_status']) === "rejected")
+                        <c-badge class="status-event" type="red">{{ ucfirst($child['access_status'])}}
+                            @endif
+                    </c-table.td>
                     <c-table.td class="table-actions" align="center">
+                        @if($child['access_status'] !== 'accepted')
                         <c-dropdown.main>
                             <c-slot name="trigger">
                                 <c-button variant="ghost" class="dropdown-trigger">
@@ -148,8 +160,31 @@ Child Profiles
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-dropdown.item>Copy Child ID</c-dropdown.item>
-                                <c-dropdown.sep />
+                                <button
+                                    type="button"
+                                    data-modal-trigger="addChild"
+                                    style="
+                                            background: none;
+                                            border: none;
+                                            width: 100%;
+                                            text-align: left;
+                                            padding: 8px 12px;
+                                            cursor: pointer;
+                                        ">
+                                    Request Access
+                                </button>
+
+
+                            </c-slot>
+                        </c-dropdown.main>
+                        @else
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
                                 <c-modal id="View-Child-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
@@ -255,6 +290,7 @@ Child Profiles
                                 </c-dropdown.item>
                             </c-slot>
                         </c-dropdown.main>
+                        @endif
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
