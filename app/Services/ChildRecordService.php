@@ -296,7 +296,16 @@ public function validateEditRecordData(
 
         $record->save();
 
-        return $record;
+        $this->notificationService->notify(
+            $staffId,
+            "Health record updated",
+            "The health record of child C-00 " . $record->child_id . " has been updated.",
+            "child_record_updated",
+            $record->child_id ."". $record->child_id 
+
+        );
+
+        return null;
     }
 
 
