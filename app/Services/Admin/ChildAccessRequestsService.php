@@ -38,7 +38,7 @@ class ChildAccessRequestsService
                 ],
                 "reason_title" => $accessRequest->reason_title,
                 "reason_description" => $accessRequest->reason_description,
-                "created_at" => $accessRequest->created_at
+"created_at" => date("Y-m-d H:i ", strtotime($accessRequest->created_at))
             ];
         }
 
