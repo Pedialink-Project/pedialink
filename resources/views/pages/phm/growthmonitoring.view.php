@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Growth Monitorinng
+PHM Growth Monitoring
 @endsection
 
 @section('css')
@@ -28,8 +28,8 @@ Growth Monitorinng
 
     <span>
         Growth Monitoring
-        @if (isset($id))
-            &#8594; Baby Sarah &middot; C-000{{ $id }}
+        @if (!empty($selectedChildId))
+            &#8594; {{ $selectedChildName ?? 'Child' }} &middot; C-000{{ $selectedChildId }}
         @endif
     </span>
 </div>
@@ -39,96 +39,70 @@ Growth Monitorinng
 
 <div class="container">
 
-    <!-- BMI Chart -->
-    <c-card class="card bmi-card">
-        <div class="header">
-            <div class="title-section">
-                <span class="card-title">Child BMI Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
+    @if (empty($dateLabels ?? []))
+        <c-card class="card">
+            <div class="card-body">
+                <div class="table-empty">No growth records available. Please add children and their health records.</div>
             </div>
-            <!-- Child Selector -->
-            @if (isset($id))
-                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child" value="baby-sara" disabled>
-                    <li class="select-item" data-value="all-children">All Children</li>
-                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
+        </c-card>
+    @else
+        <!-- BMI Chart -->
+        <c-card class="card bmi-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child BMI Tracking</span>
+                    <span class="card-subtitle">Track BMI growth over time</span>
+                </div>
+                <c-select name="bmi-child-filter" class="child-select bmi-filter" searchable="1" placeholder="Select Child" >
+                    @foreach ($children ?? [] as $child)
+                        <li class="select-item" data-value="<?php echo $child['id']; ?>">{{ $child['name'] }}</li>
+                    @endforeach
                 </c-select>
-            @else 
-                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child">
-                    <li class="select-item" data-value="all-children">All Children</li>
-                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
-                </c-select>
-            @endif
-            
-        </div>
-        <hr class="divider">
-        <div class="card-body">
-            <canvas id="bmiChart">
-
-            </canvas>
-        </div>
-    </c-card>
-
-    <!-- Height Chart -->
-    <c-card class="card height-card">
-        <div class="header">
-            <div class="title-section">
-                <span class="card-title">Child Height Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's Height over time</span>
             </div>
-            <!-- Child Selector -->
-            @if (isset($id))
-                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child" value="baby-sara" disabled>
-                    <li class="select-item" data-value="all-children">All Children</li>
-                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
-                </c-select>
-            @else 
-                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child">
-                    <li class="select-item" data-value="all-children">All Children</li>
-                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
-                </c-select>
-            @endif
-        </div>
-        <hr class="divider">
-        <div class="card-body">
-            <canvas id="heightChart">
-
-            </canvas>
-        </div>
-    </c-card>
-
-    <!-- Weight Chart -->
-    <c-card class="card weight-card">
-        <div class="header">
-            <div class="title-section">
-                <span class="card-title">Child Weight Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's Weight over time</span>
+            <hr class="divider">
+            <div class="card-body">
+                <canvas id="bmiChart" height="260"></canvas>
             </div>
-            <!-- Child Selector -->
-            @if (isset($id))
-                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child" value="baby-sara" disabled>
-                    <li class="select-item" data-value="all-children">All Children</li>
-                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
-                </c-select>
-            @else 
-                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child">
-                    <li class="select-item" data-value="all-children">All Children</li>
-                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
-                </c-select>
-            @endif
-        </div>
-        <hr class="divider">
-        <div class="card-body">
-            <canvas id="weightChart">
+        </c-card>
 
-            </canvas>
-        </div>
-    </c-card>
+        <!-- Height Chart -->
+        <c-card class="card height-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child Height Tracking</span>
+                    <span class="card-subtitle">Track height growth over time</span>
+                </div>
+                <c-select name="height-child-filter" class="child-select height-filter" searchable="1" placeholder="Select Child" >
+                    @foreach ($children ?? [] as $child)
+                        <li class="select-item" data-value="<?php echo $child['id']; ?>">{{ $child['name'] }}</li>
+                    @endforeach
+                </c-select>
+            </div>
+            <hr class="divider">
+            <div class="card-body">
+                <canvas id="heightChart" height="260"></canvas>
+            </div>
+        </c-card>
+
+        <!-- Weight Chart -->
+        <c-card class="card weight-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child Weight Tracking</span>
+                    <span class="card-subtitle">Track weight growth over time</span>
+                </div>
+                <c-select name="weight-child-filter" class="child-select weight-filter" searchable="1" placeholder="Select Child" >
+                    @foreach ($children ?? [] as $child)
+                        <li class="select-item" data-value="<?php echo $child['id']; ?>">{{ $child['name'] }}</li>
+                    @endforeach
+                </c-select>
+            </div>
+            <hr class="divider">
+            <div class="card-body">
+                <canvas id="weightChart" height="260"></canvas>
+            </div>
+        </c-card>
+    @endif
 
 </div>
 
@@ -142,175 +116,214 @@ Growth Monitorinng
         return gradient;
     }
 
-    const bmiCtx = document.getElementById("bmiChart").getContext("2d");
+    const dateLabels = <?php echo json_encode($dateLabels ?? []); ?>;
+    const bmiSource = <?php echo json_encode($bmiChartDatasets ?? []); ?>;
+    const heightSource = <?php echo json_encode($heightChartDatasets ?? []); ?>;
+    const weightSource = <?php echo json_encode($weightChartDatasets ?? []); ?>;
 
+    console.log('=== CHART DATA ===');
+    console.log('Date Labels:', dateLabels);
+    console.log('BMI Source:', bmiSource);
+    console.log('BMI Source child IDs:', bmiSource.map(d => ({ childId: d.childId, label: d.label })));
+    console.log('Height Source:', heightSource);
+    console.log('Weight Source:', weightSource);
+    console.log('==================');
 
-    const bmiData = [
-        { name: "Sara", values: [0, 2, 1, 0, 0, 1, 10, 20, 15, 13, 11, 14], color: "rgba(168,85,247,1)" },
-        { name: "John", values: [10, 15, 28, 40, 33, 36, 42, 39, 45, 50, 48, 49], color: "rgba(239,68,68,1)" },
-        { name: "Alex", values: [0, 1, 0, 10, 15, 13, 12, 8, 4, 1, 0, 3], color: "rgba(6,182,212,1)" },
-    ];
+    const bmiCanvas = document.getElementById("bmiChart");
+    const heightCanvas = document.getElementById("heightChart");
+    const weightCanvas = document.getElementById("weightChart");
 
-    const bmiDatasets = bmiData.map(item => ({
-        label: item.name,
-        data: item.values,
-        borderColor: item.color,
-        backgroundColor: createGradient(item.color, bmiCtx),
-        tension: 0.4,
-        fill: true,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-    }));
+    if (bmiCanvas && heightCanvas && weightCanvas) {
+        const bmiCtx = bmiCanvas.getContext("2d");
+        const heightCtx = heightCanvas.getContext("2d");
+        const weightCtx = weightCanvas.getContext("2d");
 
-    new Chart(bmiCtx, {
-        type: "line",
-        data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: bmiDatasets
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: "bottom",
-                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                    ticks: { stepSize: 10 },
-                },
-                x: {
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                },
-            },
-        },
-    });
+        function buildDatasets(source, chartCtx, filterValue) {
+            // If no filter value or empty, return empty array (show nothing)
+            if (!filterValue || filterValue === '') {
+                return [];
+            }
+            
+            // Filter for specific child
+            const filtered = source.filter(item => String(item.childId) === String(filterValue));
 
-
-    const heightCtx = document.getElementById("heightChart").getContext("2d");
-
-    const heightData = [
-        {
-            name: "Sara",
-            values: [75, 76, 77, 78, 78.5, 79, 79.5, 80, 80.5, 81, 81.5, 82],
-            color: "rgba(59,130,246,1)",
-        },
-        {
-            name: "John",
-            values: [95, 95.5, 96, 96.5, 97, 97.5, 98, 98.5, 99, 99.5, 100, 100.5],
-            color: "rgba(236,72,153,1)",
-        },
-        {
-            name: "Alex",
-            values: [120, 120.5, 121, 121.5, 122, 122.5, 123, 123.5, 124, 124.5, 125, 125.5],
-            color: "rgba(34,197,94,1)",
+            return filtered.map(item => ({
+                label: item.label,
+                data: item.data || [],
+                borderColor: item.color,
+                backgroundColor: createGradient(item.color, chartCtx),
+                tension: 0.4,
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                spanGaps: false,
+            }));
         }
-    ];
 
+        let bmiChart, heightChart, weightChart;
 
-    const heightDatasets = heightData.map(item => ({
-        label: item.name,
-        data: item.values,
-        borderColor: item.color,
-        backgroundColor: createGradient(item.color, heightCtx),
-        tension: 0.4,
-        fill: true,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-    }));
+        // Initialize BMI Chart (empty by default)
+        bmiChart = new Chart(bmiCtx, {
+            type: "line",
+            data: {
+                labels: dateLabels,
+                datasets: [] // Start empty
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "bottom",
+                        labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                        ticks: { stepSize: 5 },
+                    },
+                    x: {
+                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    },
+                },
+            },
+        });
 
-    new Chart(heightCtx, {
-        type: "line",
-        data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: heightDatasets
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: "bottom",
-                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+        // Initialize Height Chart (empty by default)
+        heightChart = new Chart(heightCtx, {
+            type: "line",
+            data: {
+                labels: dateLabels,
+                datasets: [] // Start empty
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "bottom",
+                        labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                        ticks: { stepSize: 5 },
+                    },
+                    x: {
+                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    },
+                },
+            },
+        });
+
+        // Initialize Weight Chart (empty by default)
+        weightChart = new Chart(weightCtx, {
+            type: "line",
+            data: {
+                labels: dateLabels,
+                datasets: [] // Start empty
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "bottom",
+                        labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                        ticks: { stepSize: 5 },
+                    },
+                    x: {
+                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    },
+                },
+            },
+        });
+
+        // Wait for DOM to be ready and set up filters
+        setTimeout(() => {
+            const bmiFilter = document.querySelector('.bmi-filter');
+            const heightFilter = document.querySelector('.height-filter');
+            const weightFilter = document.querySelector('.weight-filter');
+
+            console.log('Filters found:', { bmiFilter, heightFilter, weightFilter });
+
+            // Function to update charts based on filter value
+            const updateBmiChart = (filterValue) => {
+                console.log('Updating BMI Chart with filterValue:', filterValue, 'Type:', typeof filterValue);
+                if (filterValue !== '' && filterValue !== null && filterValue !== undefined) {
+                    const newDatasets = buildDatasets(bmiSource, bmiCtx, filterValue);
+                    console.log('New BMI Datasets count:', newDatasets.length, 'Datasets:', newDatasets);
+                    bmiChart.data.datasets = newDatasets;
+                    bmiChart.update();
+                } else {
+                    console.log('Skipping BMI update - no filter value');
                 }
-            },
-            scales: {
-                y: {
-                    min: 70,
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                    ticks: { stepSize: 5 },
-                },
-                x: {
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                },
-            },
-        },
-    });
+            };
 
-    const weightCtx = document.getElementById("weightChart").getContext("2d");
-
-
-    const weightData = [
-        {
-            name: "Sara",
-            values: [10, 10.2, 10.4, 10.6, 10.8, 11, 11.2, 11.4, 11.6, 11.8, 12, 12.2],
-            color: "rgba(59,130,246,1)",
-        },
-        {
-            name: "John",
-            values: [14, 14.2, 14.5, 14.8, 15, 15.3, 15.5, 15.8, 16, 16.2, 16.5, 16.7],
-            color: "rgba(236,72,153,1)",
-        },
-        {
-            name: "Alex",
-            values: [22, 22.3, 22.6, 23, 23.3, 23.6, 24, 24.3, 24.6, 25, 25.3, 25.6],
-            color: "rgba(34,197,94,1)",
-        }
-    ];
-
-    const weightDatasets = weightData.map(item => ({
-        label: item.name,
-        data: item.values,
-        borderColor: item.color,
-        backgroundColor: createGradient(item.color, weightCtx),
-        tension: 0.4,
-        fill: true,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-    }));
-
-    new Chart(weightCtx, {
-        type: "line",
-        data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: weightDatasets
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: "bottom",
-                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+            const updateHeightChart = (filterValue) => {
+                console.log('Updating Height Chart with filterValue:', filterValue);
+                if (filterValue !== '' && filterValue !== null && filterValue !== undefined) {
+                    const newDatasets = buildDatasets(heightSource, heightCtx, filterValue);
+                    console.log('New Height Datasets count:', newDatasets.length);
+                    heightChart.data.datasets = newDatasets;
+                    heightChart.update();
                 }
-            },
-            scales: {
-                y: {
-                    min: 8,
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                    ticks: { stepSize: 10 },
-                },
-                x: {
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                },
-            },
-        },
-    });
+            };
 
+            const updateWeightChart = (filterValue) => {
+                console.log('Updating Weight Chart with filterValue:', filterValue);
+                if (filterValue !== '' && filterValue !== null && filterValue !== undefined) {
+                    const newDatasets = buildDatasets(weightSource, weightCtx, filterValue);
+                    console.log('New Weight Datasets count:', newDatasets.length);
+                    weightChart.data.datasets = newDatasets;
+                    weightChart.update();
+                }
+            };
+
+            // Listen for clicks on select items with proper event handling
+            if (bmiFilter) {
+                bmiFilter.addEventListener('click', (e) => {
+                    const selectItem = e.target.closest('.select-item');
+                    if (!selectItem) return;
+                    const dataValue = selectItem.getAttribute('data-value');
+                    console.log('BMI Select item clicked:', dataValue);
+                    updateBmiChart(dataValue);
+                });
+            }
+
+            if (heightFilter) {
+                heightFilter.addEventListener('click', (e) => {
+                    const selectItem = e.target.closest('.select-item');
+                    if (!selectItem) return;
+                    const dataValue = selectItem.getAttribute('data-value');
+                    console.log('Height Select item clicked:', dataValue);
+                    updateHeightChart(dataValue);
+                });
+            }
+
+            if (weightFilter) {
+                weightFilter.addEventListener('click', (e) => {
+                    const selectItem = e.target.closest('.select-item');
+                    if (!selectItem) return;
+                    const dataValue = selectItem.getAttribute('data-value');
+                    console.log('Weight Select item clicked:', dataValue);
+                    updateWeightChart(dataValue);
+                });
+            }
+
+        }, 1000);
+    }
 
 </script>
 
