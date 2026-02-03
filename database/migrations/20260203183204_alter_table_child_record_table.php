@@ -17,6 +17,13 @@ class Migration_20260203183204_alter_table_child_record_table implements \Librar
             "ALTER TABLE child_records
             DROP COLUMN IF EXISTS age_recorded_at;"
         );
+
+        QueryBuilder::raw(
+            "ALTER TABLE child_records
+            ADD COLUMN mark_as_invalid BOOLEAN DEFAULT 'false';"
+        );
+
+
     }
 
     public function down(): void
@@ -24,6 +31,11 @@ class Migration_20260203183204_alter_table_child_record_table implements \Librar
         QueryBuilder::raw(
             "ALTER TABLE child_records
             ADD COLUMN age_recorded_at INT NULL;"
+        );
+
+        QueryBuilder::raw(
+            "ALTER TABLE child_records
+            DROP COLUMN IF EXISTS mark_as_invalid;"
         );
     }
 }
