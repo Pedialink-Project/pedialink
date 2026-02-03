@@ -40,7 +40,7 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
 <c-table.controls :columns='["Recorded at","Height","Weight","Head Circumference","Health Status"]'>
 
     <c-slot name="extrabtn">
-        <c-modal id="add-health-record-modal" size="sm" :initOpen="false">
+        <c-modal id="add-health-record-modal" size="sm" :initOpen="flash('add') ? true : false">
             <c-slot name="trigger">
                 <c-button variant="primary">
                     Add Record
@@ -55,21 +55,24 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                 <div>Add Health Records</div>
             </c-slot>
 
-            <form id="add-health-record-form" class="child-health-form" action="">
-                <c-input type="text" label="Height:" placeholder="Enter Height of the Child (in cm)" required />
-                <c-input type="text" label="Weight:" placeholder="Enter Weight of the Child (in kg)" required />
-                <c-input type="text" label="Head Circumference:" placeholder="Enter Head Circumference of the Child (in cm)" required />
-                <c-select label="Status:" name="permissions" multiple="1" searchable="1">
-                    <li class="select-item" data-value="child">Good</li>
-                    <li class="select-item" data-value="maternal">Bad</li>
-                </c-select>
-                <c-textarea label="Additional Notes:" placeholder="Enter any additional notes here..." rows="4"></c-textarea>
+            <form id="add-health-record-form" class="child-health-form" action="{{route('doctor.child.health.add', ['id' => $id])}}" method="POST">
+                <c-input type="text" name="height" label="Height" value="{{ old('height') ?? '' }}"
+                    error="{{ errors('height') ?? '' }}" placeholder="Enter Height of the Child (in cm)"  />
+                <c-input type="text" name="weight" label="Weight" value="{{ old('weight') ?? '' }}"
+                    error="{{ errors('weight') ?? '' }}" placeholder="Enter Weight of the Child (in kg)"  />
+                <c-input type="text" name="head_circumference" label="Head Circumference" value="{{ old('head_circumference') ?? '' }}"
+                    error="{{ errors('head_circumference') ?? '' }}" placeholder="Enter Head Circumference of the Child (in cm)"  />
+                <c-input type="date" name="visit_date" label="Visit Date" value="{{ old('visit_date') ?? '' }}"
+                    error="{{ errors('visit_date') ?? '' }}" placeholder="Select the Visit Date"  />
+                
+                <c-textarea name="notes" label="Additional Notes" value="{{ old('notes') ?? '' }}"
+                    error="{{ errors('notes') ?? '' }}" placeholder="Enter any additional notes here" rows="4"></c-textarea>
             </form>
             <c-slot name="close">
                 Close
             </c-slot>
             <c-slot name="footer">
-                <c-button type="submit" form="admin-register-form" variant="primary">Add Record</c-button>
+                <c-button type="submit" form="add-health-record-form" variant="primary">Add Record</c-button>
             </c-slot>
         </c-modal>
     </c-slot>
