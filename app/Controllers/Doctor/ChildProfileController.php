@@ -21,7 +21,7 @@ class ChildProfileController
         $unacessedChildren = $this->childService->getUnaccessedChildrenForStaff($staffId);
         $accessReasons = config('data.accessReason');
 
-        return view("doctor/childprofile", ["children" => $childern,"unacessedChildren"=> $unacessedChildren,"accessReasons"=> $accessReasons]);
+        return view("doctor/childprofile", ["children" => $childern, "unacessedChildren" => $unacessedChildren, "accessReasons" => $accessReasons]);
     }
 
     public function requestAccess(Request $request)
@@ -38,7 +38,7 @@ class ChildProfileController
                     "child_id" => $childId,
                     "reason_title" => $reasonTitle,
                     "reason_description" => $reasonDescription,
-                    
+
                 ])
                 ->withErrors($validateError)
                 ->with("request", true);
@@ -53,7 +53,7 @@ class ChildProfileController
         );
 
         if ($error) {
-            return redirect(route('doctor.child.profiles'))->withMessage ($error, "Request Failed", "info");
+            return redirect(route('doctor.child.profiles'))->withMessage($error, "Request Failed", "info");
         }
 
         return redirect(route('doctor.child.profiles'))->withMessage(
@@ -63,5 +63,16 @@ class ChildProfileController
         );
     }
 
-    
+    public function cancelAccessRequest(Request $request,$id)
+    {
+        $staffId = auth()->id();
+
+        $error = $this->childService->cancelChildAccessRequest($staffId, $id);
+
+        if ($error) {
+            return redirect(route('doctor.child.profiles'))->withMessage('', $error, 'error');
+        }
+
+        return redirect(route('doctor.child.profiles'))->withMessage('Request Cancelled', 'Access request cancelled successfully','success');
+    }
 }
