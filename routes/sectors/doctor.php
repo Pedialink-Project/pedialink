@@ -14,6 +14,8 @@ return [
     ['GET', '/doctor/dashboard', [DashboardController::class, 'index'], 'doctor.dashboard', ['doctor']],
     ['GET', '/doctor/child-profiles', [ChildProfileController::class, 'index'], 'doctor.child.profiles', ['doctor']],
     ['GET', '/doctor/child-profiles/{id}/health-records', [ChildHealthController::class, 'index'], 'doctor.child.health', ['doctor']],
+        ['POST', '/doctor/child-profiles/{id}/health-records/add', [ChildHealthController::class, 'addHealthRecord'], 'doctor.child.health.add', ['doctor']],
+
     ['GET', '/doctor/child-profiles/{id}/vaccination-records', [ChildHealthController::class, 'vaccinationIndex'], 'doctor.child.vaccination', ['doctor']],
     ['GET', '/doctor/maternal-profiles', [MaternalProfileController::class, 'index'], 'doctor.maternal.profiles', ['doctor']],
     ['POST', '/doctor/childprofile/request-access', [ChildProfileController::class, 'requestAccess'], 'doctor.childprofile.requestAccess', ['doctor']],
