@@ -204,7 +204,6 @@ class ChildRecordService
         $record->head_circumference = $headCircumference;
         $record->notes = $notes;
 
-        $record->health_status = $healthStatus;
 
         $record->save();
 
