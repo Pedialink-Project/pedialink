@@ -197,6 +197,49 @@ class VaccineController
             );
     }
 
+    public function deleteSchedule(Request $request, int $id)
+    {
+        $canDelete = $this->scheduleService->validateDelete($id);
+
+        if (!$canDelete) {
+            return redirect(route("admin.vaccination.schedule"))
+                ->withMessage(
+                    "Cannot delete active schedule",
+                    "Failed",
+                    "error"
+                );
+        }
+
+        $schedule = Schedule::find($id);
+
+        if ($schedule) {
+            try {
+                $schedule->delete();
+
+                return redirect(route("admin.vaccination.schedule"))
+                    ->withMessage(
+                        "Successfully deleted schedule",
+                        "Success",
+                        "success"
+                    );
+            } catch (Exception $e) {
+                return redirect(route("admin.vaccination.schedule"))
+                    ->withMessage(
+                        "Schedule was previously used by the system",
+                        "Failed",
+                        "error"
+                    );
+            }
+        }
+
+        return redirect(route("admin.vaccination.schedule"))
+            ->withMessage(
+                "Schedule does not exist",
+                "Failed",
+                "error"
+            );
+    }
+
     public function manageSchedule(Request $request, int $schedule_id)
     {
         return view("admin/vaccination/manage", [
