@@ -17,16 +17,17 @@ class ChildHealthController
     public function index(Request $request, int $id)
     {
 
-    $search = $request->input("search");
-        [$records, $links] = $this->childRecordService->getChildRecordsByChildId($id, $search);
+        $search = $request->input("search");
+        $filters = $request->input("filters");
+        [$records, $links] = $this->childRecordService->getChildRecordsByChildId($id, $search, $filters);
         $name = $this->childRecordService->getChildNameById($id);
 
 
         return view("doctor/childhealth", [
             "id" => $id,
-            'name'=>$name,
+            'name' => $name,
             "records" => $records,
-            "links"=> $links
+            "links" => $links
         ]);
     }
 
@@ -39,7 +40,7 @@ class ChildHealthController
         $headCircumference = $request->input('head_circumference');
         $visitDate = $request->input('visit_date');
         $notes = $request->input('notes');
-    
+
 
         $errors = $this->childRecordService->validateRecordData(
             $visitDate,
@@ -62,13 +63,13 @@ class ChildHealthController
         }
 
         $this->childRecordService->addHealthRecord(
-             $id,
-        $staffId,
-        $visitDate,
-        $height,
-        $weight,
-        $headCircumference,
-        $notes
+            $id,
+            $staffId,
+            $visitDate,
+            $height,
+            $weight,
+            $headCircumference,
+            $notes
         );
 
         return redirect(route("doctor.child.health", ["id" => $id]))
