@@ -96,9 +96,9 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                 @foreach ($records as $key=>$record)
                 <c-table.tr>
                     <c-table.td col="Recorded at">{{ $record['visit_date'] }}</c-table.td>
-                    <c-table.td col="Height">{{ $record['height'] }}</c-table.td>
-                    <c-table.td col="Weight">{{ $record['weight'] }}</c-table.td>
-                    <c-table.td col="Head Circumference">{{ $record['head_circumference'] }}</c-table.td>
+                    <c-table.td col="Height">{{ $record['height'] }}cm</c-table.td>
+                    <c-table.td col="Weight">{{ $record['weight'] }}kg</c-table.td>
+                    <c-table.td col="Head Circumference">{{ $record['head_circumference'] }}cm</c-table.td>
                     <c-table.td col="Health Status">
                         @if (strtolower($record['health_status']) === "good")
                         <c-badge type="green">
@@ -155,19 +155,19 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/profile.svg') }}"
                                             title="Record ID"
-                                            info="REC001" />
+                                            info="{{'REC-00' . $record['id'] }}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Height"
-                                            info="{{ $record['height'] }}" />
+                                            info="{{ $record['height'] }}cm" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Total Vaccinations"
-                                            info="2" />
+                                            title="Age Recorded At"
+                                            info="{{$record['age_recorded_at']}} Months" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/body-weight.svg') }}"
                                             title="Weight"
-                                            info="{{ $record['weight'] }}" />
+                                            info="{{ $record['weight'] }}kg" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                             title="Visit Date"
@@ -175,7 +175,7 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Head Circumference"
-                                            info="{{ $record['head_circumference'] }} " />
+                                            info="{{ $record['head_circumference'] }}cm" />
                                     </c-modal.viewcard>
 
                                     <c-modal.viewlist title="Additional Information">
