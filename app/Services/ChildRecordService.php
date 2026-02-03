@@ -12,7 +12,8 @@ class ChildRecordService
 
     private $notificationService;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->notificationService = new NotificationService();
     }
     private function calculateBMI(?float $heightCm, ?float $weightKg): ?float
@@ -127,93 +128,97 @@ class ChildRecordService
         return $resource;
     }
 
-  public function validateRecordData(
-    $visitDate,
-    $height,
-    $weight,
-    $headCircumference,
-): array {
+    public function validateRecordData(
+        $visitDate,
+        $height,
+        $weight,
+        $headCircumference,
+    ): array {
 
-    $errors = [];
+        $errors = [];
 
-    if (!$visitDate) {
-        $errors['visit_date'] = 'Visit date is required.';
-    } elseif (!strtotime($visitDate)) {
-        $errors['visit_date'] = 'Invalid visit date.';
-    } elseif ($visitDate > date('Y-m-d')) {
-        $errors['visit_date'] = 'Visit date cannot be in the future.';
-    }
-
-    if ($height !== null) {
-        if (!is_numeric($height)) {
-            $errors['height'] = 'Height must be numeric.';
-        } elseif ($height < 10 || $height > 250) {
-            $errors['height'] = 'Height must be between 10cm and 250cm.';
+        if (!$visitDate) {
+            $errors['visit_date'] = 'Visit date is required.';
+        } elseif (!strtotime($visitDate)) {
+            $errors['visit_date'] = 'Invalid visit date.';
+        } elseif ($visitDate > date('Y-m-d')) {
+            $errors['visit_date'] = 'Visit date cannot be in the future.';
         }
-    }
 
-    if ($weight !== null) {
-        if (!is_numeric($weight)) {
-            $errors['weight'] = 'Weight must be numeric.';
-        } elseif ($weight < 1 || $weight > 150) {
-            $errors['weight'] = 'Weight must be between 1kg and 150kg.';
+        if ($height !== null) {
+            if (!is_numeric($height)) {
+                $errors['height'] = 'Height must be numeric.';
+            } elseif ($height < 10 || $height > 250) {
+                $errors['height'] = 'Height must be between 10cm and 250cm.';
+            }
         }
-    }
 
-    if ($headCircumference !== null) {
-        if (!is_numeric($headCircumference)) {
-            $errors['head_circumference'] = 'Head circumference must be numeric.';
-        } elseif ($headCircumference < 20 || $headCircumference > 70) {
-            $errors['head_circumference'] = 'Head circumference must be between 20cm and 70cm.';
+        if ($weight !== null) {
+            if (!is_numeric($weight)) {
+                $errors['weight'] = 'Weight must be numeric.';
+            } elseif ($weight < 1 || $weight > 150) {
+                $errors['weight'] = 'Weight must be between 1kg and 150kg.';
+            }
         }
+
+        if ($headCircumference !== null) {
+            if (!is_numeric($headCircumference)) {
+                $errors['head_circumference'] = 'Head circumference must be numeric.';
+            } elseif ($headCircumference < 20 || $headCircumference > 70) {
+                $errors['head_circumference'] = 'Head circumference must be between 20cm and 70cm.';
+            }
+        }
+
+        return $errors;
     }
 
-    return $errors;
-}
+    public function validateEditRecordData(
+        $visitDate,
+        $height,
+        $weight,
+        $headCircumference,
+    ): array {
 
-public function validateEditRecordData(
-    $visitDate,
-    $height,
-    $weight,
-    $headCircumference,
-): array {
+        $errors = [];
 
-    $errors = [];
+        if (!$visitDate) {
+            $errors['e_visit_date'] = 'Visit date is required.';
+        } elseif (!strtotime($visitDate)) {
+            $errors['e_visit_date'] = 'Invalid visit date.';
+        } elseif ($visitDate > date('Y-m-d')) {
+            $errors['e_visit_date'] = 'Visit date cannot be in the future.';
+        }
 
-    if (!$visitDate) {
-        $errors['e_visit_date'] = 'Visit date is required.';
-    } elseif (!strtotime($visitDate)) {
-        $errors['e_visit_date'] = 'Invalid visit date.';
-    } elseif ($visitDate > date('Y-m-d')) {
-        $errors['e_visit_date'] = 'Visit date cannot be in the future.';
-    }
 
-    if ($height !== null) {
-        if (!is_numeric($height)) {
+        if (!$height) {
+            $errors['e_height'] = 'Height is required.';
+        } elseif (!is_numeric($height)) {
             $errors['e_height'] = 'Height must be numeric.';
         } elseif ($height < 10 || $height > 250) {
             $errors['e_height'] = 'Height must be between 10cm and 250cm.';
         }
-    }
 
-    if ($weight !== null) {
-        if (!is_numeric($weight)) {
+
+        if (!$weight) {
+            $errors['e_weight'] = 'Weight is required';
+        } elseif (!is_numeric($weight)) {
             $errors['e_weight'] = 'Weight must be numeric.';
         } elseif ($weight < 1 || $weight > 150) {
             $errors['e_weight'] = 'Weight must be between 1kg and 150kg.';
         }
-    }
 
-    if ($headCircumference !== null) {
-        if (!is_numeric($headCircumference)) {
+
+        if (!$headCircumference) {
+            $errors['e_head_circumference'] = 'Head circumference is required.';
+        } elseif (!is_numeric($headCircumference)) {
             $errors['e_head_circumference'] = 'Head circumference must be numeric.';
         } elseif ($headCircumference < 20 || $headCircumference > 70) {
             $errors['e_head_circumference'] = 'Head circumference must be between 20cm and 70cm.';
         }
-    }
 
-    return $errors;
-}
+
+        return $errors;
+    }
 
 
     public function addHealthRecord(
@@ -301,7 +306,7 @@ public function validateEditRecordData(
             "Health record updated",
             "The health record of child C-00 " . $record->child_id . " has been updated.",
             "child_record_updated",
-            $record->child_id ."". $record->child_id 
+            $record->child_id . "" . $record->child_id
 
         );
 
