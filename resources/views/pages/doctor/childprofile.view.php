@@ -40,7 +40,7 @@ Child Profiles
 @section('content')
 
 
-<c-table.controls :columns='["ID","Name","Age","Vaccination Status","GN Devision"]'>
+<c-table.controls action="{{ route('doctor.child.profiles') }}"  :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected']]">
 
 
     <c-slot name="extrabtn">
