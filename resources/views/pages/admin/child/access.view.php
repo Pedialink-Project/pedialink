@@ -26,7 +26,7 @@
         @foreach ($accessRequests as $key => $request)
             <c-card class="access-card">
                 <c-slot name="header">
-                    <h3>{{ $request["child"]['name'] }} &#8594; Child &middot; C-{{ $request["child"]['id'] }}</h3>
+                    <h3>{{ $request['staff']["name"] }} &#8594; Child &middot; C-{{ $request["child"]['id'] }}</h3>
                 </c-slot>
                 <c-slot name="headerSuffix">
                     <span class="access-time">{{ time_ago($request['created_at']) }}</span>
@@ -110,7 +110,7 @@
                     </c-dropdown.main>
                 </c-slot>
                 <p class="access-card-content">
-                    D-{{ $request["staff"]["id"] }} Requested access: {{ $request['reason_title'] }}
+                    D-{{ $request["staff_id"] }} Requested access: {{ $request['reason_title'] }}
                 </p>
                 <p class="access-card-content">
                     Reason: {{ $request['reason_description'] }}
@@ -237,7 +237,7 @@
                             <c-modal.viewlist title="Staff Details">
                                 <c-slot name="list">
                                     <li>NIC: {{ $request["staff"]["nic"] }}</li>
-                                    <li>Type: {{ ucfirst($request["staff"]["role"] ) }}</li>
+                                    <li>Type: {{ ucfirst($request["role"] ) }}</li>
                                 </c-slot>
                             </c-modal.viewlist>
 
