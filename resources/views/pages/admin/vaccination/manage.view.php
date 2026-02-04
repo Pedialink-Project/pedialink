@@ -13,23 +13,6 @@
 @endsection
 
 @section('content')
-    <?php
-    $scheduleList = [
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG", "dose_number" => 5],
-        
-    ];
-    ?>
-
     <c-table.controls :columns='["ID","Name","Code","Dose Number"]'>
         <c-slot name="extrabtn">
             <c-modal id="add-vaccine-modal" size="sm" :initOpen="false">
@@ -100,8 +83,8 @@
                     @foreach ($scheduleList as $key => $scheduleItem)
                         <c-table.tr>
                             <c-table.td col="id">{{ $scheduleItem['id'] }}</c-table.td>
-                            <c-table.td col="name">{{ $scheduleItem['name'] }}</c-table.td>
-                            <c-table.td col="code">{{ $scheduleItem['code'] }}</c-table.td>
+                            <c-table.td col="name">{{ $scheduleItem['vaccine']['name'] }}</c-table.td>
+                            <c-table.td col="code">{{ $scheduleItem['vaccine']['code'] }}</c-table.td>
                             <c-table.td col="dose_number">{{ $scheduleItem['dose_number'] }}</c-table.td>
                             <c-table.td class="table-actions" align="center">
                                 <c-dropdown.main>
@@ -130,12 +113,12 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Vaccine Code"
-                                                    info="{{ $scheduleItem['code'] }}"
+                                                    info="{{ $scheduleItem['vaccine']['code'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/vaccine.svg') }}"
                                                     title="Vaccine Name"
-                                                    info="{{ $scheduleItem['name'] }}"
+                                                    info="{{ $scheduleItem['vaccine']['name'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/test-tube-01.svg') }}"
@@ -145,24 +128,23 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/chart-minimum.svg') }}"
                                                     title="Minimum Age"
-                                                    info="62 Days"
+                                                    info="{{ $scheduleItem['min_age_days'] }} days"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                                     title="Due Age"
-                                                    info="270 Days"
+                                                    info="{{ $scheduleItem['due_age_days'] }} days"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/chart-maximum.svg') }}"
                                                     title="Maximum Gap"
-                                                    info="28 Days"
+                                                    info="{{ $scheduleItem['min_age_gap_days'] }} days"
                                                 />
                                             </c-modal.viewcard>
 
                                             <c-modal.viewlist title="Additional Details">
                                                 <c-slot name="list">
-                                                    <li>Lorem Ipsum</li>
-                                                    <li>Lorem Ipsum</li>
+                                                    <li>{{ $scheduleItem['additional_information'] }}</li>
                                                 </c-slot>
                                             </c-modal.viewlist>
 
@@ -190,7 +172,7 @@
                                             </c-slot>
 
                                             <form id="edit-vaccine" class="manage-schedule-form" action="">
-                                                <c-input type="text" label="Schedule Name" placeholder="Enter schedule name" value="{{ $scheduleItem['name'] }}" required />
+                                                <c-input type="text" label="Schedule Name" placeholder="Enter schedule name" value="{{ $scheduleItem['vaccine']['name'] }}" required />
                                                 <c-input type="number" label="Dose Numbers (in days)" placeholder="Enter dose number" value="{{ $scheduleItem['dose_number'] }}" required />
                                                 <c-input type="number" label="Minimum Age (in days)" placeholder="Enter minimum age for dose" value="62" required />
                                                 <c-input type="number" label="Due Age (in days)" placeholder="Enter due age for dose" value="270" required />
@@ -215,7 +197,7 @@
                                             </c-slot>
 
                                             <p>
-                                                Do you want to remove vaccine from schedule <span class="schedule-vaccine-highlight">2020_v000{{ $schedule_id }}</span>v?
+                                                Do you want to remove vaccine from schedule <span class="schedule-vaccine-highlight">{{ $scheduleItem['schedule']['name'] }}</span>?
                                             </p>
 
                                             <c-slot name="close">
@@ -233,13 +215,16 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($scheduleList) === 0)
-                        <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
-                    @endif
                 </c-table.tbody>
             </c-table.main>
         </div>
     </c-table.wrapper>
-
-    <c-table.pagination />
+    @if(count($scheduleList) <= 0)
+        <c-emptytable
+            alt="No data"
+            title="No vaccinations available"
+            description="This schedule has no vaccinations data"
+        />
+    @endif
+    <c-table.pagination :links="$links" />
 @endsection
