@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\Validator;
 use App\Models\ScheduledVaccine;
 use App\Models\Vaccine;
 
@@ -61,5 +62,116 @@ class ManageScheduleService
         $links = array_diff_key($scheduledVaccines, ['items' => true]);
 
         return [$resource, $vaccines, $links];
+    }
+
+    private function validateVaccine(int $vaccine_id, int $schedule_id)
+    {
+        $error = null;
+        $vaccine = Vaccine::find($vaccine_id);
+
+        if (!Validator::validateFieldExistence($vaccine_id)) {
+            $error = "Vaccine selection is required.";
+            return $error;
+        }
+
+        if (!$vaccine) {
+            $error = "Selected vaccine does not exist.";
+            return $error;
+        }
+
+        $schedule = ScheduledVaccine::query()
+            ->where("vaccine_id", "=", $vaccine_id)
+            ->where("schedule_id", "=", $schedule_id)
+            ->first();
+
+        if ($schedule) {
+            $error = "Selected vaccine is already added to this schedule.";
+            return $error;
+        }
+
+        return $error;
+    }
+
+    private function validateDoseNumber(int $dose_number)
+    {
+        $error = null;
+
+        if (!Validator::validateFieldExistence($dose_number)) {
+            $error = "Dose number is required.";
+            return $error;
+        }
+
+        if ($dose_number <= 0) {
+            $error = "Dose number must be a positive integer.";
+            return $error;
+        }
+
+        return $error;
+    }
+
+    private function validateAgeDays(int $age_days, string $fieldName)
+    {
+        $error = null;
+
+        if (!Validator::validateFieldExistence($age_days)) {
+            $error = "{$fieldName} is required.";
+            return $error;
+        }
+
+        if ($age_days < 0) {
+            $error = "{$fieldName} cannot be negative.";
+            return $error;
+        }
+
+        return $error;
+    }
+
+    private function validateAdditionalInformation(string $additional_information)
+    {
+        $error = null;
+
+        if (!Validator::validateFieldMaxLength($additional_information, 500)) {
+            $error = "Additional information cannot exceed 500 characters.";
+            return $error;
+        }
+
+        return $error;
+    }
+
+    public function validateAddScheduleVaccineData(array $data, int $schedule_id)
+    {
+        $errors = [];
+
+        $vaccineError = $this->validateVaccine($data['vaccine'], $schedule_id);
+        if ($vaccineError) {
+            $errors['vaccine'] = $vaccineError;
+        }
+
+        $doseNumberError = $this->validateDoseNumber($data['dose_number']);
+        if ($doseNumberError) {
+            $errors['dose_number'] = $doseNumberError;
+        }
+
+        $minAgeDaysError = $this->validateAgeDays($data['min_age_days'], "Minimum age days");
+        if ($minAgeDaysError) {
+            $errors['min_age_days'] = $minAgeDaysError;
+        }
+
+        $dueAgeDaysError = $this->validateAgeDays($data['due_age_days'], "Due age days");
+        if ($dueAgeDaysError) {
+            $errors['due_age_days'] = $dueAgeDaysError;
+        }
+
+        $minAgeGapDaysError = $this->validateAgeDays($data['min_age_gap_days'], "Minimum age gap days");
+        if ($minAgeGapDaysError) {
+            $errors['min_age_gap_days'] = $minAgeGapDaysError;
+        }
+
+        $additionalInfoError = $this->validateAdditionalInformation($data['additional_details'] ?? '');
+        if ($additionalInfoError) {
+            $errors['additional_details'] = $additionalInfoError;
+        }
+
+        return $errors;
     }
 }
