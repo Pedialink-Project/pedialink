@@ -15,7 +15,7 @@
 @section('content')
     <c-table.controls :columns='["ID","Name","Code","Dose Number"]'>
         <c-slot name="extrabtn">
-            <c-modal id="add-vaccine-modal" size="sm" :initOpen="false">
+            <c-modal id="add-vaccine-modal" size="sm" :initOpen="flash('add') ? true : false">
                 <c-slot name="trigger">
                     <c-button class="add-vaccine-btn" variant="primary">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,13 +46,57 @@
                     <div>Add Vaccine to Schedule</div>
                 </c-slot>
 
-                <form id="add-vaccine" class="manage-schedule-form" action="">
-                    <c-input type="text" label="Schedule Name" placeholder="Enter schedule name" required />
-                    <c-input type="number" label="Dose Numbers (in days)" placeholder="Enter dose number" required />
-                    <c-input type="number" label="Minimum Age (in days)" placeholder="Enter minimum age for dose" />
-                    <c-input type="number" label="Due Age (in days)" placeholder="Enter due age for dose" />
-                    <c-input type="number" label="Minimum Age Gap (in days)" placeholder="Enter minimum age for dose" />
-                    <c-textarea label="Additional Details" placeholder="Enter additional details"></c-textarea>
+                <form id="add-vaccine" class="manage-schedule-form" method="POST" action="{{ route('admin.vaccination.schedule.manage.add', ['schedule_id' => $schedule_id]) }}">
+                    <c-select
+                        type="text"
+                        label="Select vaccine"
+                        name="vaccine"
+                        placeholder="Select from available vaccine"
+                        searchable="true"
+                        value="{{ old('vaccine') ?? '' }}"
+                        error="{{ errors('vaccine') ?? '' }}"
+                        required
+                    >
+                        @foreach ($vaccines as $vaccine)
+                            <li class="select-item" data-value="{{ $vaccine->id }}">
+                                {{ $vaccine->name }}
+                            </li>
+                        @endforeach
+                    </c-select>
+                    <c-input
+                        type="number"
+                        label="Dose Numbers"
+                        placeholder="Enter dose number"
+                        name="dose_number"
+                        value="{{ old('dose_number') ?? '' }}"
+                        errors="{{ errors('dose_number') ?? '' }}"
+                        required
+                    />
+                    <c-input
+                        type="number"
+                        label="Minimum Age (in days)"
+                        value="{{ old('min_age_days') ?? '' }}"
+                        name="min_age_days"
+                        errors="{{ errors('min_age_days') ?? '' }}"
+                        placeholder="Enter minimum age for dose"
+                    />
+                    <c-input
+                        type="number"
+                        label="Due Age (in days)"
+                        name="due_age_days"
+                        value="{{ old('due_age_days') ?? '' }}"
+                        errors="{{ errors('due_age_days') ?? '' }}"
+                        placeholder="Enter due age for dose"
+                    />
+                    <c-input
+                        type="number"
+                        label="Minimum Age Gap (in days)"
+                        name="min_age_gap_days"
+                        value="{{ old('min_age_gap_days') ?? '' }}"
+                        errors="{{ errors('min_age_gap_days') ?? '' }}"
+                        placeholder="Enter minimum age for dose"
+                    />
+                    <c-textarea label="Additional Details" name="additional_information" value="{{ old('additional_information') ?? '' }}" errors="{{ errors('additional_information') ?? '' }}" placeholder="Enter additional details"></c-textarea>
                 </form>
 
                 <c-slot name="close">
