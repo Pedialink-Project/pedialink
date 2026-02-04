@@ -322,12 +322,13 @@ class VaccineController
     {
         $search = $request->query("search") ?? '';
 
-        [$scheduleList, $links] = $this->manageScheduleService->getScheduleVaccineData(
+        [$scheduleList, $vaccines, $links] = $this->manageScheduleService->getScheduleVaccineData(
             $schedule_id, $search
         );
         return view("admin/vaccination/manage", [
             "schedule_id" => $schedule_id,
             "scheduleList" => $scheduleList,
+            "vaccines" => $vaccines,
             "links" => $links
         ]);
     }
