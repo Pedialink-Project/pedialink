@@ -18,9 +18,27 @@ class ManageScheduleService
 
         $resource = [];
 
+        $vaccines = Vaccine::all();
+
         foreach ($scheduledVaccines['items'] as $scheduledVaccine) {
             $vaccine = $scheduledVaccine->getVaccine();
             $schedule = $scheduledVaccine->getSchedule();
+
+            // track vaccine index to remove
+            $vaccineIndexToRemove = [];
+            foreach ($vaccines as $key => $existingVaccine) {
+                if ($vaccine->id == $existingVaccine->id) {
+                    $vaccineIndexToRemove[] = $key;
+                }
+            }
+
+            // unset tracked vaccine index from array
+            foreach ($vaccineIndexToRemove as $vaccineIndex) {
+                unset($vaccines[$vaccineIndex]);
+            }
+
+            // remove gaps from array
+            array_values($vaccines);
 
             $resource[] = [
                 "id" => $scheduledVaccine->id,
@@ -42,6 +60,6 @@ class ManageScheduleService
 
         $links = array_diff_key($scheduledVaccines, ['items' => true]);
 
-        return [$resource, $links];
+        return [$resource, $vaccines, $links];
     }
 }
