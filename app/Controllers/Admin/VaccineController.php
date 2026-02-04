@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Schedule;
+use App\Models\ScheduledVaccine;
 use App\Models\Vaccine;
 use App\Services\Admin\ManageScheduleService;
 use App\Services\Admin\ScheduleService;
@@ -331,5 +332,46 @@ class VaccineController
             "vaccines" => $vaccines,
             "links" => $links
         ]);
+    }
+
+    public function addVaccineToSchedule(Request $request, int $schedule_id)
+    {
+        $data = [
+            "vaccine" => $request->input("vaccine") ? (int)$request->input("vaccine") : 0,
+            "dose_number" => $request->input("dose_number") ? (int)$request->input("dose_number") : 0,
+            "min_age_days" => $request->input("min_age_days") ? (int)$request->input("min_age_days") : 0,
+            "due_age_days" => $request->input("due_age_days") ? (int)$request->input("due_age_days") : 0,
+            "min_age_gap_days" => $request->input("min_age_gap_days") ? (int)$request->input("min_age_gap_days") : 0,
+            "additional_information" => $request->input("additional_information") ?? ""
+        ];
+
+        $errors = $this->manageScheduleService->validateAddScheduleVaccineData(
+            $data,
+            $schedule_id
+        );
+
+        if (count($errors) !== 0) {
+            return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+                ->withInput($data)
+                ->withErrors($errors)
+                ->with("add", true);
+        }
+
+        $scheduledVaccine = new ScheduledVaccine();
+        $scheduledVaccine->vaccine_id = $data['vaccine'];
+        $scheduledVaccine->schedule_id = $schedule_id;
+        $scheduledVaccine->dose_number = $data['dose_number'];
+        $scheduledVaccine->min_age_days = $data['min_age_days'];
+        $scheduledVaccine->due_age_days = $data['due_age_days'];
+        $scheduledVaccine->min_age_gap_days = $data['min_age_gap_days'];
+        $scheduledVaccine->additional_information = $data['additional_information'];
+        $scheduledVaccine->save();
+
+        return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+            ->withMessage(
+                "Successfully added vaccine to schedule",
+                "Success",
+                "success"
+            );
     }
 }
