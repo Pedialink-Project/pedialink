@@ -289,12 +289,15 @@
                                                 Do you want to remove vaccine from schedule <span class="schedule-vaccine-highlight">{{ $scheduleItem['schedule']['name'] }}</span>?
                                             </p>
 
+                                            <form id="delete-vaccine-{{ $key }}" method="POST" action="{{ route('admin.vaccination.schedule.manage.delete', ['schedule_id' => $schedule_id, 'id' => $scheduleItem['id']]) }}">
+                                            </form>
+
                                             <c-slot name="close">
                                                 Cancel
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="destructive">
+                                                <c-button type="submit" form="delete-vaccine-{{ $key }}" variant="destructive">
                                                     Remove Vaccine
                                                 </c-button>
                                             </c-slot>
