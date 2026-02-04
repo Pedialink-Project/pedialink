@@ -110,7 +110,7 @@
                     </c-dropdown.main>
                 </c-slot>
                 <p class="access-card-content">
-                    D-{{ $request["staff_id"] }} Requested access: {{ $request['reason_title'] }}
+                    D-{{ $request["staff"]['id'] }} Requested access: {{ $request['reason_title'] }}
                 </p>
                 <p class="access-card-content">
                     Reason: {{ $request['reason_description'] }}
@@ -231,13 +231,14 @@
                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                     title="Staff Role"
                                     info="{{ ucfirst($request['staff']['role']) }}"
+                                    info="{{ ucfirst($request['staff']['role']) }}"
                                 />
                             </c-modal.viewcard>
 
                             <c-modal.viewlist title="Staff Details">
                                 <c-slot name="list">
                                     <li>NIC: {{ $request["staff"]["nic"] }}</li>
-                                    <li>Type: {{ ucfirst($request["role"] ) }}</li>
+                                    <li>Type: {{ ucfirst($request['staff']["role"] ) }}</li>
                                 </c-slot>
                             </c-modal.viewlist>
 
