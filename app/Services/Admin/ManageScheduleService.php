@@ -138,38 +138,41 @@ class ManageScheduleService
         return $error;
     }
 
-    public function validateAddScheduleVaccineData(array $data, int $schedule_id)
+    public function validateAddScheduleVaccineData(array $data, int $schedule_id, bool $edit = false)
     {
         $errors = [];
+        $prefix = $edit ? "e_" : "";
 
-        $vaccineError = $this->validateVaccine($data['vaccine'], $schedule_id);
-        if ($vaccineError) {
-            $errors['vaccine'] = $vaccineError;
+        if (!$edit) {
+            $vaccineError = $this->validateVaccine($data[$prefix . 'vaccine'], $schedule_id);
+            if ($vaccineError) {
+                $errors[$prefix . 'vaccine'] = $vaccineError;
+            }
         }
 
-        $doseNumberError = $this->validateDoseNumber($data['dose_number']);
+        $doseNumberError = $this->validateDoseNumber($data[$prefix . 'dose_number']);
         if ($doseNumberError) {
-            $errors['dose_number'] = $doseNumberError;
+            $errors[$prefix . 'dose_number'] = $doseNumberError;
         }
 
-        $minAgeDaysError = $this->validateAgeDays($data['min_age_days'], "Minimum age days");
+        $minAgeDaysError = $this->validateAgeDays($data[$prefix . 'min_age_days'], "Minimum age days");
         if ($minAgeDaysError) {
-            $errors['min_age_days'] = $minAgeDaysError;
+            $errors[$prefix . 'min_age_days'] = $minAgeDaysError;
         }
 
-        $dueAgeDaysError = $this->validateAgeDays($data['due_age_days'], "Due age days");
+        $dueAgeDaysError = $this->validateAgeDays($data[$prefix . 'due_age_days'], "Due age days");
         if ($dueAgeDaysError) {
-            $errors['due_age_days'] = $dueAgeDaysError;
+            $errors[$prefix . 'due_age_days'] = $dueAgeDaysError;
         }
 
-        $minAgeGapDaysError = $this->validateAgeDays($data['min_age_gap_days'], "Minimum age gap days");
+        $minAgeGapDaysError = $this->validateAgeDays($data[$prefix . 'min_age_gap_days'], "Minimum age gap days");
         if ($minAgeGapDaysError) {
-            $errors['min_age_gap_days'] = $minAgeGapDaysError;
+            $errors[$prefix . 'min_age_gap_days'] = $minAgeGapDaysError;
         }
 
-        $additionalInfoError = $this->validateAdditionalInformation($data['additional_details'] ?? '');
+        $additionalInfoError = $this->validateAdditionalInformation($data[$prefix . 'additional_information'] ?? '');
         if ($additionalInfoError) {
-            $errors['additional_details'] = $additionalInfoError;
+            $errors[$prefix . 'additional_information'] = $additionalInfoError;
         }
 
         return $errors;
