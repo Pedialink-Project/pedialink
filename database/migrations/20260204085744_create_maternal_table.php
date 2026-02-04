@@ -18,8 +18,8 @@ class Migration_20260204085744_create_maternal_table implements \Library\Framewo
             "CREATE TABLE IF NOT EXISTS maternal (
                 id SERIAL PRIMARY KEY,
                 parent_id INT REFERENCES users (id),
-                type maternal_type NOT NULL,
-            )"
+                type maternal_type NOT NULL
+            );"
         );
     }
 
