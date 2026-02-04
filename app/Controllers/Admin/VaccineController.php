@@ -421,4 +421,36 @@ class VaccineController
                 "error"
             );
     }
+
+    public function deleteVaccineFromSchedule(Request $request, int $schedule_id, int $id)
+    {
+        $scheduledVaccine = ScheduledVaccine::find($id);
+
+        if ($scheduledVaccine) {
+            try {
+                $scheduledVaccine->delete();
+
+                return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+                    ->withMessage(
+                        "Successfully removed vaccine from schedule",
+                        "Success",
+                        "success"
+                    );
+            } catch (Exception $e) {
+                return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+                    ->withMessage(
+                        "Failed to remove vaccine from schedule",
+                        "Failed",
+                        "error"
+                    );
+            }
+        }
+
+        return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+            ->withMessage(
+                "Vaccine in schedule does not exist",
+                "Failed",
+                "error"
+            );
+    }
 }
