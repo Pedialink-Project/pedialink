@@ -6,6 +6,44 @@ use App\Models\Notification;
 
 class NotificationService
 {
+
+
+/**
+ * Summary of notification_time
+ * @param string $datetime
+ * @return string
+ */
+function notification_time(string $datetime): string
+    {
+        $timestamp = strtotime($datetime);
+        $now = time();
+
+        $diff = $now - $timestamp;
+
+        // Less than 1 minute
+        if ($diff < 60) {
+            return 'Just now';
+        }
+
+        // Minutes
+        if ($diff < 3600) {
+            return floor($diff / 60) . 'm ago';
+        }
+
+        // Hours (today)
+        if (date('Y-m-d') === date('Y-m-d', $timestamp)) {
+            return floor($diff / 3600) . 'h ago';
+        }
+
+        // Yesterday
+        if (date('Y-m-d', strtotime('yesterday')) === date('Y-m-d', $timestamp)) {
+            return 'Yesterday';
+        }
+
+        return date('M d', $timestamp); 
+        // Example: Feb 05
+    }
+
     /**
      * Send notification to a single user
      */
@@ -64,6 +102,9 @@ class NotificationService
         return $resource;
     }
 
+    /**
+     * Get latest notifications for logged-in user (latest first)
+     */
     public function markAsRead(int $notificationId, int $userId)
     {
         $notification = Notification::query()
@@ -82,6 +123,10 @@ class NotificationService
         $notification->is_read = true;
         $notification->save();
     }
+
+    /**
+     * Get latest notifications for logged-in user (latest first)
+     */
     public function countUnread(int $userId): int
     {
         return count(
