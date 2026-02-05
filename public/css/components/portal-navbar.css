@@ -168,7 +168,7 @@
 .notification-menu{
   width: 25rem;
   padding: 1rem;
-  max-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
