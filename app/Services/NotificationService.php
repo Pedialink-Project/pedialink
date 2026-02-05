@@ -9,9 +9,6 @@ class NotificationService
 {
 
 
-
-
-
     /**
      * Send notification to a single user
      */
@@ -146,6 +143,23 @@ class NotificationService
 
         return null;
     }
+
+    public function getNavbarData($userId)
+{
+    $query = Notification::query()
+        ->where('recipient_id', '=', $userId)
+        ->orderBy('created_at', 'DESC');
+
+        $unreadNotifucations = $query
+            ->where('is_read', '=', 0)
+            ->get();
+
+    return [
+        'notifications' => $query->limit(3)->get(),
+        'unreadCount' => count($unreadNotifucations),
+    ];
+}
+
 
     public function deleteAllNotification(int $userId): void
     {
