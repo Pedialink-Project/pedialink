@@ -6,8 +6,8 @@ $class = $class ?? '';
 
 
 $data = is_callable($navbarData)
-    ? $navbarData()
-    : $navbarData;
+  ? $navbarData()
+  : $navbarData;
 
 $notifications = $data['notifications'] ?? [];
 $unreadCount = $data['unreadCount'] ?? 0;
@@ -38,9 +38,18 @@ $unreadCount = $data['unreadCount'] ?? 0;
   <div class="app-navbar__right">
     <c-dropdown.main>
       <c-slot name="trigger">
-        <c-button vareint="outline" class="icon-btn" aria-label="Notifications" title="Notifications">
+        <c-button vareint="outline" class="icon-btn notification-bell" aria-label="Notifications" title="Notifications">
+
           <img src="{{ asset('assets/icons/notification-02.svg') }}" />
+
+          @if($unreadCount > 0)
+          <span class="notification-badge">
+            {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+          </span>
+          @endif
+
         </c-button>
+
       </c-slot>
 
       <c-slot name="menu">
@@ -62,23 +71,24 @@ $unreadCount = $data['unreadCount'] ?? 0;
 
           <div class="row-container">
 
-          @if(count($notifications) === 0)
+            @if(count($notifications) === 0)
             <div class="no-notifications" align="center">
               No new notifications
             </div>
-          @endif
+            @endif
 
             @foreach($notifications as $notification)
-            <div class="row" >
 
-                  <div class="message">
-                    {{$notification['message']}}
-                  </div>
-                  <div class="time">
-                    {{time_ago($notification['time'])}}ago
-                  </div>
-                </div>
-             
+<div class="row {{ !$notification['is_read'] ? 'unread' : '' }}">
+
+              <div class="message">
+                {{$notification['message']}}
+              </div>
+              <div class="time">
+                {{time_ago($notification['time'])}}ago
+              </div>
+            </div>
+
             @endforeach
           </div>
         </div>
@@ -138,60 +148,60 @@ $unreadCount = $data['unreadCount'] ?? 0;
             </svg>
 
             <span>Settings</span>
-</a>
-  </c-dropdown.item>
-  <c-modal size="md" :initOpen="false">
-    <c-slot name="trigger">
-      <c-dropdown.item>
+          </a>
+        </c-dropdown.item>
+        <c-modal size="md" :initOpen="false">
+          <c-slot name="trigger">
+            <c-dropdown.item>
 
-        <div class="drop-item logout">
+              <div class="drop-item logout">
 
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M15 17.625C14.9264 19.4769 13.3831 21.0494 11.3156 20.9988C10.8346 20.987 10.2401 20.8194 9.05112 20.484C6.18961 19.6768 3.70555 18.3203 3.10956 15.2815C3 14.723 3 14.0944 3 12.8373L3 11.1627C3 9.90561 3 9.27705 3.10956 8.71846C3.70555 5.67965 6.18961 4.32316 9.05112 3.51603C10.2401 3.18064 10.8346 3.01295 11.3156 3.00119C13.3831 2.95061 14.9264 4.52307 15 6.37501"
-              stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M21 12H10M21 12C21 11.2998 19.0057 9.99153 18.5 9.5M21 12C21 12.7002 19.0057 14.0085 18.5 14.5"
-              stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <span>Logout</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M15 17.625C14.9264 19.4769 13.3831 21.0494 11.3156 20.9988C10.8346 20.987 10.2401 20.8194 9.05112 20.484C6.18961 19.6768 3.70555 18.3203 3.10956 15.2815C3 14.723 3 14.0944 3 12.8373L3 11.1627C3 9.90561 3 9.27705 3.10956 8.71846C3.70555 5.67965 6.18961 4.32316 9.05112 3.51603C10.2401 3.18064 10.8346 3.01295 11.3156 3.00119C13.3831 2.95061 14.9264 4.52307 15 6.37501"
+                    stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" />
+                  <path d="M21 12H10M21 12C21 11.2998 19.0057 9.99153 18.5 9.5M21 12C21 12.7002 19.0057 14.0085 18.5 14.5"
+                    stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Logout</span>
 
-        </div>
-      </c-dropdown.item>
+              </div>
+            </c-dropdown.item>
 
-    </c-slot>
-    <c-slot name="headerPrefix">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M15 17.625C14.9264 19.4769 13.3831 21.0494 11.3156 20.9988C10.8346 20.987 10.2401 20.8194 9.05112 20.484C6.18961 19.6768 3.70555 18.3203 3.10956 15.2815C3 14.723 3 14.0944 3 12.8373L3 11.1627C3 9.90561 3 9.27705 3.10956 8.71846C3.70555 5.67965 6.18961 4.32316 9.05112 3.51603C10.2401 3.18064 10.8346 3.01295 11.3156 3.00119C13.3831 2.95061 14.9264 4.52307 15 6.37501"
-          stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" />
-        <path d="M21 12H10M21 12C21 11.2998 19.0057 9.99153 18.5 9.5M21 12C21 12.7002 19.0057 14.0085 18.5 14.5"
-          stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+          </c-slot>
+          <c-slot name="headerPrefix">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M15 17.625C14.9264 19.4769 13.3831 21.0494 11.3156 20.9988C10.8346 20.987 10.2401 20.8194 9.05112 20.484C6.18961 19.6768 3.70555 18.3203 3.10956 15.2815C3 14.723 3 14.0944 3 12.8373L3 11.1627C3 9.90561 3 9.27705 3.10956 8.71846C3.70555 5.67965 6.18961 4.32316 9.05112 3.51603C10.2401 3.18064 10.8346 3.01295 11.3156 3.00119C13.3831 2.95061 14.9264 4.52307 15 6.37501"
+                stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M21 12H10M21 12C21 11.2998 19.0057 9.99153 18.5 9.5M21 12C21 12.7002 19.0057 14.0085 18.5 14.5"
+                stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
 
-    </c-slot>
+          </c-slot>
 
-    <c-slot name="header">
-      <span class="logout">Conform Logout</span>
-    </c-slot>
+          <c-slot name="header">
+            <span class="logout">Conform Logout</span>
+          </c-slot>
 
-    <span class="logout-msg"> Are you sure you want to logout?
-    </span>
+          <span class="logout-msg"> Are you sure you want to logout?
+          </span>
 
-    <c-slot name="close">
-      Cancel
-    </c-slot>
+          <c-slot name="close">
+            Cancel
+          </c-slot>
 
-    <c-slot name="footer">
-      <form action="{{ auth()->check() ? route('logout') : '#' }}" method="post">
-        <c-button variant="destructive" type="submit">Logout</c-button>
-      </form>
-    </c-slot>
-  </c-modal>
+          <c-slot name="footer">
+            <form action="{{ auth()->check() ? route('logout') : '#' }}" method="post">
+              <c-button variant="destructive" type="submit">Logout</c-button>
+            </form>
+          </c-slot>
+        </c-modal>
 
 
-  </c-slot>
+      </c-slot>
 
-  </c-dropdown.main>
+    </c-dropdown.main>
 
 
 
