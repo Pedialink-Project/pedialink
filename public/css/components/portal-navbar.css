@@ -255,6 +255,29 @@
   margin-bottom: .25rem;
 }
 
+.no-notifications{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  padding:2rem 1rem;
+  gap:.35rem;
+
+  text-align:center;
+}
+
+.empty-title{
+  font-weight:600;
+  color:var(--text-primary);
+}
+
+.empty-subtitle{
+  font-size:var(--text-sm);
+  color:var(--text-muted);
+}
+
+
 
 .dropdown-trigger:hover {
     background: var(--panel);
