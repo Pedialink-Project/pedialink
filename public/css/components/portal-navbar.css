@@ -165,22 +165,46 @@
 }
 
 
-
 .notification-menu{
   width: 25rem;
   padding: 1rem;
-  max-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-
-  
+  gap: 1rem;  
 }
 
 .header-section{
   display: inline-flex;
   gap: .5rem;
+}
+
+.notification-bell{
+  position: relative;
+}
+
+.notification-badge{
+  position: absolute;
+  top: -6px;
+  right: -6px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+
+  border-radius: 999px;
+  background: #ef4444;
+  color: white;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:2px solid var(--panel);
 }
 
 .title{
@@ -189,36 +213,72 @@
   color: var(--text-primary);
 }
 
-
 .row-container{
   display: flex;
   flex-direction: column;
   gap: .5rem;
 }
 .row{
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: .5rem;
+  width:100%;
+  padding:.65rem .75rem;
+  background-color:var(--surface);
+  border-radius:.5rem;
+
+  display:flex;
+  flex-direction:column;
+  gap:.35rem;
+
+  transition:.15s ease;
 }
 
-.row__left{
-  display: flex;
-  align-items: center;
-  gap: .5rem;
+.row:hover{
+  background:var(--panel);
+  cursor:pointer;
 }
+
+.row.unread{
+  border-left:3px solid #3b82f6;
+  background:#f8fbff;
+}
+
 
 .time{
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--text-muted);
+  align-self: flex-end;
 }
 
-.row__right{
-  display: flex;
-  align-items: center;
-  gap: .5rem;
+.message{
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin-bottom: .25rem;
 }
+
+.no-notifications{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  padding:2rem 1rem;
+  gap:.35rem;
+
+  text-align:center;
+}
+
+.empty-title{
+  font-weight:600;
+  color:var(--text-primary);
+}
+
+.empty-subtitle{
+  font-size:var(--text-sm);
+  color:var(--text-muted);
+}
+
+
+
 .dropdown-trigger:hover {
     background: var(--panel);
     cursor: pointer;
@@ -228,6 +288,7 @@
   display: flex;
   align-items: center;
   gap: .5rem;
+  padding: 0;
 
 }
 
