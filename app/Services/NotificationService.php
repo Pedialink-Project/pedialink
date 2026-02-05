@@ -8,12 +8,12 @@ class NotificationService
 {
 
 
-/**
- * Summary of notification_time
- * @param string $datetime
- * @return string
- */
-function notification_time(string $datetime): string
+    /**
+     * Summary of notification_time
+     * @param string $datetime
+     * @return string
+     */
+    public function notification_time(string $datetime): string
     {
         $timestamp = strtotime($datetime);
         $now = time();
@@ -40,7 +40,7 @@ function notification_time(string $datetime): string
             return 'Yesterday';
         }
 
-        return date('M d', $timestamp); 
+        return date('M d', $timestamp);
         // Example: Feb 05
     }
 
@@ -94,7 +94,7 @@ function notification_time(string $datetime): string
                 'id' => $notification->id,
                 'title' => $notification->title,
                 'message' => $notification->message,
-                'time' => date('h:i A', strtotime($notification->created_at)),
+                'time' => $this->notification_time($notification->created_at),
                 'is_read' => $notification->is_read,
             ];
         }
