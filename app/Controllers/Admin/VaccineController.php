@@ -3,7 +3,9 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Schedule;
+use App\Models\ScheduledVaccine;
 use App\Models\Vaccine;
+use App\Services\Admin\ManageScheduleService;
 use App\Services\Admin\ScheduleService;
 use App\Services\Admin\VaccineService;
 use Exception;
@@ -13,11 +15,13 @@ class VaccineController
 {
     private VaccineService $vaccineService;
     private ScheduleService $scheduleService;
+    private ManageScheduleService $manageScheduleService;
 
     public function __construct()
     {
         $this->vaccineService = new VaccineService();
         $this->scheduleService = new ScheduleService();
+        $this->manageScheduleService = new ManageScheduleService();
     }
 
     public function vaccines(Request $request)
@@ -317,8 +321,136 @@ class VaccineController
 
     public function manageSchedule(Request $request, int $schedule_id)
     {
+        $search = $request->query("search") ?? '';
+
+        [$scheduleList, $vaccines, $links] = $this->manageScheduleService->getScheduleVaccineData(
+            $schedule_id, $search
+        );
         return view("admin/vaccination/manage", [
             "schedule_id" => $schedule_id,
+            "scheduleList" => $scheduleList,
+            "vaccines" => $vaccines,
+            "links" => $links
         ]);
+    }
+
+    public function addVaccineToSchedule(Request $request, int $schedule_id)
+    {
+        $data = [
+            "vaccine" => $request->input("vaccine") ? (int)$request->input("vaccine") : 0,
+            "dose_number" => $request->input("dose_number") ? (int)$request->input("dose_number") : 0,
+            "min_age_days" => $request->input("min_age_days") ? (int)$request->input("min_age_days") : 0,
+            "due_age_days" => $request->input("due_age_days") ? (int)$request->input("due_age_days") : 0,
+            "min_age_gap_days" => $request->input("min_age_gap_days") ? (int)$request->input("min_age_gap_days") : 0,
+            "additional_information" => $request->input("additional_information") ?? ""
+        ];
+
+        $errors = $this->manageScheduleService->validateAddScheduleVaccineData(
+            $data,
+            $schedule_id
+        );
+
+        if (count($errors) !== 0) {
+            return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+                ->withInput($data)
+                ->withErrors($errors)
+                ->with("add", true);
+        }
+
+        $scheduledVaccine = new ScheduledVaccine();
+        $scheduledVaccine->vaccine_id = $data['vaccine'];
+        $scheduledVaccine->schedule_id = $schedule_id;
+        $scheduledVaccine->dose_number = $data['dose_number'];
+        $scheduledVaccine->min_age_days = $data['min_age_days'];
+        $scheduledVaccine->due_age_days = $data['due_age_days'];
+        $scheduledVaccine->min_age_gap_days = $data['min_age_gap_days'];
+        $scheduledVaccine->additional_information = $data['additional_information'];
+        $scheduledVaccine->save();
+
+        return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+            ->withMessage(
+                "Successfully added vaccine to schedule",
+                "Success",
+                "success"
+            );
+    }
+
+    public function editVaccineInSchedule(Request $request, int $schedule_id, int $id)
+    {
+        $data = [
+            "e_dose_number" => $request->input("e_dose_number") ? (int)$request->input("e_dose_number") : 0,
+            "e_min_age_days" => $request->input("e_min_age_days") ? (int)$request->input("e_min_age_days") : 0,
+            "e_due_age_days" => $request->input("e_due_age_days") ? (int)$request->input("e_due_age_days") : 0,
+            "e_min_age_gap_days" => $request->input("e_min_age_gap_days") ? (int)$request->input("e_min_age_gap_days") : 0,
+            "e_additional_information" => $request->input("e_additional_information") ?? ""
+        ];
+
+        $errors = $this->manageScheduleService->validateAddScheduleVaccineData(
+            $data,
+            $schedule_id,
+            true
+        );
+
+        if (count($errors) !== 0) {
+            return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+                ->withInput($data)
+                ->withErrors($errors)
+                ->with("edit", $id);
+        }
+
+        $scheduledVaccine = ScheduledVaccine::find($id);
+        if ($scheduledVaccine) {
+            $scheduledVaccine->dose_number = $data['e_dose_number'];
+            $scheduledVaccine->min_age_days = $data['e_min_age_days'];
+            $scheduledVaccine->due_age_days = $data['e_due_age_days'];
+            $scheduledVaccine->min_age_gap_days = $data['e_min_age_gap_days'];
+            $scheduledVaccine->additional_information = $data['e_additional_information'];
+            $scheduledVaccine->save();
+            return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+                ->withMessage(
+                    "Successfully edited vaccine in schedule",
+                    "Success",
+                    "success"
+                );
+        }
+
+        return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+            ->withMessage(
+                "An unexpected error occured",
+                "Failed",
+                "error"
+            );
+    }
+
+    public function deleteVaccineFromSchedule(Request $request, int $schedule_id, int $id)
+    {
+        $scheduledVaccine = ScheduledVaccine::find($id);
+
+        if ($scheduledVaccine) {
+            try {
+                $scheduledVaccine->delete();
+
+                return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+                    ->withMessage(
+                        "Successfully removed vaccine from schedule",
+                        "Success",
+                        "success"
+                    );
+            } catch (Exception $e) {
+                return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+                    ->withMessage(
+                        "Failed to remove vaccine from schedule",
+                        "Failed",
+                        "error"
+                    );
+            }
+        }
+
+        return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
+            ->withMessage(
+                "Vaccine in schedule does not exist",
+                "Failed",
+                "error"
+            );
     }
 }
