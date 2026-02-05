@@ -8,10 +8,27 @@ use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
+use App\Models\ChildAccessRequest;
+use Library\Framework\Database\QueryBuilder;
 use DateTime;
 
 class ChildService
 {
+
+    private  $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = new NotificationService();
+    }
+
+    private function applyChildSearch(QueryBuilder $children, string $search)
+{
+    $children->where('name', 'ILIKE', "$search%");
+    return $children;
+}
+
+
     private function calculateAge($dob): string
     {
         $dobDt = $dob instanceof DateTime ? clone $dob : new DateTime($dob);
@@ -35,8 +52,6 @@ class ChildService
 
         $d = $diff->d;
         return $d . ' day' . ($d === 1 ? '' : 's');
-
-
     }
 
     public function getAllChildren()
@@ -115,12 +130,105 @@ class ChildService
                 'notes' => $child->notes,
                 'parent' => $parentResource,
                 'phm' => $phmResource,
-            ]
-            ;
+            ];
         }
 
         return $resource;
     }
+
+   public function getChildrenByStaffId(
+    int $staffId,
+    ?string $search = null,
+    ?array $filters = null
+) {
+
+    $childrenQuery = Child::query();
+
+    if ($search) {
+        $childrenQuery = $this->applyChildSearch($childrenQuery, $search);
+    }
+
+    $results = $childrenQuery
+        ->orderBy('id', 'ASC')
+        ->paginate(10)
+        ->toArray();
+
+    $resource = [];
+
+    $requests = ChildAccessRequest::query()
+        ->where('staff_id', '=', $staffId)
+        ->get();
+
+    foreach ($results['items'] as $child) {
+
+        $request = null;
+
+        foreach ($requests as $req) {
+            if ($req->child_id == $child->id) {
+                $request = $req;
+                break;
+            }
+        }
+
+        $accessStatus = 'not_requested';
+        $hasFullAccess = false;
+
+        if ($request) {
+            if ($request->accepted === true) {
+                $accessStatus = 'accepted';
+                $hasFullAccess = true;
+            } elseif ($request->accepted === false) {
+                $accessStatus = 'pending';
+            } else {
+                $accessStatus = 'rejected';
+            }
+        }
+
+        if (!empty($filters['access_status'])) {
+            if (!in_array($accessStatus, $filters['access_status'])) {
+                continue;
+            }
+        }
+
+        $parent = ParentM::find($child->parent_id);
+        $phm    = PublicHealthMidwife::find($child->phm_id);
+
+        $childData = [
+            'id' => $child->id,
+            'name' => $child->name,
+            'age' => $this->calculateAge($child->date_of_birth),
+            'access_status' => $accessStatus,
+
+            'phm' => $phm ? [
+                'id' => $phm->id,
+                'name' => User::find($phm->id)->name,
+            ] : null,
+        ];
+
+        if ($hasFullAccess) {
+            $childData = array_merge($childData, [
+                'gender' => $child->gender,
+                'health_status' => $child->health_status,
+                'blood_type' => $child->blood_type,
+                'notes' => $child->notes,
+                'area' => $child->getArea()->code,
+
+                'parent' => $parent ? [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                    'email' => User::find($parent->id)->email,
+                ] : null,
+            ]);
+        }
+
+        $resource[] = $childData;
+    }
+
+    $links = array_diff_key($results, ['items' => true]);
+
+    return [$resource, $links];
+}
+
 
     public function getChildernById(int $id)
     {
@@ -129,7 +237,7 @@ class ChildService
         $childRecord = ChildRecord::query()->where('child_id', '=', $id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
 
         $childRecordResource = null;
-        if($childRecord) {
+        if ($childRecord) {
             $childRecordResource = [
                 'id' => $childRecord->id,
                 'visit_date' => $childRecord->visit_date,
@@ -176,9 +284,8 @@ class ChildService
             'notes' => $child->notes,
             'parent' => $parentResource,
             'phm' => $phmResource,
-            'record'=>$childRecordResource
-        ]
-        ;
+            'record' => $childRecordResource
+        ];
 
 
         return $resource;
@@ -287,7 +394,7 @@ class ChildService
     {
         $phmId = auth()->id();
 
-        
+
         $child = new Child();
         $child->name = $name;
         $child->date_of_birth = $dob;
@@ -310,6 +417,119 @@ class ChildService
             $child->save();
         }
     }
+
+    public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
+    {
+        $errors = [];
+
+        if (!Validator::validateFieldExistence($childId)) {
+            $errors['child_id'] = "Child Profile field cannot be empty";
+        }
+
+        if (!Validator::validateFieldExistence($reasonTitle)) {
+            $errors['reason_title'] = "Reason Title field cannot be empty";
+        }
+
+        if (!Validator::validateFieldExistence($reasonDescription)) {
+            $errors['reason_description'] = "Reason Description field cannot be empty";
+        }
+
+        return $errors;
+    }
+
+    public function requestChildAccess(
+        int $staffId,
+        int $childId,
+        string $reasonTitle,
+        string $reasonDescription
+    ): ?string {
+        // Prevent duplicate requests
+        $existing = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->where('child_id', '=', $childId)
+            ->first();
+
+        if ($existing) {
+            return "Access request already exists";
+        }
+
+        $request = new ChildAccessRequest();
+        $request->staff_id = $staffId;
+        $request->child_id = $childId;
+        $request->reason_title = $reasonTitle;
+        $request->reason_description = $reasonDescription;
+        $request->save();
+
+        $staff = User::find($staffId);
+        $child = Child::find($childId);
+
+        $this->notificationService->notifyAdmins(
+            "Child Access Request",
+            "{$staff->name} requested access to child profile {$child->name}. Reason: {$reasonTitle}",
+            "child_access_request",
+            $request->id
+        );
+
+        return null;
+    }
+
+    public function getUnaccessedChildrenForStaff(int $staffId): array
+    {
+        $requestedChildIds = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->pluck('child_id');
+
+        $childrenQuery = Child::query();
+
+        if (!empty($requestedChildIds)) {
+            $childrenQuery->whereNotIn('id', $requestedChildIds);
+        }
+
+        $children = $childrenQuery->get();
+
+        $resource = [];
+        foreach ($children as $child) {
+            $resource[] = [
+                'id'   => $child->id,
+                'name' => $child->name,
+            ];
+        }
+
+        return $resource;
+    }
+
+    public function cancelChildAccessRequest(int $staffId, int $childId): ?string
+{
+    $request = ChildAccessRequest::query()
+        ->where('staff_id', '=', $staffId)
+        ->where('child_id', '=', $childId)
+        ->first();
+
+    if (!$request) {
+        return "Access request not found";
+    }
+
+    if ($request->accepted === true) {
+        return "Cannot cancel an already accepted request";
+    }
+
+    $request->delete();
+
+    $staff = User::find($staffId);
+        $child = Child::find($childId);
+
+     $this->notificationService->notifyAdmins(
+            "Child Access Request Cancelled",
+            "{$staff->name} requested access to child profile {$child->name} has been cancelled.",
+            "child_access_request_canclled",
+            $request->id
+        );
+
+
+    return null; 
+}
+
+
 
     // public function deleteChildProfile(int $id)
     // {

@@ -34,6 +34,7 @@ $app->singleton('config', function() {
         'view' => require __DIR__ . '/../config/view.php',
         'storage' => require __DIR__ . '/../config/storage.php',
         'mail' => require __DIR__ . '/../config/mail.php',
+        'data' => require __DIR__ . '/../config/data.php',
     ];
 });
 
@@ -42,8 +43,8 @@ $providers = [
     App\Providers\RouteServiceProvider::class,
     App\Providers\DatabaseServiceProvider::class,
     App\Providers\SessionManagerProvider::class,
-    App\Providers\ViewServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
+    App\Providers\ViewServiceProvider::class,
     App\Providers\StorageProvider::class,
     App\Providers\MailServiceProvider::class,
 ];
@@ -53,15 +54,17 @@ foreach ($providers as $providerClass)
     (new $providerClass($app))->register();
 }
 
-foreach ($providers as $providerClass)
-{
-    (new $providerClass($app))->boot();
-}
-
 // Initialize the base model class
 Model::init($app->make(Connection::class));
 
 // Initialize the query builder class
 QueryBuilder::init($app->make(Connection::class));
+
+foreach ($providers as $providerClass)
+{
+    (new $providerClass($app))->boot();
+}
+
+
 
 return $app;

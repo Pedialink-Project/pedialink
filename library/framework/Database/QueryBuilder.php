@@ -131,6 +131,32 @@ class QueryBuilder
         return $this;
     }
 
+    /**
+     * Add a WHERE NOT IN condition
+     *
+     * @param string $column
+     * @param array $values
+     * @return QueryBuilder
+     */
+    public function whereNotIn(string $column, array $values): static
+    {
+        if (empty($values)) {
+            // No values to exclude → return all rows (no condition needed)
+            return $this;
+        }
+
+        $placeholders = [];
+        foreach ($values as $index => $value) {
+            $key = ":{$column}_notin{$index}";
+            $placeholders[] = $key;
+            $this->bindings[$key] = $value;
+        }
+
+        $this->wheres[] = "{$column} NOT IN (" . implode(',', $placeholders) . ")";
+        return $this;
+    }
+
+
 
     /**
      * Retrieve array of model instances after
