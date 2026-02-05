@@ -72,20 +72,28 @@ $unreadCount = $data['unreadCount'] ?? 0;
           <div class="row-container">
 
             @if(count($notifications) === 0)
-            <div class="no-notifications" align="center">
-              No new notifications
+            <div class="no-notifications">
+
+              <div class="empty-title">
+                You're all caught up!
+              </div>
+
+              <div class="empty-subtitle">
+                No new notifications
+              </div>
             </div>
             @endif
 
+
             @foreach($notifications as $notification)
 
-<div class="row {{ !$notification['is_read'] ? 'unread' : '' }}">
+            <div class="row {{ !$notification['is_read'] ? 'unread' : '' }}">
 
               <div class="message">
                 {{$notification['message']}}
               </div>
               <div class="time">
-                {{time_ago($notification['time'])}}ago
+                {{($notification['time'])}}
               </div>
             </div>
 
