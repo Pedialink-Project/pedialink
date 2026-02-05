@@ -8,6 +8,42 @@ use App\Models\User;
 class NotificationService
 {
 
+    /**
+     * Summary of notification_time
+     * @param string $datetime
+     * @return string
+     */
+    public function notification_time(string $datetime): string
+    {
+        $timestamp = strtotime($datetime);
+        $now = time();
+
+        $diff = $now - $timestamp;
+
+        // Less than 1 minute
+        if ($diff < 60) {
+            return 'Just now';
+        }
+
+        // Minutes
+        if ($diff < 3600) {
+            return floor($diff / 60) . 'm ago';
+        }
+
+        // Hours (today)
+        if (date('Y-m-d') === date('Y-m-d', $timestamp)) {
+            return floor($diff / 3600) . 'h ago';
+        }
+
+        // Yesterday
+        if (date('Y-m-d', strtotime('yesterday')) === date('Y-m-d', $timestamp)) {
+            return 'Yesterday';
+        }
+
+        // Example: Feb 05
+        return date('M d', $timestamp);
+    }
+
 
     /**
      * Send notification to a single user
@@ -123,7 +159,9 @@ class NotificationService
                 ->get()
         );
     }
-
+    /**
+     * Get latest notifications for logged-in user (latest first)
+     */
     public function markAllAsRead(int $userId)
     {
         Notification::query()
@@ -133,6 +171,10 @@ class NotificationService
                 'is_read' => true
             ]);
     }
+
+    /**
+     * Delete a notification
+     */
 
     public function deleteNotification(int $notificationId, int $userId): ?string
     {
@@ -150,38 +192,42 @@ class NotificationService
 
         return null;
     }
-
+    /**
+     * Get latest notifications for logged-in user (latest first)
+     */
     public function getNavbarData($userId)
-{
-    $query = Notification::query()
-        ->where('recipient_id', '=', $userId)
-        ->orderBy('created_at', 'DESC');
+    {
+        $query = Notification::query()
+            ->where('recipient_id', '=', $userId)
+            ->orderBy('created_at', 'DESC');
 
         $unreadNotifucations = $query
             ->where('is_read', '=', 0)
             ->get();
 
-            $notifications = $query->limit(3)->get();
+        $notifications = $query->limit(3)->get();
 
-            $resource = [];
+        $resource = [];
         foreach ($notifications as $notification) {
             $resource[] = [
                 'id' => $notification->id,
                 'title' => $notification->title,
                 'message' => $notification->message,
-                'time' => date('h:i A', strtotime($notification->created_at)),
+                'time' => $this->notification_time($notification->created_at),
                 'is_read' => $notification->is_read,
             ];
         }
 
 
-    return [
-        'notifications' => $resource,
-        'unreadCount' => count($unreadNotifucations),
-    ];
-}
+        return [
+            'notifications' => $resource,
+            'unreadCount' => count($unreadNotifucations),
+        ];
+    }
 
-
+    /**
+     * Delete all notifications for a user
+     */
     public function deleteAllNotification(int $userId): void
     {
         Notification::query()
