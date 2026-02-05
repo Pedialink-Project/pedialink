@@ -87,16 +87,18 @@ $unreadCount = $data['unreadCount'] ?? 0;
 
             @foreach($notifications as $notification)
 
-            <div class="row {{ !$notification['is_read'] ? 'unread' : '' }}">
+            <a href="{{route(auth()->user()->role .'.notification')}}">
 
-              <div class="message">
-                {{$notification['message']}}
-              </div>
-              <div class="time">
-                {{($notification['time'])}}
-              </div>
-            </div>
+              <div class="row {{ !$notification['is_read'] ? 'unread' : '' }}">
 
+                <div class="message">
+                  {{$notification['message']}}
+                </div>
+                <div class="time">
+                  {{($notification['time'])}}
+                </div>
+              </div>
+            </a>
             @endforeach
           </div>
         </div>
