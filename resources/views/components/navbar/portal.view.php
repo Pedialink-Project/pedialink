@@ -4,19 +4,13 @@
 $uid = 'navbar_' . bin2hex(random_bytes(6));
 $class = $class ?? '';
 
-$notifications = auth()->user()->notifications ?? [
-  [
-    'message' => 'New user registered',
-    'time' => '2 hours',
-    'read' => false,
-  ],
-  [
-    'message' => 'Server rebooted',
-    'time' => '1 day',
-    'read' => true,
-  ],
 
-];
+$data = is_callable($navbarData)
+    ? $navbarData()
+    : $navbarData;
+
+$notifications = $data['notifications'] ?? [];
+$unreadCount = $data['unreadCount'] ?? 0;
 
 ?>
 <nav id="{{ $uid }}" class="app-navbar {{ $class }}">
@@ -67,6 +61,12 @@ $notifications = auth()->user()->notifications ?? [
           </div>
 
           <div class="row-container">
+
+          @if(count($notifications) === 0)
+            <div class="no-notifications" align="center">
+              No new notifications
+            </div>
+          @endif
 
             @foreach($notifications as $notification)
             <div class="row" >
