@@ -154,8 +154,22 @@ class NotificationService
             ->where('is_read', '=', 0)
             ->get();
 
+            $notifications = $query->limit(3)->get();
+
+            $resource = [];
+        foreach ($notifications as $notification) {
+            $resource[] = [
+                'id' => $notification->id,
+                'title' => $notification->title,
+                'message' => $notification->message,
+                'time' => date('h:i A', strtotime($notification->created_at)),
+                'is_read' => $notification->is_read,
+            ];
+        }
+
+
     return [
-        'notifications' => $query->limit(3)->get(),
+        'notifications' => $resource,
         'unreadCount' => count($unreadNotifucations),
     ];
 }
