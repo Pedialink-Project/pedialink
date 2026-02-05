@@ -70,24 +70,15 @@ $unreadCount = $data['unreadCount'] ?? 0;
 
             @foreach($notifications as $notification)
             <div class="row" >
-              <div class="row__left">
 
-                <div class="notification-details">
                   <div class="message">
                     {{$notification['message']}}
                   </div>
                   <div class="time">
-                    {{$notification['time']}} ago
+                    {{time_ago($notification['time'])}}ago
                   </div>
                 </div>
-              </div>
-              <div class="row__right">
-
-                <c-button variant="primary" size="sm"> Mark as Read</c-button>
-
-
-              </div>
-            </div>
+             
             @endforeach
           </div>
         </div>
