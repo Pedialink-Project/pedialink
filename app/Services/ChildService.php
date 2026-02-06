@@ -13,6 +13,7 @@ use App\Models\ParentChild;
 use App\Rules\NameRule;
 use App\Rules\DivisionRule;
 use App\Rules\DateRule;
+use App\Helpers\BirthCertificateValidator;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 use DateTime;
@@ -20,7 +21,7 @@ use DateTime;
 class ChildService
 {
 
-    use NameRule, DivisionRule, DateRule;
+    use NameRule, DivisionRule, DateRule, BirthCertificateValidator;
     private  $notificationService;
 
     public function __construct()
@@ -309,16 +310,7 @@ class ChildService
     }
 
 
-    private function validateCommonFields(string $field, string $attributeName)
-    {
-        $error = null;
-        if (!Validator::validateFieldExistence($field)) {
-            $error = "{$attributeName} field cannot be empty";
-            return $error;
-        }
-
-        return $error;
-    }
+   
     private function validateBloodType($bloodType)
     {
         $error = null;
@@ -356,7 +348,7 @@ class ChildService
         return $error;
     }
 
-    public function validateChildProfile(string $name, int $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, bool $edit = false)
+    public function validateChildProfile(string $name, mixed $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, bool $edit = false)
     {
         $errors = [];
         $suffix = $edit ? 'e_' : '';
@@ -376,7 +368,7 @@ class ChildService
             $errors["{$suffix}date_of_birth"] = $dobError;
         }
 
-        $birthCertificateError = $this->validateCommonFields($birthCertificate, "Birth Certificate No");
+        $birthCertificateError = $this->validateBirthCertificate($birthCertificate);
         if ($birthCertificateError) {
             $errors["{$suffix}birth_certificate"] = $birthCertificateError;
         }
