@@ -4,10 +4,12 @@ namespace App\Controllers\PublicHealthMidwife;
 
 use App\Models\Child;
 use App\Services\ChildService;
+use App\Helpers\AreaHelper;
 use Library\Framework\Http\Request;
 
 class ChildProfileController
 {
+    use AreaHelper;
     public ChildService $childService;
 
     public function __construct()
@@ -18,7 +20,8 @@ class ChildProfileController
     public function index(Request $request)
     {
         $children = $this->childService->getAllChildren();
-        return view("phm/childprofiles", ['children' => $children]);
+        $areas = $this->getAllAreaDetails();
+        return view("phm/childprofiles", ['children' => $children, 'areas' => $areas]);
     }
 
     public function createChild(Request $request)
@@ -91,25 +94,25 @@ class ChildProfileController
             );   
     }
 
-    public function deleteChild(Request $request, int $id)
-    {
-        $error = $this->childService->validateDeleteProfile($id);
+    // public function deleteChild(Request $request, int $id)
+    // {
+    //     $error = $this->childService->validateDeleteProfile($id);
 
-        if ($error !== NULL) {
-            return redirect(route('phm.child.profiles'))
-                ->withMessage(
-                    $error,
-                    "Error",
-                    "error",
-                );
-        }
+    //     if ($error !== NULL) {
+    //         return redirect(route('phm.child.profiles'))
+    //             ->withMessage(
+    //                 $error,
+    //                 "Error",
+    //                 "error",
+    //             );
+    //     }
 
-        $this->childService->deleteChildProfile($id);
-        return redirect(route('phm.child.profiles'))
-                ->withMessage(
-                    "Deleted successfully",
-                    "Success",
-                    "success",
-                );
-    }
+    //     $this->childService->deleteChildProfile($id);
+    //     return redirect(route('phm.child.profiles'))
+    //             ->withMessage(
+    //                 "Deleted successfully",
+    //                 "Success",
+    //                 "success",
+    //             );
+    // }
 }
