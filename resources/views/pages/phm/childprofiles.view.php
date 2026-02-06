@@ -117,6 +117,13 @@ PHM Child Profiles
 
             <c-table.tbody>
                 @foreach ($children as $key => $child)
+
+                <?php
+                if (strtolower($child['gender']) === "m")
+                    $gender = "Male";
+                elseif (strtolower($child['gender']) === "f")
+                    $gender = "Female";
+                ?>
                 <c-table.tr>
                     <c-table.td col="id">{{ 'C-000' . $child['id'] }}</c-table.td>
                     <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
@@ -131,7 +138,6 @@ PHM Child Profiles
                             Female
                         </c-badge>
                         @endif
-
                     </c-table.td>
                     <c-table.td col="area">{{ ucfirst($child['area']) }}</c-table.td>
                     <c-table.td class="table-actions" align="center">
@@ -142,7 +148,6 @@ PHM Child Profiles
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-dropdown.item>Copy Child ID</c-dropdown.item>
                                 <c-dropdown.sep />
                                 <c-modal id="View-Child-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="headerPrefix">
@@ -172,11 +177,11 @@ PHM Child Profiles
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
                                             title="Area" info="{{ ucfirst($child['area']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Gender"
-                                            info="{{$child['gender']}}" />
+                                            info="{{$gender}} " />
                                     </c-modal.viewcard>
 
                                     @if ($child['parent'])
-                                    <div class="parent-link-group">
+                                    <div class=" parent-link-group">
                                         <div class="parent-link-card">
                                             <div class="name-group">
                                                 <span class="parent-title">{{ $child['parent']['name'] }}</span>
@@ -262,13 +267,13 @@ PHM Child Profiles
                                                 required />
                                             <c-select label="Gender" name="e_gender"
                                                 value="{{ flash('edit') === $child['id'] ? (old('e_gender') ?? '') : $child['gender'] }}"
-                                                error="{{ errors('e_gender') ?? ''}}" >
+                                                error="{{ errors('e_gender') ?? ''}}">
                                                 <li class="select-item" data-value="male">Male</li>
                                                 <li class="select-item" data-value="female">Female</li>
                                             </c-select>
                                             <c-select label="Blood Type" name="e_blood_type"
                                                 value="{{ flash('edit') === $child['id'] ? (old('e_blood_type') ?? '') : $child['e_blood_type'] }}"
-                                                error="{{ errors('e_blood_type') ?? ''}}" >
+                                                error="{{ errors('e_blood_type') ?? ''}}">
                                                 @foreach(config('data.bloodTypes') as $bloodType)
                                                 <li class="select-item" data-value="{{ $bloodType }}">{{ $bloodType }}</li>
                                                 @endforeach
