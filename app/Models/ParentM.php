@@ -23,4 +23,9 @@ class ParentM extends Model
     {
         return Area::find($this->area_id);
     }
+
+    public function getUser()
+    {
+        return User::find($this->id);
+    }
 }
