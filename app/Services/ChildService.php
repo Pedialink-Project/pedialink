@@ -11,6 +11,7 @@ use App\Helpers\Validator;
 use App\Models\ChildAccessRequest;
 use App\Models\ParentChild;
 use App\Rules\NameRule;
+use App\Rules\DivisionRule;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 use DateTime;
@@ -18,6 +19,7 @@ use DateTime;
 class ChildService
 {
 
+    use NameRule, DivisionRule;
     private  $notificationService;
 
     public function __construct()
@@ -358,12 +360,12 @@ class ChildService
         $errors = [];
         $suffix = $edit ? 'e_' : '';
 
-        $nameError = $this->validateName($name);
+        $nameError = $this->validateName($name, "Child Name");
         if ($nameError) {
             $errors["{$suffix}name"] = $nameError;
         }
 
-        $areaError = $this->validateCommonFields($areaId, "Area");
+        $areaError = $this->validateDivision($areaId);
         if ($areaError) {
             $errors["{$suffix}area"] = $areaError;
         }
