@@ -89,7 +89,7 @@ $unreadCount = $data['unreadCount'] ?? 0;
 
             <a href="{{ auth()->check()  ? route(auth()->user()->role .'.notification') : '#'}}">
 
-              <div class="row {{ !$notification['is_read'] ? 'unread' : '' }}">
+              <div class="notification-row {{ !$notification['is_read'] ? 'unread' : '' }}">
 
                 <div class="message">
                   {{$notification['message']}}
