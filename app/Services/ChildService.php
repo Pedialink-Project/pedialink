@@ -193,7 +193,7 @@ class ChildService
             }
         }
 
-        $parent = ParentM::find($child->parent_id);
+        $parent = ParentChild::query()->where('child_id', '=', $child['id'])->first()->getParent();
         $phm    = PublicHealthMidwife::find($child->phm_id);
 
         $childData = [
@@ -253,7 +253,7 @@ class ChildService
             ];
         }
 
-        $parent = ParentM::find($child->parent_id);
+        $parent = ParentChild::query()->where('child_id', '=', $child->id)->first()->getParent();
 
         $parentResource = NULL;
         if ($parent) {
