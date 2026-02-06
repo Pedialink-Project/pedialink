@@ -7,6 +7,7 @@ use App\Models\Staff;
 use App\Models\User;
 use App\Models\Child;
 use Library\Framework\Database\QueryBuilder;
+use App\Helpers\Calculator;
 
 class ChildRecordService
 {
@@ -115,7 +116,7 @@ class ChildRecordService
             $resource[] = [
                 'id' => $record->id,
                 'visit_date' => $record->visit_date,
-                'age_recorded_at' => $this->calculateAgeInMonths(Child::find($childId)->date_of_birth, $record->visit_date),
+                'age_recorded_at' => Calculator::calculateAgeInMonths(Child::find($childId)->date_of_birth, $record->visit_date),
                 'height' => $record->height,
                 'weight' => $record->weight,
                 'bmi' => $record->bmi,
@@ -132,6 +133,37 @@ class ChildRecordService
 
         return [$resource, $links];
     }
+
+    public function getLatestHeathRecord($childId){
+
+    $record = ChildRecord::query()
+        ->where('child_id', '=', $childId)
+        ->where('mark_as_invalid', '=', false)
+        ->orderBy('visit_date', 'DESC')
+        ->orderBy('created_at', 'DESC')
+        ->first();
+
+        if (!$record) {
+            return null;
+        }
+
+        return [
+            'id' => $record->id,
+            'visit_date' => $record->visit_date,
+            'age_recorded_at' => Calculator::calculateAgeInMonths(Child::find($childId)->date_of_birth, $record->visit_date),
+            'height' => $record->height,
+            'weight' => $record->weight,
+            'bmi' => $record->bmi,
+            'head_circumference' => $record->head_circumference,
+            'health_status' => $record->health_status,
+            'notes' => $record->notes,
+            'created_at' => $record->created_at,
+        ];
+
+
+    }
+
+
 
     public function validateRecordData(
         $visitDate,
@@ -239,7 +271,7 @@ class ChildRecordService
         $bmi = $this->calculateBMI($height, $weight);
 
         $childDob = Child::find($childId)->date_of_birth;
-        $ageMonths = $this->calculateAgeInMonths($childDob, $visitDate);
+        $ageMonths = Calculator::calculateAgeInMonths($childDob, $visitDate);
 
         $healthStatus = $this->evaluateHealthStatus(
             $ageMonths,
@@ -346,23 +378,5 @@ class ChildRecordService
         return $child->name;
     }
 
-    private function calculateAgeInMonths(string $dob, string $visitDate): int
-    {
-        $dobDate = new \DateTime($dob);
-        $now = new \DateTime($visitDate);
-
-        if ($dobDate > $now) {
-            return 0;
-        }
-
-        $diff = $now->diff($dobDate);
-
-        $months = ($diff->y * 12) + $diff->m;
-
-        if ($diff->d >= 15) {
-            $months++;
-        }
-
-        return $months;
-    }
+    
 }
