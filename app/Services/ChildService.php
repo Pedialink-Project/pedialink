@@ -12,6 +12,7 @@ use App\Models\ChildAccessRequest;
 use App\Models\ParentChild;
 use App\Rules\NameRule;
 use App\Rules\DivisionRule;
+use App\Rules\DateRule;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 use DateTime;
@@ -19,7 +20,7 @@ use DateTime;
 class ChildService
 {
 
-    use NameRule, DivisionRule;
+    use NameRule, DivisionRule, DateRule;
     private  $notificationService;
 
     public function __construct()
@@ -370,7 +371,7 @@ class ChildService
             $errors["{$suffix}area"] = $areaError;
         }
 
-        $dobError = $this->validateCommonFields($dob, "Date of Birth");
+        $dobError = $this->validatePastDate($dob, "Date of Birth");
         if ($dobError) {
             $errors["{$suffix}date_of_birth"] = $dobError;
         }
