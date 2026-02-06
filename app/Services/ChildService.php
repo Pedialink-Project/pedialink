@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
 use App\Models\ChildAccessRequest;
+use App\models\ParentChild;
 use Library\Framework\Database\QueryBuilder;
 use DateTime;
 
@@ -91,12 +92,12 @@ class ChildService
 
     public function getChildernByParentId(int $parentId)
     {
-        $children = Child::query()->where('parent_id', '=', $parentId)->get();
+        $childrenParent = ParentChild::query()->where('parent_id', '=', $parentId)->get();
 
         $resource = [];
-        foreach ($children as $child) {
+        foreach ($childrenParent as $childParent) {
 
-            $parent = ParentM::find($child->parent_id);
+            $parent = $childParent->getParent();
 
             $parentResource = NULL;
             if ($parent) {
@@ -107,6 +108,8 @@ class ChildService
                     'type' => $parent->type,
                 ];
             }
+
+            $child = $childParent->getChild();
 
             $phm = PublicHealthMidwife::find($child->phm_id);
 
