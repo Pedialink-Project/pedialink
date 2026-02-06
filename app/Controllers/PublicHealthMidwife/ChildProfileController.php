@@ -28,8 +28,9 @@ class ChildProfileController
         $dob = $request->input('date_of_birth');
         $birthCertificate = $request->input('birth_certificate');
         $gender = $request->input('gender');
+        $bloodType = $request->input('blood_type');
 
-        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate);
+        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType);
 
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
@@ -40,11 +41,12 @@ class ChildProfileController
                     "date_of_birth" => $dob,
                     "gender" => $gender,
                     "birth_certificate" => $birthCertificate,
+                    "blood_type" => $bloodType
                 ])
                 ->with("create", true);
         }
 
-        $this->childService->createChildProfile($name, $areaId, $dob, $gender, $birthCertificate);
+        $this->childService->createChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType);
 
         return redirect(route('phm.child.profiles'))
             ->withMessage(
@@ -62,6 +64,7 @@ class ChildProfileController
         $dob = $request->input('e_date_of_birth');
         $gender = $request->input('e_gender');
         $birthCertificate = $request->input('e_birth_certificate');
+        $bloodType = $request->input('e_blood_type');
 
         $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, true);
         if (count($errors) > 0) {
@@ -73,11 +76,12 @@ class ChildProfileController
                     "e_date_of_birth" => $dob,
                     "e_gender" => $gender,
                     "e_birth_certificate" => $birthCertificate,
+                    "e_blood_type"=> $bloodType
                 ])
                 ->with("edit", $id);
         }
 
-        $this->childService->editChildProfile($id, $name, $areaId, $dob, $gender, $birthCertificate);
+        $this->childService->editChildProfile($id, $name, $areaId, $dob, $gender, $birthCertificate, $bloodType);
 
         return redirect(route('phm.child.profiles'))
             ->withMessage(
