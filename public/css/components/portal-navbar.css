@@ -218,7 +218,7 @@
   flex-direction: column;
   gap: .5rem;
 }
-.row{
+.notification-row{
   width:100%;
   padding:.65rem .75rem;
   background-color:var(--surface);
@@ -231,12 +231,12 @@
   transition:.15s ease;
 }
 
-.row:hover{
+.notification-row:hover{
   background:var(--panel);
   cursor:pointer;
 }
 
-.row.unread{
+.notification-row.unread{
   border-left:3px solid #3b82f6;
   background:#f8fbff;
 }
