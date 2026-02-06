@@ -62,7 +62,7 @@ class ChildService
         $resource = [];
         foreach ($children as $child) {
 
-            $parent = ParentM::find($child->parent_id);
+            $parent = ParentChild::query()->where('child_id', '=', $child->id)->first()->getParent();
 
             $parentResource = NULL;
             if ($parent) {
