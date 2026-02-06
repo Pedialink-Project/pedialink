@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 class Calculator
 {
-     public static function calculateAgeInMonths(string $dob, string $visitDate): int
+    public static function calculateAgeInMonths(string $dob, string $visitDate): int
     {
         $dobDate = new \DateTime($dob);
         $now = new \DateTime($visitDate);
@@ -25,5 +25,20 @@ class Calculator
     }
 
 
-    
+    public static function calculateBMI(?float $heightCm, ?float $weightKg): ?float
+    {
+        if (!$heightCm || !$weightKg) {
+            return null;
+        }
+
+        $heightM = $heightCm / 100;
+
+        if ($heightM <= 0) {
+            return null;
+        }
+
+        $bmi = $weightKg / ($heightM * $heightM);
+
+        return round($bmi, 2);
+    }
 }

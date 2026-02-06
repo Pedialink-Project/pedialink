@@ -20,24 +20,6 @@ class ChildRecordService
     }
 
 
-
-    private function calculateBMI(?float $heightCm, ?float $weightKg): ?float
-    {
-        if (!$heightCm || !$weightKg) {
-            return null;
-        }
-
-        $heightM = $heightCm / 100;
-
-        if ($heightM <= 0) {
-            return null;
-        }
-
-        $bmi = $weightKg / ($heightM * $heightM);
-
-        return round($bmi, 2);
-    }
-
     private function evaluateHealthStatus(
         int $ageMonths,
         ?float $heightCm,
@@ -268,7 +250,7 @@ class ChildRecordService
         $notes
     ) {
 
-        $bmi = $this->calculateBMI($height, $weight);
+        $bmi = Calculator::calculateBMI($height, $weight);
 
         $childDob = Child::find($childId)->date_of_birth;
         $ageMonths = Calculator::calculateAgeInMonths($childDob, $visitDate);
@@ -316,7 +298,7 @@ class ChildRecordService
             return "Record not found.";
         }
 
-        $bmi = $this->calculateBMI($height, $weight);
+        $bmi = Calculator::calculateBMI($height, $weight);
 
         $record->visit_date = $visitDate;
         $record->height = $height;
