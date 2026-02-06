@@ -10,6 +10,7 @@ use App\Models\ChildRecord;
 use App\Helpers\Validator;
 use App\Models\ChildAccessRequest;
 use App\Models\ParentChild;
+use App\Rules\NameRule;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 use DateTime;
@@ -18,12 +19,10 @@ class ChildService
 {
 
     private  $notificationService;
-    private $childRecordService;
 
     public function __construct()
     {
         $this->notificationService = new NotificationService();
-        $this->childRecordService = new ChildRecordService();
     }
 
     private function applyChildSearch(QueryBuilder $children, string $search)
@@ -197,7 +196,7 @@ class ChildService
                     continue;
                 }
             }
-            
+
             //For now only one parent details get but it modifeid to get both parent deatils and return that
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
             $parent = $parentChild ? $parentChild->getParent() : null;
@@ -307,34 +306,29 @@ class ChildService
     }
 
 
-
-
-    private function validateName(string $name)
-    {
-        $error = null;
-        if (!Validator::validateFieldExistence($name)) {
-            $error = "Name field cannot be empty";
-            return $error;
-        }
-
-        if (!Validator::validateFieldMinLength($name, 3)) {
-            $error = "Name cannot be less than 3 characters";
-            return $error;
-        }
-
-        if (!Validator::validateFieldMaxLength($name, 20)) {
-            $error = "Name cannot be greater than 20 characters";
-            return $error;
-        }
-
-        return $error;
-    }
-
     private function validateCommonFields(string $field, string $attributeName)
     {
         $error = null;
         if (!Validator::validateFieldExistence($field)) {
             $error = "{$attributeName} field cannot be empty";
+            return $error;
+        }
+
+        return $error;
+    }
+    private function validateBloodType($bloodType)
+    {
+        $error = null;
+
+        if (!Validator::validateFieldExistence($bloodType)) {
+            $error = "Blood type field cannot be empty";
+            return $error;
+        }
+
+        $validTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
+        if (!in_array(strtoupper($bloodType), $validTypes)) {
+            $error = "Please provide a valid blood type (e.g., A+, O-, AB+)";
             return $error;
         }
 
@@ -359,7 +353,7 @@ class ChildService
         return $error;
     }
 
-    public function validateChildProfile(string $name, int $areaId, string $dob, string $gender, string $birthCertificate, bool $edit = false)
+    public function validateChildProfile(string $name, int $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, bool $edit = false)
     {
         $errors = [];
         $suffix = $edit ? 'e_' : '';
@@ -384,6 +378,12 @@ class ChildService
             $errors["{$suffix}birth_certificate"] = $birthCertificateError;
         }
 
+        $bloodTypeError = $this->validateBloodType($bloodType);
+        if ($bloodTypeError) {
+            $errors["{$suffix}blood_type"] = $bloodTypeError;
+        }
+
+
         $genderError = $this->validateGender($gender);
         if ($genderError) {
             $errors["{$suffix}gender"] = $genderError;
@@ -405,7 +405,7 @@ class ChildService
         return $error;
     }
 
-    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate)
+    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType)
     {
         $phmId = auth()->id();
 
@@ -416,11 +416,12 @@ class ChildService
         $child->gender = $gender;
         $child->birth_certificate = $birthCertificate;
         $child->area_id = $areaId;
+        $child->blood_type = $bloodType;
         $child->phm_id = $phmId;
         $child->save();
     }
 
-    public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate)
+    public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType)
     {
         $child = Child::find($childId);
         if ($child) {
@@ -429,6 +430,7 @@ class ChildService
             $child->gender = $gender;
             $child->area_id = $areaId;
             $child->birth_certificate = $birthCertificate;
+            $child->blood_type = $bloodType;
             $child->save();
         }
     }
