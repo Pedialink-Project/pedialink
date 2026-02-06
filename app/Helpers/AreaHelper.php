@@ -10,7 +10,7 @@ trait AreaHelper
 {
 
 
-    public function getAllAreaDetails(?string $search,?array $filters)
+    public function getAllAreaDetails()
     {
         $areas = Area::query()->get();
 
