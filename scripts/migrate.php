@@ -415,6 +415,34 @@ function cmd_rollback(PDO $pdo, string $migrationsDir, bool $complete = false): 
     }
 }
 
+function cmd_drop($env)
+{
+    $dbName = $env->get('DB_DATABASE');
+    $dbUser = $env->get('DB_USERNAME');
+    $dbPass = $env->get('DB_PASSWORD');
+
+    // optional host/port keys; fallback to sensible defaults used in your DSN
+    $host = $env->get('DB_HOST') ?: 'db';
+    $port = $env->get('DB_PORT') ?: '5432';
+
+    // connect to the maintenance DB 'postgres'
+    $maintenanceDsn = "pgsql:host={$host};port={$port};dbname=postgres";
+
+    try {
+        $pdo = new PDO($maintenanceDsn, $dbUser, $dbPass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]);
+    } catch (Exception $e) {
+        fwrite(STDERR, "Unable to connect to Postgres maintenance DB: " . $e->getMessage() . PHP_EOL);
+        exit(1);
+    }
+
+    $pdo->exec("DROP DATABASE {$dbName} WITH (FORCE);");
+
+    echo "DB deleted";
+}
+
 // -------- dispatch ----------
 $argv0 = $argv[0] ?? 'migrate.php';
 $cmd = $argv[1] ?? 'status';
@@ -431,6 +459,9 @@ switch ($cmd) {
         break;
     case 'reset':
         cmd_rollback($pdo, $migrationsDir, true);
+        break;
+    case "drop":
+        cmd_drop($env);
         break;
     case 'status':
         cmd_status($pdo, $migrationsDir);
