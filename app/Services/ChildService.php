@@ -27,10 +27,10 @@ class ChildService
     }
 
     private function applyChildSearch(QueryBuilder $children, string $search)
-{
-    $children->where('name', 'ILIKE', "$search%");
-    return $children;
-}
+    {
+        $children->where('name', 'ILIKE', "$search%");
+        return $children;
+    }
 
 
     private function calculateAge($dob): string
@@ -65,7 +65,9 @@ class ChildService
         $resource = [];
         foreach ($children as $child) {
 
-            $parent = ParentChild::query()->where('child_id', '=', $child->id)->first()->getParent();
+            $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
+            $parent = $parentChild ? $parentChild->getParent() : null;
+
 
             $parentResource = NULL;
             if ($parent) {
@@ -142,111 +144,107 @@ class ChildService
         return $resource;
     }
 
-   public function getChildrenByStaffId(
-    int $staffId,
-    ?string $search = null,
-    ?array $filters = null
-) {
+    public function getChildrenByStaffId(
+        int $staffId,
+        ?string $search = null,
+        ?array $filters = null
+    ) {
 
-    $childrenQuery = Child::query();
+        $childrenQuery = Child::query();
 
-    if ($search) {
-        $childrenQuery = $this->applyChildSearch($childrenQuery, $search);
-    }
-
-    $results = $childrenQuery
-        ->orderBy('id', 'ASC')
-        ->paginate(10)
-        ->toArray();
-
-    $resource = [];
-
-    $requests = ChildAccessRequest::query()
-        ->where('staff_id', '=', $staffId)
-        ->get();
-
-    foreach ($results['items'] as $child) {
-
-        $request = null;
-
-        foreach ($requests as $req) {
-            if ($req->child_id == $child->id) {
-                $request = $req;
-                break;
-            }
+        if ($search) {
+            $childrenQuery = $this->applyChildSearch($childrenQuery, $search);
         }
 
-        $accessStatus = 'not_requested';
-        $hasFullAccess = false;
+        $results = $childrenQuery
+            ->orderBy('id', 'ASC')
+            ->paginate(10)
+            ->toArray();
 
-        if ($request) {
-            if ($request->accepted === true) {
-                $accessStatus = 'accepted';
-                $hasFullAccess = true;
-            } elseif ($request->accepted === false) {
-                $accessStatus = 'pending';
-            } else {
-                $accessStatus = 'rejected';
+        $resource = [];
+
+        $requests = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->get();
+
+        foreach ($results['items'] as $child) {
+
+            $request = null;
+
+            foreach ($requests as $req) {
+                if ($req->child_id == $child->id) {
+                    $request = $req;
+                    break;
+                }
             }
-        }
 
-        if (!empty($filters['access_status'])) {
-            if (!in_array($accessStatus, $filters['access_status'])) {
-                continue;
+            $accessStatus = 'not_requested';
+            $hasFullAccess = false;
+
+            if ($request) {
+                if ($request->accepted === true) {
+                    $accessStatus = 'accepted';
+                    $hasFullAccess = true;
+                } elseif ($request->accepted === false) {
+                    $accessStatus = 'pending';
+                } else {
+                    $accessStatus = 'rejected';
+                }
             }
-        }
 
-        $parent = ParentChild::query()->where('child_id', '=', $child['id'])->first()->getParent();
-        $phm    = PublicHealthMidwife::find($child->phm_id);
-        $latestRecord = ChildRecord::query()->where('child_id', '=', $child['id'])->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
+            if (!empty($filters['access_status'])) {
+                if (!in_array($accessStatus, $filters['access_status'])) {
+                    continue;
+                }
+            }
 
-        $childData = [
-            'id' => $child->id,
-            'name' => $child->name,
-            'age' => $this->calculateAge($child->date_of_birth),
-            'access_status' => $accessStatus,
+            $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
+            $parent = $parentChild ? $parentChild->getParent() : null;
+            $phm    = PublicHealthMidwife::find($child->phm_id);
+            $latestRecord = ChildRecord::query()->where('child_id', '=', $child->id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
 
-            'phm' => $phm ? [
-                'id' => $phm->id,
-                'name' => User::find($phm->id)->name,
-            ] : null,
+            $childData = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'age' => $this->calculateAge($child->date_of_birth),
+                'access_status' => $accessStatus,
 
-            'record' => $latestRecord ? [
-                'id'=> $latestRecord->id,
-                'visit_date'=> $latestRecord->visit_date,
-                'age_recorded_at'=> Calculator::calculateAgeInMonths(Child::find($child['id'])->date_of_birth, $latestRecord->visit_date),
-                'height'=> $latestRecord->height,
-                'weight'=> $latestRecord->weight,
-                'bmi'=> $latestRecord->bmi,
-                'head_circumference'=> $latestRecord->head_circumference,
-                'health_status'=> $latestRecord->health_status,
-                'notes'=> $latestRecord->notes,
-            ] : null,
-        ];
-
-        if ($hasFullAccess) {
-            $childData = array_merge($childData, [
-                'gender' => $child->gender,
-                'health_status' => $child->health_status,
-                'blood_type' => $child->blood_type,
-                'notes' => $child->notes,
-                'area' => $child->getArea()->code,
-
-                'parent' => $parent ? [
-                    'id' => $parent->id,
-                    'name' => User::find($parent->id)->name,
-                    'email' => User::find($parent->id)->email,
+                'phm' => $phm ? [
+                    'id' => $phm->id,
+                    'name' => User::find($phm->id)->name,
                 ] : null,
-            ]);
+
+                'record' => $latestRecord ? [
+                    'id' => $latestRecord->id,
+                    'height' => $latestRecord->height,
+                    'weight' => $latestRecord->weight,
+                    'bmi' => $latestRecord->bmi,
+                    'head_circumference' => $latestRecord->head_circumference,
+                    'health_status' => $latestRecord->health_status,
+                ] : null,
+            ];
+
+            if ($hasFullAccess) {
+                $childData = array_merge($childData, [
+                    'gender' => $child->gender,
+                    'blood_type' => $child->blood_type,
+                    'area' => $child->getArea()->code,
+
+                    'parent' => $parent ? [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ] : null,
+                ]);
+            }
+
+            $resource[] = $childData;
         }
 
-        $resource[] = $childData;
+        $links = array_diff_key($results, ['items' => true]);
+
+        return [$resource, $links];
     }
-
-    $links = array_diff_key($results, ['items' => true]);
-
-    return [$resource, $links];
-}
 
 
     public function getChildernById(int $id)
@@ -260,12 +258,11 @@ class ChildService
             $childRecordResource = [
                 'id' => $childRecord->id,
                 'visit_date' => $childRecord->visit_date,
-                'age_recorded_at' => $childRecord->age_recorded_at,
+                'age_recorded_at' => Calculator::calculateAgeInMonths(Child::find($child->id)->date_of_birth, $childRecord->visit_date),
                 'height' => $childRecord->height,
                 'weight' => $childRecord->weight,
                 'bmi' => $childRecord->bmi,
                 'head_circumference' => $childRecord->head_circumference,
-                'notes' => $childRecord->notes,
             ];
         }
 
@@ -298,9 +295,7 @@ class ChildService
             'date_of_birth' => $child->date_of_birth,
             'age' => $this->calculateAge($child->date_of_birth),
             'gender' => $child->gender,
-            'health_status' => $child->health_status,
             'blood_type' => $child->blood_type,
-            'notes' => $child->notes,
             'parent' => $parentResource,
             'phm' => $phmResource,
             'record' => $childRecordResource
@@ -518,26 +513,26 @@ class ChildService
     }
 
     public function cancelChildAccessRequest(int $staffId, int $childId): ?string
-{
-    $request = ChildAccessRequest::query()
-        ->where('staff_id', '=', $staffId)
-        ->where('child_id', '=', $childId)
-        ->first();
+    {
+        $request = ChildAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->where('child_id', '=', $childId)
+            ->first();
 
-    if (!$request) {
-        return "Access request not found";
-    }
+        if (!$request) {
+            return "Access request not found";
+        }
 
-    if ($request->accepted === true) {
-        return "Cannot cancel an already accepted request";
-    }
+        if ($request->accepted === true) {
+            return "Cannot cancel an already accepted request";
+        }
 
-    $request->delete();
+        $request->delete();
 
-    $staff = User::find($staffId);
+        $staff = User::find($staffId);
         $child = Child::find($childId);
 
-     $this->notificationService->notifyAdmins(
+        $this->notificationService->notifyAdmins(
             "Child Access Request Cancelled",
             "{$staff->name} requested access to child profile {$child->name} has been cancelled.",
             "child_access_request_canclled",
@@ -545,8 +540,8 @@ class ChildService
         );
 
 
-    return null; 
-}
+        return null;
+    }
 
 
 
