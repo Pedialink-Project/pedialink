@@ -72,11 +72,10 @@ PHM Child Profiles
                 <c-select label="Area" name="area" searchable="1" error="{{ errors('area') ?? '' }}"  value="{{ old('area') ?? '' }}"
                     error="{{ errors('area') ?? '' }}" placeholder="Enter Area"
                     required>
-                    <li class="select-item" data-value="1">Borella</li>
-                    <li class="select-item" data-value="2">Dehiwala</li>
-                    <li class="select-item" data-value="3">Morutuwa</li>
-                    <li class="select-item" data-value="4">Ratmalana</li>
-                    <li class="select-item" data-value="5">Wellawatta</li>
+                    @foreach ($areas as $area)
+                    <li class="select-item" data-value="{{ $area['id'] }}">{{ $area['name'] }}</li>
+                    @endforeach
+                    
                 </c-select>
                 <c-input type="date" label="Date of Birth:" name="date_of_birth" value="{{ old('date_of_birth') ?? '' }}"
                     error="{{ errors('date_of_birth') ?? ''}}" required />
@@ -84,6 +83,11 @@ PHM Child Profiles
                     error="{{ errors('birth_certificate') ?? ''}}" required />
                 <c-select label="Gender" name="gender" value="{{ old('gender') ?? '' }}"
                     error="{{ errors('gender') ?? ''}}" required>
+                    <li class="select-item" data-value="m">Male</li>
+                    <li class="select-item" data-value="f">Female</li>
+                </c-select>
+                <c-select label="Blood Type" name="blood_type" value="{{ old('blood_type') ?? '' }}"
+                    error="{{ errors('blood_type') ?? ''}}" required>
                     <li class="select-item" data-value="m">Male</li>
                     <li class="select-item" data-value="f">Female</li>
                 </c-select>
@@ -264,6 +268,12 @@ PHM Child Profiles
                                         <c-select label="Gender" name="e_gender"
                                             value="{{ flash('edit') === $child['id'] ? (old('e_gender') ?? '') : $child['gender'] }}"
                                             error="{{ errors('e_gender') ?? ''}}" required>
+                                            <li class="select-item" data-value="male">Male</li>
+                                            <li class="select-item" data-value="female">Female</li>
+                                        </c-select>
+                                        <c-select label="Blood Type" name="e_blood_type"
+                                            value="{{ flash('edit') === $child['id'] ? (old('e_blood_type') ?? '') : $child['e_blood_type'] }}"
+                                            error="{{ errors('e_blood_type') ?? ''}}" required>
                                             <li class="select-item" data-value="male">Male</li>
                                             <li class="select-item" data-value="female">Female</li>
                                         </c-select>
