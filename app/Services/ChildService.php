@@ -197,7 +197,8 @@ class ChildService
                     continue;
                 }
             }
-
+            
+            //For now only one parent details get but it modifeid to get both parent deatils and return that
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
             $parent = $parentChild ? $parentChild->getParent() : null;
             $phm    = PublicHealthMidwife::find($child->phm_id);
