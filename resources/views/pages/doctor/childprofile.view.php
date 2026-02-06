@@ -304,26 +304,24 @@ Child Profiles
                                             info="{{ $child['phm']['name'] }}" />
                                     </c-modal.viewcard>
 
+                                    @if($child['parent'])
+
                                     <div class="parent-link-group">
                                         <div class="parent-link-card">
                                             <div class="name-group">
-                                                <span class="parent-title">Nicole Sanders</span>
-                                                <span class="parent-type">Mother</span>
+                                                <span class="parent-title">{{$child['parent']['name']}}</span>
+                                                <span class="parent-type">{{ucfirst($child['parent']['type'])}}</span>
                                             </div>
-                                            <c-badge type="green">
-                                                Linked
-                                            </c-badge>
-                                        </div>
-                                        <div class="parent-link-card">
-                                            <div class="name-group">
-                                                <span class="parent-title">John Michael</span>
-                                                <span class="parent-type">Father</span>
-                                            </div>
-                                            <c-badge type="green">
-                                                Linked
-                                            </c-badge>
+                                        
+                                        </div>      
+                                    </div>
+                                    @else
+                                    <div class="parent-link-group">
+                                        <div class="parent-link-card no-parent">
+                                            <span class="parent-title">No parent linked</span>
                                         </div>
                                     </div>
+                                    @endif
 
                                     <c-modal.viewlist title="Medical Records">
                                         <c-slot name="list">
