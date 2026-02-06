@@ -9,18 +9,21 @@ use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
 use App\Models\ChildAccessRequest;
-use App\models\ParentChild;
+use App\Models\ParentChild;
 use Library\Framework\Database\QueryBuilder;
+use App\Helpers\Calculator;
 use DateTime;
 
 class ChildService
 {
 
     private  $notificationService;
+    private $childRecordService;
 
     public function __construct()
     {
         $this->notificationService = new NotificationService();
+        $this->childRecordService = new ChildRecordService();
     }
 
     private function applyChildSearch(QueryBuilder $children, string $search)
@@ -195,6 +198,7 @@ class ChildService
 
         $parent = ParentChild::query()->where('child_id', '=', $child['id'])->first()->getParent();
         $phm    = PublicHealthMidwife::find($child->phm_id);
+        $latestRecord = ChildRecord::query()->where('child_id', '=', $child['id'])->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
 
         $childData = [
             'id' => $child->id,
@@ -205,6 +209,18 @@ class ChildService
             'phm' => $phm ? [
                 'id' => $phm->id,
                 'name' => User::find($phm->id)->name,
+            ] : null,
+
+            'record' => $latestRecord ? [
+                'id'=> $latestRecord->id,
+                'visit_date'=> $latestRecord->visit_date,
+                'age_recorded_at'=> Calculator::calculateAgeInMonths(Child::find($child['id'])->date_of_birth, $latestRecord->visit_date),
+                'height'=> $latestRecord->height,
+                'weight'=> $latestRecord->weight,
+                'bmi'=> $latestRecord->bmi,
+                'head_circumference'=> $latestRecord->head_circumference,
+                'health_status'=> $latestRecord->health_status,
+                'notes'=> $latestRecord->notes,
             ] : null,
         ];
 
