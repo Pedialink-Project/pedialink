@@ -32,6 +32,6 @@ trait BirthCertificateValidator
             return $error;
         }
 
-        return true;
+        return null;
     }
 }
