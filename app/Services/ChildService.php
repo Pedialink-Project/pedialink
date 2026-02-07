@@ -22,7 +22,7 @@ use DateTime;
 class ChildService
 {
 
-    use NameRule, DivisionRule, DateRule, BirthCertificateValidator,NicValidator;
+    use NameRule, DivisionRule, DateRule, BirthCertificateValidator, NicValidator;
     private  $notificationService;
 
     public function __construct()
@@ -219,14 +219,7 @@ class ChildService
                     'name' => User::find($phm->id)->name,
                 ] : null,
 
-                'record' => $latestRecord ? [
-                    'id' => $latestRecord->id,
-                    'height' => $latestRecord->height,
-                    'weight' => $latestRecord->weight,
-                    'bmi' => $latestRecord->bmi,
-                    'head_circumference' => $latestRecord->head_circumference,
-                    'health_status' => $latestRecord->health_status,
-                ] : null,
+
             ];
 
             if ($hasFullAccess) {
@@ -235,6 +228,135 @@ class ChildService
                     'blood_type' => $child->blood_type,
                     'area' => $child->getArea()->code,
 
+                    'record' => $latestRecord ? [
+                        'id' => $latestRecord->id,
+                        'height' => $latestRecord->height,
+                        'weight' => $latestRecord->weight,
+                        'bmi' => $latestRecord->bmi,
+                        'head_circumference' => $latestRecord->head_circumference,
+                        'health_status' => $latestRecord->health_status,
+                    ] : null,
+
+                    'parent' => $parent ? [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ] : null,
+                ]);
+            }
+
+            $resource[] = $childData;
+        }
+
+        $links = array_diff_key($results, ['items' => true]);
+
+        return [$resource, $links];
+    }
+
+    public function getChildrenByPhmId(
+        int $phmId,
+        ?string $search = null,
+        ?array $filters = null
+    ) {
+
+        $childrenQuery = Child::query();
+
+        if ($search) {
+            $childrenQuery = $this->applyChildSearch($childrenQuery, $search);
+        }
+
+        $results = $childrenQuery
+            ->orderBy('id', 'ASC')
+            ->paginate(10)
+            ->toArray();
+
+        $resource = [];
+
+        $requests = ChildAccessRequest::query()
+            ->where('staff_id', '=', $phmId)
+            ->get();
+
+        foreach ($results['items'] as $child) {
+
+            $request = null;
+
+            foreach ($requests as $req) {
+                if ($req->child_id == $child->id) {
+                    $request = $req;
+                    break;
+                }
+            }
+
+            $accessStatus = 'not_requested';
+            $hasFullAccess = false;
+
+            if ($request) {
+                if ($request->accepted === true) {
+                    $accessStatus = 'accepted';
+                    $hasFullAccess = true;
+                } elseif ($request->accepted === false) {
+                    $accessStatus = 'pending';
+                } else {
+                    $accessStatus = 'rejected';
+                }
+            }
+
+            if (!empty($filters['access_status'])) {
+                if (!in_array($accessStatus, $filters['access_status'])) {
+                    continue;
+                }
+            }
+
+            $isPhmCreated = false;
+
+            if($child->id == $phmId) {
+                $isPhmCreated = true;
+            }
+
+            //For now only one parent details get but it modifeid to get both parent deatils and return that
+            $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
+            $parent = $parentChild ? $parentChild->getParent() : null;
+            $latestRecord = ChildRecord::query()->where('child_id', '=', $child->id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
+            $phm    = PublicHealthMidwife::find($child->phm_id);
+
+            $childData = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'age' => $this->calculateAge($child->date_of_birth),
+                'gender' => $child->gender,
+                'area' => $child->getArea()->code,
+                'access_status' => $accessStatus,
+                'linked_status' => $parentChild !== NULL ? 'linked' : 'unlinked',
+
+
+            ];
+
+            if($isPhmCreated){
+                $childMisc = ChildMisc::find($child->id);
+                $childData = array_merge($childData, [
+                    'blood_type' =>$child->blood_type,
+                    'birth_certificate' => $child->birth_certificate,
+                    'parent_nic' => $childMisc->parent_nic,
+                ]);
+            }
+
+            if ($hasFullAccess) {
+                $childData = array_merge($childData, [
+                    'blood_type' => $child->blood_type,
+                    'birth_certificate' => $child->birth_certificate,
+
+                    'phm' => $phm ? [
+                        'id' => $phm->id,
+                        'name' => User::find($phm->id)->name,
+                    ] : null,
+                    'record' => $latestRecord ? [
+                        'id' => $latestRecord->id,
+                        'height' => $latestRecord->height,
+                        'weight' => $latestRecord->weight,
+                        'bmi' => $latestRecord->bmi,
+                        'head_circumference' => $latestRecord->head_circumference,
+                        'health_status' => $latestRecord->health_status,
+                    ] : null,
                     'parent' => $parent ? [
                         'id' => $parent->id,
                         'type' => $parent->type,
@@ -311,7 +433,7 @@ class ChildService
     }
 
 
-   
+
     private function validateBloodType($bloodType)
     {
         $error = null;
@@ -406,7 +528,7 @@ class ChildService
         return $error;
     }
 
-    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType,string $parent_nic)
+    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, string $parent_nic)
     {
         $phmId = auth()->id();
 
@@ -427,7 +549,6 @@ class ChildService
         $childMisc->save();
 
         $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
-
     }
 
     public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType)
