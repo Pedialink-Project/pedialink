@@ -268,9 +268,22 @@ Child Profiles
                                     <c-slot name="trigger">
                                         <c-dropdown.item>View Child Profile</c-dropdown.item>
                                     </c-slot>
-
                                     <c-slot name="headerSuffix">
-                                        <c-badge type="green">Good</c-badge>
+                                        @if($child['record'])
+                                        @if (strtolower($child['record']['health_status']) === "good")
+                                        <c-badge type="green">
+                                            {{ ucwords(str_replace('_', ' ', $child['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($child['record']['health_status']) === "at_risk")
+                                        <c-badge type="yellow">
+                                            {{ ucwords(str_replace('_', ' ', $child['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($child['record']['health_status']) === "critical")
+                                        <c-badge type="red">
+                                            {{ ucwords(str_replace('_', ' ', $child['record']['health_status'])) }}
+                                        </c-badge>
+                                        @endif
+                                        @endif
                                     </c-slot>
 
                                     <c-slot name="header">
@@ -288,8 +301,8 @@ Child Profiles
                                             info="{{ $child['name'] }}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Total Vaccinations"
-                                            info="2" />
+                                            title="Blood Type"
+                                            info="{{$child['blood_type']}}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
                                             title="Age"
@@ -304,33 +317,38 @@ Child Profiles
                                             info="{{ $child['phm']['name'] }}" />
                                     </c-modal.viewcard>
 
+                                    @if($child['parent'])
+
                                     <div class="parent-link-group">
                                         <div class="parent-link-card">
                                             <div class="name-group">
-                                                <span class="parent-title">Nicole Sanders</span>
-                                                <span class="parent-type">Mother</span>
+                                                <span class="parent-title">{{$child['parent']['name']}}</span>
+                                                <span class="parent-type">{{ucfirst($child['parent']['type'])}}</span>
                                             </div>
-                                            <c-badge type="green">
-                                                Linked
-                                            </c-badge>
-                                        </div>
-                                        <div class="parent-link-card">
-                                            <div class="name-group">
-                                                <span class="parent-title">John Michael</span>
-                                                <span class="parent-type">Father</span>
-                                            </div>
-                                            <c-badge type="green">
-                                                Linked
-                                            </c-badge>
+
                                         </div>
                                     </div>
+                                    @else
+                                    <div class="parent-link-group">
+                                        <div class="parent-link-card no-parent">
+                                            <span class="parent-title">No parent linked</span>
+                                        </div>
+                                    </div>
+                                    @endif
 
-                                    <c-modal.viewlist title="Medical Records">
+                                    <c-modal.viewlist title="Latest Medical Records">
+                                        @if($child['record'])
                                         <c-slot name="list">
-                                            <li>Height: 49.5 cm</li>
-                                            <li>Weight: 3.4 kg</li>
-                                            <li>BMI Value: 3.5</li>
+                                            <li>Height:{{ $child['record']['height'] }}cm</li>
+                                            <li>Weight: {{ $child['record']['weight'] }}kg</li>
+                                            <li>BMI Value: {{ $child['record']['bmi'] }}</li>
+                                            <li>Head circumference: {{ $child['record']['head_circumference'] }}cm</li>
                                         </c-slot>
+                                        @else
+                                        <c-slot name="list">
+                                            <li>No medical records found.</li>
+                                        </c-slot>
+                                        @endif
                                     </c-modal.viewlist>
 
                                     <c-modal.viewlist title="Recent Vaccinations">
@@ -340,12 +358,6 @@ Child Profiles
                                         </c-slot>
                                     </c-modal.viewlist>
 
-                                    <c-modal.viewlist title="Other Information">
-                                        <c-slot name="list">
-                                            <li>Nutrition facts: Lorem Ipsum</li>
-                                            <li>Lorem Ipsum</li>
-                                        </c-slot>
-                                    </c-modal.viewlist>
 
                                     <c-slot name="close">
                                         Close
@@ -381,7 +393,7 @@ Child Profiles
 
                     </td>
                 </tr>
-            @endif
+                @endif
 
             </c-table.tbody>
         </c-table.main>

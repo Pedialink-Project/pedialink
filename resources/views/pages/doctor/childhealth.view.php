@@ -174,6 +174,11 @@ Health Records &#8594; {{$name}} &middot; C-000{{ $id }}
                                             info="{{ $record['visit_date'] }}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/ruler.svg') }}"
+                                            title="BMI"
+                                            info="{{ $record['bmi'] }}" />
+                                        <c-modal.viewitem
+
+                                            icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Head Circumference"
                                             info="{{ $record['head_circumference'] }}cm" />
                                     </c-modal.viewcard>
