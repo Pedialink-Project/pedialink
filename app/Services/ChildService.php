@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Child;
-use App\Models\ParentM;
+use App\Models\ChildMisc;
 use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
@@ -14,6 +14,7 @@ use App\Rules\NameRule;
 use App\Rules\DivisionRule;
 use App\Rules\DateRule;
 use App\Helpers\BirthCertificateValidator;
+use App\Helpers\NicValidator;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 use DateTime;
@@ -21,7 +22,7 @@ use DateTime;
 class ChildService
 {
 
-    use NameRule, DivisionRule, DateRule, BirthCertificateValidator;
+    use NameRule, DivisionRule, DateRule, BirthCertificateValidator,NicValidator;
     private  $notificationService;
 
     public function __construct()
@@ -348,7 +349,7 @@ class ChildService
         return $error;
     }
 
-    public function validateChildProfile(string $name, mixed $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, bool $edit = false)
+    public function validateChildProfile(string $name, mixed $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, string $parent_nic, bool $edit = false)
     {
         $errors = [];
         $suffix = $edit ? 'e_' : '';
@@ -371,6 +372,11 @@ class ChildService
         $birthCertificateError = $this->validateBirthCertificate($birthCertificate);
         if ($birthCertificateError) {
             $errors["{$suffix}birth_certificate"] = $birthCertificateError;
+        }
+
+        $parentNicError = $this->validateNIC($parent_nic);
+        if ($parentNicError) {
+            $errors["{$suffix}parent_nic"] = $parentNicError;
         }
 
         $bloodTypeError = $this->validateBloodType($bloodType);
@@ -400,10 +406,9 @@ class ChildService
         return $error;
     }
 
-    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType)
+    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType,string $parent_nic)
     {
         $phmId = auth()->id();
-
 
         $child = new Child();
         $child->name = $name;
@@ -414,6 +419,15 @@ class ChildService
         $child->blood_type = $bloodType;
         $child->phm_id = $phmId;
         $child->save();
+
+
+        $childMisc = new ChildMisc();
+        $childMisc->parent_nic = $parent_nic;
+        $childMisc->children_id = $child->id;
+        $childMisc->save();
+
+        $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
+
     }
 
     public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType)
