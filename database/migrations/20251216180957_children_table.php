@@ -20,7 +20,7 @@ class Migration_20251216180957_children_table implements \Library\Framework\Data
                 name VARCHAR(100),
                 date_of_birth DATE NOT NULL,
                 gender CHAR(1),
-                birth_certificate TEXT NOT NULL,
+                birth_certificate TEXT,
                 area_id INT REFERENCES areas(id) ON DELETE RESTRICT,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
             );"
