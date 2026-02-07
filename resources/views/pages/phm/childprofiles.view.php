@@ -39,7 +39,7 @@ PHM Child Profiles
 
 @section('content')
 
-<c-table.controls :columns='["ID","Name","Age","Vaccination Status","GS Devision"]'>
+<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'linked_status' => ['linked', 'not_linked']]" >
 
     <c-slot name="filter">
         <c-button variant="outline">
