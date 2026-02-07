@@ -3,13 +3,18 @@
 namespace App\Services;
 
 use App\Models\Child;
-use App\Models\ParentM;
+use App\Models\ChildMisc;
 use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
 use App\Models\ChildAccessRequest;
 use App\Models\ParentChild;
+use App\Rules\NameRule;
+use App\Rules\DivisionRule;
+use App\Rules\DateRule;
+use App\Helpers\BirthCertificateValidator;
+use App\Helpers\NicValidator;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 use DateTime;
@@ -17,13 +22,12 @@ use DateTime;
 class ChildService
 {
 
+    use NameRule, DivisionRule, DateRule, BirthCertificateValidator, NicValidator;
     private  $notificationService;
-    private $childRecordService;
 
     public function __construct()
     {
         $this->notificationService = new NotificationService();
-        $this->childRecordService = new ChildRecordService();
     }
 
     private function applyChildSearch(QueryBuilder $children, string $search)
@@ -197,7 +201,7 @@ class ChildService
                     continue;
                 }
             }
-            
+
             //For now only one parent details get but it modifeid to get both parent deatils and return that
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
             $parent = $parentChild ? $parentChild->getParent() : null;
@@ -215,14 +219,7 @@ class ChildService
                     'name' => User::find($phm->id)->name,
                 ] : null,
 
-                'record' => $latestRecord ? [
-                    'id' => $latestRecord->id,
-                    'height' => $latestRecord->height,
-                    'weight' => $latestRecord->weight,
-                    'bmi' => $latestRecord->bmi,
-                    'head_circumference' => $latestRecord->head_circumference,
-                    'health_status' => $latestRecord->health_status,
-                ] : null,
+
             ];
 
             if ($hasFullAccess) {
@@ -231,6 +228,135 @@ class ChildService
                     'blood_type' => $child->blood_type,
                     'area' => $child->getArea()->code,
 
+                    'record' => $latestRecord ? [
+                        'id' => $latestRecord->id,
+                        'height' => $latestRecord->height,
+                        'weight' => $latestRecord->weight,
+                        'bmi' => $latestRecord->bmi,
+                        'head_circumference' => $latestRecord->head_circumference,
+                        'health_status' => $latestRecord->health_status,
+                    ] : null,
+
+                    'parent' => $parent ? [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ] : null,
+                ]);
+            }
+
+            $resource[] = $childData;
+        }
+
+        $links = array_diff_key($results, ['items' => true]);
+
+        return [$resource, $links];
+    }
+
+    public function getChildrenByPhmId(
+        int $phmId,
+        ?string $search = null,
+        ?array $filters = null
+    ) {
+
+        $childrenQuery = Child::query();
+
+        if ($search) {
+            $childrenQuery = $this->applyChildSearch($childrenQuery, $search);
+        }
+
+        $results = $childrenQuery
+            ->orderBy('id', 'ASC')
+            ->paginate(10)
+            ->toArray();
+
+        $resource = [];
+
+        $requests = ChildAccessRequest::query()
+            ->where('staff_id', '=', $phmId)
+            ->get();
+
+        foreach ($results['items'] as $child) {
+
+            $request = null;
+
+            foreach ($requests as $req) {
+                if ($req->child_id == $child->id) {
+                    $request = $req;
+                    break;
+                }
+            }
+
+            $accessStatus = 'not_requested';
+            $hasFullAccess = false;
+
+            if ($request) {
+                if ($request->accepted === true) {
+                    $accessStatus = 'accepted';
+                    $hasFullAccess = true;
+                } elseif ($request->accepted === false) {
+                    $accessStatus = 'pending';
+                } else {
+                    $accessStatus = 'rejected';
+                }
+            }
+
+            if (!empty($filters['access_status'])) {
+                if (!in_array($accessStatus, $filters['access_status'])) {
+                    continue;
+                }
+            }
+
+            $isPhmCreated = false;
+
+            if($child->id == $phmId) {
+                $isPhmCreated = true;
+            }
+
+            //For now only one parent details get but it modifeid to get both parent deatils and return that
+            $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
+            $parent = $parentChild ? $parentChild->getParent() : null;
+            $latestRecord = ChildRecord::query()->where('child_id', '=', $child->id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
+            $phm    = PublicHealthMidwife::find($child->phm_id);
+
+            $childData = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'age' => $this->calculateAge($child->date_of_birth),
+                'gender' => $child->gender,
+                'area' => $child->getArea()->code,
+                'access_status' => $accessStatus,
+                'linked_status' => $parentChild !== NULL ? 'linked' : 'unlinked',
+
+
+            ];
+
+            if($isPhmCreated){
+                $childMisc = ChildMisc::find($child->id);
+                $childData = array_merge($childData, [
+                    'blood_type' =>$child->blood_type,
+                    'birth_certificate' => $child->birth_certificate,
+                    'parent_nic' => $childMisc->parent_nic,
+                ]);
+            }
+
+            if ($hasFullAccess) {
+                $childData = array_merge($childData, [
+                    'blood_type' => $child->blood_type,
+                    'birth_certificate' => $child->birth_certificate,
+
+                    'phm' => $phm ? [
+                        'id' => $phm->id,
+                        'name' => User::find($phm->id)->name,
+                    ] : null,
+                    'record' => $latestRecord ? [
+                        'id' => $latestRecord->id,
+                        'height' => $latestRecord->height,
+                        'weight' => $latestRecord->weight,
+                        'bmi' => $latestRecord->bmi,
+                        'head_circumference' => $latestRecord->head_circumference,
+                        'health_status' => $latestRecord->health_status,
+                    ] : null,
                     'parent' => $parent ? [
                         'id' => $parent->id,
                         'type' => $parent->type,
@@ -308,33 +434,19 @@ class ChildService
 
 
 
-
-    private function validateName(string $name)
+    private function validateBloodType($bloodType)
     {
         $error = null;
-        if (!Validator::validateFieldExistence($name)) {
-            $error = "Name field cannot be empty";
+
+        if (!Validator::validateFieldExistence($bloodType)) {
+            $error = "Blood type field cannot be empty";
             return $error;
         }
 
-        if (!Validator::validateFieldMinLength($name, 3)) {
-            $error = "Name cannot be less than 3 characters";
-            return $error;
-        }
+        $validTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-        if (!Validator::validateFieldMaxLength($name, 20)) {
-            $error = "Name cannot be greater than 20 characters";
-            return $error;
-        }
-
-        return $error;
-    }
-
-    private function validateCommonFields(string $field, string $attributeName)
-    {
-        $error = null;
-        if (!Validator::validateFieldExistence($field)) {
-            $error = "{$attributeName} field cannot be empty";
+        if (!in_array(strtoupper($bloodType), $validTypes)) {
+            $error = "Please provide a valid blood type (e.g., A+, O-, AB+)";
             return $error;
         }
 
@@ -359,30 +471,41 @@ class ChildService
         return $error;
     }
 
-    public function validateChildProfile(string $name, int $areaId, string $dob, string $gender, string $birthCertificate, bool $edit = false)
+    public function validateChildProfile(string $name, mixed $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, string $parent_nic, bool $edit = false)
     {
         $errors = [];
         $suffix = $edit ? 'e_' : '';
 
-        $nameError = $this->validateName($name);
+        $nameError = $this->validateName($name, "Child Name");
         if ($nameError) {
             $errors["{$suffix}name"] = $nameError;
         }
 
-        $areaError = $this->validateCommonFields($areaId, "Area");
+        $areaError = $this->validateDivision($areaId);
         if ($areaError) {
             $errors["{$suffix}area"] = $areaError;
         }
 
-        $dobError = $this->validateCommonFields($dob, "Date of Birth");
+        $dobError = $this->validatePastDate($dob, "Date of Birth");
         if ($dobError) {
             $errors["{$suffix}date_of_birth"] = $dobError;
         }
 
-        $birthCertificateError = $this->validateCommonFields($birthCertificate, "Birth Certificate No");
+        $birthCertificateError = $this->validateBirthCertificate($birthCertificate);
         if ($birthCertificateError) {
             $errors["{$suffix}birth_certificate"] = $birthCertificateError;
         }
+
+        $parentNicError = $this->validateNIC($parent_nic);
+        if ($parentNicError) {
+            $errors["{$suffix}parent_nic"] = $parentNicError;
+        }
+
+        $bloodTypeError = $this->validateBloodType($bloodType);
+        if ($bloodTypeError) {
+            $errors["{$suffix}blood_type"] = $bloodTypeError;
+        }
+
 
         $genderError = $this->validateGender($gender);
         if ($genderError) {
@@ -405,10 +528,9 @@ class ChildService
         return $error;
     }
 
-    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate)
+    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, string $parent_nic)
     {
         $phmId = auth()->id();
-
 
         $child = new Child();
         $child->name = $name;
@@ -416,11 +538,20 @@ class ChildService
         $child->gender = $gender;
         $child->birth_certificate = $birthCertificate;
         $child->area_id = $areaId;
+        $child->blood_type = $bloodType;
         $child->phm_id = $phmId;
         $child->save();
+
+
+        $childMisc = new ChildMisc();
+        $childMisc->parent_nic = $parent_nic;
+        $childMisc->children_id = $child->id;
+        $childMisc->save();
+
+        $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
     }
 
-    public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate)
+    public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType)
     {
         $child = Child::find($childId);
         if ($child) {
@@ -429,6 +560,7 @@ class ChildService
             $child->gender = $gender;
             $child->area_id = $areaId;
             $child->birth_certificate = $birthCertificate;
+            $child->blood_type = $bloodType;
             $child->save();
         }
     }
