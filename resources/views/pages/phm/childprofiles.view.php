@@ -79,6 +79,8 @@ PHM Child Profiles
                     error="{{ errors('date_of_birth') ?? ''}}" required />
                 <c-input type="text" label="Birth Certificate No:" name="birth_certificate" value="{{ old('birth_certificate') ?? '' }}"
                     error="{{ errors('birth_certificate') ?? ''}}" required />
+                     <c-input type="text" label="Parent NIC:" name="parent_nic" value="{{ old('parent_nic') ?? '' }}"
+                    error="{{ errors('parent_nic') ?? ''}}"  />
                 <c-select label="Gender" name="gender" value="{{ old('gender') ?? '' }}"
                     error="{{ errors('gender') ?? ''}}" placeholder="Select Gender">
                     <li class="select-item" data-value="m">Male</li>
