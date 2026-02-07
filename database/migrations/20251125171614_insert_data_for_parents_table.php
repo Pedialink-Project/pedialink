@@ -23,9 +23,9 @@ class Migration_20251125171614_insert_data_for_parents_table implements \Library
         );
 
         QueryBuilder::raw(
-            "INSERT INTO parents (id, type, nic, address, area_id)
+            "INSERT INTO parents (id, type, nic, address, date_of_birth, area_id)
             VALUES
-            ((SELECT id FROM users WHERE email = '{$this->parentMail}'),'mother', '200315300887', 'Jaffna', 1 );"
+            ((SELECT id FROM users WHERE email = '{$this->parentMail}'),'mother', '200315300887', 'Jaffna', '2003-03-15', 1 );"
         );
     }
 
