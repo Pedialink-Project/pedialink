@@ -19,7 +19,8 @@ class ChildProfileController
 
     public function index(Request $request)
     {
-        $children = $this->childService->getAllChildren();
+        $phmId= auth()->user()->id;
+        [$children,$links] = $this->childService->getChildrenByPhmId($phmId);
         $areas = $this->getAllAreaDetails();
         return view("phm/childprofiles", ['children' => $children, 'areas' => $areas]);
     }
@@ -70,9 +71,8 @@ class ChildProfileController
         $gender = $request->input('e_gender');
         $birthCertificate = $request->input('e_birth_certificate');
         $bloodType = $request->input('e_blood_type');
-        $parent_nic = $request->input('e_parent_nic');
 
-        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType, true);
+        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate,$bloodType, true);
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
                 ->withErrors($errors)
