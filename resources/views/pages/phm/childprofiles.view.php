@@ -352,10 +352,13 @@ PHM Child Profiles
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
-                @if(count($children) === 0)
+                 @if(count($children) === 0)
                 <tr>
-                    <td colspan="6">
-                        <div class="table-empty">No childs found</div>
+                    <td colspan="8">
+                        <c-emptytable
+                            alt="No children found"
+                            title="No Child Profiles Available"
+                            description="No child profiles match your current search or filters. Try adjusting them to see more results." />
                     </td>
                 </tr>
                 @endif
@@ -364,5 +367,5 @@ PHM Child Profiles
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection

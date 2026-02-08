@@ -24,7 +24,7 @@ class ChildProfileController
         $phmId= auth()->user()->id;
         [$children,$links] = $this->childService->getChildrenByPhmId($phmId,$search,$filters);
         $areas = $this->getAllAreaDetails();
-        return view("phm/childprofiles", ['children' => $children, 'areas' => $areas]);
+        return view("phm/childprofiles", ['children' => $children, 'areas' => $areas,'links'=> $links]);
     }
 
     public function createChild(Request $request)
