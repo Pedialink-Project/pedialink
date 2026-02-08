@@ -98,26 +98,25 @@ Event Management → Participants · EV-000{{ $id }}
                                             info="{{ $participant['name'] }}" />
 
                                         <c-modal.viewitem
-                                            icon="{{ asset('assets/icons/mail.svg') }}"
+                                            icon="{{ asset('assets/icons/mail-01.svg') }}"
                                             title="Email"
                                             info="{{ $participant['email'] }}" />
 
-                                        <c-modal.viewitem
-                                            icon="{{ asset('assets/icons/phone.svg') }}"
-                                            title="Phone"
-                                            info="{{ $participant['phone'] }}" />
 
                                         <c-modal.viewitem
-                                            icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                            icon="{{ asset('assets/icons/calendar-03.svg') }}"
                                             title="Registered At"
-                                            info="{{ date('Y-m-d H:i', strtotime($participant['registered_at'])) }}" />
-
+                                            info="{{ $participant['registration_date'] }}" />
+                                        @if($participant['booking_status'] === 'cancelled')
                                         <c-modal.viewitem
-                                            icon="{{ asset('assets/icons/tick.svg') }}"
-                                            title="Status"
-                                            info="{{ ucfirst($participant['booking_status']) }}" />
+                                            icon="{{ asset('assets/icons/calendar-03.svg') }}"
+                                            title="Cancelled At"
+                                            info="{{ $participant['cancelled_at'] }}" />
+                                        @endif
 
                                     </c-modal.viewcard>
+
+
 
 
                                     @if($participant['booking_status'] === 'cancelled')
