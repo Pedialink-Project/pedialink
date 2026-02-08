@@ -307,15 +307,30 @@ class ChildService
                 }
             }
 
-            $isPhmCreated = false;
-
-            if($child->id == $phmId) {
-                $isPhmCreated = true;
-            }
-
+            $linkedStatus = 'unlinked';
             //For now only one parent details get but it modifeid to get both parent deatils and return that
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
             $parent = $parentChild ? $parentChild->getParent() : null;
+
+            if ($parent) {
+                $linkedStatus = 'linked';
+            } else {
+                $linkedStatus = 'unlinked';
+            }
+
+            if (!empty($filters['linked_status'])) {
+                if (!in_array($linkedStatus, $filters['linked_status'])) {
+                    continue;
+                }
+            }
+
+            $isPhmCreated = false;
+
+            if ($child->id == $phmId) {
+                $isPhmCreated = true;
+            }
+
+
             $latestRecord = ChildRecord::query()->where('child_id', '=', $child->id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
             $phm    = PublicHealthMidwife::find($child->phm_id);
 
@@ -326,15 +341,15 @@ class ChildService
                 'gender' => $child->gender,
                 'area' => $child->getArea()->code,
                 'access_status' => $accessStatus,
-                'linked_status' => $parentChild !== NULL ? 'linked' : 'unlinked',
+                'linked_status' => $linkedStatus,
 
 
             ];
 
-            if($isPhmCreated){
+            if ($isPhmCreated) {
                 $childMisc = ChildMisc::find($child->id);
                 $childData = array_merge($childData, [
-                    'blood_type' =>$child->blood_type,
+                    'blood_type' => $child->blood_type,
                     'birth_certificate' => $child->birth_certificate,
                     'parent_nic' => $childMisc->parent_nic,
                 ]);
