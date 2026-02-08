@@ -148,15 +148,17 @@ Event Management → Participants · EV-000{{ $id }}
                 @endforeach
 
 
-
                 @if(count($participants) === 0)
                 <tr>
-                    <td colspan="6">
-                        <div class="table-empty">No participants found</div>
+                    <td colspan="5">
+                        <c-emptytable
+                            alt="No Participants found"
+                            title="No Participants Available"
+                            description="No participants match your current search or filters. Try adjusting them to see more results." />
+
                     </td>
                 </tr>
                 @endif
-
 
             </c-table.tbody>
 
@@ -165,6 +167,6 @@ Event Management → Participants · EV-000{{ $id }}
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 
 @endsection

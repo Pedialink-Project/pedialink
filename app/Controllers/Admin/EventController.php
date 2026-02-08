@@ -27,7 +27,7 @@ class EventController
         $filters = $request->input('filters');
         [$participants, $links] = $this->eventService->getParticipantsByEventId($id, $search, $filters);
 
-        return view('admin/events/participants', ['participants' => $participants, 'id' => $id]);
+        return view('admin/events/participants', ['participants' => $participants, 'id' => $id,'links'=> $links]);
     }
 
     public function createEvent($request)
