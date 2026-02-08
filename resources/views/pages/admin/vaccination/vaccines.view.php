@@ -13,24 +13,9 @@
 @endsection
 
 @section('content')
-    <?php
-    $vaccines = [
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-        ["id" => "0001", "name" => "Tuberculosis", "code" => "BCG"],
-    ];
-    ?>
-
-    <c-table.controls :columns='["ID","Name","Code"]'>
+    <c-table.controls>
         <c-slot name="extrabtn">
-            <c-modal id="add-vaccine-modal" size="sm" :initOpen="false">
+            <c-modal id="add-vaccine-modal" size="sm" :initOpen="flash('add') ? true : false">
                 <c-slot name="trigger">
                     <c-button class="add-vaccine-btn" variant="primary">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -67,9 +52,25 @@
                     <div>Create Vaccine</div>
                 </c-slot>
 
-                <form id="add-vaccine" class="vaccine-form" action="">
-                    <c-input type="text" label="Vaccine Name" placeholder="Enter vaccine name" required />
-                    <c-input type="text" label="Vaccine Code" placeholder="Enter vaccine code" required />
+                <form id="add-vaccine" class="vaccine-form" method="POST" action="{{ route("admin.vaccination.vaccines.create") }}">
+                    <c-input
+                        type="text"
+                        name="name"
+                        label="Vaccine Name"
+                        placeholder="Enter vaccine name"
+                        value="{{ old('name') ?? '' }}"
+                        error="{{ errors('name') ?? '' }}"
+                        required
+                    />
+                    <c-input
+                        type="text"
+                        name="code"
+                        label="Vaccine Code"
+                        placeholder="Enter vaccine code"
+                        value="{{ old('code') ?? '' }}"
+                        error="{{ errors('code') ?? '' }}"
+                        required
+                    />
                 </form>
 
                 <c-slot name="close">
@@ -111,7 +112,7 @@
                                     <c-slot name="menu">
                                         <c-dropdown.item>Copy Vaccine Code</c-dropdown.item>
                                         <c-dropdown.sep />
-                                        <c-modal size="md" :initOpen="false">
+                                        <c-modal size="md" :initOpen="flash('edit') === $vaccine['id'] ? true : false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>Edit Vaccine</c-dropdown.item>
                                             </c-slot>
@@ -136,9 +137,25 @@
                                                 <div>Edit Vaccine</div>
                                             </c-slot>
 
-                                            <form id="edit-vaccine" class="vaccine-form" action="">
-                                                <c-input type="text" label="Vaccine Name" placeholder="Enter vaccine name" value="{{ $vaccine['name'] }}" required />
-                                                <c-input type="text" label="Vaccine Code" placeholder="Enter vaccine code" value="{{ $vaccine['code'] }}" required />
+                                            <form id="edit-vaccine-{{ $key }}" method="POST" action="{{ route('admin.vaccination.vaccines.edit', ['id' => $vaccine['id'] ]) }}" class="vaccine-form" action="">
+                                                <c-input
+                                                    type="text"
+                                                    name="e_name"
+                                                    label="Vaccine Name"
+                                                    placeholder="Enter vaccine name"
+                                                    value="{{ flash('edit') === $vaccine['id'] ? (old('e_name') ?? '') : $vaccine['name'] }}"
+                                                    error="{{ flash('edit') === $vaccine['id'] ? (errors('e_name') ?? '') : '' }}"
+                                                    
+                                                />
+                                                <c-input
+                                                    type="text"
+                                                    name="e_code"
+                                                    label="Vaccine Code"
+                                                    placeholder="Enter vaccine code"
+                                                    value="{{ flash('edit') === $vaccine['id'] ? (old('e_code') ?? '') : $vaccine['code'] }}"
+                                                    error="{{ flash('edit') === $vaccine['id'] ? (errors('e_code') ?? '') : '' }}"
+                                                    required
+                                                />
                                             </form>
                                             
                                             <c-slot name="close">
@@ -146,7 +163,7 @@
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" form="edit-vaccine" variant="primary">Save Changes</c-button>
+                                                <c-button type="submit" form="edit-vaccine-{{ $key }}" variant="primary">Save Changes</c-button>
                                             </c-slot>
                                         </c-modal>
                                         <c-modal>
@@ -161,12 +178,14 @@
                                                 Do you want to delete <span class="delete-vaccine-highlight">Vaccine Code: {{ $vaccine["code"] }}</span>?
                                             </p>
 
+                                            <form id="delete-vaccine-{{ $key }}" method="POST" action="{{ route('admin.vaccination.vaccines.delete', ['id' => $vaccine['id']]) }}"></form>
+
                                             <c-slot name="close">
                                                 Cancel
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="destructive">
+                                                <c-button type="submit" form="delete-vaccine-{{ $key }}" variant="destructive">
                                                     Delete Vaccine
                                                 </c-button>
                                             </c-slot>
@@ -176,13 +195,17 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($vaccines) === 0)
-                        <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
-                    @endif
+                    
                 </c-table.tbody>
             </c-table.main>
         </div>
     </c-table.wrapper>
-
-    <c-table.pagination />
+    @if(count($vaccines) <= 0)
+        <c-emptytable
+            alt="No vaccine data"
+            title="Vaccine data not found"
+            description="Vaccine data is unavailable for this page"
+        />
+    @endif
+    <c-table.pagination :links="$links" />
 @endsection

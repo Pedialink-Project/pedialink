@@ -20,6 +20,7 @@ class Migration_20260201054329_create_access_requests_table_php implements \Libr
                 maternal_id INT REFERENCES parents(id) NOT NULL,
                 reason_title TEXT NOT NULL,
                 reason_description TEXT NOT NULL,
+                accepted BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
             );"
         );
@@ -31,6 +32,7 @@ class Migration_20260201054329_create_access_requests_table_php implements \Libr
                 child_id INT REFERENCES children(id) NOT NULL,
                 reason_title TEXT NOT NULL,
                 reason_description TEXT NOT NULL,
+                accepted BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
             );"
         );

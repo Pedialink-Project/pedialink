@@ -1,6 +1,7 @@
 <?php
 
 namespace Library\Framework\Database;
+
 use PDO;
 use PDOException;
 
@@ -130,6 +131,32 @@ class QueryBuilder
         return $this;
     }
 
+    /**
+     * Add a WHERE NOT IN condition
+     *
+     * @param string $column
+     * @param array $values
+     * @return QueryBuilder
+     */
+    public function whereNotIn(string $column, array $values): static
+    {
+        if (empty($values)) {
+            // No values to exclude → return all rows (no condition needed)
+            return $this;
+        }
+
+        $placeholders = [];
+        foreach ($values as $index => $value) {
+            $key = ":{$column}_notin{$index}";
+            $placeholders[] = $key;
+            $this->bindings[$key] = $value;
+        }
+
+        $this->wheres[] = "{$column} NOT IN (" . implode(',', $placeholders) . ")";
+        return $this;
+    }
+
+
 
     /**
      * Retrieve array of model instances after
@@ -145,6 +172,14 @@ class QueryBuilder
 
         if ($this->orderBys) {
             $sql .= ' ORDER BY ' . implode(', ', $this->orderBys);
+        }
+
+        if ($this->limit !== null) {
+            $sql .= " LIMIT {$this->limit}";
+        }
+
+        if ($this->offset !== null) {
+            $sql .= " OFFSET {$this->offset}";
         }
 
         $stmt = static::$pdo->prepare($sql);
@@ -268,7 +303,7 @@ class QueryBuilder
     {
         $sql = sprintf(
             "DELETE FROM %s" .
-            ($this->wheres ? ' WHERE ' . implode(' AND ', $this->wheres) : ''),
+                ($this->wheres ? ' WHERE ' . implode(' AND ', $this->wheres) : ''),
             $this->table
         );
 

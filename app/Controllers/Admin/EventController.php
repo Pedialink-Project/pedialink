@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers\Admin;
+
 use App\Services\EventService;
 
 
@@ -65,7 +66,7 @@ class EventController
         $location = $request->input('e_location');
         $maxCount = $request->input('e_max_count');
 
-        $errors = $this->eventService->validateEditEventData($id,$title, $date, $start_time, $end_time, $location, $maxCount);
+        $errors = $this->eventService->validateEditEventData($id, $title, $date, $start_time, $end_time, $location, $maxCount);
 
         if (count($errors) !== 0) {
             return redirect(route("admin.event"))
@@ -81,12 +82,22 @@ class EventController
                 ->with("edit", $id);
         }
 
-        $this->eventService->editEvent($id, $title, $date, $start_time, $end_time, $location, $maxCount);
+        $error = $this->eventService->editEvent($id, $title, $date, $start_time, $end_time, $location, $maxCount);
+
+        if ($error !== NULL) {
+            return redirect(route("admin.event"))
+                ->withMessage(
+                    $error,
+                    "Failed",
+                    "error",
+                );
+        }
+
 
         return redirect(route('admin.event'))->withMessage('success', 'Event updated successfully.', 'success');
     }
 
-    public function editEventVisible($requset, $id)
+    public function editEventVisible($request, $id)
     {
         $error = $this->eventService->validateEditEventVisible($id);
 
@@ -109,9 +120,32 @@ class EventController
                 "Visibility Changed",
                 "success",
             );
-
-
     }
+
+    public function cancelEvent($request, $id)
+    {
+
+       
+
+        $error = $this->eventService->cancelEvent($id);
+
+        if ($error) {
+            return redirect(route("admin.event"))
+                ->withMessage(
+                    $error,
+                    "Event Not Cancelled",
+                    "error"
+                );
+        }
+
+        return redirect(route("admin.event"))
+            ->withMessage(
+                "Event was successfully cancelled",
+                "Event Cancelled",
+                "success"
+            );
+    }
+
 
     public function deleteEvent($request, $id)
     {
@@ -137,7 +171,4 @@ class EventController
                 "success",
             );
     }
-
-
 }
-

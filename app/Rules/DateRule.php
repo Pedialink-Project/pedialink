@@ -37,6 +37,36 @@ trait DateRule
         return $error;
     }
 
+      /**
+     * Validate a past date field
+     *
+     * @param string $date
+     * @param string $attributeName
+     * @return string|null
+     */
+    private function validatePastDate(string $date, string $attributeName = 'Date', )
+    {
+        $error = null;
+        if (!Validator::validateFieldExistence($date)) {
+            $error = "{$attributeName} field cannot be empty";
+        }
+
+        if (!Validator::validateDateFormat($date)) {
+            $error = "{$attributeName} format is invalid (expected YYYY-MM-DD)";
+        }
+
+        
+            $input = strtotime($date);
+            $today = strtotime(date('Y-m-d'));
+
+            if ($input >= $today) {
+                $error = "{$attributeName} must be a past date";
+            }
+        
+
+        return $error;
+    }
+
     /**
      * Validate a time field (HH:MM)
      */

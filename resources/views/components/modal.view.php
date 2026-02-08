@@ -384,8 +384,13 @@ $initAttr = $initOpen ? 'true' : 'false';
         });
     }
 
-    externalTriggers.forEach(t => bindTrigger(t));
+document.addEventListener('click', (e) => {
+    const trigger = e.target.closest(`[data-modal-trigger="${id}"]`);
+    if (!trigger) return;
 
+    e.preventDefault();
+    openModal();
+});
     // also allow programmatic API via window.ModalControls
     window.ModalControls = window.ModalControls || {};
     window.ModalControls[id] = {

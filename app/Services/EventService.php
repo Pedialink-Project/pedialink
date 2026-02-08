@@ -10,12 +10,20 @@ use App\Rules\PhoneRule;
 use App\Rules\NameRule;
 use App\Rules\TextRule;
 use App\Rules\DateRule;
+use App\Services\NotificationService;
 use Library\Framework\Database\QueryBuilder;
 
 class EventService
 {
 
     use NameRule, PhoneRule, TextRule, DateRule, NumberRule;
+
+    private NotificationService $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = new NotificationService();
+    }
 
 
     private function applySearch(QueryBuilder $events, string $search)
@@ -33,7 +41,7 @@ class EventService
         $event = Events::query()->where('id', '=', $eventId)->first();
 
 
-        if (!empty($event->is_cancelled)) {
+        if ($event->is_cancelled) {
             return 'cancelled';
         }
 
@@ -60,7 +68,7 @@ class EventService
             $events = $this->applySearch($events, $search);
         }
 
-        
+
         $results = $events
             ->orderBy('id', 'ASC')
             ->paginate(8);
@@ -97,7 +105,7 @@ class EventService
         return [$resource, $links];
     }
 
-    public function getVisibleEvents(?string $search)
+    public function getVisibleEvents(?string $search = null)
     {
 
         $events = Events::query();
@@ -143,6 +151,33 @@ class EventService
         return $resource;
     }
 
+
+    public function getDashboardEvents(int $limit = 3)
+    {
+        $events = Events::query()
+            ->where('visible', '=', true)
+            ->orderBy('event_date', 'ASC')
+            ->limit($limit)
+            ->get();
+
+        $resource = [];
+
+        foreach ($events as $event) {
+            $resource[] = [
+                'id' => $event->id,
+                'title' => $event->title,
+                'event_date' => $event->event_date,
+                'start_time' => date('H:i', strtotime($event->start_time)),
+                'end_time' => date('H:i', strtotime($event->end_time)),
+                'event_status' => $this->getEventStatus($event->id),
+                'event_location' => $event->event_location,
+                'participants_count' => $event->participants_count,
+            ];
+        }
+
+        return $resource;
+    }
+
     public function getEventBookingStatus($eventId)
     {
         $eventRegistration = EventRegistrations::query()->where('event_id', '=', $eventId)->first();
@@ -151,43 +186,6 @@ class EventService
     }
 
 
-    private function validateEmail(string $email)
-    {
-        $error = null;
-        if (!Validator::validateFieldExistence($email)) {
-            $error = "Email field cannot be empty";
-            return $error;
-        }
-
-        if (!Validator::validateEmailFormat($email)) {
-            $error = "Email format is invalid";
-            return $error;
-        }
-
-        return $error;
-    }
-
-    public function validateEventBookingData($name, $email, $phone)
-    {
-        $errors = [];
-
-        $nameError = $this->validateName($name, "Participant Name");
-        if ($nameError) {
-            $errors['name'] = $nameError;
-        }
-
-        $emailError = $this->validateEmail($email);
-        if ($emailError) {
-            $errors['email'] = $emailError;
-        }
-
-        $phoneError = $this->validatePhone($phone);
-        if ($phoneError) {
-            $errors['phone'] = $phoneError;
-        }
-
-        return $errors;
-    }
 
     public function validateEventCancelData($reason)
     {
@@ -219,22 +217,57 @@ class EventService
         }
     }
 
-    public function bookEvent($eventId, $userId, $name, $email, $phone)
+    public function bookEvent($eventId, $userId)
     {
-        $eventRegistration = new EventRegistrations();
-        $eventRegistration->event_id = $eventId;
-        $eventRegistration->user_id = $userId;
-        $eventRegistration->name = $name;
-        $eventRegistration->email = $email;
-        $eventRegistration->phone = $phone;
-        $eventRegistration->booking_status = 'booked';
+        $event = Events::find($eventId);
 
-        $booked = $eventRegistration->save();
-
-        if ($booked) {
-            $this->addEventParticpantCount($eventId);
+        if (!$event) {
+            return  "Event not found";
         }
+
+        if ($event->is_cancelled) {
+            return "Event is cancelled";
+        }
+
+        if ($event->participants_count >= $event->max_count) {
+            return "Event is fully booked";
+        }
+
+        $status = $this->getEventStatus($eventId);
+        if ($status !== 'upcoming') {
+            return "Cannot book this event";
+        }
+
+        $alreadyBooked = EventRegistrations::query()
+            ->where('event_id', '=', $eventId)
+            ->where('user_id', '=', $userId)
+            ->where('booking_status', '=', 'booked')
+            ->first();
+
+        if ($alreadyBooked) {
+            return "You have already booked this event";
+        }
+
+        $registration = new EventRegistrations();
+        $registration->event_id = $eventId;
+        $registration->user_id = $userId;
+        $registration->booking_status = 'booked';
+        $registration->save();
+
+        $this->addEventParticpantCount($eventId);
+
+        $event = Events::find($eventId);
+        $adminId = $event->admin_id;
+
+        $this->notificationService->notify(
+            $adminId,
+            "New Event Booking",
+            "User P-00{$userId} has booked your event '{$event->title}'.",
+            "event",
+            $event->id
+        );
     }
+
 
     public function cancelEventBooking($eventId, $userId, $reason)
     {
@@ -253,8 +286,17 @@ class EventService
 
         if ($cancelled) {
             $this->reduceEventParticpantCount($eventId);
+            $event = Events::find($eventId);
+            $this->notificationService->notify(
+                $event->admin_id,
+                "Event Booking Cancelled",
+                "User P-00{$userId} has cancelled their booking for '{$event->title}'. Reason: {$reason}",
+                "event",
+                $event->id
+            );
         }
     }
+
 
 
     public function validateCreateEventData($title, $description, $eventDate, $eventStartTime, $eventEndTime, $eventLocation, $maxCount)
@@ -346,23 +388,14 @@ class EventService
     {
         $event = Events::find($eventId);
 
+
+
         if (!$event) {
             return "Event not found";
         }
 
-        $eventStart = new \DateTime(
-            $event->event_date . ' ' . $event->start_time
-        );
-
-        $now = new \DateTime();
-        $limit = (clone $now)->modify('+24 hours');
-
-        if ($eventStart <= $limit) {
-            return "Cannot delete an event within 24 hours of its start time";
-        }
-
-        if ($event->participants_count > 0) {
-            return "Cannot delete an event with registered participants";
+        if (!($event->is_cancelled)) {
+            return "Only cancelled events can be deleted";
         }
     }
 
@@ -401,6 +434,23 @@ class EventService
     {
 
         $event = Events::find($eventId);
+
+        if (!$event) {
+            $error = "Event not found";
+            return $error;
+        }
+
+        $eventStart = new \DateTime(
+            $event->event_date . ' ' . $event->start_time
+        );
+
+        $now   = new \DateTime();
+        $limit = (clone $now)->modify('+24 hours');
+
+        if ($eventStart <= $limit) {
+            $error = "Event details can only be edited more than 24 hours before the event starts";
+            return $error;
+        }
         $event->title = $title;
         $event->admin_id = auth()->user()->id;
         $event->event_date = $eventDate;
@@ -410,6 +460,26 @@ class EventService
         $event->max_count = $maxCount;
 
         $event->save();
+
+        $registrations = EventRegistrations::query()
+            ->where('event_id', '=', $eventId)
+            ->where('booking_status', '=', 'booked')
+            ->get();
+
+        if (!empty($registrations)) {
+
+            foreach ($registrations as $registration) {
+                $this->notificationService->notify(
+                    $registration->user_id,
+                    "Event Updated",
+                    "Details of the event '{$event->title}' have been updated. Please review the latest information.",
+                    "event",
+                    $eventId
+                );
+            }
+        }
+
+        return null;
     }
 
     public function editEventVisible($eventId)
@@ -426,6 +496,51 @@ class EventService
 
         $event->save();
     }
+
+    public function cancelEvent($eventId)
+    {
+        $event = Events::find($eventId);
+        if (!$event) {
+            return "Event not found";
+        }
+
+        if ($event->is_cancelled) {
+            return "Event is already cancelled";
+        }
+
+        $event->is_cancelled = true;
+        $event->visible = false;
+        $event->save();
+
+
+
+        $registrations = EventRegistrations::query()
+            ->where('event_id', '=', $eventId)
+            ->where('booking_status', '=', 'booked')
+            ->get();
+
+        if (!empty($registrations)) {
+
+            foreach ($registrations as $registration) {
+
+                $registration->booking_status = 'cancelled';
+                $registration->cancel_reason = 'Event cancelled by administrator';
+                $registration->cancelled_at = date('Y-m-d H:i:s');
+                $registration->save();
+
+                $this->notificationService->notify(
+                    $registration->user_id,
+                    "Event Cancelled",
+                    "The event '{$event->title}' has been cancelled. Reason: Event cancelled by administrator",
+                    "event",
+                    $eventId
+                );
+            }
+        }
+
+        return null;
+    }
+
 
     public function deleteEvent($eventId)
     {

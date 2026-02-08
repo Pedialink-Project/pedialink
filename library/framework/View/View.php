@@ -63,6 +63,12 @@ class View
      * @var int
      */
     private int $componentUid = 0;
+    /**
+     * Summary of shared data across views
+     * @var array
+     */
+    private array $shared = [];
+
 
 
     public function __construct(string $viewsPath, string $cachePath, string $extension)
@@ -70,7 +76,6 @@ class View
         $this->viewsPath = rtrim($viewsPath, '/');
         $this->cachePath = rtrim($cachePath, '/');
         $this->extension = rtrim($extension, '/');
-
     }
 
     /**
@@ -86,6 +91,7 @@ class View
         $compiled = $this->compileView($view);
 
         // Extract variables for use in the view
+        $data = array_merge($this->shared, $data);
         extract($data, EXTR_SKIP);
 
         // Include the compiled view
@@ -170,6 +176,18 @@ class View
         $this->sections[$this->currentSection] = ob_get_clean();
         $this->currentSection = '';
     }
+
+    /**
+     * Shares data across all views. This data will be
+     * available in all view files without explicitly
+     * passing them in the make() method.
+     */
+
+    public function share(string $key, $value): void
+    {
+        $this->shared[$key] = $value;
+    }
+
 
     /**
      * Places the section contents in the relavant @yield directive.
@@ -277,7 +295,7 @@ class View
 
                 foreach ($pairs as $p) {
                     $rawKey = $p['key'];
-                    $isBound = (substr($rawKey,0,1) === ':');
+                    $isBound = (substr($rawKey, 0, 1) === ':');
                     $key = $isBound ? addslashes(substr($rawKey, 1)) : addslashes($rawKey);
                     $v = $p['val'];
 
@@ -436,7 +454,7 @@ class View
                 $extractedSlots = []; // list of arrays ['name'=>..., 'content'=>..., 'full'=>...]
                 if (!empty($slotRanges)) {
                     // sort ranges by start ascending (should already be)
-                    usort($slotRanges, fn($a,$b) => $a['start'] <=> $b['start']);
+                    usort($slotRanges, fn($a, $b) => $a['start'] <=> $b['start']);
                     foreach ($slotRanges as $range) {
                         $full = $range['full'];
                         // parse this single slot fragment: capture attributes and inner HTML
@@ -479,7 +497,7 @@ class View
                 // Now parse and handle attributes (bound / compiled / literal) - same logic as before
                 foreach ($pairs as $p) {
                     $rawKey = $p['key'];
-                    $isBound = (substr($rawKey,0,1) === ':');
+                    $isBound = (substr($rawKey, 0, 1) === ':');
                     $key = $isBound ? addslashes(substr($rawKey, 1)) : addslashes($rawKey);
                     $v = $p['val'];
 
@@ -552,5 +570,4 @@ class View
 
         return $php;
     }
-    
 }
