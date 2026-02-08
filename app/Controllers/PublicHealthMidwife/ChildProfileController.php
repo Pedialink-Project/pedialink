@@ -21,10 +21,10 @@ class ChildProfileController
     {
         $search = $request->input("search");
         $filters = $request->input("filters");
-        $phmId= auth()->user()->id;
-        [$children,$links] = $this->childService->getChildrenByPhmId($phmId,$search,$filters);
+        $phmId = auth()->user()->id;
+        [$children, $links] = $this->childService->getChildrenByPhmId($phmId, $search, $filters);
         $areas = $this->getAllAreaDetails();
-        return view("phm/childprofiles", ['children' => $children, 'areas' => $areas,'links'=> $links]);
+        return view("phm/childprofiles", ['children' => $children, 'areas' => $areas, 'links' => $links]);
     }
 
     public function createChild(Request $request)
@@ -37,7 +37,7 @@ class ChildProfileController
         $bloodType = $request->input('blood_type');
         $parent_nic = $request->input('parent_nic');
 
-        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType,$parent_nic);
+        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType, $parent_nic);
 
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
@@ -62,7 +62,6 @@ class ChildProfileController
                 "Success",
                 "success",
             );
-
     }
 
     public function editChild(Request $request, int $id)
@@ -71,10 +70,10 @@ class ChildProfileController
         $areaId = $request->input('e_area');
         $dob = $request->input('e_date_of_birth');
         $gender = $request->input('e_gender');
-        $birthCertificate = $request->input('e_birth_certificate');
         $bloodType = $request->input('e_blood_type');
 
-        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate,$bloodType, true);
+        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, null, $bloodType, null, true);
+
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
                 ->withErrors($errors)
@@ -83,20 +82,19 @@ class ChildProfileController
                     "e_area" => $areaId,
                     "e_date_of_birth" => $dob,
                     "e_gender" => $gender,
-                    "e_birth_certificate" => $birthCertificate,
-                    "e_blood_type"=> $bloodType,
+                    "e_blood_type" => $bloodType,
                 ])
                 ->with("edit", $id);
         }
 
-        $this->childService->editChildProfile($id, $name, $areaId, $dob, $gender, $birthCertificate, $bloodType, );
+        $this->childService->editChildProfile($id, $name, $areaId, $dob, $gender, $bloodType);
 
         return redirect(route('phm.child.profiles'))
             ->withMessage(
                 "Changes successfully saved to the child profile",
                 "Success",
                 "success",
-            );   
+            );
     }
 
     // public function deleteChild(Request $request, int $id)
