@@ -19,8 +19,10 @@ class ChildProfileController
 
     public function index(Request $request)
     {
+        $search = $request->input("search");
+        $filters = $request->input("filters");
         $phmId= auth()->user()->id;
-        [$children,$links] = $this->childService->getChildrenByPhmId($phmId);
+        [$children,$links] = $this->childService->getChildrenByPhmId($phmId,$search,$filters);
         $areas = $this->getAllAreaDetails();
         return view("phm/childprofiles", ['children' => $children, 'areas' => $areas]);
     }
