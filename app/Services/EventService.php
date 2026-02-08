@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Events;
 use App\Models\EventRegistrations;
+use APP\Models\User;
 use App\Helpers\Validator;
 use App\Rules\NumberRule;
 use App\Rules\PhoneRule;
@@ -548,4 +549,33 @@ class EventService
         $event = Events::find($eventId);
         $event->delete();
     }
+
+    public function getParticipantsByEventId(int $eventId): array
+{
+    $registrations = EventRegistrations::query()
+        ->where('event_id', '=', $eventId)
+        ->orderBy('registration_date', 'DESC')
+        ->get();
+
+    $resource = [];
+
+    foreach ($registrations as $registration) {
+
+    $user = User::find($registration->user_id);
+
+        $resource[] = [
+            'id' => $registration->id,
+            'user_id' => $registration->user_id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'booking_status' => $registration->booking_status,
+            'cancel_reason' => $registration->cancel_reason,
+            'cancelled_at' => date('Y-m-d H:i', strtotime($registration->cancelled_at)),
+            'registration_date' => date('Y-m-d H:i', strtotime($registration->registration_date)),
+        ];
+    }
+
+    return $resource;
+}
+
 }
