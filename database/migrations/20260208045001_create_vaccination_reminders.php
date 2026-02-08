@@ -13,13 +13,14 @@ class Migration_20260208045001_create_vaccination_reminders implements \Library\
 {
     public function up(): void
     {
+        QueryBuilder::raw("CREATE TYPE vaccination_status AS ENUM('pending', 'complete', 'overdue');");
         QueryBuilder::raw(
             "CREATE TABLE IF NOT EXISTS vaccination_reminders (
                 id SERIAL PRIMARY KEY,
                 child_id INT REFERENCES children (id),
                 schedule_vaccine_id INT REFERENCES schedule_vaccines (id),
                 scheduled_date DATE NOT NULL,
-                status TEXT NOT NULL,
+                status vaccination_status NOT NULL,
                 CONSTRAINT ux_child_sv_date UNIQUE (child_id, schedule_vaccine_id, scheduled_date)
             );"
         );
@@ -30,5 +31,6 @@ class Migration_20260208045001_create_vaccination_reminders implements \Library\
         QueryBuilder::raw(
             "DROP TABLE IF EXISTS vaccination_reminders;"
         );
+        QueryBuilder::raw("DROP TYPE IF EXISTS vaccination_status;");
     }
 }
