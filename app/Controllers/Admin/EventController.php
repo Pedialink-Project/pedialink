@@ -21,6 +21,13 @@ class EventController
         return view('admin/events/event', ['events' => $events, 'links' => $links]);
     }
 
+    public function participantsDetails($request, $id)
+    {
+        $participants = $this->eventService->getParticipantsByEventId($id);
+
+        return view('admin/events/participants', ['participants' => $participants, 'id' => $id]);
+    }
+
     public function createEvent($request)
     {
         $title = $request->input('title');
