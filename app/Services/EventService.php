@@ -590,7 +590,7 @@ class EventService
          */
         $results = $query
             ->orderBy('registration_date', 'DESC')
-            ->paginate(10)
+            ->paginate(7)
             ->toArray();
 
         $resource = [];
