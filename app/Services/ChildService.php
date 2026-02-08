@@ -326,7 +326,7 @@ class ChildService
 
             $isPhmCreated = false;
 
-            if ($child->id == $phmId) {
+            if ($child->phm_id == $phmId) {
                 $isPhmCreated = true;
             }
 
@@ -342,16 +342,22 @@ class ChildService
                 'area' => $child->getArea()->code,
                 'access_status' => $accessStatus,
                 'linked_status' => $linkedStatus,
+                'is_created'=> $isPhmCreated,
 
 
             ];
 
             if ($isPhmCreated) {
-                $childMisc = ChildMisc::find($child->id);
+                $childMisc = ChildMisc::query()->where('children_id', '=', $child->id)->first();
                 $childData = array_merge($childData, [
                     'blood_type' => $child->blood_type,
                     'birth_certificate' => $child->birth_certificate,
                     'parent_nic' => $childMisc->parent_nic,
+                    'parent' => $parent ? [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ] : null,
                 ]);
             }
 
@@ -359,7 +365,6 @@ class ChildService
                 $childData = array_merge($childData, [
                     'blood_type' => $child->blood_type,
                     'birth_certificate' => $child->birth_certificate,
-
                     'phm' => $phm ? [
                         'id' => $phm->id,
                         'name' => User::find($phm->id)->name,
