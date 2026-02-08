@@ -177,31 +177,33 @@ foreach ($children as $child) {
         }
 
         // include if candidate in target month window
-        // if ($candidate >= $start && $candidate <= $end) {
-        //     // insert reminder (idempotent)
-        //     $params = [
-        //         ':child_id' => $childId,
-        //         ':sv_id' => $svId,
-        //         ':scheduled_date' => $candidate->format('Y-m-d'),
-        //     ];
-        //     try {
-        //         QueryBuilder::rawExec($insertSql, $params);
-        //         echo sprintf(
-        //             "[%s] Reminder queued: child=%d (%s) dose=%d scheduled=%s\n",
-        //             date('Y-m-d H:i:s'),
-        //             $childId,
-        //             $childName,
-        //             $doseNum,
-        //             $candidate->format('Y-m-d')
-        //         );
-        //     } catch (Throwable $e) {
-        //         // log and continue
-        //         echo "[" . 
-        //         date('Y-m-d H:i:s') . 
-        //         "] failed insert reminder for child {$childId} sv {$svId}: " .
-        //         $e->getMessage() . "\n";
-        //     }
-        // }
+        if ($candidate >= $start && $candidate <= $end) {
+            // insert reminder (idempotent)
+            $params = [
+                ':child_id' => $childId,
+                ':sv_id' => $svId,
+                ':scheduled_date' => $candidate->format('Y-m-d'),
+            ];
+            try {
+                $rowCount = QueryBuilder::rawExec($insertSql, $params);
+                if ($rowCount > 0) {
+                    echo sprintf(
+                        "[%s] Reminder queued: child=%d (%s) dose=%d scheduled=%s\n",
+                        date('Y-m-d H:i:s'),
+                        $childId,
+                        $childName,
+                        $doseNum,
+                        $candidate->format('Y-m-d')
+                    );
+                }
+            } catch (Throwable $e) {
+                // log and continue
+                echo "[" . 
+                date('Y-m-d H:i:s') . 
+                "] failed insert reminder for child {$childId} sv {$svId}: " .
+                $e->getMessage() . "\n";
+            }
+        }
     }
 }
 
