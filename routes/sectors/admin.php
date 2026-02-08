@@ -70,7 +70,10 @@ return [
     ['POST', '/admin/events-and-campaigns/{id}/edit', [EventController::class, 'editEvent'], 'admin.event.edit', ['admin', 'verified']],
     ['POST', '/admin/events-and-campaigns/{id}/delete', [EventController::class, 'deleteEvent'], 'admin.event.delete', ['admin', 'verified']],
     ['POST', '/admin/events-and-campaigns/{id}/edit-event-visible', [EventController::class, 'editEventVisible'], 'admin.event.edit.visible', ['admin', 'verified']],
+    ['GET', '/admin/events-and-campaigns/{id}/participants', [EventController::class, 'participantsDetails'], 'admin.event.participants', ['admin', 'verified']],
     ['POST', '/admin/events-and-campaigns/{id}/cancel', [EventController::class, 'cancelEvent'], 'admin.event.cancel', ['admin', 'verified']],
+
+
 
     // Admin settings
     ['GET', '/admin/settings', [SettingController::class, 'index'], 'admin.settings', ['admin']],
