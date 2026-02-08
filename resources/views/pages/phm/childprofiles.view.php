@@ -311,7 +311,7 @@ PHM Child Profiles
                                         <c-select label="Gender" name="e_gender"
                                             value="{{ flash('edit') === $child['id'] 
                                              ? (old('e_gender') ?? ($child['gender']==='m' ? 'Male' : 'Female'))
-                                             : ($child['gender']==='m' ? 'Male' : 'Female') }}"
+                                             : ($child['gender'])  }}"
                                             error="{{ errors('e_gender') ?? ''}}">
                                             <li class="select-item" data-value="m">Male</li>
                                             <li class="select-item" data-value="f">Female</li>
