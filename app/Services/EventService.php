@@ -550,32 +550,90 @@ class EventService
         $event->delete();
     }
 
-    public function getParticipantsByEventId(int $eventId): array
-{
-    $registrations = EventRegistrations::query()
-        ->where('event_id', '=', $eventId)
-        ->orderBy('registration_date', 'DESC')
-        ->get();
+    public function getParticipantsByEventId(
+        int $eventId,
+        ?string $search = null,
+        ?array $filters = null
+    ) {
 
-    $resource = [];
+        $query = EventRegistrations::query()
+            ->where('event_id', '=', $eventId);
 
-    foreach ($registrations as $registration) {
+      
+        if ($search) {
 
-    $user = User::find($registration->user_id);
+            $users = User::query()
+                ->where('name', 'ILIKE', "%{$search}%")
+                ->get();
 
-        $resource[] = [
-            'id' => $registration->id,
-            'user_id' => $registration->user_id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'booking_status' => $registration->booking_status,
-            'cancel_reason' => $registration->cancel_reason,
-            'cancelled_at' => date('Y-m-d H:i', strtotime($registration->cancelled_at)),
-            'registration_date' => date('Y-m-d H:i', strtotime($registration->registration_date)),
-        ];
+            $userIds = [];
+
+            foreach ($users as $user) {
+                $userIds[] = $user->id;
+            }
+
+            // Prevent empty WHERE IN ()
+            if (empty($userIds)) {
+                return [[], []];
+            }
+
+            $query->whereIn('user_id', $userIds);
+        }
+
+       
+        if (!empty($filters['booking_status'])) {
+            $query->whereIn('booking_status', $filters['booking_status']);
+        }
+
+        /**
+         * PAGINATION
+         */
+        $results = $query
+            ->orderBy('registration_date', 'DESC')
+            ->paginate(10)
+            ->toArray();
+
+        $resource = [];
+
+        $userIds = [];
+
+        foreach ($results['items'] as $registration) {
+            $userIds[] = $registration->user_id;
+        }
+        $users = User::query()
+            ->whereIn('id', $userIds)
+            ->get();
+
+        $userMap = [];
+
+        foreach ($users as $user) {
+            $userMap[$user->id] = $user;
+        }
+
+       
+        foreach ($results['items'] as $registration) {
+
+            $user = $userMap[$registration->user_id] ?? null;
+
+            $resource[] = [
+                'id' => $registration->id,
+                'user_id' => $registration->user_id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'booking_status' => $registration->booking_status,
+                'cancel_reason' => $registration->cancel_reason,
+                'cancelled_at' => $registration->cancelled_at
+                    ? date('Y-m-d H:i', strtotime($registration->cancelled_at))
+                    : null,
+                'registration_date' => date(
+                    'Y-m-d H:i',
+                    strtotime($registration->registration_date)
+                ),
+            ];
+        }
+
+        $links = array_diff_key($results, ['items' => true]);
+
+        return [$resource, $links];
     }
-
-    return $resource;
-}
-
 }
