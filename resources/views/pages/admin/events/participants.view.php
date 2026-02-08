@@ -28,7 +28,6 @@ Event Management → Participants · EV-000{{ $id }}
                 <c-table.tr>
                     <c-table.th>Name</c-table.th>
                     <c-table.th>Email</c-table.th>
-                    <c-table.th>Phone</c-table.th>
                     <c-table.th>Status</c-table.th>
                     <c-table.th>Registered At</c-table.th>
                     <c-table.th class="table-actions">Actions</c-table.th>
@@ -44,7 +43,6 @@ Event Management → Participants · EV-000{{ $id }}
 
                     <c-table.td>{{ $participant['name'] }}</c-table.td>
                     <c-table.td>{{ $participant['email'] }}</c-table.td>
-                    <c-table.td>{{ $participant['phone'] }}</c-table.td>
 
                     <c-table.td>
 
@@ -63,7 +61,7 @@ Event Management → Participants · EV-000{{ $id }}
                     </c-table.td>
 
                     <c-table.td>
-                        {{ date('Y-m-d H:i', strtotime($participant['registered_at'])) }}
+                        {{ ($participant['registration_date']) }}
                     </c-table.td>
 
 
@@ -96,7 +94,7 @@ Event Management → Participants · EV-000{{ $id }}
 
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Participant"
+                                            title="Participant Name"
                                             info="{{ $participant['name'] }}" />
 
                                         <c-modal.viewitem
