@@ -208,11 +208,11 @@ PHM Child Profiles
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Gender"
                                             info="{{$gender}} " />
                                         @if ($child['is_created'] )
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/health.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
                                             title="Blood Type" info="{{ $child['blood_type'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/document.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
                                             title="Birth Certificate No" info="{{ $child['birth_certificate'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/document.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
                                             title="Parent NIC" info="{{ $child['parent_nic'] }}" />
                                         @endif
 
