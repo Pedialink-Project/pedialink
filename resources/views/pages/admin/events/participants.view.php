@@ -17,7 +17,8 @@ Event Management → Participants · EV-000{{ $id }}
 
 @section('content')
 
-<c-table.controls :columns='["Name","Email","Phone","Status","Registered At"]' />
+<c-table.controls action="{{route('admin.event.participants',['id' => $id])}}" :filters="['booking_status' => ['booked', 'cancelled']]">
+</c-table.controls>
 
 <c-table.wrapper card="1">
     <div class="table-wrapper" data-responsive="true">
