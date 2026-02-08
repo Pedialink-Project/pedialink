@@ -23,7 +23,9 @@ class EventController
 
     public function participantsDetails($request, $id)
     {
-        [$participants, $links] = $this->eventService->getParticipantsByEventId($id);
+        $search = $request->input('search');
+        $filters = $request->input('filters');
+        [$participants, $links] = $this->eventService->getParticipantsByEventId($id, $search, $filters);
 
         return view('admin/events/participants', ['participants' => $participants, 'id' => $id]);
     }
