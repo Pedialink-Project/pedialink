@@ -193,6 +193,9 @@ Events & Campaigns
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                 <c-dropdown.item href="{{ route('admin.event.participants', ['id' => $event['id']]) }}">
+                                        View Participants
+                                    </c-dropdown.item>
                                 <c-modal id="edit-event-modal-{{$key}}" size="sm"
                                     :initOpen="flash('edit') == $event['id'] ? true : false">
                                     <c-slot name="trigger">
