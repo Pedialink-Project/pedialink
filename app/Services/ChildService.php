@@ -307,15 +307,30 @@ class ChildService
                 }
             }
 
-            $isPhmCreated = false;
-
-            if($child->id == $phmId) {
-                $isPhmCreated = true;
-            }
-
+            $linkedStatus = 'unlinked';
             //For now only one parent details get but it modifeid to get both parent deatils and return that
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
             $parent = $parentChild ? $parentChild->getParent() : null;
+
+            if ($parent) {
+                $linkedStatus = 'linked';
+            } else {
+                $linkedStatus = 'unlinked';
+            }
+
+            if (!empty($filters['linked_status'])) {
+                if (!in_array($linkedStatus, $filters['linked_status'])) {
+                    continue;
+                }
+            }
+
+            $isPhmCreated = false;
+
+            if ($child->phm_id == $phmId) {
+                $isPhmCreated = true;
+            }
+
+
             $latestRecord = ChildRecord::query()->where('child_id', '=', $child->id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
             $phm    = PublicHealthMidwife::find($child->phm_id);
 
@@ -326,17 +341,24 @@ class ChildService
                 'gender' => $child->gender,
                 'area' => $child->getArea()->code,
                 'access_status' => $accessStatus,
-                'linked_status' => $parentChild !== NULL ? 'linked' : 'unlinked',
+                'linked_status' => $linkedStatus,
+                'is_created'=> $isPhmCreated,
 
 
             ];
 
-            if($isPhmCreated){
-                $childMisc = ChildMisc::find($child->id);
+            if ($isPhmCreated) {
+                $childMisc = ChildMisc::query()->where('children_id', '=', $child->id)->first();
                 $childData = array_merge($childData, [
-                    'blood_type' =>$child->blood_type,
+                    'blood_type' => $child->blood_type,
                     'birth_certificate' => $child->birth_certificate,
+                    'date_of_birth' => $child->date_of_birth,
                     'parent_nic' => $childMisc->parent_nic,
+                    'parent' => $parent ? [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ] : null,
                 ]);
             }
 
@@ -344,7 +366,6 @@ class ChildService
                 $childData = array_merge($childData, [
                     'blood_type' => $child->blood_type,
                     'birth_certificate' => $child->birth_certificate,
-
                     'phm' => $phm ? [
                         'id' => $phm->id,
                         'name' => User::find($phm->id)->name,
@@ -471,7 +492,7 @@ class ChildService
         return $error;
     }
 
-    public function validateChildProfile(string $name, mixed $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, string $parent_nic, bool $edit = false)
+    public function validateChildProfile(string $name, mixed $areaId, string $dob, string $gender, ?string $birthCertificate, string $bloodType, ?string $parent_nic, bool $edit = false)
     {
         $errors = [];
         $suffix = $edit ? 'e_' : '';
@@ -491,7 +512,10 @@ class ChildService
             $errors["{$suffix}date_of_birth"] = $dobError;
         }
 
-        $birthCertificateError = $this->validateBirthCertificate($birthCertificate);
+       
+        if (!$edit){
+
+          $birthCertificateError = $this->validateBirthCertificate($birthCertificate);
         if ($birthCertificateError) {
             $errors["{$suffix}birth_certificate"] = $birthCertificateError;
         }
@@ -499,6 +523,7 @@ class ChildService
         $parentNicError = $this->validateNIC($parent_nic);
         if ($parentNicError) {
             $errors["{$suffix}parent_nic"] = $parentNicError;
+        }
         }
 
         $bloodTypeError = $this->validateBloodType($bloodType);
@@ -551,18 +576,22 @@ class ChildService
         $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
     }
 
-    public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType)
+    public function editChildProfile(int $childId, string $name, int $areaId, string $dob, string $gender, string $bloodType)
     {
         $child = Child::find($childId);
+
+        if($child->phm_id != auth()->user()->id){
+            return "Unauthorized";
+        }
         if ($child) {
             $child->name = $name;
             $child->date_of_birth = $dob;
             $child->gender = $gender;
             $child->area_id = $areaId;
-            $child->birth_certificate = $birthCertificate;
             $child->blood_type = $bloodType;
             $child->save();
         }
+        return null;
     }
 
     public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)

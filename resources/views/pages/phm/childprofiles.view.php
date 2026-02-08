@@ -39,7 +39,7 @@ PHM Child Profiles
 
 @section('content')
 
-<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'linked_status' => ['linked', 'not_linked']]" >
+<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'linked_status' => ['linked', 'not_linked']]">
 
     <c-slot name="filter">
         <c-button variant="outline">
@@ -78,9 +78,9 @@ PHM Child Profiles
                 <c-input type="date" label="Date of Birth:" name="date_of_birth" value="{{ old('date_of_birth') ?? '' }}"
                     error="{{ errors('date_of_birth') ?? ''}}" required />
                 <c-input type="text" label="Birth Certificate No:" name="birth_certificate" value="{{ old('birth_certificate') ?? '' }}"
-                    error="{{ errors('birth_certificate') ?? ''}}" required />
-                     <c-input type="text" label="Parent NIC:" name="parent_nic" value="{{ old('parent_nic') ?? '' }}"
-                    error="{{ errors('parent_nic') ?? ''}}"  />
+                    error="{{ errors('birth_certificate') ?? ''}}" placeholder="Enter Birth Certificate No" />
+                <c-input type="text" label="Parent NIC:" name="parent_nic" value="{{ old('parent_nic') ?? '' }}"
+                    error="{{ errors('parent_nic') ?? ''}}" placeholder="Enter Parent NIC" />
                 <c-select label="Gender" name="gender" value="{{ old('gender') ?? '' }}"
                     error="{{ errors('gender') ?? ''}}" placeholder="Select Gender">
                     <li class="select-item" data-value="m">Male</li>
@@ -108,11 +108,13 @@ PHM Child Profiles
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">ID</c-table.th>
-                    <c-table.th sortable="1">Name</c-table.th>
-                    <c-table.th sortable="1">Age</c-table.th>
+                    <c-table.th>ID</c-table.th>
+                    <c-table.th>Name</c-table.th>
+                    <c-table.th>Age</c-table.th>
                     <c-table.th>Gender</c-table.th>
                     <c-table.th>Area</c-table.th>
+                    <c-table.th>Parent Link Status</c-table.th>
+                    <c-table.th>Access</c-table.th>
                     <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -125,9 +127,21 @@ PHM Child Profiles
                     $gender = "Male";
                 elseif (strtolower($child['gender']) === "f")
                     $gender = "Female";
+               
+
+               
+                $selectedAreaId = null;
+
+                foreach ($areas as $area) {
+                if ($area['name'] === $child['area']) {
+                $selectedAreaId = $area['id'];
+                break;
+                }
+                }
                 ?>
+
                 <c-table.tr>
-                    <c-table.td col="id">{{ 'C-000' . $child['id'] }}</c-table.td>
+                    <c-table.td col="id">{{ 'C-00' . $child['id'] }}</c-table.td>
                     <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
                     <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
                     <c-table.td col="Gender">
@@ -142,6 +156,23 @@ PHM Child Profiles
                         @endif
                     </c-table.td>
                     <c-table.td col="area">{{ ucfirst($child['area']) }}</c-table.td>
+                    <c-table.td col="linked_status"> @if (strtolower($child['linked_status']) === "linked")
+                        <c-badge class="status-event" type="green">{{ ucfirst($child['linked_status']) }}</c-badge>
+                        @elseif (strtolower($child['linked_status']) === "unlinked")
+                        <c-badge class="status-event" type="red">{{ ucfirst($child['linked_status']) }}</c-badge>
+                        @endif
+                    </c-table.td>
+                    <c-table.td col="access_status"> @if (strtolower($child['access_status']) === "accepted")
+                        <c-badge class="status-event" type="green">{{ ucfirst($child['access_status']) }}</c-badge>
+                        @elseif (strtolower($child['access_status']) === "pending")
+                        <c-badge class="status-event" type="yellow">{{ ucfirst($child['access_status']) }}</c-badge>
+                        @elseif (strtolower($child['access_status']) === "not_requested")
+                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
+                        @elseif (strtolower($child['access_status']) === "rejected")
+                        <c-badge class="status-event" type="red">{{ ucfirst($child['access_status'])}}
+                            @endif
+                    </c-table.td>
+
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
                             <c-slot name="trigger">
@@ -159,9 +190,7 @@ PHM Child Profiles
                                         <c-dropdown.item>View Child Profile</c-dropdown.item>
                                     </c-slot>
 
-                                    <c-slot name="headerSuffix">
-                                        <c-badge type="green">Good</c-badge>
-                                    </c-slot>
+
 
                                     <c-slot name="header">
                                         <div>Child Profile Details</div>
@@ -172,17 +201,24 @@ PHM Child Profiles
                                             title="Child ID" info="C-000{{ $child['id'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Name"
                                             info="{{ $child['name'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Total Vaccinations" info="2" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
                                             title="Age" info="{{ $child['age'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
                                             title="Area" info="{{ ucfirst($child['area']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Gender"
                                             info="{{$gender}} " />
+                                        @if ($child['is_created'] )
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                            title="Blood Type" info="{{ $child['blood_type'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
+                                            title="Birth Certificate No" info="{{ $child['birth_certificate'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
+                                            title="Parent NIC" info="{{ $child['parent_nic'] }}" />
+                                        @endif
+
                                     </c-modal.viewcard>
 
-                                    @if ($child['parent'])
+                                    @if ($child['linked_status'] === "linked")
                                     <div class=" parent-link-group">
                                         <div class="parent-link-card">
                                             <div class="name-group">
@@ -198,8 +234,7 @@ PHM Child Profiles
                                     <div class="parent-link-group">
                                         <div class="parent-link-card">
                                             <div class="name-group">
-                                                <span class="parent-title">None</span>
-                                                <span class="parent-type">None</span>
+                                                <span class="parent-title">No Parent Linked</span>
                                             </div>
                                             <c-badge type="red">
                                                 Not Linked
@@ -208,12 +243,22 @@ PHM Child Profiles
                                     </div>
                                     @endif
 
-                                    <c-modal.viewlist title="Medical Records">
+                                    @if ($child['access_status'] === "accepted")
+
+
+                                    <c-modal.viewlist title="Latest Medical Records">
+                                        @if($child['record'])
                                         <c-slot name="list">
-                                            <li>Height: 49.5 cm</li>
-                                            <li>Weight: 3.4 kg</li>
-                                            <li>BMI Value: 3.5</li>
+                                            <li>Height:{{ $child['record']['height'] }}cm</li>
+                                            <li>Weight: {{ $child['record']['weight'] }}kg</li>
+                                            <li>BMI Value: {{ $child['record']['bmi'] }}</li>
+                                            <li>Head circumference: {{ $child['record']['head_circumference'] }}cm</li>
                                         </c-slot>
+                                        @else
+                                        <c-slot name="list">
+                                            <li>No medical records found.</li>
+                                        </c-slot>
+                                        @endif
                                     </c-modal.viewlist>
 
                                     <c-modal.viewlist title="Recent Vaccinations">
@@ -223,17 +268,14 @@ PHM Child Profiles
                                         </c-slot>
                                     </c-modal.viewlist>
 
-                                    <c-modal.viewlist title="Other Information">
-                                        <c-slot name="list">
-                                            <li>Nutrition facts: Lorem Ipsum</li>
-                                            <li>Lorem Ipsum</li>
-                                        </c-slot>
-                                    </c-modal.viewlist>
+
+                                    @endif
 
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                @if ($child['is_created'])
                                 <c-modal id="edit-child-profile-{{ $key }}" size="md"
                                     :initOpen="flash('edit') === $child['id'] ? true : false">
                                     <c-slot name="trigger">
@@ -253,33 +295,34 @@ PHM Child Profiles
                                             error="{{ flash('edit') === $child['id'] ? (errors('e_name') ?? '') : '' }}"
                                             placeholder="Enter Full Name" required />
                                         <c-select label="Area" name="e_area" searchable="1"
-                                            value="{{ flash('edit') === $child['id'] ? (old('e_area') ?? '') : $child['area'] }}"
+                                            value="{{ flash('edit') === $child['id'] ? (old('e_area') ?? '') : $selectedAreaId }}"
                                             error="{{ flash('edit') === $child['id'] ? (errors('e_area') ?? '') : '' }}"
                                             required>
                                             @foreach ($areas as $area)
                                             <li class="select-item" data-value="{{ $area['id'] }}">{{ $area['name'] }}</li>
                                             @endforeach
-                                            <c-input type="date" label="Date of Birth:" name="e_date_of_birth"
-                                                value="{{ flash('edit') === $child['id'] ? (old('e_date_of_birth') ?? '') : $child['date_of_birth'] }}"
-                                                error="{{ flash('edit') === $child['id'] ? (errors('e_date_of_birth') ?? '') : ''}}"
-                                                required />
-                                            <c-input type="text" label="Birth Certificate No:" name="e_birth_certificate"
-                                                value="{{ flash('edit') === $child['id'] ? (old('e_birth_certificate') ?? '') : $child['birth_certificate'] }}"
-                                                error="{{ flash('edit') === $child['id'] ? (errors('e_birth_certificate') ?? '') : ''}}"
-                                                required />
-                                            <c-select label="Gender" name="e_gender"
-                                                value="{{ flash('edit') === $child['id'] ? (old('e_gender') ?? '') : $child['gender'] }}"
-                                                error="{{ errors('e_gender') ?? ''}}">
-                                                <li class="select-item" data-value="male">Male</li>
-                                                <li class="select-item" data-value="female">Female</li>
-                                            </c-select>
-                                            <c-select label="Blood Type" name="e_blood_type"
-                                                value="{{ flash('edit') === $child['id'] ? (old('e_blood_type') ?? '') : $child['e_blood_type'] }}"
-                                                error="{{ errors('e_blood_type') ?? ''}}">
-                                                @foreach(config('data.bloodTypes') as $bloodType)
-                                                <li class="select-item" data-value="{{ $bloodType }}">{{ $bloodType }}</li>
-                                                @endforeach
-                                            </c-select>
+
+                                        </c-select>
+                                        <c-input type="date" label="Date of Birth:" name="e_date_of_birth"
+                                            value="{{ flash('edit') === $child['id'] ? (old('e_date_of_birth') ?? '') : $child['date_of_birth'] }}"
+                                            error="{{ flash('edit') === $child['id'] ? (errors('e_date_of_birth') ?? '') : ''}}"
+                                            required />
+
+                                        <c-select label="Gender" name="e_gender"
+                                            value="{{ flash('edit') === $child['id'] 
+                                             ? (old('e_gender') ?? ($child['gender']==='m' ? 'Male' : 'Female'))
+                                             : ($child['gender'])  }}"
+                                            error="{{ errors('e_gender') ?? ''}}">
+                                            <li class="select-item" data-value="m">Male</li>
+                                            <li class="select-item" data-value="f">Female</li>
+                                        </c-select>
+                                        <c-select label="Blood Type" name="e_blood_type"
+                                            value="{{ flash('edit') === $child['id'] ? (old('e_blood_type') ?? '') : $child['blood_type'] }}"
+                                            error="{{ errors('e_blood_type') ?? ''}}">
+                                            @foreach(config('data.bloodTypes') as $bloodType)
+                                            <li class="select-item" data-value="{{ $bloodType }}">{{ $bloodType }}</li>
+                                            @endforeach
+                                        </c-select>
                                     </form>
                                     <c-slot name="close">
                                         Close
@@ -291,7 +334,9 @@ PHM Child Profiles
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
+                                @endif
                                 <c-dropdown.sep />
+                                @if ($child['access_status'] === "accepted")
                                 <c-dropdown.item href="{{ route('phm.growth.monitoring.child',['id'=>$key,])}}">
                                     View Growth Records
                                 </c-dropdown.item>
@@ -301,7 +346,9 @@ PHM Child Profiles
                                 <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$key,])}}">
                                     View Vaccination Records
                                 </c-dropdown.item>
+                                @endif
                                 <c-dropdown-sep />
+                                @if ($child['is_created'])
                                 <c-modal>
                                     <c-slot name="trigger">
                                         @if ($child['parent'])
@@ -329,6 +376,7 @@ PHM Child Profiles
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
+                                @endif
                             </c-slot>
                         </c-dropdown.main>
                     </c-table.td>
@@ -336,8 +384,11 @@ PHM Child Profiles
                 @endforeach
                 @if(count($children) === 0)
                 <tr>
-                    <td colspan="6">
-                        <div class="table-empty">No childs found</div>
+                    <td colspan="8">
+                        <c-emptytable
+                            alt="No children found"
+                            title="No Child Profiles Available"
+                            description="No child profiles match your current search or filters. Try adjusting them to see more results." />
                     </td>
                 </tr>
                 @endif
@@ -346,5 +397,5 @@ PHM Child Profiles
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection
