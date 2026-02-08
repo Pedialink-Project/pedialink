@@ -16,7 +16,16 @@ services:
     dns:
       - 8.8.8.8
       - 8.8.4.4 
-
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker/Dockerfile
+    volumes:
+      - ./:/var/www/html:cached
+    depends_on:
+      - db
+    restart: unless-stopped
+    
   db:
     image: postgres:15
     volumes:
