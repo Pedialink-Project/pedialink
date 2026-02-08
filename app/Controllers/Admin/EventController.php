@@ -23,7 +23,7 @@ class EventController
 
     public function participantsDetails($request, $id)
     {
-        $participants = $this->eventService->getParticipantsByEventId($id);
+        [$participants, $links] = $this->eventService->getParticipantsByEventId($id);
 
         return view('admin/events/participants', ['participants' => $participants, 'id' => $id]);
     }
