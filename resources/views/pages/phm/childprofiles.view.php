@@ -39,7 +39,7 @@ PHM Child Profiles
 
 @section('content')
 
-<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'linked_status' => ['linked', 'not_linked']]" >
+<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'linked_status' => ['linked', 'not_linked']]">
 
     <c-slot name="filter">
         <c-button variant="outline">
@@ -78,9 +78,9 @@ PHM Child Profiles
                 <c-input type="date" label="Date of Birth:" name="date_of_birth" value="{{ old('date_of_birth') ?? '' }}"
                     error="{{ errors('date_of_birth') ?? ''}}" required />
                 <c-input type="text" label="Birth Certificate No:" name="birth_certificate" value="{{ old('birth_certificate') ?? '' }}"
-                    error="{{ errors('birth_certificate') ?? ''}}" required />
-                     <c-input type="text" label="Parent NIC:" name="parent_nic" value="{{ old('parent_nic') ?? '' }}"
-                    error="{{ errors('parent_nic') ?? ''}}"  />
+                    error="{{ errors('birth_certificate') ?? ''}}" placeholder="Enter Birth Certificate No" />
+                <c-input type="text" label="Parent NIC:" name="parent_nic" value="{{ old('parent_nic') ?? '' }}"
+                    error="{{ errors('parent_nic') ?? ''}}" placeholder="Enter Parent NIC" />
                 <c-select label="Gender" name="gender" value="{{ old('gender') ?? '' }}"
                     error="{{ errors('gender') ?? ''}}" placeholder="Select Gender">
                     <li class="select-item" data-value="m">Male</li>
@@ -108,11 +108,13 @@ PHM Child Profiles
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">ID</c-table.th>
-                    <c-table.th sortable="1">Name</c-table.th>
-                    <c-table.th sortable="1">Age</c-table.th>
+                    <c-table.th>ID</c-table.th>
+                    <c-table.th>Name</c-table.th>
+                    <c-table.th>Age</c-table.th>
                     <c-table.th>Gender</c-table.th>
                     <c-table.th>Area</c-table.th>
+                    <c-table.th>Parent Link Status</c-table.th>
+                    <c-table.th>Access</c-table.th>
                     <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -142,6 +144,22 @@ PHM Child Profiles
                         @endif
                     </c-table.td>
                     <c-table.td col="area">{{ ucfirst($child['area']) }}</c-table.td>
+                    <c-table.td col="access_status"> @if (strtolower($child['access_status']) === "accepted")
+                        <c-badge class="status-event" type="green">{{ ucfirst($child['access_status']) }}</c-badge>
+                        @elseif (strtolower($child['access_status']) === "pending")
+                        <c-badge class="status-event" type="yellow">{{ ucfirst($child['access_status']) }}</c-badge>
+                        @elseif (strtolower($child['access_status']) === "not_requested")
+                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
+                        @elseif (strtolower($child['access_status']) === "rejected")
+                        <c-badge class="status-event" type="red">{{ ucfirst($child['access_status'])}}
+                            @endif
+                    </c-table.td>
+                    <c-table.td col="linked_status"> @if (strtolower($child['linked_status']) === "linked")
+                        <c-badge class="status-event" type="green">{{ ucfirst($child['linked_status']) }}</c-badge>
+                        @elseif (strtolower($child['linked_status']) === "unlinked")
+                        <c-badge class="status-event" type="red">{{ ucfirst($child['linked_status']) }}</c-badge>
+                        @endif
+                    </c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
                             <c-slot name="trigger">
