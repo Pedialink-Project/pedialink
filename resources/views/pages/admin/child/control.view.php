@@ -13,11 +13,11 @@
 @endsection
 
 @section('content')
-     @if (count($primaryAccess) <= 0 && count($secondaryAccess) <= 0)
+     @if (count($primaryAccess) <= 0 && count($secondaryAccess) <= 0 && count($staffAccess) <= 0)
         <c-emptytable
             alt="No access requests"
-            title="No control actions requests"
-            description="No entries for control actions requests found"
+            title="No access control entries found"
+            description="No entries for access control found"
         />
         
     @endif
@@ -262,4 +262,6 @@
             </c-card>
         @endforeach
     </div>
+
+    <c-table.pagination :links="$links" />
 @endsection
