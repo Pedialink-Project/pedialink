@@ -28,8 +28,8 @@ return [
     // Child Health Record Routes
     ['GET', '/phm/child-profiles/{id}/health-records', [ChildHealthController::class, 'index'], 'phm.child.health', ['phm','verified']],
     ['POST', '/phm/child-profiles/{id}/health-records/add', [ChildHealthController::class, 'addHealthRecord'], 'phm.child.health.add', ['phm','verified']],
-
-
+    ['POST', '/phm/child-profiles/{id}/health-records/{recordId}/edit', [ChildHealthController::class, 'editHealthRecord'], 'phm.child.health.edit', ['phm','verified']],
+    ['POST','/phm/child-profiles/{id}/health-records/{recordId}/mark-as-invalid', [ChildHealthController::class,'markAsInvalid'], 'phm.child.health.markinvalid', ['phm','verified']],
 
     // Maternal Profile Routes
     ['GET', '/phm/maternal-profiles', [MaternalProfileController::class, 'index'], 'phm.maternal.profiles', ['phm','verified']],
