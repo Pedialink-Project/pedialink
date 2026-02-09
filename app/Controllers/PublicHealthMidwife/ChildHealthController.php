@@ -21,8 +21,6 @@ class ChildHealthController
         $filters = $request->input("filters");
         [$records, $links] = $this->childRecordService->getChildRecordsByChildId($id, $search, $filters);
         $name = $this->childRecordService->getChildNameById($id);
-        var_dump($id);
-
 
         return view("phm/childhealth", [
             "id" => $id,
