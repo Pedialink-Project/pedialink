@@ -13,28 +13,22 @@
 @endsection
 
 @section('content')
-    <?php
-
-    $linkRequests = [
-        ["parent_id" => 1234, "role" => "parent", "type" => "father", "parent_name" => "Peter Johns", "child_id" => 1234, "child_name" => "Nancy Jekkins"],
-        ["parent_id" => 1234, "role" => "parent", "type" => "mother", "parent_name" => "Nethmi Johns", "child_id" => 1234, "child_name" => "Nancy Jekkins"],
-        ["parent_id" => 1234, "role" => "parent", "type" => "father", "parent_name" => "Peter Johns", "child_id" => 1234, "child_name" => "Nancy Jekkins"],
-        ["parent_id" => 1234, "role" => "parent", "type" => "father", "parent_name" => "Peter Johns", "child_id" => 1234, "child_name" => "Nancy Jekkins"],
-        ["parent_id" => 1234, "role" => "parent", "type" => "mother", "parent_name" => "Sarah Johns", "child_id" => 1234, "child_name" => "Nancy Jekkins"],
-        ["parent_id" => 1234, "role" => "parent", "type" => "mother", "parent_name" => "Alisa Johns", "child_id" => 1234, "child_name" => "Nancy Jekkins"],
-        
-
-    ];
-    ?>
+    @if (count($linkRequests) <= 0)
+        <c-emptytable
+            alt="No data"
+            title="No Linkage Requests"
+            description="There are currently no pending linkage requests from parent accounts"
+        />
+    @endif
     <div class="linkage-content">
 
         @foreach ($linkRequests as $key => $request)
             <c-card class="linkage-card">
                 <c-slot name="header">
-                    <h3>{{ $request["parent_name"] }} &#8594; Child &middot; C-{{ $request["child_id"] }}</h3>
+                    <h3>{{ $request["parent"]["name"] }} &#8594; Child &middot; C-{{ $request["child"]["id"] }}</h3>
                 </c-slot>
                 <c-slot name="headerSuffix">
-                    <span class="linkage-time">30 minutes ago</span>
+                    <span class="linkage-time">{{ time_ago($request["parent"]["created_at"]) }}</span>
                     <c-dropdown.main class="view-linkage-sm-btn">
                         <c-slot name="trigger">
                             <c-button variant="ghost" class="dropdown-trigger">
@@ -64,47 +58,47 @@
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                         title="Parent ID"
-                                        info="P-{{ $request['parent_id'] }}"
+                                        info="P-{{ $request['parent']['id'] }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/user.svg') }}"
                                         title="Parent Full Name"
-                                        info="{{ $request['parent_name'] }}"
+                                        info="{{ $request['parent']['name'] }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                         title="Child ID"
-                                        info="C-{{ $request['child_id'] }}"
+                                        info="C-{{ $request['child']['id'] }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/user.svg') }}"
                                         title="Child Full Name"
-                                        info="{{ $request['child_name'] }}"
+                                        info="{{ $request['child']['name'] }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                         title="Created On"
-                                        info="Monday, January 15, 2023"
+                                        info="{{ $request['parent']['created_at'] }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/location-05.svg') }}"
                                         title="GS Division"
-                                        info="Borella"
+                                        info="{{ $request['parent']['division'] }}"
                                     />
                                 </c-modal.viewcard>
 
                                 <c-modal.viewlist title="Parent Details">
                                     <c-slot name="list">
-                                        <li>NIC: 230001045</li>
-                                        <li>Type: {{ ucfirst($request["type"] ) }}</li>
-                                        <li>Address: 124/23, St Peters Lane, Colombo</li>
+                                        <li>NIC: {{ $request['parent']['nic'] }}</li>
+                                        <li>Type: {{ ucfirst($request["parent"]["type"] ) }}</li>
+                                        <li>Address: {{ $request["parent"]["address"] }}</li>
                                     </c-slot>
                                 </c-modal.viewlist>
 
                                 <c-modal.viewlist title="Child Details">
                                     <c-slot name="list">
-                                        <li>Link Status: 1 account linked</li>
-                                        <li>Registered GS Division: Borella</li>
+                                        <li>Link Status: {{ $request["child"]["parent_count"] }} account linked</li>
+                                        <li>Registered GS Division: {{ $request["child"]["division"] }}</li>
                                     </c-slot>
                                 </c-modal.viewlist>
 
@@ -135,9 +129,9 @@
                             </c-slot>
 
                             <p>
-                                Approve request of <span class="approve-text">"{{ $request["parent_name"] }}"</span> with 
-                                id <span class="approve-text">P-{{ $request["parent_id"] }}</span> to link with child account
-                                <span class="approve-text">"{{ $request["child_name"] }}"</span> of id <span class="approve-text">C-{{ $request["child_id"] }}</span>?
+                                Approve request of <span class="approve-text">"{{ $request["parent"]["name"] }}"</span> with 
+                                id <span class="approve-text">P-{{ $request["parent"]["id"] }}</span> to link with child account
+                                <span class="approve-text">"{{ $request["child"]["name"] }}"</span> of id <span class="approve-text">C-{{ $request["child"]["id"] }}</span>?
                             </p>
 
                             <form id="approve-account-{{ $key }}" action="" class="hidden"></form>
@@ -169,9 +163,9 @@
                             </c-slot>
 
                             <p>
-                                Deny request of <span class="deny-text">"{{ $request["parent_name"] }}"</span> with 
-                                id <span class="deny-text">P-{{ $request["parent_id"] }}</span> to link with child account
-                                <span class="deny-text">"{{ $request["child_name"] }}"</span> of id <span class="deny-text">C-{{ $request["child_id"] }}</span>?
+                                Deny request of <span class="deny-text">"{{ $request["parent"]["name"] }}"</span> with 
+                                id <span class="deny-text">P-{{ $request["parent"]["id"] }}</span> to link with child account
+                                <span class="deny-text">"{{ $request["child"]["name"] }}"</span> of id <span class="deny-text">C-{{ $request["child"]["id"] }}</span>?
                             </p>
                             
                             <form id="deny-account-{{ $key }}" action="" class="hidden"></form>
@@ -206,47 +200,47 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Parent ID"
-                                    info="P-{{ $request['parent_id'] }}"
+                                    info="P-{{ $request['parent']['id'] }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"
                                     title="Parent Full Name"
-                                    info="{{ $request['parent_name'] }}"
+                                    info="{{ $request['parent']['name'] }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Child ID"
-                                    info="C-{{ $request['child_id'] }}"
+                                    info="C-{{ $request['child']['id'] }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"
                                     title="Child Full Name"
-                                    info="{{ $request['child_name'] }}"
+                                    info="{{ $request['child']['name'] }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                     title="Created On"
-                                    info="Monday, January 15, 2023"
+                                    info="{{ $request['parent']['created_at'] }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/location-05.svg') }}"
                                     title="GS Division"
-                                    info="Borella"
+                                    info="{{ $request['parent']['division'] }}"
                                 />
                             </c-modal.viewcard>
 
                             <c-modal.viewlist title="Parent Details">
                                 <c-slot name="list">
-                                    <li>NIC: 230001045</li>
-                                    <li>Type: {{ ucfirst($request["type"] ) }}</li>
-                                    <li>Address: 124/23, St Peters Lane, Colombo</li>
+                                    <li>NIC: {{ $request['parent']['nic'] }}</li>
+                                    <li>Type: {{ ucfirst($request['parent']['type'] ) }}</li>
+                                    <li>Address: {{ $request['parent']['address'] }}</li>
                                 </c-slot>
                             </c-modal.viewlist>
 
                             <c-modal.viewlist title="Child Details">
                                 <c-slot name="list">
-                                    <li>Link Status: 1 account linked</li>
-                                    <li>Registered GS Division: Borella</li>
+                                    <li>Link Status: {{ $request['child']['parent_count'] }} account linked</li>
+                                    <li>Registered GS Division: {{ $request['child']['division'] }}</li>
                                 </c-slot>
                             </c-modal.viewlist>
 
@@ -260,5 +254,5 @@
         @endforeach
     </div>
 
-    <c-table.pagination />
+    <c-table.pagination :links="$links" />
 @endsection
