@@ -35,9 +35,10 @@ class ChildProfileController
         $birthCertificate = $request->input('birth_certificate');
         $gender = $request->input('gender');
         $bloodType = $request->input('blood_type');
-        $parent_nic = $request->input('parent_nic');
+        $mother_nic = $request->input('mother_nic');
+        $father_nic = $request->input('father_nic');
 
-        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType, $parent_nic);
+        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType, $mother_nic, $father_nic);
 
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
@@ -49,12 +50,13 @@ class ChildProfileController
                     "gender" => $gender,
                     "birth_certificate" => $birthCertificate,
                     "blood_type" => $bloodType,
-                    "parent_nic" => $parent_nic
+                    "mother_nic" => $mother_nic,
+                    "father_nic" => $father_nic,
                 ])
                 ->with("create", true);
         }
 
-        $this->childService->createChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType, $parent_nic);
+        $this->childService->createChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType, $mother_nic, $father_nic);
 
         return redirect(route('phm.child.profiles'))
             ->withMessage(
@@ -71,7 +73,6 @@ class ChildProfileController
         $dob = $request->input('e_date_of_birth');
         $gender = $request->input('e_gender');
         $bloodType = $request->input('e_blood_type');
-
         $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, null, $bloodType, null, true);
 
         if (count($errors) > 0) {
