@@ -35,6 +35,8 @@ return [
     ['GET', '/admin/child/{id}/access-control', [ChildController::class, 'accessControl'], 'admin.child.access.control', ['admin', 'verified']],
     ['POST', '/admin/child/{id}/access-control/revoke', [ChildController::class, 'removeLinkage'], 'admin.child.access.control.revoke', ['admin', 'verified']],
     ['GET', '/admin/child-profiles/linkage-requests', [ChildController::class, 'linkageRequests'], 'admin.child.linkage.requests', ['admin', 'verified']],
+    ['POST', '/admin/child-profiles/linkage-requests/{id}/approve', [ChildController::class, 'approveLinkageRequest'], 'admin.child.linkage.requests.approve', ['admin', 'verified']],
+    ['POST', '/admin/child-profiles/linkage-requests/{id}/deny', [ChildController::class, 'denyLinkageRequest'], 'admin.child.linkage.requests.deny', ['admin', 'verified']],
     ['GET', '/admin/child-profiles/access-requests', [ChildController::class, 'accessRequests'], 'admin.child.access.requests', ['admin', 'verified']],
     ['POST', '/admin/child-profiles/access-requests/{id}/approve', [ChildController::class, 'approveAccessRequest'], 'admin.child.access.requests.approve', ['admin', 'verified']],
     ['POST', '/admin/child-profiles/access-requests/{id}/deny', [ChildController::class, 'denyAccessRequest'], 'admin.child.access.requests.deny', ['admin', 'verified']],
