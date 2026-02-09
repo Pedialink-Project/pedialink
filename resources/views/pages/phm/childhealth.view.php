@@ -31,26 +31,11 @@
         </clipPath>
     </defs>
 </svg>
-    Health Records &#8594; Baby Sarah &middot; C-000{{ $id }}
+    Health Records &#8594; Baby {{ $name }} &middot; C-00{{ $id }}
 @endsection
 
 @section('content')
-    <?php
-    $items = [
-        ['Recorded at' => '2024-01-15 at 09.00 AM', 'Height' => '49.5 cm','Weight' => '3.3 kg', 'Head Circumference' =>'20 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-16 at 09.15 AM', 'Height' => '42.5 cm','Weight' => '2.3 kg', 'Head Circumference' =>'23 cm', 'Health Status' => 'Bad'],
-        ['Recorded at' => '2024-01-17 at 09.28 AM', 'Height' => '48.5 cm','Weight' => '3.4 kg', 'Head Circumference' =>'24 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-13 at 08.00 AM', 'Height' => '43.6 cm','Weight' => '3.6 kg', 'Head Circumference' =>'20 cm', 'Health Status' => 'Bad'],
-        ['Recorded at' => '2024-01-22 at 08.30 AM', 'Height' => '46.5 cm','Weight' => '3.4 kg', 'Head Circumference' =>'26 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-18 at 09.45 AM', 'Height' => '41.7 cm','Weight' => '3.7 kg', 'Head Circumference' =>'22 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-25 at 09.10 AM', 'Height' => '44.9 cm','Weight' => '3.9 kg', 'Head Circumference' =>'21 cm', 'Health Status' => 'Bad'],
-        ['Recorded at' => '2024-01-12 at 09.00 AM', 'Height' => '43.5 cm','Weight' => '3.4 kg', 'Head Circumference' =>'22 cm', 'Health Status' => 'Bad'],
-        ['Recorded at' => '2024-01-21 at 09.24 AM', 'Height' => '46.5 cm','Weight' => '3.5 kg', 'Head Circumference' =>'22 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-14 at 09.00 AM', 'Height' => '48.5 cm','Weight' => '3.6 kg', 'Head Circumference' =>'20 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-16 at 09.00 AM', 'Height' => '48.5 cm','Weight' => '2.9 kg', 'Head Circumference' =>'25 cm', 'Health Status' => 'Good'],
-        ['Recorded at' => '2024-01-22 at 09.00 AM', 'Height' => '43.5 cm','Weight' => '3.3 kg', 'Head Circumference' =>'23 cm', 'Health Status' => 'Good'],
-    ];
-    ?>
+  
 
     <c-table.controls :columns='["Recorded at","Height","Weight","Head Circumference","Health Status"]'>
 
