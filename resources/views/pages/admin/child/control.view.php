@@ -85,43 +85,6 @@
                                 Close
                             </c-slot>
                         </c-modal>
-                        <c-modal size="sm">
-                            <c-slot name="trigger">
-                                <c-button variant="destructive">
-                                    <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                    Remove <span class="lg-text">Linkage</span>
-                                </c-button>
-                            </c-slot>
-
-                            <c-slot name="headerPrefix">
-                                <img src="{{ asset('assets/icons/cancel-circle-dark.svg') }}" />
-                            </c-slot>
-                            
-                            <c-slot name="header">
-                                Remove Linkage
-                            </c-slot>
-
-                            <p>
-                                Remove linkage of <span class="name-deny">"{{ $primaryAccount["name"] }}"</span> of 
-                                id <span class="id-deny">P-{{ $primaryAccount["id"] }}</span> with child account
-                                <span class="child-name-deny">"{{ $name }}"</span> of id <span class="child-id-deny">C-{{ $id }}</span>?
-                            </p>
-                            
-                            <form id="primary-deny-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.control.revoke', ['id' => $id]) }}" class="hidden">
-                                <input class="hidden" type="text" name="id" value="{{ $primaryAccount['id'] }}" />
-                                <input class="hidden" type="type" name="type" value="parent" />
-                            </form>
-
-                            <c-slot name="close">
-                                Cancel
-                            </c-slot>
-
-                            <c-slot name="footer">
-                                <c-button type="submit" variant="destructive" form="primary-account-{{ $key }}">
-                                    Remove Linkage
-                                </c-button>
-                            </c-slot>
-                        </c-modal>
                     </div>
                 </c-slot>
             </c-card>
@@ -133,7 +96,7 @@
                     <h3>{{ $secondaryAccount["name"] }}</h3>
                 </c-slot>
                 <p class="control-card-content">
-                    PHM-{{ $secondaryAccount["id"] }} has been granted access to this profile
+                    PHM-{{ $secondaryAccount["id"] }} has secondary access to this profile
                 </p>
                 <c-slot name="footer">
                     <div class="control-card-btn-grp">
@@ -190,6 +153,73 @@
                                 Close
                             </c-slot>
                         </c-modal>
+                    </div>
+                </c-slot>
+            </c-card>
+        @endforeach
+        @foreach ($staffAccess as $key => $staffAccount)
+            <c-card class="control-card">
+                <c-slot name="header">
+                    <h3>{{ $staffAccount["name"] }}</h3>
+                </c-slot>
+                <p class="control-card-content">
+                    {{ ucfirst($staffAccount["role"]) }}-{{ $staffAccount["id"] }} has been granted access to this profile
+                </p>
+                <c-slot name="footer">
+                    <div class="control-card-btn-grp">
+                        <c-modal hideClass="lg-modal">
+                            <c-slot name="trigger">
+                                <c-button variant="secondary">
+                                    <img src="{{ asset('assets/icons/document-validation.svg')}}">
+                                    View <span class="lg-text">Details</span>
+                                </c-button>
+                            </c-slot>
+
+                            <c-slot name="headerPrefix">
+                                <img src="{{ asset('assets/icons/profile-02.svg' )}}" />
+                            </c-slot>
+
+                            <c-slot name="header">
+                                <div>View Linkage Info</div>
+                            </c-slot>
+
+                            <c-modal.viewcard>
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                    title="ID"
+                                    info="P-{{ $staffAccount['id'] }}"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/user.svg') }}"
+                                    title="Full Name"
+                                    info="{{ $staffAccount['name'] }}"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                    title="Child ID"
+                                    info="C-{{ $id }}"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/user.svg') }}"
+                                    title="Child Full Name"
+                                    info="{{ $name }}"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                    title="Given Access On"
+                                    info="Monday, January 15, 2023"
+                                />
+                                <c-modal.viewitem
+                                    icon="{{ asset('assets/icons/student-card.svg') }}"
+                                    title="Type"
+                                    info="{{ ucfirst($staffAccount['role']) }}"
+                                />
+                            </c-modal.viewcard>
+
+                            <c-slot name="close">
+                                Close
+                            </c-slot>
+                        </c-modal>
                         <c-modal size="sm">
                             <c-slot name="trigger">
                                 <c-button variant="destructive">
@@ -207,13 +237,13 @@
                             </c-slot>
 
                             <p>
-                                Remove access of <span class="name-deny">"{{ $secondaryAccount["name"] }}"</span> of 
-                                id <span class="id-deny">PHM-{{ $secondaryAccount["id"] }}</span> with child account
+                                Remove access of <span class="name-deny">"{{ $staffAccount["name"] }}"</span> of 
+                                id <span class="id-deny">{{ ucfirst($staffAccount["role"]) }}-{{ $staffAccount["id"] }}</span> with child account
                                 <span class="child-name-deny">"{{ $name }}"</span> of id <span class="child-id-deny">C-{{ $id }}</span>?
                             </p>
                             
                             <form id="secondary-deny-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.control.revoke', ['id' => $id]) }}" class="hidden">
-                                <input class="hidden" type="text" name="id" value="{{ $secondaryAccount['id'] }}" />
+                                <input class="hidden" type="text" name="id" value="{{ $staffAccount['id'] }}" />
                                 <input class="hidden" type="type" name="type" value="phm" />
                             </form>
 
