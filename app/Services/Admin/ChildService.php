@@ -43,41 +43,43 @@ class ChildService
         return [$resource, $links];
     }
 
-    public function getAccessControlData(Child $child)
+    public function getAccessControlData(Child $child, int $page)
     {
         $data = [];
 
         if ($child) {
-            $parentData = ParentChild::query()->where("child_id", "=", $child->id)->get();
-
-            if ($parentData) {
-                foreach ($parentData as $parent) {
-                    $parentDetails = ParentM::find($parent->parent_id);
-                    $data["parents"][] = [
-                        "id" => $parentDetails->id,
-                        "name" => User::find($parentDetails->id)->name,
-                        "type" => $parentDetails->type,
+            if ($page === 1) {
+                $parentData = ParentChild::query()->where("child_id", "=", $child->id)->get();
+    
+                if ($parentData) {
+                    foreach ($parentData as $parent) {
+                        $parentDetails = ParentM::find($parent->parent_id);
+                        $data["parents"][] = [
+                            "id" => $parentDetails->id,
+                            "name" => User::find($parentDetails->id)->name,
+                            "type" => $parentDetails->type,
+                        ];
+                    }
+                }
+    
+                $phmData = PublicHealthMidwife::find($child->phm_id);
+    
+                if ($phmData) {
+                    $data["phm"] = [
+                        [
+                            "id" => $phmData->id,
+                            "name" => User::find($phmData->id)->name,
+                            "role" => "Public Health Midwife"
+                        ],
                     ];
                 }
-            }
-
-            $phmData = PublicHealthMidwife::find($child->phm_id);
-
-            if ($phmData) {
-                $data["phm"] = [
-                    [
-                        "id" => $phmData->id,
-                        "name" => User::find($phmData->id)->name,
-                        "role" => "Public Health Midwife"
-                    ],
-                ];
             }
 
             $staffAccessControl = ChildAccessRequest::query()
                 ->where("child_id", "=", $child->id)
                 ->where("accepted", "=", 1)
                 ->orderBy('id', 'ASC')
-                ->paginate(10)
+                ->paginate($page === 1 ? 6 : 9)
                 ->toArray();
 
             if ($staffAccessControl) {

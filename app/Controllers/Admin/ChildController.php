@@ -36,7 +36,11 @@ class ChildController
             return view("error/404");
         }
 
-        [$accessData, $links] = $this->childService->getAccessControlData($child);
+        $page = $request->query("page") ?? 1;
+
+        [$accessData, $links] = $this->childService->getAccessControlData(
+            $child, (int)$page
+        );
 
         return view("admin/child/control", [
             "id" => $id,
