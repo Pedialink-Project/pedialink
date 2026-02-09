@@ -337,13 +337,13 @@ PHM Child Profiles
                                 @endif
                                 <c-dropdown.sep />
                                 @if ($child['access_status'] === "accepted")
-                                <c-dropdown.item href="{{ route('phm.growth.monitoring.child',['id'=>$key,])}}">
+                                <c-dropdown.item href="{{ route('phm.growth.monitoring.child',['id'=>$child['id']])}}">
                                     View Growth Records
                                 </c-dropdown.item>
-                                <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$key,])}}">
+                                <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$child['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
-                                <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$key,])}}">
+                                <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$child['id']])}}">
                                     View Vaccination Records
                                 </c-dropdown.item>
                                 @endif
