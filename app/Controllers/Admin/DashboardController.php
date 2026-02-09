@@ -22,13 +22,16 @@ class DashboardController
         $linkageRequestsCount = $this->dashboardService->getTotalLinkageRequestsCount();
         $doctorsCount = $this->dashboardService->getActiveDoctorsCount();
 
+        $vaccinationChartData = $this->dashboardService->getVaccinationChartData();
+
         return view("admin/dashboard", [
             "childrenCount" => $childrenCount,
             "phmCount" => $phmCount,
             "parentsCount" => $parentsCount,
             "accessRequestsCount" => $accessRequestsCount,
             "linkageRequestsCount" => $linkageRequestsCount,
-            "doctorsCount" => $doctorsCount
+            "doctorsCount" => $doctorsCount,
+            "vaccinationChartData" => $vaccinationChartData,
         ]);
     }
 }
