@@ -608,8 +608,8 @@ Admin Dashboard
 <script>
     // --- Data for the left chart (monthly) ---
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const scheduled = [2, 0, 0, 100, 80, 60, 80, 20, 10, 40, 60, 50]; // blue-ish small area
-    const completed = [150,110,220,240,420,400,310,330,320,350,280,180]; // pink/peach large area
+    const scheduled = <?php echo json_encode($vaccinationChartData['scheduled']); ?>; // blue-ish small area
+    const completed = <?php echo json_encode($vaccinationChartData['completed']); ?>; // pink/peach large area
 
     // Create gradients (requires canvas context)
     const ctxLine = document.getElementById('lineAreaChart').getContext('2d');
