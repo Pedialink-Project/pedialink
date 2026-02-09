@@ -4,8 +4,11 @@ namespace App\Services\Admin;
 
 use App\Models\Area;
 use App\Models\Child;
+use App\Models\ChildAccessRequest;
+use App\Models\ParentChild;
 use App\Models\ParentM;
 use App\Models\PublicHealthMidwife;
+use App\Models\Staff;
 use App\Models\User;
 
 class ChildService
@@ -45,18 +48,17 @@ class ChildService
         $data = [];
 
         if ($child) {
-            # Incorrect, child must be linked to both parents
-            # NOTE: currnetly only a child is linked to one parent
-            $parentData = ParentM::find($child->parent_id);
+            $parentData = ParentChild::query()->where("child_id", "=", $child->id)->get();
 
             if ($parentData) {
-                $data["parents"] = [
-                    [
-                        "id" => $parentData->id,
-                        "name" => User::find($parentData->id)->name,
-                        "type" => $parentData->type,
-                    ],
-                ];
+                foreach ($parentData as $parent) {
+                    $parentDetails = ParentM::find($parent->parent_id);
+                    $data["parents"][] = [
+                        "id" => $parentDetails->id,
+                        "name" => User::find($parentDetails->id)->name,
+                        "type" => $parentDetails->type,
+                    ];
+                }
             }
 
             $phmData = PublicHealthMidwife::find($child->phm_id);
@@ -71,8 +73,29 @@ class ChildService
                 ];
             }
 
+            $staffAccessControl = ChildAccessRequest::query()
+                ->where("child_id", "=", $child->id)
+                ->where("accepted", "=", 1)
+                ->orderBy('id', 'ASC')
+                ->paginate(10)
+                ->toArray();
+
+            if ($staffAccessControl) {
+                foreach ($staffAccessControl['items'] as $accessRequest) {
+                    $staffDetails = Staff::find($accessRequest->phm_id);
+                    $userDetails = User::find($staffDetails->id);
+                    $data["staff"][] = [
+                        "id" => $staffDetails->id,
+                        "name" => $userDetails->name,
+                        "role" => $userDetails->role ?? "Staff"
+                    ];
+                }
+            }
+
+            $links = array_diff_key($staffAccessControl, ['items' => true]);
+
         }
 
-        return $data;
+        return [$data, $links];
     }
 }
