@@ -62,6 +62,34 @@ class ChildService
         return $d . ' day' . ($d === 1 ? '' : 's');
     }
 
+    public function getParentDetailsByChildId(int $childId)
+    {
+        $parentChildren = ParentChild::query()->where('child_id', '=', $childId);
+        if ($parentChildren) {
+            return null;
+        }
+
+        $resource = [];
+
+
+        foreach ($parentChildren as $parentChild) {
+
+            $parent = $parentChild->getParent();
+
+            if (!$parent) {
+                return null;
+            }
+
+            $resource[] = [
+                'id' => $parent->id,
+                'name' => User::find($parent->id)->name,
+                'email' => User::find($parent->id)->email,
+                'type' => $parent->type,
+            ];
+        }
+        return $resource;
+    }
+
     public function getAllChildren()
     {
         $children = Child::all();
@@ -342,7 +370,7 @@ class ChildService
                 'area' => $child->getArea()->code,
                 'access_status' => $accessStatus,
                 'linked_status' => $linkedStatus,
-                'is_created'=> $isPhmCreated,
+                'is_created' => $isPhmCreated,
 
 
             ];
@@ -512,23 +540,23 @@ class ChildService
             $errors["{$suffix}date_of_birth"] = $dobError;
         }
 
-       
-        if (!$edit){
 
-          $birthCertificateError = $this->validateBirthCertificate($birthCertificate);
-        if ($birthCertificateError) {
-            $errors["{$suffix}birth_certificate"] = $birthCertificateError;
-        }
+        if (!$edit) {
 
-        $motherNicError = $this->validateNIC($mother_nic);
-        if ($motherNicError) {
-            $errors["{$suffix}mother_nic"] = $motherNicError;
-        }
+            $birthCertificateError = $this->validateBirthCertificate($birthCertificate);
+            if ($birthCertificateError) {
+                $errors["{$suffix}birth_certificate"] = $birthCertificateError;
+            }
 
-        $fatherNicError = $this->validateNIC($father_nic);
-        if ($fatherNicError) {
-            $errors["{$suffix}father_nic"] = $fatherNicError;
-        }
+            $motherNicError = $this->validateNIC($mother_nic);
+            if ($motherNicError) {
+                $errors["{$suffix}mother_nic"] = $motherNicError;
+            }
+
+            $fatherNicError = $this->validateNIC($father_nic);
+            if ($fatherNicError) {
+                $errors["{$suffix}father_nic"] = $fatherNicError;
+            }
         }
 
         $bloodTypeError = $this->validateBloodType($bloodType);
@@ -590,7 +618,7 @@ class ChildService
     {
         $child = Child::find($childId);
 
-        if($child->phm_id != auth()->user()->id){
+        if ($child->phm_id != auth()->user()->id) {
             return "Unauthorized";
         }
         if ($child) {
