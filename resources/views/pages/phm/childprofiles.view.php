@@ -198,7 +198,7 @@ PHM Child Profiles
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Child ID" info="C-000{{ $child['id'] }}" />
+                                            title="Child ID" info="C-00{{ $child['id'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Name"
                                             info="{{ $child['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
