@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Models\ChildMisc;
+use App\Models\ParentChild;
 
 class ChildLinkageService
 {
@@ -48,5 +49,31 @@ class ChildLinkageService
         $links = array_diff_key($childMiscs, ['items' => true]);
 
         return [$data, $links];
+    }
+
+    public function approveLinkage(int $id)
+    {
+        $childMisc = ChildMisc::find($id);
+        if ($childMisc) {
+            $childMisc->accepted = 1;
+            $childMisc->save();
+
+            $parentChild = new ParentChild();
+            $parentChild->parent_id = $childMisc->parent_id;
+            $parentChild->child_id = $childMisc->child_id;
+            $parentChild->save();
+            return true;
+        }
+        return false;
+    }
+
+    public function denyLinkage(int $id)
+    {
+        $childMisc = ChildMisc::find($id);
+        if ($childMisc) {
+            $childMisc->delete();
+            return true;
+        }
+        return false;
     }
 }

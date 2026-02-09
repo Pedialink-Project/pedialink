@@ -89,6 +89,48 @@ class ChildController
         ]);
     }
 
+    public function approveLinkageRequest(Request $request, int $id)
+    {
+        $value = $this->childLinkageService->approveLinkage($id);
+
+        if ($value) {
+            return redirect(route("admin.child.linkage.requests"))
+                ->withMessage(
+                    "Linkage request approved successfully",
+                    "Success",
+                    "success"
+                );
+        }
+
+        return redirect(route("admin.child.linkage.requests"))
+            ->withMessage(
+                "Linkage request failed to approve",
+                "Error",
+                "error"
+            );
+    }
+
+    public function denyLinkageRequest(Request $request, int $id)
+    {
+        $value = $this->childLinkageService->denyLinkage($id);
+
+        if ($value) {
+            return redirect(route("admin.child.linkage.requests"))
+                ->withMessage(
+                    "Linkage request denied successfully",
+                    "Success",
+                    "success"
+                );
+        }
+
+        return redirect(route("admin.child.linkage.requests"))
+            ->withMessage(
+                "Linkage request failed to deny",
+                "Error",
+                "error"
+            );
+    }
+
     public function accessRequests(Request $request)
     {
         [$accessRequests, $links] = $this->childAccessRequestsService
