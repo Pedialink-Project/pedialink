@@ -14,7 +14,7 @@ class ChildMisc extends Model
         return Child::find($this->child_id);
     }
 
-    public function getStaff(): object|null
+    public function getParent(): object|null
     {
         return ParentM::find($this->parent_nic);
     }
