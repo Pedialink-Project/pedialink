@@ -5,17 +5,20 @@ namespace App\Controllers\Admin;
 use App\Models\Child;
 use App\Models\ChildAccessRequest;
 use App\Services\Admin\ChildAccessRequestsService;
+use App\Services\Admin\ChildLinkageService;
 use App\Services\Admin\ChildService;
 use Library\Framework\Http\Request;
 
 class ChildController
 {
     private ChildService $childService;
+    private ChildLinkageService $childLinkageService;
     private ChildAccessRequestsService $childAccessRequestsService;
 
     public function __construct()
     {
         $this->childService = new ChildService();
+        $this->childLinkageService = new ChildLinkageService();
         $this->childAccessRequestsService = new ChildAccessRequestsService();
     }
 
@@ -79,7 +82,11 @@ class ChildController
 
     public function linkageRequests(Request $request)
     {
-        return view("admin/child/linkage");
+        [$linkRequests, $links] = $this->childLinkageService->getLinkageData();
+        return view("admin/child/linkage", [
+            "linkRequests" => $linkRequests,
+            "links" => $links
+        ]);
     }
 
     public function accessRequests(Request $request)
