@@ -13,6 +13,14 @@
 @endsection
 
 @section('content')
+     @if (count($primaryAccess) <= 0 && count($secondaryAccess) <= 0)
+        <c-emptytable
+            alt="No access requests"
+            title="No control actions requests"
+            description="No entries for control actions requests found"
+        />
+        
+    @endif
     <div class="control-content">
         @foreach ($primaryAccess as $key => $primaryAccount)
             <c-card class="control-card">
