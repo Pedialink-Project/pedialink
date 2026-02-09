@@ -275,5 +275,5 @@
     </div>
 </c-table.wrapper>
 
-    <c-table.pagination />
+    <c-table.pagination :links="$links" />
 @endsection
