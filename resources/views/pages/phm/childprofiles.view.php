@@ -70,7 +70,7 @@ PHM Child Profiles
                 <c-input type="text" label="Child Full Name:" name="name" value="{{ old('name') ?? '' }}"
                     error="{{ errors('name') ?? '' }}" placeholder="Enter Full Name" required />
                 <c-select label="Area" name="area" searchable="1" error="{{ errors('area') ?? '' }}" value="{{ old('area') ?? '' }}"
-                    error="{{ errors('area') ?? '' }}" placeholder="Select Area">
+                    error="{{ errors('area') ?? '' }}" placeholder="Select Area" required>
                     @foreach ($areas as $area)
                     <li class="select-item" data-value="{{ $area['id'] }}">{{ $area['name'] }}</li>
                     @endforeach
@@ -78,16 +78,18 @@ PHM Child Profiles
                 <c-input type="date" label="Date of Birth:" name="date_of_birth" value="{{ old('date_of_birth') ?? '' }}"
                     error="{{ errors('date_of_birth') ?? ''}}" required />
                 <c-input type="text" label="Birth Certificate No:" name="birth_certificate" value="{{ old('birth_certificate') ?? '' }}"
-                    error="{{ errors('birth_certificate') ?? ''}}" placeholder="Enter Birth Certificate No" />
-                <c-input type="text" label="Parent NIC:" name="parent_nic" value="{{ old('parent_nic') ?? '' }}"
-                    error="{{ errors('parent_nic') ?? ''}}" placeholder="Enter Parent NIC" />
+                    error="{{ errors('birth_certificate') ?? ''}}" placeholder="Enter Birth Certificate No" required/>
+                <c-input type="text" label="Mother NIC:" name="mother_nic" value="{{ old('mother_nic') ?? '' }}"
+                    error="{{ errors('mother_nic') ?? ''}}" placeholder="Enter Mother NIC" required/>
+                    <c-input type="text" label="Father NIC:" name="father_nic" value="{{ old('father_nic') ?? '' }}"
+                    error="{{ errors('father_nic') ?? ''}}" placeholder="Enter Father NIC" />
                 <c-select label="Gender" name="gender" value="{{ old('gender') ?? '' }}"
-                    error="{{ errors('gender') ?? ''}}" placeholder="Select Gender">
+                    error="{{ errors('gender') ?? ''}}" placeholder="Select Gender" required>
                     <li class="select-item" data-value="m">Male</li>
                     <li class="select-item" data-value="f">Female</li>
                 </c-select>
                 <c-select label="Blood Type" name="blood_type" value="{{ old('blood_type') ?? '' }}"
-                    error="{{ errors('blood_type') ?? ''}}" placeholder="Select Blood Type">
+                    error="{{ errors('blood_type') ?? ''}}" placeholder="Select Blood Type" required>
                     @foreach(config('data.bloodTypes') as $bloodType)
                     <li class="select-item" data-value="{{ $bloodType }}">{{ $bloodType }}</li>
                     @endforeach
