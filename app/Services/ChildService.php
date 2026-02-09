@@ -492,7 +492,7 @@ class ChildService
         return $error;
     }
 
-    public function validateChildProfile(string $name, mixed $areaId, string $dob, string $gender, ?string $birthCertificate, string $bloodType, ?string $parent_nic, bool $edit = false)
+    public function validateChildProfile(string $name, mixed $areaId, string $dob, string $gender, ?string $birthCertificate, string $bloodType, ?string $mother_nic, ?string $father_nic, bool $edit = false)
     {
         $errors = [];
         $suffix = $edit ? 'e_' : '';
@@ -520,9 +520,14 @@ class ChildService
             $errors["{$suffix}birth_certificate"] = $birthCertificateError;
         }
 
-        $parentNicError = $this->validateNIC($parent_nic);
-        if ($parentNicError) {
-            $errors["{$suffix}parent_nic"] = $parentNicError;
+        $motherNicError = $this->validateNIC($mother_nic);
+        if ($motherNicError) {
+            $errors["{$suffix}mother_nic"] = $motherNicError;
+        }
+
+        $fatherNicError = $this->validateNIC($father_nic);
+        if ($fatherNicError) {
+            $errors["{$suffix}father_nic"] = $fatherNicError;
         }
         }
 
@@ -553,7 +558,7 @@ class ChildService
         return $error;
     }
 
-    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, string $parent_nic)
+    public function createChildProfile(string $name, string $areaId, string $dob, string $gender, string $birthCertificate, string $bloodType, string $mother_nic, string $father_nic)
     {
         $phmId = auth()->id();
 
@@ -568,10 +573,15 @@ class ChildService
         $child->save();
 
 
-        $childMisc = new ChildMisc();
-        $childMisc->parent_nic = $parent_nic;
-        $childMisc->children_id = $child->id;
-        $childMisc->save();
+        $childMiscMother = new ChildMisc();
+        $childMiscMother->parent_nic = $mother_nic;
+        $childMiscMother->children_id = $child->id;
+        $childMiscMother->save();
+
+        $childMiscFather = new ChildMisc();
+        $childMiscFather->parent_nic = $father_nic;
+        $childMiscFather->children_id = $child->id;
+        $childMiscFather->save();
 
         $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
     }
