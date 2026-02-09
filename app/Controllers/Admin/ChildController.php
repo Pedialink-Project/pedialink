@@ -36,13 +36,15 @@ class ChildController
             return view("error/404");
         }
 
-        $accessData = $this->childService->getAccessControlData($child);
+        [$accessData, $links] = $this->childService->getAccessControlData($child);
 
         return view("admin/child/control", [
             "id" => $id,
             "name" => $child->name,
             "primaryAccess" => $accessData["parents"] ?? [],
-            "secondaryAccess" => $accessData["phm"] ?? []
+            "secondaryAccess" => $accessData["phm"] ?? [],
+            "staffAccess" => $accessData["staff"] ?? [],
+            "links" => $links
         ]);
     }
 
