@@ -249,15 +249,16 @@ class UserController
 
     public function admin(Request $request)
     {
-        $search = $request->input('search');
-        $filters = $request->input('filters');
-        $admins = $this->adminUserService->getAdminDetails(
+        $search = $request->input('search') ?? '';
+        $filters = $request->input('filters') ?? [];
+        [$admins, $links] = $this->adminUserService->getAdminDetails(
             $search,
             $filters
         );
 
         return view('admin/user/admin', [
             "admins" => $admins,
+            "links" => $links,
         ]);
     }
 }

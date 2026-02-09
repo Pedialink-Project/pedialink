@@ -20,9 +20,9 @@ class AdminUserService
     {
         $admins = User::query()->where("role", "=", "admin");
 
-        if ($search) {
-            $admins = $this->applySearch($admins, $search);
-        }
+        // if ($search) {
+        //     $admins = $this->applySearch($admins, $search);
+        // }
 
         // TODO: Implement nested where for filters like this to function
         // if ($filters) {
@@ -57,7 +57,10 @@ class AdminUserService
             ];
         }
 
-        return $resource;
+        $links = array_diff_key($results, ['items' => true]);
+
+
+        return [$resource, $links];
     }
 
     private function validateName(string $name)
