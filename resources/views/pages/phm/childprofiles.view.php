@@ -342,7 +342,7 @@ PHM Child Profiles
                                 <c-dropdown.item href="{{ route('phm.growth.monitoring.child',['id'=>$child['id']])}}">
                                     View Growth Records
                                 </c-dropdown.item>
-                                <c-dropdown.item href="{{ route('phm.child.health.records',['id'=>$child['id']])}}">
+                                <c-dropdown.item href="{{ route('phm.child.health',['id'=>$child['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
                                 <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$child['id']])}}">
