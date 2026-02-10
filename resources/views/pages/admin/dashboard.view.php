@@ -119,7 +119,7 @@ Admin Dashboard
                     />
                 @endif
                 <!-- Event Item -->
-                @foreach ($parentApprovalRequests as $request)
+                @foreach ($parentApprovalRequests as $reqKey => $request)
                     <div class="row event">
                         <div class="primary-details">
                             <div class="name">{{ $request['name'] }}</div>
@@ -134,14 +134,68 @@ Admin Dashboard
                         </div>
                         <div class="secondary-details">
                             <div class="approval-request-btn-group">
-                                <c-button variant="primary" size="sm">
-                                    <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                    Approve
-                                </c-button>
-                                <c-button variant="destructive" size="sm">
-                                    <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                    Deny
-                                </c-button>
+                                <c-modal size="sm">
+                                    <c-slot name="trigger">
+                                        <c-button variant="primary">
+                                            <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
+                                            Approve
+                                        </c-button>
+                                    </c-slot>
+
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/checkmark-circle-02-dark.svg') }}" />
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        Approve Account
+                                    </c-slot>
+
+                                    <p>Approve parent <span class="parent-name-approve">"{{ $request["name"] }}"</span> of id <span class="parent-id-approve">P-{{ $request["id"] }}</span>?</p>
+
+                                    <form id="approve-account-{{ $reqKey }}" method="POST" action="{{ route('admin.user.parent.approve', ['id' => $request['id']], ['quick' => true])}}" class="hidden">
+
+                                    </form>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button type="submit" variant="primary" form="approve-account-{{ $reqKey }}">
+                                            Approve Account
+                                        </c-button>
+                                    </c-slot>
+                                </c-modal>
+                                <c-modal size="sm">
+                                    <c-slot name="trigger">
+                                        <c-button variant="destructive">
+                                            <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
+                                            Deny
+                                        </c-button>
+                                    </c-slot>
+
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/cancel-circle-dark.svg') }}" />
+                                    </c-slot>
+                                    
+                                    <c-slot name="header">
+                                        Deny Account
+                                    </c-slot>
+
+                                    <p>Deny parent <span class="parent-name-deny">"{{ $request["name"] }}"</span> of id <span class="parent-id-deny">P-{{ $request["id"] }}</span>?</p>
+
+                                    <form id="deny-account-{{ $reqKey }}" method="POST" action="{{ route('admin.user.parent.deny', ['id' => $request['id']], ['quick' => true])}}" class="hidden"></form>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button type="submit" variant="destructive" form="deny-account-{{ $reqKey }}">
+                                            Deny Account
+                                        </c-button>
+                                    </c-slot>
+                                </c-modal>
                             </div>
                         </div>
                     </div>
