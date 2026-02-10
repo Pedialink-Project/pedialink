@@ -112,121 +112,40 @@ Admin Dashboard
             <hr class="divider">
 
             <div class="card-body">
+                @if (count($parentApprovalRequests) <= 0)
+                    <c-emptycard
+                        title="No pending approval requests"
+                        description="All parent accounts have been verified."
+                    />
+                @endif
                 <!-- Event Item -->
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">User 1</div>
-
-                        <div class="sub-details">
-                            <div class="sub-name">
-                                Parent
+                @foreach ($parentApprovalRequests as $request)
+                    <div class="row event">
+                        <div class="primary-details">
+                            <div class="name">{{ $request['name'] }}</div>
+                            <div class="sub-details">
+                                <div class="sub-name">
+                                    {{ $request['type'] }}
+                                </div>
                             </div>
                         </div>
-                        
-                    </div>
-                    <div class="secondary-details">
-                        <c-badge type="secondary">Pending</c-badge>
-                    </div>
-
-                    <div class="secondary-details">
-                        <div class="approval-request-btn-group">
-                            <c-button variant="primary" size="sm">
-                                <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                Approve
-                            </c-button>
-                            <c-button variant="destructive" size="sm">
-                                <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                Deny
-                            </c-button>
+                        <div class="secondary-details">
+                            <c-badge type="secondary">Pending</c-badge>
                         </div>
-                    </div>
-                </div>
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">User 1</div>
-
-                        <div class="sub-details">
-                            <div class="sub-name">
-                                Parent
+                        <div class="secondary-details">
+                            <div class="approval-request-btn-group">
+                                <c-button variant="primary" size="sm">
+                                    <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
+                                    Approve
+                                </c-button>
+                                <c-button variant="destructive" size="sm">
+                                    <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
+                                    Deny
+                                </c-button>
                             </div>
                         </div>
-                        
                     </div>
-                    <div class="secondary-details">
-                        <c-badge type="secondary">Pending</c-badge>
-                    </div>
-
-                    <div class="secondary-details">
-                        <div class="approval-request-btn-group">
-                            <c-button variant="primary" size="sm">
-                                <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                Approve
-                            </c-button>
-                            <c-button variant="destructive" size="sm">
-                                <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                Deny
-                            </c-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">User 1</div>
-
-                        <div class="sub-details">
-                            <div class="sub-name">
-                                Parent
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="secondary-details">
-                        <c-badge type="secondary">Pending</c-badge>
-                    </div>
-
-                    <div class="secondary-details">
-                        <div class="approval-request-btn-group">
-                            <c-button variant="primary" size="sm">
-                                <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                Approve
-                            </c-button>
-                            <c-button variant="destructive" size="sm">
-                                <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                Deny
-                            </c-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">User 1</div>
-
-                        <div class="sub-details">
-                            <div class="sub-name">
-                                Parent
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="secondary-details">
-                        <c-badge type="secondary">Pending</c-badge>
-
-                        
-                    </div>
-
-                    <div class="secondary-details">
-                        <div class="approval-request-btn-group">
-                            <c-button variant="primary" size="sm">
-                                <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                Approve
-                            </c-button>
-                            <c-button variant="destructive" size="sm">
-                                <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                Deny
-                            </c-button>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </c-card>
 
