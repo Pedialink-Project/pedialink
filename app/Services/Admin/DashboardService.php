@@ -6,12 +6,22 @@ use App\Models\Child;
 use App\Models\ChildAccessRequest;
 use App\Models\ChildMisc;
 use App\Models\Doctor;
+use App\Models\EventRegistrations;
+use App\Models\Events;
 use App\Models\ParentM;
 use App\Models\PublicHealthMidwife;
+use App\Services\EventService;
 use Library\Framework\Database\QueryBuilder;
 
 class DashboardService
 {
+    private EventService $eventService;
+
+    public function __construct()
+    {
+        $this->eventService = new EventService();
+    }
+
     public function getTotalChildrenCount()
     {
         $children = Child::all();
@@ -128,6 +138,33 @@ class DashboardService
                 "id" => $req->id,
                 "name" => $user->name,
                 "type" => $req->type
+            ];
+        }
+
+        return $resource;
+    }
+
+    public function getEventsData()
+    {
+        $events = Events::query()
+            ->where("visible", "=", 1)
+            ->limit(3)
+            ->get();
+
+        $resource = [];
+        foreach ($events as $event) {
+            $eventRegistration = EventRegistrations::query()
+                ->where("event_id", "=", $event->id)
+                ->get();
+            $resource[] = [
+                "id" => $event->id,
+                "title" => $event->title,
+                "description" => $event->description,
+                "date" => $event->event_date,
+                "start_time" => $event->start_time,
+                "count" => count($eventRegistration),
+                "location" => $event->event_location,
+                "status" => $this->eventService->getEventStatus($event->id)
             ];
         }
 
