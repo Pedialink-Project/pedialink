@@ -114,12 +114,13 @@ class UserController
     public function parentApprove(Request $request, int $id)
     {
         $parent = ParentM::find($id);
+        $quick = $request->query('quick', false);
 
         if ($parent) {
             $parent->verified = 1;
             $parent->save();
 
-            return redirect(route('admin.user.parent'))
+            return redirect($quick ? route('admin.dashboard') : route('admin.user.parent'))
                 ->withMessage(
                     'Parent has been approved successfully',
                     'Success',
@@ -127,7 +128,7 @@ class UserController
                 );
         }
 
-        return redirect(route('admin.user.parent'))
+        return redirect($quick ? route('admin.dashboard') : route('admin.user.parent'))
             ->withMessage(
                 'Failed to approve parent',
                 'Failure',
