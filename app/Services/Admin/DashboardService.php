@@ -113,4 +113,24 @@ class DashboardService
             'completed' => $completed,
         ];
     }
+
+    public function getParentApprovalRequests()
+    {
+        $requests = ParentM::query()
+            ->where("verified", "=", 0)
+            ->get();
+
+        $requests = array_slice($requests, 0, 5);
+        $resource = [];
+        foreach ($requests as $req) {
+            $user = $req->getUser();
+            $resource[] = [
+                "id" => $req->id,
+                "name" => $user->name,
+                "type" => $req->type
+            ];
+        }
+
+        return $resource;
+    }
 }
