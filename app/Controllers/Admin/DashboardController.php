@@ -23,6 +23,7 @@ class DashboardController
         $doctorsCount = $this->dashboardService->getActiveDoctorsCount();
 
         $vaccinationChartData = $this->dashboardService->getVaccinationChartData();
+        $parentApprovalRequests = $this->dashboardService->getParentApprovalRequests();
 
         return view("admin/dashboard", [
             "childrenCount" => $childrenCount,
@@ -32,6 +33,7 @@ class DashboardController
             "linkageRequestsCount" => $linkageRequestsCount,
             "doctorsCount" => $doctorsCount,
             "vaccinationChartData" => $vaccinationChartData,
+            "parentApprovalRequests" => $parentApprovalRequests,
         ]);
     }
 }
