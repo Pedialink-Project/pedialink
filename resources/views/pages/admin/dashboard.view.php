@@ -107,7 +107,7 @@ Admin Dashboard
                     <span class="card-title">Parent Approval Request</span>
                     <span class="card-subtitle">Latest parent accounts to be verified</span>
                 </div>
-                <c-button varient="secondary" size="sm">View All</c-button>
+                <c-link type="secondary" href="{{ route('admin.user.parent') }}">View All</c-link>
             </div>
             <hr class="divider">
 
