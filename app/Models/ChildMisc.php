@@ -7,7 +7,7 @@ use Library\Framework\Core\Model;
 class ChildMisc extends Model
 {
     protected static string $table = "child_miscs";
-    protected array $fillable = ["children_id", "parent_nic"];
+    protected array $fillable = ["children_id", "parent_nic","accepeted"];
 
     public function getChild(): object|null
     {
