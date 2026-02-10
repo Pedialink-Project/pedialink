@@ -16,6 +16,9 @@ class ChildMisc extends Model
 
     public function getParent(): object|null
     {
-        return ParentM::find($this->parent_nic);
+        return ParentM::query()
+            ->where("nic", "=", $this->parent_nic)
+            ->first();
     }
+
 }
