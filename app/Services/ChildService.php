@@ -37,30 +37,6 @@ class ChildService
     }
 
 
-    private function calculateAge($dob): string
-    {
-        $dobDt = $dob instanceof DateTime ? clone $dob : new DateTime($dob);
-        $now = new DateTime();
-
-        if ($dobDt > $now) {
-            return "0 months"; // simple handling for future dates
-        }
-
-        $diff = $now->diff($dobDt);
-
-        if ($diff->y >= 1) {
-            $y = $diff->y;
-            return $y . ' year' . ($y === 1 ? '' : 's');
-        }
-
-        if ($diff->m >= 1) {
-            $m = $diff->m;
-            return $m . ' month' . ($m === 1 ? '' : 's');
-        }
-
-        $d = $diff->d;
-        return $d . ' day' . ($d === 1 ? '' : 's');
-    }
 
     public function getParentDetailsByChildId(int $childId)
     {
@@ -113,7 +89,7 @@ class ChildService
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,
-                'age' => $this->calculateAge($child->date_of_birth),
+                'age' => calculateAge($child->date_of_birth),
                 'date_of_birth' => $child->date_of_birth,
                 'gender' => $child->gender,
                 'health_status' => $child->health_status,
@@ -163,7 +139,7 @@ class ChildService
                 'id' => $child->id,
                 'name' => $child->name,
                 'date_of_birth' => $child->date_of_birth,
-                'age' => $this->calculateAge($child->date_of_birth),
+                'age' => Calculator::calculateAge($child->date_of_birth),
                 'gender' => $child->gender,
                 'health_status' => $child->health_status,
                 'blood_type' => $child->blood_type,
@@ -239,7 +215,7 @@ class ChildService
             $childData = [
                 'id' => $child->id,
                 'name' => $child->name,
-                'age' => $this->calculateAge($child->date_of_birth),
+                'age' => Calculator::calculateAge($child->date_of_birth),
                 'access_status' => $accessStatus,
 
                 'phm' => $phm ? [
@@ -365,7 +341,7 @@ class ChildService
             $childData = [
                 'id' => $child->id,
                 'name' => $child->name,
-                'age' => $this->calculateAge($child->date_of_birth),
+                'age' => Calculator::calculateAge($child->date_of_birth),
                 'gender' => $child->gender,
                 'area' => $child->getArea()->code,
                 'access_status' => $accessStatus,
@@ -469,7 +445,7 @@ class ChildService
             'id' => $child->id,
             'name' => $child->name,
             'date_of_birth' => $child->date_of_birth,
-            'age' => $this->calculateAge($child->date_of_birth),
+            'age' => Calculator::calculateAge($child->date_of_birth),
             'gender' => $child->gender,
             'blood_type' => $child->blood_type,
             'parent' => $parentResource,
