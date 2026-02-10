@@ -92,6 +92,9 @@ class RouteServiceProvider extends Provider
             'doctor' => DoctorMiddleware::class,
             'admin' => AdminMiddleware::class,
             'verified' => VerifiedMiddleware::class,
+            'dataAdmin' => \App\Middleware\Admin\DataAdminMiddleware::class,
+            'userAdmin' => \App\Middleware\Admin\UserAdminMiddleware::class,
+            'superAdmin' => \App\Middleware\Admin\SuperAdminMiddleware::class,
         ], [
             'session',
         ]);
