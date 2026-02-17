@@ -7,7 +7,7 @@ use Library\Framework\Core\Model;
 class Pregnancy extends Model
 {
     protected static string $table = "pregnancy";
-    protected array $fillable = ["maternal_id","started_at","end_at", "lmp", "edd", "gravida", "para", "delivery_outcome", "created_at"];
+    protected array $fillable = ["maternal_id","end_at", "lmp", "edd", "gravida", "para", "delivery_outcome", "created_at"];
 
     public function getParent(): object|null
     {
