@@ -293,8 +293,8 @@ class MaternalService
         if ($height !== null) {
             if (!is_numeric($height)) {
                 $errors['height'] = 'Height must be numeric.';
-            } elseif ($height < 10 || $height > 250) {
-                $errors['height'] = 'Height must be between 10cm and 250cm.';
+            } elseif ($height < 60 || $height > 250) {
+                $errors['height'] = 'Height must be between 60cm and 250cm.';
             }
         }
 
@@ -327,6 +327,24 @@ class MaternalService
             $errors['delivery_outcome'] = "Delivery outcome field cannot be empty";
         } elseif (!in_array($delivery_outcome, config('data.deliveryOutcomes'))) {
             $errors['delivery_outcome'] = "Please provide a valid delivery outcome";
+        }
+
+        return $errors;
+    }
+
+    public function validateAnatenatalRestartData(string $lmp, float $height)
+    {
+        $errors = [];
+
+        $lmpError = $this->validatePastDate($lmp, "LMP");
+        if ($lmpError) {
+            $errors['lmp'] = $lmpError;
+        }
+
+        if (!is_numeric($height)) {
+            $errors['height'] = 'Height must be numeric.';
+        } elseif ($height < 60 || $height > 250) {
+            $errors['height'] = 'Height must be between 60cm and 250cm.';
         }
 
         return $errors;
@@ -433,6 +451,47 @@ class MaternalService
             "Your antenatal care has been marked as ended with the outcome: {$delivery_outcome}. Please consult your Public Health Midwife for postnatal care instructions.",
             "antenatal_care_ended",
             $maternal->id
+        );
+
+        return null;
+    }
+
+    public function startAnatenatalCare(int $maternalId, $lmp, $height): ?string
+    {
+        $maternal = Maternal::find($maternalId);
+
+        if (!$maternal) {
+            return "Maternal profile not found.";
+        }
+
+        if ($maternal->type !== 'postnatal') {
+            return "Only postnatal profiles can be restarted as antenatal.";
+        }
+
+        $maternal->type = 'antenatal';
+        $maternal->height = $height;
+        $maternal->save();
+
+        $latestPregnancy = Pregnancy::query()
+            ->where('maternal_id', '=', $maternalId)
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        $pregnancy = new Pregnancy();
+        $pregnancy->maternal_id = $maternalId;
+        $pregnancy->lmp = $lmp;
+        $pregnancy->edd = Calculator::calculateEdd($lmp);
+        $pregnancy->delivery_outcome = 'ongoing';
+        $pregnancy->gravida = $latestPregnancy ? $latestPregnancy->gravida + 1 : 1;
+        $pregnancy->para = $latestPregnancy ? $latestPregnancy->para : 0;
+        $pregnancy->save();
+
+        $this->notificationService->notify(
+            $maternal->parent_id,
+            "Antenatal care restarted",
+            "Your antenatal care has been restarted. Please consult your Public Health Midwife for antenatal care instructions.",
+            "antenatal_care_restarted",
+            $maternalId
         );
 
         return null;
