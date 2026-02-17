@@ -230,9 +230,17 @@ $items = [
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                @if ($maternal['access_status'] === "accepted")
                                 <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$key,])}}">
                                     View Health Records
                                 </c-dropdown.item>
+                                @if ($maternal['type'] === "antenatal")
+                                <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$key,])}}">
+                                    End Antenatal Care
+                                </c-dropdown.item>
+                                @endif
+
+                                @endif
                             </c-slot>
                         </c-dropdown.main>
                     </c-table.td>
