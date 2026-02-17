@@ -217,8 +217,8 @@ class MaternalService
                 'id' => $maternal->id,
                 'name' => User::find($maternal->parent_id)->name,
                 'age' => Calculator::calculateAge(ParentM::find($maternal->parent_id)->date_of_birth),
-                'height' => $maternal->height_cm,
-                'blood_type' => $maternal->blood_group,
+                'height' => $maternal->height,
+                'blood_type' => $maternal->blood_type,
                 'type' => $maternal->type,
                 'access_status' => $accessStatus,
             ];
@@ -240,7 +240,6 @@ class MaternalService
                 }
 
                 $maternalData = array_merge($maternalData, [
-                    'date_of_birth'=> User::find($maternal->parent_id)->date_of_birth,
 
                     'latest_pregnancy' => $latestPregnancy ? [
                         'lmp' => $latestPregnancy->lmp,
