@@ -60,6 +60,62 @@ $items = [
             Stage
         </c-button>
     </c-slot>
+       <c-slot name="extrabtn">
+        <c-modal id="add-maternal" size="sm" :initOpen="flash('create') ? true : false">
+            <c-slot name="trigger">
+                <c-button variant="primary">
+                    Add Maternal Profile
+                </c-button>
+            </c-slot>
+            <c-slot name="headerPrefix">
+                <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
+            </c-slot>
+            <c-slot name="header">
+                <div>Add Maternal Profile</div>
+            </c-slot>
+
+            <form id="add-maternal-form" class="child-form" action="{{ route('phm.maternal.create') }}" method="POST">
+                <c-select
+                    label="Maternal Profile"
+                    name="parent_id"
+                    searchable="1"
+                    placeholder="Select Parent"
+                    value="{{ old('parent_id') ?? '' }}"
+                    error="{{ errors('parent_id') ?? '' }}">
+
+                    @if(!empty($unMaternalProfiles))
+                    @foreach ($unMaternalProfiles as $maternalProfile)
+                    <li class="select-item" data-value="{{ $maternalProfile['id'] }}">
+                        {{ $maternalProfile['name'] }} ({{ 'P-00'.$maternalProfile['id'] }})
+                    </li>
+                    @endforeach
+                    @else
+                    <li class="select-item disabled">
+                        No maternal profiles available
+                    </li>
+                    @endif
+                </c-select>
+               
+                <c-input type="number" label="Height (cm):" name="height" value="{{ old('height') ?? '' }}"
+                    error="{{ errors('height') ?? ''}}"placeholder="Enter Height in cm" required />
+                   <c-input type="date" label="LMP:" name="lmp" value="{{ old('lmp') ?? '' }}"
+                    error="{{ errors('lmp') ?? ''}}" placeholder="Enter LMP" required />
+                <c-select label="Blood Type" name="blood_type" value="{{ old('blood_type') ?? '' }}"
+                    error="{{ errors('blood_type') ?? ''}}" placeholder="Select Blood Type" required>
+                    @foreach(config('data.bloodTypes') as $bloodType)
+                    <li class="select-item" data-value="{{ $bloodType }}">{{ $bloodType }}</li>
+                    @endforeach
+                </c-select>
+            </form>
+            <c-slot name="close">
+                Close
+            </c-slot>
+            <c-slot name="footer">
+                <c-button type="submit" form="add-maternal-form" variant="primary">Create a Maternal Profile</c-button>
+            </c-slot>
+        </c-modal>
+    </c-slot>
+
 </c-table.controls>
 
 <c-table.wrapper card="1">
