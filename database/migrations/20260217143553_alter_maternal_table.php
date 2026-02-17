@@ -16,7 +16,7 @@ class Migration_20260217143553_alter_maternal_table implements \Library\Framewor
         QueryBuilder::raw("
             ALTER TABLE maternal
             ADD COLUMN IF NOT EXISTS height REAL,
-            ADD COLUMN IF NOT EXISTS blood_group blood_type,
+            ADD COLUMN IF NOT EXISTS blood_type blood_type,
             ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
         ");
     }
