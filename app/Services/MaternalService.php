@@ -68,10 +68,12 @@ class MaternalService
         string $reasonTitle,
         string $reasonDescription
     ): ?string {
+
+    $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
         // Prevent duplicate requests
         $existing = MaternalAccessRequest::query()
             ->where('staff_id', '=', $staffId)
-            ->where('maternal_id', '=', $maternalId)
+            ->where('maternal_id', '=', $parentId)
             ->first();
 
         if ($existing) {
@@ -80,13 +82,13 @@ class MaternalService
 
         $request = new MaternalAccessRequest();
         $request->staff_id = $staffId;
-        $request->maternal_id = $maternalId;
+        $request->maternal_id = $parentId;
         $request->reason_title = $reasonTitle;
         $request->reason_description = $reasonDescription;
         $request->save();
 
         $staff = User::find($staffId);
-        $maternal = Maternal::find($maternalId);
+        $maternal = User::find($parentId);
 
         $this->notificationService->notifyAdmins(
             "Maternal Access Request",
@@ -214,6 +216,7 @@ class MaternalService
             $maternalData = [
                 'id' => $maternal->id,
                 'name' => User::find($maternal->parent_id)->name,
+                'age' => Calculator::calculateAge(ParentM::find($maternal->parent_id)->date_of_birth),
                 'height' => $maternal->height_cm,
                 'blood_type' => $maternal->blood_group,
                 'type' => $maternal->type,
