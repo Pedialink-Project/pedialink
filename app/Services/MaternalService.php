@@ -243,18 +243,18 @@ class MaternalService
                     'gravida' => $latestPregnancy->gravida,
                     'para' => $latestPregnancy->para,
                     'delivery_outcome' => $latestPregnancy->delivery_outcome,
-                           'record' => $latestRecord ? [
-                            'visit_date' => $latestRecord->visit_date,
-                            'trimester' => $latestRecord->trimester,
-                            'weight' => $latestRecord->weight,
-                            'blood_pressure' => $latestRecord->blood_pressure,
-                            'bmi' => $latestRecord->bmi,
-                            'glucose' => $latestRecord->glucose,
-                            'hemoglobin' => $latestRecord->hemoglobin,
-                            'fundal_height' => $latestRecord->fundal_height,
-                            'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
-                            'health_status' => $latestRecord->health_status,
-                        ] : null
+                    'record' => $latestRecord ? [
+                        'visit_date' => $latestRecord->visit_date,
+                        'trimester' => $latestRecord->trimester,
+                        'weight' => $latestRecord->weight,
+                        'blood_pressure' => $latestRecord->blood_pressure,
+                        'bmi' => $latestRecord->bmi,
+                        'glucose' => $latestRecord->glucose,
+                        'hemoglobin' => $latestRecord->hemoglobin,
+                        'fundal_height' => $latestRecord->fundal_height,
+                        'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
+                        'health_status' => $latestRecord->health_status,
+                    ] : null
                 ]);
             }
 
@@ -314,6 +314,24 @@ class MaternalService
         return $errors;
     }
 
+    public function validateAntenatalEndData(string $end_at, string $delivery_outcome)
+    {
+        $errors = [];
+
+        $endAtError = $this->validatePastDate($end_at, "End Date");
+        if ($endAtError) {
+            $errors['end_at'] = $endAtError;
+        }
+
+        if (!Validator::validateFieldExistence($delivery_outcome)) {
+            $errors['delivery_outcome'] = "Delivery outcome field cannot be empty";
+        } elseif (!in_array($delivery_outcome, config('data.deliveryOutcomes'))) {
+            $errors['delivery_outcome'] = "Please provide a valid delivery outcome";
+        }
+
+        return $errors;
+    }
+
 
 
     public function createMaternalProfile(
@@ -360,6 +378,7 @@ class MaternalService
         $pregnancy->maternal_id = $maternal->id;
         $pregnancy->lmp = $lmp;
         $pregnancy->edd = Calculator::calculateEdd($lmp);
+        $pregnancy->delivery_outcome = 'ongoing';
         $pregnancy->gravida = 1;
         $pregnancy->para = 0;
         $pregnancy->save();
@@ -373,6 +392,49 @@ class MaternalService
             "maternal_profile_created",
             $maternal->id
         );
+        return null;
+    }
+
+    public function endAntenatalCare(int $maternalId, $delivery_outcome, $end_at): ?string
+    {
+        $maternal = Maternal::find($maternalId);
+
+        if (!$maternal) {
+            return "Maternal profile not found.";
+        }
+
+        if ($maternal->type !== 'antenatal') {
+            return "Only antenatal profiles can be ended.";
+        }
+
+        $latestPregnancy = Pregnancy::query()
+            ->where('maternal_id', '=', $maternal->id)
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        if (!$latestPregnancy) {
+            return "No pregnancy record found for this maternal profile.";
+        }
+
+
+        $latestPregnancy->delivery_outcome = $delivery_outcome;
+        $latestPregnancy->end_at = $end_at;
+        if (in_array($delivery_outcome, ['live_birth', 'stillbirth'])) {
+            $latestPregnancy->para = $latestPregnancy->para + 1;
+        }
+        $latestPregnancy->save();
+
+        $maternal->type = 'postnatal';
+        $maternal->save();
+
+        $this->notificationService->notify(
+            $maternal->parent_id,
+            "Antenatal care ended",
+            "Your antenatal care has been marked as ended with the outcome: {$delivery_outcome}. Please consult your Public Health Midwife for postnatal care instructions.",
+            "antenatal_care_ended",
+            $maternal->id
+        );
+
         return null;
     }
 }
