@@ -31,35 +31,11 @@ Maternal Profiles - Overview
 @endsection
 
 @section('content')
-<?php
-$items = [
-    ['id' => 'P-1345', 'name' => 'Nancy Drew', 'Age' => '28 yrs', 'Address' => 'No 1, Main Street, Colombo', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-    ['id' => 'F-7213', 'name' => 'Femke Bol', 'Age' => '22 yrs', 'Address' => 'No 2, Lake Road, Kandy', 'Type' => 'Antenatal', 'Stage' => 'Second Trimester'],
-    ['id' => 'S-3456', 'name' => 'Sophia Devs', 'Age' => '32 yrs', 'Address' => 'No 3, Park Avenue, Galle', 'Type' => 'Antenatal', 'Stage' => 'Third Trimester'],
-    ['id' => 'S-6543', 'name' => 'Sarah Peter', 'Age' => '23 yrs', 'Address' => 'No 4, Beach Road, Negombo', 'Type' => 'Postnatal', 'Stage' => 'First Trimester'],
-    ['id' => 'S-2345', 'name' => 'Shelly Ann', 'Age' => '29 yrs', 'Address' => 'No 5, Temple Lane, Matara', 'Type' => 'Antenatal', 'Stage' => 'Second Trimester'],
-    ['id' => 'E-4321', 'name' => 'Elain Thompson', 'Age' => '19 yrs', 'Address' => 'No 6, Hill Street, Jaffna', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-    ['id' => 'J-1235', 'name' => 'Jesica Colns', 'Age' => '25 yrs', 'Address' => 'No 7, River Road, Kurunegala', 'Type' => 'Postnatal', 'Stage' => 'Second Trimester'],
-    ['id' => 'S-4325', 'name' => 'Shacarri Richardson', 'Age' => '22 yrs', 'Address' => 'No 8, Market Street, Anuradhapura', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-    ['id' => 'S-4567', 'name' => 'Sherika Jackson', 'Age' => '36 yrs', 'Address' => 'No 9, Garden Road, Badulla', 'Type' => 'Postnatal', 'Stage' => 'First Trimester'],
-    ['id' => 'J-1345', 'name' => 'Julia Ann', 'Age' => '21 yrs', 'Address' => 'No 10, College Avenue, Trincomalee', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-    ['id' => 'S-2346', 'name' => 'Shiffan Hassan', 'Age' => '28 yrs', 'Address' => 'No 11, Station Road, Batticaloa', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-    ['id' => 'F-7213', 'name' => 'Femke Bol', 'Age' => '22 yrs', 'Address' => 'No 12, Circular Road, Polonnaruwa', 'Type' => 'Antenatal', 'Stage' => 'First Trimester'],
-];
-?>
 
-<c-table.controls :columns='["ID","Name","Age","Type","Stage"]'>
 
-    <c-slot name="filter">
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Type
-        </c-button>
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Stage
-        </c-button>
-    </c-slot>
+<c-table.controls action="{{ route('phm.maternal.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'type' => ['antenatal', 'postnatal']]">
+
+   
     <c-slot name="extrabtn">
         <c-modal id="add-maternal" size="sm" :initOpen="flash('create') ? true : false">
             <c-slot name="trigger">
@@ -134,7 +110,7 @@ $items = [
             <c-table.tbody>
                 @foreach ($maternals as $key => $maternal)
                 <c-table.tr>
-                    <c-table.td col="id">{{ $maternal['id'] }}</c-table.td>
+                    <c-table.td col="id">C-00{{ $maternal['id'] }}</c-table.td>
                     <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
                     <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
@@ -174,6 +150,8 @@ $items = [
                                     </c-slot>
 
                                     <c-modal.viewcard>
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Maternal ID"
+                                            info="C-00{{ $maternal['id'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
                                             info="{{ $maternal['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
@@ -246,7 +224,7 @@ $items = [
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
-                @if(count($items) === 0)
+                @if(count($maternals) === 0)
                 <tr>
                     <td colspan="6">
                         <div class="table-empty">No items found</div>
@@ -258,5 +236,5 @@ $items = [
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection
