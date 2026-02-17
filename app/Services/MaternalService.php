@@ -7,6 +7,7 @@ use App\Models\ParentM;
 use App\Models\MaternalAccessRequest;
 use App\Models\Pregnancy;
 use App\Models\MaternalRecord;
+use App\Helpers\Calculator;
 use App\Models\Area;
 use App\Models\User;
 
@@ -131,10 +132,18 @@ class MaternalService
             }
         }
 
+        $is_created = false;
+        if($maternal->phm_id == $phmId) {
+            $is_created = true;
+        }
+
+       
+
 
         $childData = [
             'id' => $maternal->id,
             'access_status' => $accessStatus,
+            'is_created' => $is_created,
         ];
 
         if ($hasFullAccess) {
@@ -184,6 +193,48 @@ class MaternalService
 
    
 
+public function createMaternalProfile(
+    int $parentId,
+    int $phmId,
+    float $height,
+    ?string $bloodType,
+    string $lmp,
+): ?string {
+
+
+    $existing = Maternal::query()
+        ->where('parent_id', '=', $parentId)
+        ->first();
+
+    if ($existing) {
+        return "Maternal profile already exists for this parent.";
+    }
+
+  
+        $maternal = new Maternal();
+        $maternal->parent_id = $parentId;
+        $maternal->phm_id = $phmId;
+        $maternal->type = 'pregnant';
+        $maternal->height = $height;
+        $maternal->blood_type = $bloodType;
+        $maternal->save();
+
+       
+
+        $pregnancy = new Pregnancy();
+        $pregnancy->maternal_id = $maternal->id;
+        $pregnancy->lmp = $lmp;
+        $pregnancy->edd = Calculator::calculateEdd($lmp);
+        $pregnancy->gravida = 1;
+        $pregnancy->para = 0;
+        $pregnancy->save();
+
+       
+
+        return null;
+
+    
+}
 
     
 
