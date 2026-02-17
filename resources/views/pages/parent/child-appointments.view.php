@@ -33,7 +33,7 @@ Parent - Appointments
 $appointments = [
     [
         'id' => 'APP-001',
-        'patient_name' => 'Keeththi Perera',
+        'patient_name' => 'Sara Johnsan',
         'date' => '2025-10-21',
         'time' => '09:00',
         'datetime' => '2025-10-21 09:00',
@@ -45,7 +45,7 @@ $appointments = [
     ],
     [
         'id' => 'APP-002',
-        'patient_name' => 'Nimali Jayawardena',
+        'patient_name' => 'Sara Johnson',
         'date' => '2025-10-22',
         'time' => '11:00',
         'datetime' => '2025-10-22 11:00',
@@ -57,7 +57,7 @@ $appointments = [
     ],
     [
         'id' => 'APP-003',
-        'patient_name' => 'Arjun Perera',
+        'patient_name' => 'Liam Johnson',
         'date' => '2025-10-19',
         'time' => '10:00',
         'datetime' => '2025-10-19 10:00',
@@ -69,7 +69,7 @@ $appointments = [
     ],
     [
         'id' => 'APP-004',
-        'patient_name' => 'Samantha Wijesinghe',
+        'patient_name' => 'Sara Johnson',
         'date' => '2025-10-25',
         'time' => '12:00',
         'datetime' => '2025-10-25 12:00',
@@ -81,7 +81,7 @@ $appointments = [
     ],
     [
         'id' => 'APP-005',
-        'patient_name' => 'Dilan Fernando',
+        'patient_name' => 'Liam Johnson',
         'date' => '2025-10-23',
         'time' => '09:00',
         'datetime' => '2025-10-23 09:00',
