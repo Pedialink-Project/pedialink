@@ -21,6 +21,7 @@ class Migration_20260217145601_alter_pergnancy_table implements \Library\Framewo
             ADD COLUMN IF NOT EXISTS para INT,
             ADD COLUMN IF NOT EXISTS delivery_outcome VARCHAR(20),
             ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
+            DROP COLUMN IF EXISTS started_at;
         ");
     }
 
@@ -34,6 +35,7 @@ class Migration_20260217145601_alter_pergnancy_table implements \Library\Framewo
             DROP COLUMN IF EXISTS para,
             DROP COLUMN IF EXISTS delivery_outcome,
             DROP COLUMN IF EXISTS created_at;
+            ADD COLUMN IF NOT EXISTS started_at DATE;
         ");
     }
 }
