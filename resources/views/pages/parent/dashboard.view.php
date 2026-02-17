@@ -145,7 +145,7 @@ Parent Dashboard
                     <span class="card-title">Upcoming Appoinments</span>
                     <span class="card-subtitle">Your scheduled visits to the clinic</span>
                 </div>
-                <c-link type="secondary" size="sm" href="{{route('parent.appointments')}}">View All</c-link>
+                <c-link type="secondary" size="sm" href="{{route('parent.appointments.my')}}">View All</c-link>
             </div>
             <hr class="divider">
             <div class="card-body">
