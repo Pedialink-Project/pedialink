@@ -95,7 +95,6 @@ $items = [
                     </li>
                     @endif
                 </c-select>
-               
                 <c-input type="number" label="Height (cm):" name="height" value="{{ old('height') ?? '' }}"
                     error="{{ errors('height') ?? ''}}"placeholder="Enter Height in cm" required />
                    <c-input type="date" label="LMP:" name="lmp" value="{{ old('lmp') ?? '' }}"
@@ -111,7 +110,7 @@ $items = [
                 Close
             </c-slot>
             <c-slot name="footer">
-                <c-button type="submit" form="add-maternal-form" variant="primary">Create a Maternal Profile</c-button>
+                <c-button type="submit" form="add-maternal-form" variant="primary">Create Maternal Profile</c-button>
             </c-slot>
         </c-modal>
     </c-slot>
@@ -126,20 +125,29 @@ $items = [
                     <c-table.th sortable="1" width="160px">ID</c-table.th>
                     <c-table.th sortable="1" width="210px">Name</c-table.th>
                     <c-table.th sortable="1" width="200px">Age</c-table.th>
-                    <c-table.th align="left" sortable="1" width="220px">Type</c-table.th>
-                    <c-table.th align="left" sortable="1">Stage</c-table.th>
+                    <c-table.th align="left" sortable="1" width="220px">Maternal Type</c-table.th>
+                    <c-table.th align="left" sortable="1">Access Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
             <c-table.tbody>
-                @foreach ($items as $key => $item)
+                @foreach ($maternals as $key => $maternal)
                 <c-table.tr>
-                    <c-table.td col="id">{{ $item['id'] }}</c-table.td>
-                    <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                    <c-table.td col="age">{{ $item['Age'] }}</c-table.td>
-                    <c-table.td col="type">{{ $item['Type'] }}</c-table.td>
-                    <c-table.td col="stage">{{ $item['Stage'] }}</c-table.td>
+                    <c-table.td col="id">{{ $maternal['id'] }}</c-table.td>
+                    <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
+                    <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
+                    <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
+                    <c-table.td col="access_status"> @if (strtolower($maternal['access_status']) === "accepted")
+                        <c-badge class="status-event" type="green">{{ ucfirst($maternal['access_status']) }}</c-badge>
+                        @elseif (strtolower($maternal['access_status']) === "pending")
+                        <c-badge class="status-event" type="yellow">{{ ucfirst($maternal['access_status']) }}</c-badge>
+                        @elseif (strtolower($maternal['access_status']) === "not_requested")
+                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
+                        @elseif (strtolower($maternal['access_status']) === "rejected")
+                        <c-badge class="status-event" type="red">{{ ucfirst($maternal['access_status'])}}</c-badge>
+                            @endif
+                    </c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
                             <c-slot name="trigger">
@@ -171,7 +179,7 @@ $items = [
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
                                             info="{{ $item['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                            title="Age" info="{{ $item['Age'] }}" />
+                                            title="Age" info="{{ $item['age'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
                                             title="Address" info="{{ $item['Address'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"

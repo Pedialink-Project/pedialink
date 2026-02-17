@@ -208,18 +208,16 @@ class MaternalService
                 }
             }
 
-            $is_created = false;
-            if ($maternal->phm_id == $phmId) {
-                $is_created = true;
-            }
 
 
 
-
-            $childData = [
+            $maternalData = [
                 'id' => $maternal->id,
+                'name' => User::find($maternal->parent_id)->name,
+                'height' => $maternal->height_cm,
+                'blood_type' => $maternal->blood_group,
+                'type' => $maternal->type,
                 'access_status' => $accessStatus,
-                'is_created' => $is_created,
             ];
 
             if ($hasFullAccess) {
@@ -238,10 +236,9 @@ class MaternalService
                         ->first();
                 }
 
-                $childData = array_merge($childData, [
-                    'height_cm' => $maternal->height_cm,
-                    'blood_group' => $maternal->blood_group,
-                    'emergency_contact' => $maternal->emergency_contact,
+                $maternalData = array_merge($maternalData, [
+                    'date_of_birth'=> User::find($maternal->parent_id)->date_of_birth,
+
                     'latest_pregnancy' => $latestPregnancy ? [
                         'lmp' => $latestPregnancy->lmp,
                         'edd' => $latestPregnancy->edd,
@@ -250,16 +247,21 @@ class MaternalService
                         'delivery_outcome' => $latestPregnancy->delivery_outcome,
                         'latest_record' => $latestRecord ? [
                             'visit_date' => $latestRecord->visit_date,
+                            'trimester'=> $latestRecord->trimester,
                             'weight' => $latestRecord->weight,
-                            'blood_pressure_sys' => $latestRecord->blood_pressure_sys,
-                            'blood_pressure_dia' => $latestRecord->blood_pressure_dia,
+                            'blood_pressure' => $latestRecord->blood_pressure,
+                            'bmi' => $latestRecord->bmi,
+                            'glucose' => $latestRecord->glucose,
+                            'hemoglobin' => $latestRecord->hemoglobin,
+                            'fundal_height' => $latestRecord->fundal_height,
+                            'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
                             'health_status' => $latestRecord->health_status,
                         ] : null
                     ] : null
                 ]);
             }
 
-            $resource[] = $childData;
+            $resource[] = $maternalData;
         }
 
         $links = array_diff_key($results, ['items' => true]);
@@ -350,7 +352,7 @@ class MaternalService
 
         $maternal = new Maternal();
         $maternal->parent_id = $parentId;
-        $maternal->type = 'pregnant';
+        $maternal->type = 'antenatal';
         $maternal->height = $height;
         $maternal->blood_type = $bloodType;
         $maternal->save();
