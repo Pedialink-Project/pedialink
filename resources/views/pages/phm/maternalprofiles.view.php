@@ -258,6 +258,32 @@ Maternal Profiles - Overview
                                     </c-slot>
                                 </c-modal>
                                 @endif
+                                @if ($maternal['type'] === "postnatal")
+                                <c-modal id="start-antenatal-profile" size="sm" :initOpen="flash('start') ? true : false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Start Antenatal Profile</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
+                                    </c-slot>
+                                    <c-slot name="header">
+                                        <div>Start Antenatal Profile</div>
+                                    </c-slot>
+
+                                    <form id="start-antenatal-form" class="child-form" action="{{ route('phm.maternal.start', ['id' => $maternal['id']]) }}" method="POST">
+                                        <c-input type="date" label="LMP:" name="lmp" value="{{ old('lmp') ?? '' }}"
+                                            error="{{ errors('lmp') ?? ''}}" placeholder="Enter LMP Date" required />
+                                        <c-input type="number" label="Height (cm):" name="height" value="{{ old('height') ?? '' }}"
+                                            error="{{ errors('height') ?? ''}}" placeholder="Enter Height in cm" required />
+                                    </form>
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="start-antenatal-form" variant="primary">Start Antenatal Profile</c-button>
+                                    </c-slot>
+                                </c-modal>
+                                @endif
 
                                 @endif
                             </c-slot>
