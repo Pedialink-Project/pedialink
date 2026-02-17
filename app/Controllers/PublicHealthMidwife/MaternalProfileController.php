@@ -20,32 +20,40 @@ class MaternalProfileController
         return view("phm/maternalprofiles", ['unMaternalProfiles' => $unMaternalProfiles]);
     }
 
-    // public function createMaternal(Request $request)
+    public function createMaternal(Request $request)
+    {
+        $phmId = auth()->user()->id;
+        $parentId = $request->input("parent_id");
+        $height = $request->input("height");
+        $bloodType = $request->input("blood_type");
+        $lmp = $request->input("lmp");
 
-    //     // $parentId = $request->input("parent_id");
-    //     // $height = $request->input("height");
-    //     // $bloodType = $request->input("blood_type");
-    //     // $lmp = $request->input("lmp");
+        $errors = $this->maternalService->validateMaternalProfile($height, $lmp, $bloodType);
+
+        if (count($errors) > 0) {
+            return redirect(route('phm.maternal.profiles'))
+                ->withErrors($errors)
+                ->withInput([
+                    'parent_id' => $parentId,
+                    'height' => $height,
+                    'blood_type' => $bloodType,
+                    'lmp' => $lmp,
+                ])
+                ->with("create", true);
+        }
 
 
+        $error = $this->maternalService->createMaternalProfile($parentId, $phmId, $height, $bloodType, $lmp);
 
+        if ($error) {
+            return redirect(route('phm.maternal.profiles'))
+                ->withMessage($error, "Error", "error");
+        }
 
-    //     // // Create Maternal Profile and Pregnancy Record
-    //     // try {
-    //     //     $maternalService = new \App\Services\MaternalService();
-    //     //     $maternalService->createMaternalProfile(
-    //     //         $parentId,
-    //     //         $phmId,
-    //     //         (float)$height,
-    //     //         $bloodType,
-    //     //         $lmp,
-    //     //         // (int)$gravida, --- IGNORE ---
-    //     //         // (int)$para --- IGNORE ---
-    //     //     );
-
-    //     //     return response()->json(['message' => 'Maternal profile created successfully.']);
-    //     // } catch (\Exception $e) {
-    //     //     return response()->json(['error' => 'Failed to create maternal profile: ' . $e->getMessage()], 500);
-    //     // }
-    // }
+        return redirect(route('phm.maternal.profiles'))->withMessage(
+            "Maternal profile was successfully created",
+            "Success",
+            "success",
+        );
+    }
 }
