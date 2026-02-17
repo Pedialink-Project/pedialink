@@ -21,7 +21,7 @@ class Migration_20260217144158_alter_maternal_records_table implements \Library\
             ADD COLUMN IF NOT EXISTS glucose REAL,
             ADD COLUMN IF NOT EXISTS fetal_heart_rate INT,
             ADD COLUMN IF NOT EXISTS fundal_height REAL,
-            ADD COLUMN IF NOT EXISTS health_status VARCHAR(20) DEFAULT 'normal',
+            ADD COLUMN IF NOT EXISTS health_status VARCHAR(20) DEFAULT 'normal'
         ");
 
     }
