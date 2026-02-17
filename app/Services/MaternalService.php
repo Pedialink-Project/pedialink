@@ -8,12 +8,16 @@ use App\Models\MaternalAccessRequest;
 use App\Models\Pregnancy;
 use App\Models\MaternalRecord;
 use App\Helpers\Calculator;
+use App\Helpers\Validator;
+use App\Rules\DateRule;
 use App\Models\Area;
 use App\Models\PublicHealthMidwife;
 use App\Models\User;
 
 class MaternalService
 {
+
+    use DateRule;
     public function getAllMaternal()
     {
         $maternals = Maternal::all();
@@ -219,6 +223,54 @@ class MaternalService
         return [$resource, $links];
     }
 
+    private function validateBloodType($bloodType)
+    {
+        $error = null;
+
+        if (!Validator::validateFieldExistence($bloodType)) {
+            $error = "Blood type field cannot be empty";
+            return $error;
+        }
+
+        $validTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
+        if (!in_array(strtoupper($bloodType), $validTypes)) {
+            $error = "Please provide a valid blood type (e.g., A+, O-, AB+)";
+            return $error;
+        }
+
+        return $error;
+    }
+
+    public function validateMaternalProfile(float $height, string $lmp, string $bloodType, bool $edit = false)
+    {
+        $errors = [];
+        $suffix = $edit ? 'e_' : '';
+
+        if ($height !== null) {
+            if (!is_numeric($height)) {
+                $errors['height'] = 'Height must be numeric.';
+            } elseif ($height < 10 || $height > 250) {
+                $errors['height'] = 'Height must be between 10cm and 250cm.';
+            }
+        }
+
+        $lmpError = $this->validatePastDate($lmp, "LMP");
+        if ($lmpError) {
+            $errors["{$suffix}lmp"] = $lmpError;
+        }
+
+        $bloodTypeError = $this->validateBloodType($bloodType);
+        if ($bloodTypeError) {
+            $errors["{$suffix}blood_type"] = $bloodTypeError;
+        }
+
+
+
+
+        return $errors;
+    }
+
 
 
     public function createMaternalProfile(
@@ -229,6 +281,19 @@ class MaternalService
         string $lmp,
     ): ?string {
 
+
+        $parent = ParentM::query()->where('id', '=', $parentId);
+        $isMother = $parent->where('type', '=', 'mother')->first();
+        if (!$isMother) {
+            return "Selected parent is not registered as a mother.";
+        }
+
+        $phm = PublicHealthMidwife::query()->where('id', '=', $phmId)->first();
+
+        $isphmAssigned = $parent->where('area_id', '=', $phm->area_id)->first();
+        if (!$isphmAssigned) {
+            return "Selected parent is not assigned to you.";
+        }
 
         $existing = Maternal::query()
             ->where('parent_id', '=', $parentId)
@@ -241,7 +306,6 @@ class MaternalService
 
         $maternal = new Maternal();
         $maternal->parent_id = $parentId;
-        $maternal->phm_id = $phmId;
         $maternal->type = 'pregnant';
         $maternal->height = $height;
         $maternal->blood_type = $bloodType;
