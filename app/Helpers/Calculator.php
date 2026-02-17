@@ -24,6 +24,17 @@ class Calculator
         return $months;
     }
 
+    public static function calculateAge(string $dateOfBirth): int
+    {
+        $dob = new \DateTime($dateOfBirth);
+        $today = new \DateTime();
+
+        $diff = $today->diff($dob);
+
+        return $diff->y;
+    }
+
+
 
     public static function calculateBMI(?float $heightCm, ?float $weightKg): ?float
     {
@@ -42,7 +53,7 @@ class Calculator
         return round($bmi, 2);
     }
 
-     public static function evaluateChildHealthStatus(
+    public static function evaluateChildHealthStatus(
         int $ageMonths,
         ?float $heightCm,
         ?float $weightKg,
@@ -85,4 +96,43 @@ class Calculator
         };
     }
 
+    public static function  calculateEdd(string $lmp): string
+    {
+        $lmpDate = new \DateTime($lmp);
+
+        // Add 280 days (40 weeks)
+        $lmpDate->modify('+280 days');
+
+        return $lmpDate->format('Y-m-d');
+    }
+
+
+    public static function calculateMaternalHealthStatus(
+        ?float $hemoglobin,
+        ?float $glucose,
+        ?int $blood_pressure
+    ): string {
+
+        $hb = $hemoglobin;
+        $gl = $glucose;
+        $bp = $blood_pressure;
+
+        if (
+            ($bp !== null && $bp >= 160) ||
+            ($hb !== null && $hb < 7) ||
+            ($gl !== null && $gl >= 11)
+        ) {
+            return 'critical';
+        }
+
+        if (
+            ($bp !== null && $bp >= 140) ||
+            ($hb !== null && $hb < 10) ||
+            ($gl !== null && $gl >= 7.8)
+        ) {
+            return 'at_risk';
+        }
+
+        return 'good';
+    }
 }
