@@ -9,6 +9,7 @@ use App\Models\Pregnancy;
 use App\Models\MaternalRecord;
 use App\Helpers\Calculator;
 use App\Models\Area;
+use App\Models\PublicHealthMidwife;
 use App\Models\User;
 
 class MaternalService
@@ -26,7 +27,7 @@ class MaternalService
                 'height' => $maternal->height,
                 'blood_group' => $maternal->blood_group,
                 'created_at' => $maternal->created_at,
-               
+
             ];
         }
 
@@ -42,7 +43,7 @@ class MaternalService
     //     return $interval->days;
     // }
 
-    
+
 
     public function getMaternalById($id)
     {
@@ -57,160 +58,187 @@ class MaternalService
         $resource = [];
         foreach ($maternals as $maternal) {
 
-            $parentName = User::query()->where('id', '=',$maternal['parent_id'])->first()->name;
-            $parentAge = ParentM::query()->where('id', '=',$maternal['parent_id'])->first()->age;
-            $parentAddress = ParentM::query()->where('id', '=',$maternal['parent_id'])->first()->address;
-            $parentAreaId = ParentM::query()->where('id', '=',$maternal['parent_id'])->first()->areaId;
+            $parentName = User::query()->where('id', '=', $maternal['parent_id'])->first()->name;
+            $parentAge = ParentM::query()->where('id', '=', $maternal['parent_id'])->first()->age;
+            $parentAddress = ParentM::query()->where('id', '=', $maternal['parent_id'])->first()->address;
+            $parentAreaId = ParentM::query()->where('id', '=', $maternal['parent_id'])->first()->areaId;
 
 
-                $resource[] = [
-                    'id' => $maternal['id'],
-                    'type' => $maternal['type'],
-                    'stage' => $maternal['stage'],
-                    'pregnancy_date' => $maternal['pregnancy_date'],
-                    'health_status' => $maternal['health_status'],
-                    'additional_info' => $maternal['additional_info'],
-                    'name' => $parentName,
-                    'age' => $parentAge,
-                    'address' => $parentAddress,
-                ];
-
+            $resource[] = [
+                'id' => $maternal['id'],
+                'type' => $maternal['type'],
+                'stage' => $maternal['stage'],
+                'pregnancy_date' => $maternal['pregnancy_date'],
+                'health_status' => $maternal['health_status'],
+                'additional_info' => $maternal['additional_info'],
+                'name' => $parentName,
+                'age' => $parentAge,
+                'address' => $parentAddress,
+            ];
         }
-        
+
 
         return $resource;
     }
 
-    
-    public function getMaternalByPhmId(
-    int $phmId,
-    ?string $search = null,
-    ?array $filters = null
-) {
+    public function getParentsWithoutMaternal(int $phmId)
+    {
 
-    $maternalQuery = Maternal::query();
+        $phm = PublicHealthMidwife::query()->where('id', '=', $phmId)->first();
+        $femaleParents = ParentM::query()
+            ->where('type', '=', 'mother')
+            ->where('area_id', '=', $phm->area_id)
+            ->get();
 
-    $results = $maternalQuery
-        ->orderBy('id', 'ASC')
-        ->paginate(10)
-        ->toArray();
+        $resource = [];
 
-    $resource = [];
+        foreach ($femaleParents as $parent) {
 
-    $requests = MaternalAccessRequest::query()
-        ->where('staff_id', '=', $phmId)
-        ->get();
-
-    foreach ($results['items'] as $maternal) {
-
-        $request = null;
-
-        foreach ($requests as $req) {
-            if ($req->maternal_id == $maternal->id) {
-                $request = $req;
-                break;
-            }
-        }
-
-        $accessStatus = 'not_requested';
-        $hasFullAccess = false;
-
-        if ($request) {
-            if ($request->accepted === true) {
-                $accessStatus = 'accepted';
-                $hasFullAccess = true;
-            } elseif ($request->accepted === false) {
-                $accessStatus = 'pending';
-            } else {
-                $accessStatus = 'rejected';
-            }
-        }
-
-        if (!empty($filters['access_status'])) {
-            if (!in_array($accessStatus, $filters['access_status'])) {
-                continue;
-            }
-        }
-
-        $is_created = false;
-        if($maternal->phm_id == $phmId) {
-            $is_created = true;
-        }
-
-       
-
-
-        $childData = [
-            'id' => $maternal->id,
-            'access_status' => $accessStatus,
-            'is_created' => $is_created,
-        ];
-
-        if ($hasFullAccess) {
-
-            $latestPregnancy = Pregnancy::query()
-                ->where('maternal_id', '=', $maternal->id)
-                ->orderBy('id', 'DESC')
+            $maternal = Maternal::query()
+                ->where('parent_id', '=', $parent->id)
                 ->first();
 
-            $latestRecord = null;
-
-            if ($latestPregnancy) {
-                $latestRecord = MaternalRecord::query()
-                    ->where('pregnancy_id', '=', $latestPregnancy->id)
-                    ->orderBy('visit_date', 'DESC')
-                    ->first();
+            if (!$maternal) {
+                $resource[] = [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                ];
             }
-
-            $childData = array_merge($childData, [
-                'height_cm' => $maternal->height_cm,
-                'blood_group' => $maternal->blood_group,
-                'emergency_contact' => $maternal->emergency_contact,
-                'latest_pregnancy' => $latestPregnancy ? [
-                    'lmp' => $latestPregnancy->lmp,
-                    'edd' => $latestPregnancy->edd,
-                    'gravida' => $latestPregnancy->gravida,
-                    'para' => $latestPregnancy->para,
-                    'delivery_outcome' => $latestPregnancy->delivery_outcome,
-                    'latest_record' => $latestRecord ? [
-                        'visit_date' => $latestRecord->visit_date,
-                        'weight' => $latestRecord->weight,
-                        'blood_pressure_sys' => $latestRecord->blood_pressure_sys,
-                        'blood_pressure_dia' => $latestRecord->blood_pressure_dia,
-                        'health_status' => $latestRecord->health_status,
-                    ] : null
-                ] : null
-            ]);
         }
 
-        $resource[] = $childData;
+        return $resource;
     }
 
-    $links = array_diff_key($results, ['items' => true]);
 
-    return [$resource, $links];
-}
+    public function getMaternalByPhmId(
+        int $phmId,
+        ?string $search = null,
+        ?array $filters = null
+    ) {
 
-   
+        $maternalQuery = Maternal::query();
 
-public function createMaternalProfile(
-    int $parentId,
-    int $phmId,
-    float $height,
-    ?string $bloodType,
-    string $lmp,
-): ?string {
+        $results = $maternalQuery
+            ->orderBy('id', 'ASC')
+            ->paginate(10)
+            ->toArray();
+
+        $resource = [];
+
+        $requests = MaternalAccessRequest::query()
+            ->where('staff_id', '=', $phmId)
+            ->get();
+
+        foreach ($results['items'] as $maternal) {
+
+            $request = null;
+
+            foreach ($requests as $req) {
+                if ($req->maternal_id == $maternal->id) {
+                    $request = $req;
+                    break;
+                }
+            }
+
+            $accessStatus = 'not_requested';
+            $hasFullAccess = false;
+
+            if ($request) {
+                if ($request->accepted === true) {
+                    $accessStatus = 'accepted';
+                    $hasFullAccess = true;
+                } elseif ($request->accepted === false) {
+                    $accessStatus = 'pending';
+                } else {
+                    $accessStatus = 'rejected';
+                }
+            }
+
+            if (!empty($filters['access_status'])) {
+                if (!in_array($accessStatus, $filters['access_status'])) {
+                    continue;
+                }
+            }
+
+            $is_created = false;
+            if ($maternal->phm_id == $phmId) {
+                $is_created = true;
+            }
 
 
-    $existing = Maternal::query()
-        ->where('parent_id', '=', $parentId)
-        ->first();
 
-    if ($existing) {
-        return "Maternal profile already exists for this parent.";
+
+            $childData = [
+                'id' => $maternal->id,
+                'access_status' => $accessStatus,
+                'is_created' => $is_created,
+            ];
+
+            if ($hasFullAccess) {
+
+                $latestPregnancy = Pregnancy::query()
+                    ->where('maternal_id', '=', $maternal->id)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+
+                $latestRecord = null;
+
+                if ($latestPregnancy) {
+                    $latestRecord = MaternalRecord::query()
+                        ->where('pregnancy_id', '=', $latestPregnancy->id)
+                        ->orderBy('visit_date', 'DESC')
+                        ->first();
+                }
+
+                $childData = array_merge($childData, [
+                    'height_cm' => $maternal->height_cm,
+                    'blood_group' => $maternal->blood_group,
+                    'emergency_contact' => $maternal->emergency_contact,
+                    'latest_pregnancy' => $latestPregnancy ? [
+                        'lmp' => $latestPregnancy->lmp,
+                        'edd' => $latestPregnancy->edd,
+                        'gravida' => $latestPregnancy->gravida,
+                        'para' => $latestPregnancy->para,
+                        'delivery_outcome' => $latestPregnancy->delivery_outcome,
+                        'latest_record' => $latestRecord ? [
+                            'visit_date' => $latestRecord->visit_date,
+                            'weight' => $latestRecord->weight,
+                            'blood_pressure_sys' => $latestRecord->blood_pressure_sys,
+                            'blood_pressure_dia' => $latestRecord->blood_pressure_dia,
+                            'health_status' => $latestRecord->health_status,
+                        ] : null
+                    ] : null
+                ]);
+            }
+
+            $resource[] = $childData;
+        }
+
+        $links = array_diff_key($results, ['items' => true]);
+
+        return [$resource, $links];
     }
 
-  
+
+
+    public function createMaternalProfile(
+        int $parentId,
+        int $phmId,
+        float $height,
+        ?string $bloodType,
+        string $lmp,
+    ): ?string {
+
+
+        $existing = Maternal::query()
+            ->where('parent_id', '=', $parentId)
+            ->first();
+
+        if ($existing) {
+            return "Maternal profile already exists for this parent.";
+        }
+
+
         $maternal = new Maternal();
         $maternal->parent_id = $parentId;
         $maternal->phm_id = $phmId;
@@ -219,7 +247,7 @@ public function createMaternalProfile(
         $maternal->blood_type = $bloodType;
         $maternal->save();
 
-       
+
 
         $pregnancy = new Pregnancy();
         $pregnancy->maternal_id = $maternal->id;
@@ -229,13 +257,8 @@ public function createMaternalProfile(
         $pregnancy->para = 0;
         $pregnancy->save();
 
-       
+
 
         return null;
-
-    
-}
-
-    
-
+    }
 }
