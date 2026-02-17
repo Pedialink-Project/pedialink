@@ -33,7 +33,6 @@ Parent - Appointments
 $appointments = [
     [
         'id' => 'APP-001',
-        'patient_name' => 'Keeththi Perera',
         'date' => '2025-10-21',
         'time' => '09:00',
         'datetime' => '2025-10-21 09:00',
@@ -45,7 +44,6 @@ $appointments = [
     ],
     [
         'id' => 'APP-002',
-        'patient_name' => 'Nimali Jayawardena',
         'date' => '2025-10-22',
         'time' => '11:00',
         'datetime' => '2025-10-22 11:00',
@@ -57,7 +55,6 @@ $appointments = [
     ],
     [
         'id' => 'APP-003',
-        'patient_name' => 'Arjun Perera',
         'date' => '2025-10-19',
         'time' => '10:00',
         'datetime' => '2025-10-19 10:00',
@@ -69,7 +66,6 @@ $appointments = [
     ],
     [
         'id' => 'APP-004',
-        'patient_name' => 'Samantha Wijesinghe',
         'date' => '2025-10-25',
         'time' => '12:00',
         'datetime' => '2025-10-25 12:00',
@@ -81,7 +77,6 @@ $appointments = [
     ],
     [
         'id' => 'APP-005',
-        'patient_name' => 'Dilan Fernando',
         'date' => '2025-10-23',
         'time' => '09:00',
         'datetime' => '2025-10-23 09:00',
@@ -116,7 +111,6 @@ $appointments = [
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">Name</c-table.th>
                     <c-table.th sortable="1">Date & Time</c-table.th>
                     <c-table.th sortable="1">Location</c-table.th>
                     <c-table.th>Doctor</c-table.th>
@@ -129,7 +123,6 @@ $appointments = [
             <c-table.tbody>
                 @foreach ($appointments as $key => $appointment)
                 <c-table.tr>
-                    <c-table.td col="name">{{$appointment['patient_name']}}</c-table.td>
                     <c-table.td col="date-time" width="200px">{{$appointment['date']}} at
                         {{$appointment['time']}}</c-table.td>
                     <c-table.td col="location" width="200px">{{$appointment['location']}}</c-table.td>
@@ -195,8 +188,7 @@ $appointments = [
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
                                             title="Appointment ID" info="{{ $appointment['id'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
-                                            title="Requester Name" info="{{ $appointment['patient_name'] }}" />
+                                        
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
                                             title="Date" info="{{ $appointment['date'] }} " />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
