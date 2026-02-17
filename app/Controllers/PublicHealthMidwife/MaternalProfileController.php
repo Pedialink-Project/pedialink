@@ -59,4 +59,35 @@ class MaternalProfileController
             "success",
         );
     }
+
+    public function endAntenatal(Request $request, $id)
+    {
+        $endAt = $request->input("end_at");
+        $deliveryOutcome = $request->input("delivery_outcome");
+
+        $errors = $this->maternalService->validateAntenatalEndData($endAt, $deliveryOutcome);
+
+        if (count($errors) > 0) {
+            return redirect(route('phm.maternal.profiles'))
+                ->withErrors($errors)
+                ->withInput([
+                    'end_at' => $endAt,
+                    'delivery_outcome' => $deliveryOutcome,
+                ])
+                ->with("end", true);
+        }
+
+        $error = $this->maternalService->endAntenatalCare($id, $deliveryOutcome, $endAt);
+
+        if ($error) {
+            return redirect(route('phm.maternal.profiles'))
+                ->withMessage($error, "Error", "error");
+        }
+
+        return redirect(route('phm.maternal.profiles'))->withMessage(
+            "Antenatal period ended successfully",
+            "Success",
+            "success",
+        );
+    }
 }
