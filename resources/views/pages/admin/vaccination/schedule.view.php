@@ -13,15 +13,6 @@
 @endsection
 
 @section('content')
-    <?php
-    $schedules = [
-        ["id" => "0001", "name" => "Sri Lanka National EPI v1", "version" => "2015_v0001", "enabled" => true, "effective_from" => "2020-05-10"],
-        ["id" => "0001", "name" => "Sri Lanka National EPI v2", "version" => "2015_v0001", "enabled" => false, "effective_from" => "2020-05-10"],
-        ["id" => "0001", "name" => "Sri Lanka National EPI v1", "version" => "2015_v0001", "enabled" => false, "effective_from" => "2020-05-10"],
-        ["id" => "0001", "name" => "Sri Lanka National EPI v1", "version" => "2015_v0001", "enabled" => false, "effective_from" => "2020-05-10"],
-    ];
-    ?>
-
     <c-table.controls :columns='["ID","Name","Version","Status","Effective From"]'>
         <c-slot name="filter">
             <c-button variant="outline">
@@ -30,7 +21,7 @@
             </c-button>
         </c-slot>
         <c-slot name="extrabtn">
-            <c-modal id="add-schedule-modal" size="sm" :initOpen="false">
+            <c-modal id="add-schedule-modal" size="sm" :initOpen="flash('add') ? true : false">
                 <c-slot name="trigger">
                     <c-button class="add-schedule-btn" variant="primary">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -61,10 +52,34 @@
                     <div>Add New Schedule</div>
                 </c-slot>
 
-                <form id="add-schedule" class="schedule-form" action="">
-                    <c-input type="text" label="Schedule Name" placeholder="Enter schedule name" required />
-                    <c-input type="text" label="Schedule Version Number" placeholder="Enter schedule verison number" required />
-                    <c-input type="date" label="Effective From" placeholder="Select Date" required />
+                <form id="add-schedule" method="POST" class="schedule-form" action="{{ route('admin.vaccination.schedule.create') }}">
+                    <c-input
+                        type="text"
+                        name="name"
+                        value="{{ old('name') ?? '' }}"
+                        error="{{ errors('name') ?? '' }}"
+                        label="Schedule Name"
+                        placeholder="Enter schedule name"
+                        required
+                    />
+                    <c-input
+                        type="text"
+                        name="version"
+                        value="{{ old('version') ?? '' }}"
+                        error="{{ errors('version') ?? '' }}"
+                        label="Schedule Version Number"
+                        placeholder="Enter schedule verison number"
+                        required
+                    />
+                    <c-input
+                        type="date"
+                        name="effective_from"
+                        value="{{ old('effective_from') ?? '' }}"
+                        error="{{ errors('effective_from') ?? '' }}"
+                        label="Effective From"
+                        placeholder="Select Date"
+                        required
+                    />
                 </form>
 
                 <c-slot name="close">
@@ -99,7 +114,7 @@
                             <c-table.td col="name">{{ $schedule['name'] }}</c-table.td>
                             <c-table.td col="version">{{ $schedule['version'] }}</c-table.td>
                             <c-table.td col="status">
-                                @if ($schedule["enabled"])
+                                @if ($schedule["active"])
                                     <c-badge type="green">
                                         Enabled
                                     </c-badge>
@@ -120,7 +135,7 @@
                                     <c-slot name="menu">
                                         <c-dropdown.item>Copy Schedule ID</c-dropdown.item>
                                         <c-dropdown.sep />
-                                        <c-modal size="md" :initOpen="false">
+                                        <c-modal size="md" :initOpen="flash('edit') === $schedule['id'] ? true : false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>Edit Schedule</c-dropdown.item>
                                             </c-slot>
@@ -139,10 +154,34 @@
                                                 <div>Edit Vaccine</div>
                                             </c-slot>
 
-                                            <form id="edit-schedule" class="schedule-form" action="">
-                                                <c-input type="text" label="Schedule Name" placeholder="Enter schedule name" value="{{ $schedule['name'] }}" required />
-                                                <c-input type="text" label="Schedule Version Number" placeholder="Enter schedule verison number" value="{{ $schedule['version'] }}" required />
-                                                <c-input type="date" label="Effective From" placeholder="Select Date" value="{{ $schedule['effective_from'] }}" required />
+                                            <form id="edit-schedule" class="schedule-form" method="POST" action="{{ route('admin.vaccination.schedule.edit', ['id' => $schedule['id']]) }}">
+                                                <c-input
+                                                    type="text"
+                                                    name="e_name"
+                                                    label="Schedule Name"
+                                                    placeholder="Enter schedule name"
+                                                    value="{{ flash('edit') === $schedule['id'] ? (old('e_name') ?? '') : $schedule['name'] }}"
+                                                    error="{{ flash('edit') === $schedule['id'] ? (errors('e_name') ?? '') : '' }}"
+                                                    required
+                                                />
+                                                <c-input
+                                                    type="text"
+                                                    name="e_version"
+                                                    label="Schedule Version Number"
+                                                    placeholder="Enter schedule verison number"
+                                                    value="{{ flash('edit') === $schedule['id'] ? (old('e_version') ?? '') : $schedule['version'] }}"
+                                                    error="{{ flash('edit') === $schedule['id'] ? (errors('e_version') ?? '') : '' }}"
+                                                    required
+                                                />
+                                                <c-input
+                                                    type="date"
+                                                    name="e_effective_from"
+                                                    label="Effective From"
+                                                    placeholder="Select Date"
+                                                    value="{{ flash('edit') === $schedule['id'] ? (old('e_effective_from') ?? '') : $schedule['effective_from'] }}"
+                                                    error="{{ flash('edit') === $schedule['id'] ? (errors('e_effective_from') ?? '') : '' }}"
+                                                    required
+                                                />
                                             </form>
                                             
                                             <c-slot name="close">
@@ -155,19 +194,20 @@
                                         </c-modal>
                                         <c-modal>
                                             <c-slot name="trigger">
-                                                <c-dropdown.item>{{ !$schedule["enabled"] ? "Enable" : "Disable"}} Schedule</c-dropdown.item>
+                                                <c-dropdown.item>{{ !$schedule["active"] ? "Enable" : "Disable"}} Schedule</c-dropdown.item>
                                             </c-slot>
                                             <c-slot name="header">
-                                                {{ !$schedule["enabled"] ? "Enable" : "Disable"}} Schedule
+                                                {{ !$schedule["active"] ? "Enable" : "Disable"}} Schedule
                                             </c-slot>
 
-                                            @if ($schedule["enabled"])
+                                            @if ($schedule["active"])
                                                 <p>
                                                     <span class="schedule-warning-highlight">Warning:</span> Disabling a schedule must only be done during emergencies or maintenance mode. Prefer enabling a different schedule.
                                                 </p>
                                                 <p>
                                                     Do you want to disable <span class="delete-schedule-highlight">Schedule ID: {{ $schedule["id"] }}</span>?
                                                 </p>
+                                                <form id="schedule-status-{{ $key }}" method="POST" action="{{ route('admin.vaccination.schedule.disable', ['id' => $schedule['id']]) }}"></form>
                                             @else 
                                                 <p>
                                                     <span class="schedule-warning-highlight">Warning:</span> Enabling this schedule will disable previously enabled schedule!
@@ -175,6 +215,7 @@
                                                 <p>
                                                     Do you want to enable <span class="delete-schedule-highlight">Schedule ID: {{ $schedule["id"] }}</span>?
                                                 </p>
+                                                <form id="schedule-status-{{ $key }}" method="POST" action="{{ route('admin.vaccination.schedule.enable', ['id' => $schedule['id']]) }}"></form>
                                             @endif
 
                                             <c-slot name="close">
@@ -182,8 +223,8 @@
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="{{ !$schedule['enabled'] ? 'primary' : 'destructive' }}">
-                                                    {{ !$schedule["enabled"] ? "Enable" : "Disable"}} Schedule
+                                                <c-button type="submit" form="schedule-status-{{ $key }}" variant="{{ !$schedule['active'] ? 'primary' : 'destructive' }}">
+                                                    {{ !$schedule["active"] ? "Enable" : "Disable"}} Schedule
                                                 </c-button>
                                             </c-slot>
                                         </c-modal>  
@@ -196,7 +237,7 @@
                                                 <div>Delete Schedule</div>
                                             </c-slot>
 
-                                            @if ($schedule["enabled"])
+                                            @if ($schedule["active"])
                                                 <p>
                                                     <span class="schedule-warning-highlight">Warning:</span> You cannot delete a currently enabled schedule!
                                                 </p>
@@ -208,6 +249,8 @@
                                                 <p>
                                                     Do you want to delete <span class="delete-schedule-highlight">Schedule ID: {{ $schedule["id"] }}</span>?
                                                 </p>
+
+                                                <form id="delete-schedule-{{ $key }}" method="POST" action="{{ route('admin.vaccination.schedule.delete', ['id' => $schedule['id']]) }}"></form>
                                             @endif
 
                                             <c-slot name="close">
@@ -215,9 +258,11 @@
                                             </c-slot>
 
                                             <c-slot name="footer">
-                                                <c-button type="submit" variant="destructive">
-                                                    Delete Schedule
-                                                </c-button>
+                                                @if (!$schedule['active'])
+                                                    <c-button type="submit" variant="destructive" form="delete-schedule-{{ $key }}">
+                                                        Delete Schedule
+                                                    </c-button>
+                                                @endif
                                             </c-slot>
                                         </c-modal>                                    
                                     </c-slot>
@@ -225,13 +270,16 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($schedules) === 0)
-                        <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
-                    @endif
                 </c-table.tbody>
             </c-table.main>
         </div>
     </c-table.wrapper>
-
-    <c-table.pagination />
+    @if (count($schedules) <= 0)
+        <c-emptytable
+            alt="No data"
+            title="No schedule data"
+            description="Schedule data is currently unavailable"
+        />
+    @endif
+    <c-table.pagination :links="$links" />
 @endsection

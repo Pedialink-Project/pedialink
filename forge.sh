@@ -77,6 +77,10 @@ case "$COMMAND" in
         _run reset "$@"
         ;;
 
+    db:drop)
+        _run drop
+        ;;
+
     db:status)
         _run status
         ;;

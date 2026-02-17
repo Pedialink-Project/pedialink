@@ -35,7 +35,7 @@ $filters = isset($filters) ? $filters : null;
               <c-slot name="trigger">
                 <c-button variant="outline" class="dropdown-trigger">
                   <img src="{{ asset('assets/icons/filter.svg') }}" />
-                  <span>{{ $filterName }}</span>
+                  <span>{{ ucwords(str_replace('_', ' ', $filterName)) }}</span>
                 </c-button>
               </c-slot>
 
@@ -44,9 +44,9 @@ $filters = isset($filters) ? $filters : null;
                   @foreach ($filterItems as $key => $item)
                     <c-dropdown.item asChild>
                       <c-checkbox
-                        name="filters[{{ ucfirst($filterName) }}][]"
+                        name="filters[{{ $filterName }}][]"
                         value="{{ $item}}"
-                        label="{{ucfirst($item) }}"
+                        label="{{ucwords(str_replace('_', ' ', $item)) }}"
                         :checked="isFilterChecked('filters[' . $filterName . '][]', $item)"
                       />
                     </c-dropdown.item>

@@ -4,8 +4,11 @@ namespace App\Services\Admin;
 
 use App\Models\Area;
 use App\Models\Child;
+use App\Models\ChildAccessRequest;
+use App\Models\ParentChild;
 use App\Models\ParentM;
 use App\Models\PublicHealthMidwife;
+use App\Models\Staff;
 use App\Models\User;
 
 class ChildService
@@ -40,39 +43,61 @@ class ChildService
         return [$resource, $links];
     }
 
-    public function getAccessControlData(Child $child)
+    public function getAccessControlData(Child $child, int $page)
     {
         $data = [];
 
         if ($child) {
-            # Incorrect, child must be linked to both parents
-            # NOTE: currnetly only a child is linked to one parent
-            $parentData = ParentM::find($child->parent_id);
-
-            if ($parentData) {
-                $data["parents"] = [
-                    [
-                        "id" => $parentData->id,
-                        "name" => User::find($parentData->id)->name,
-                        "type" => $parentData->type,
-                    ],
-                ];
+            if ($page === 1) {
+                $parentData = ParentChild::query()->where("child_id", "=", $child->id)->get();
+    
+                if ($parentData) {
+                    foreach ($parentData as $parent) {
+                        $parentDetails = ParentM::find($parent->parent_id);
+                        $data["parents"][] = [
+                            "id" => $parentDetails->id,
+                            "name" => User::find($parentDetails->id)->name,
+                            "type" => $parentDetails->type,
+                        ];
+                    }
+                }
+    
+                $phmData = PublicHealthMidwife::find($child->phm_id);
+    
+                if ($phmData) {
+                    $data["phm"] = [
+                        [
+                            "id" => $phmData->id,
+                            "name" => User::find($phmData->id)->name,
+                            "role" => "Public Health Midwife"
+                        ],
+                    ];
+                }
             }
 
-            $phmData = PublicHealthMidwife::find($child->phm_id);
+            $staffAccessControl = ChildAccessRequest::query()
+                ->where("child_id", "=", $child->id)
+                ->where("accepted", "=", 1)
+                ->orderBy('id', 'ASC')
+                ->paginate($page === 1 ? 6 : 9)
+                ->toArray();
 
-            if ($phmData) {
-                $data["phm"] = [
-                    [
-                        "id" => $phmData->id,
-                        "name" => User::find($phmData->id)->name,
-                        "role" => "Public Health Midwife"
-                    ],
-                ];
+            if ($staffAccessControl) {
+                foreach ($staffAccessControl['items'] as $accessRequest) {
+                    $staffDetails = Staff::find($accessRequest->phm_id);
+                    $userDetails = User::find($staffDetails->id);
+                    $data["staff"][] = [
+                        "id" => $staffDetails->id,
+                        "name" => $userDetails->name,
+                        "role" => $userDetails->role ?? "Staff"
+                    ];
+                }
             }
+
+            $links = array_diff_key($staffAccessControl, ['items' => true]);
 
         }
 
-        return $data;
+        return [$data, $links];
     }
 }

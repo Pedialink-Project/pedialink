@@ -10,9 +10,14 @@ class Child extends Model
     protected array $fillable = ["parent_id", "phm_id", "date_of_birth", "gender", "birth_certificate", "blood_type", "area_id"];
 
 
-    public function getParent(): object|null
+    public function getParents()
     {
-        return ParentM::find($this->parent_id);
+        $parents = ParentChild::query()
+            ->where("child_id", "=", $this->id)
+            ->get();
+
+        return $parents;
+        
     }
 
     public function getPHM(): object|null
