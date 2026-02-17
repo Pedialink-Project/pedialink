@@ -35,7 +35,7 @@ Maternal Profiles - Overview
 
 <c-table.controls action="{{ route('phm.maternal.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'type' => ['antenatal', 'postnatal']]">
 
-   
+
     <c-slot name="extrabtn">
         <c-modal id="add-maternal" size="sm" :initOpen="flash('create') ? true : false">
             <c-slot name="trigger">
@@ -229,9 +229,34 @@ Maternal Profiles - Overview
                                     View Health Records
                                 </c-dropdown.item>
                                 @if ($maternal['type'] === "antenatal")
-                                <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$key,])}}">
-                                    End Antenatal Care
-                                </c-dropdown.item>
+                                <c-modal id="end-antenatal-profile" size="sm" :initOpen="flash('end') ? true : false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>End Antenatal Profile</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
+                                    </c-slot>
+                                    <c-slot name="header">
+                                        <div>End Antenatal Profile</div>
+                                    </c-slot>
+
+                                    <form id="end-antenatal-form" class="child-form" action="{{ route('phm.maternal.end', ['id' => $maternal['id']]) }}" method="POST">
+                                        <c-input type="date" label="End Date:" name="end_at" value="{{ old('end_at') ?? '' }}"
+                                            error="{{ errors('end_at') ?? ''}}" placeholder="Enter End Date" required />
+                                        <c-select label="Delivery Outcome" name="delivery_outcome" value="{{ old('delivery_outcome') ?? '' }}"
+                                            error="{{ errors('delivery_outcome') ?? ''}}" placeholder="Select Delivery Outcome" required>
+                                            @foreach(config('data.deliveryOutcomes') as $outcome)
+                                            <li class="select-item" data-value="{{ $outcome }}">{{ucfirst($outcome) }}</li>
+                                            @endforeach
+                                        </c-select>
+                                    </form>
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="end-antenatal-form" variant="primary">End Antenatal Profile</c-button>
+                                    </c-slot>
+                                </c-modal>
                                 @endif
 
                                 @endif
