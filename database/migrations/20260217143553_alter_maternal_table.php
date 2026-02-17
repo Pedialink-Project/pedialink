@@ -26,7 +26,7 @@ class Migration_20260217143553_alter_maternal_table implements \Library\Framewor
         QueryBuilder::raw("
             ALTER TABLE maternal
             DROP COLUMN IF EXISTS height,
-            DROP COLUMN IF EXISTS blood_group,
+            DROP COLUMN IF EXISTS blood_type,
             DROP COLUMN IF EXISTS created_at;
         ");
     }
