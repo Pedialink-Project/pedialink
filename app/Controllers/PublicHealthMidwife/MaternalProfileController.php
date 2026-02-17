@@ -18,9 +18,9 @@ class MaternalProfileController
         $search = $request->input("search");
         $filters = $request->input("filters");
         $phmId = auth()->user()->id;
-       [ $maternals,$links] = $this->maternalService->getMaternalByPhmId($phmId, $search, $filters);
+        [$maternals, $links] = $this->maternalService->getMaternalByPhmId($phmId, $search, $filters);
         $unMaternalProfiles = $this->maternalService->getParentsWithoutMaternal($phmId);
-        return view("phm/maternalprofiles", ['maternals' => $maternals, 'unMaternalProfiles' => $unMaternalProfiles,'links'=> $links]);
+        return view("phm/maternalprofiles", ['maternals' => $maternals, 'unMaternalProfiles' => $unMaternalProfiles, 'links' => $links]);
     }
 
     public function createMaternal(Request $request)
@@ -59,6 +59,38 @@ class MaternalProfileController
             "success",
         );
     }
+
+
+    public function startAntenatal(Request $request, $id)
+    {
+
+        $lmp = $request->input("lmp");
+        $height = $request->input("height");
+        $errors = $this->maternalService->validateAnatenatalRestartData($lmp, $height);
+
+        if (count($errors) > 0) {
+            return redirect(route('phm.maternal.profiles'))
+                ->withErrors($errors)
+                ->withInput([
+                    'lmp' => $lmp,
+                    'height' => $height,
+                ])->with("start", true);
+        }
+
+        $error = $this->maternalService->startAnatenatalCare($id, $lmp, $height);
+
+        if ($error) {
+            return redirect(route('phm.maternal.profiles'))
+                ->withMessage($error, "Error", "error");
+        }
+
+        return redirect(route('phm.maternal.profiles'))->withMessage(
+            "Antenatal care started successfully",
+            "Success",
+            "success",
+        );
+    }
+
 
     public function endAntenatal(Request $request, $id)
     {
