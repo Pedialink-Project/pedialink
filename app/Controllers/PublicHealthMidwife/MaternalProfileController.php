@@ -16,8 +16,10 @@ class MaternalProfileController
     public function index(Request $request)
     {
         $phmId = auth()->user()->id;
+       [ $maternals,$links] = $this->maternalService->getMaternalByPhmId($phmId);
+        var_dump($maternals);
         $unMaternalProfiles = $this->maternalService->getParentsWithoutMaternal($phmId);
-        return view("phm/maternalprofiles", ['unMaternalProfiles' => $unMaternalProfiles]);
+        return view("phm/maternalprofiles", ['maternals' => $maternals, 'unMaternalProfiles' => $unMaternalProfiles]);
     }
 
     public function createMaternal(Request $request)
