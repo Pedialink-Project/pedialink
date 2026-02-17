@@ -60,7 +60,7 @@ $items = [
             Stage
         </c-button>
     </c-slot>
-       <c-slot name="extrabtn">
+    <c-slot name="extrabtn">
         <c-modal id="add-maternal" size="sm" :initOpen="flash('create') ? true : false">
             <c-slot name="trigger">
                 <c-button variant="primary">
@@ -96,8 +96,8 @@ $items = [
                     @endif
                 </c-select>
                 <c-input type="number" label="Height (cm):" name="height" value="{{ old('height') ?? '' }}"
-                    error="{{ errors('height') ?? ''}}"placeholder="Enter Height in cm" required />
-                   <c-input type="date" label="LMP:" name="lmp" value="{{ old('lmp') ?? '' }}"
+                    error="{{ errors('height') ?? ''}}" placeholder="Enter Height in cm" required />
+                <c-input type="date" label="LMP:" name="lmp" value="{{ old('lmp') ?? '' }}"
                     error="{{ errors('lmp') ?? ''}}" placeholder="Enter LMP" required />
                 <c-select label="Blood Type" name="blood_type" value="{{ old('blood_type') ?? '' }}"
                     error="{{ errors('blood_type') ?? ''}}" placeholder="Select Blood Type" required>
@@ -146,7 +146,7 @@ $items = [
                         <c-badge class="status-event" type="purple">Not Requested</c-badge>
                         @elseif (strtolower($maternal['access_status']) === "rejected")
                         <c-badge class="status-event" type="red">{{ ucfirst($maternal['access_status'])}}</c-badge>
-                            @endif
+                        @endif
                     </c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
@@ -156,8 +156,6 @@ $items = [
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-dropdown.item>Copy Mother ID</c-dropdown.item>
-                                <c-dropdown.sep />
                                 <c-modal id="view-maternal-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>View Maternal Profile</c-dropdown.item>
@@ -177,40 +175,56 @@ $items = [
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
-                                            info="{{ $item['name'] }}" />
+                                            info="{{ $maternal['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                            title="Age" info="{{ $item['age'] }}" />
+                                            title="Age" info="{{ $maternal['age'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="Address" info="{{ $item['Address'] }}" />
+                                            title="Maternal Type" info="{{ ucfirst($maternal['type'] )}}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="GS Devision" info="Matara" />
+                                            title="Height" info="{{ $maternal['height'] }} cm" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="NIC Number" info="2300567890V" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}" title="Type"
-                                            info="{{ $item['Type'] }}" />
+                                            title="Blood Type" info="{{ $maternal['blood_type'] }}" />
+                                        @if($maternal['access_status'] === 'accepted')
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}" title="LMP"
+                                            info="{{ $maternal['lmp'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Stage" info="{{ $item['Stage'] }}" />
+                                            title="EED" info="{{ $maternal['eed'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Duration" info="5 weeks and 2 days" />
+                                            title="Gravida" info="{{ $maternal['gravida'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
+                                            title="Para" info="{{ $maternal['para'] }}" />
+                                        @endif
                                     </c-modal.viewcard>
+                                    @if ($maternal['access_status'] === "accepted")
 
-                                    <c-modal.viewlist title="Medical Records">
+
+                                    <c-modal.viewlist title="Latest Medical Records">
+                                        @if($maternal['record'])
                                         <c-slot name="list">
-                                            <li>Height:160cm</li>
-                                            <li>Weight:67kg</li>
-                                            <li>Blood Group: O+</li>
-                                            <li>Blood Sugar:110 mg/dL</li>
-                                            <li>Blood Presure:120 mmHg</li>
-                                            <li>Width of Belly: 32 cm</li>
+                                            <li>Fundal Height:{{ $maternal['record']['fundal_height'] }}cm</li>
+                                            <li>Weight: {{ $maternal['record']['weight'] }}kg</li>
+                                            <li>BMI Value: {{ $maternal['record']['bmi'] }}</li>
+                                            <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] }}bpm</li>
+                                            <li>Glucose: {{ $maternal['record']['glucose'] }}</li>
+                                            <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] }}</li>
+                                            <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] }}</li>
+                                        </c-slot>
+                                        @else
+                                        <c-slot name="list">
+                                            <li>No medical records found.</li>
+                                        </c-slot>
+                                        @endif
+                                    </c-modal.viewlist>
+
+                                    <c-modal.viewlist title="Recent Vaccinations">
+                                        <c-slot name="list">
+                                            <li>BCG - Dose 1 at 13th of July 2023</li>
+                                            <li>BCG - Dose 2 at 28th of September 2023</li>
                                         </c-slot>
                                     </c-modal.viewlist>
 
-                                    <c-modal.viewlist title="Additional Information">
-                                        <c-slot name="list">
-                                            <li>Nutrition Facts: Good</li>
-                                            <li>Allergies: None</li>
-                                        </c-slot>
-                                    </c-modal.viewlist>
+
+                                    @endif
 
                                     <c-slot name="close">
                                         Close
