@@ -35,6 +35,7 @@ return [
     ['GET', '/phm/maternal-profiles', [MaternalProfileController::class, 'index'], 'phm.maternal.profiles', ['phm','verified']],
     ['POST', '/phm/maternal-profile/create', [MaternalProfileController::class, 'createMaternal'], 'phm.maternal.create', ['phm','verified']],
     ['POST','/phm/maternal-profiles/{id}/end', [MaternalProfileController::class,'endAntenatal'], 'phm.maternal.end', ['phm','verified']],
+    ['POST','/phm/maternal-profiles/{id}/start', [MaternalProfileController::class,'startAntenatal'], 'phm.maternal.start', ['phm','verified']],
     
     //Maternal Health Record Routes
     ['GET', '/phm/maternal-profiles/{id}/health-records', [MaternalHealthController::class, 'index'], 'phm.maternal.health', ['phm','verified']],
