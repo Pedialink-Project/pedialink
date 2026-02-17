@@ -20,9 +20,9 @@ class AdminUserService
     {
         $admins = User::query()->where("role", "=", "admin");
 
-        if ($search) {
-            $admins = $this->applySearch($admins, $search);
-        }
+        // if ($search) {
+        //     $admins = $this->applySearch($admins, $search);
+        // }
 
         // TODO: Implement nested where for filters like this to function
         // if ($filters) {
@@ -57,7 +57,10 @@ class AdminUserService
             ];
         }
 
-        return $resource;
+        $links = array_diff_key($results, ['items' => true]);
+
+
+        return [$resource, $links];
     }
 
     private function validateName(string $name)
@@ -226,12 +229,31 @@ class AdminUserService
         return $error;
     }
 
+    private function generateRandomPassword($length = 16) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            // Use random_int for cryptographically secure randomness
+            $index = random_int(0, $charactersLength - 1);
+            $randomString .= $characters[$index];
+        }
+        return substr($randomString, 0, 8);
+    }
+
     public function createAdminUser(string $name, string $email, string $type)
     {
+        
+        $generatedPassword = $this->generateRandomPassword();
+
         $user = new User();
         $user->name = $name;
         $user->email = $email;
-        $user->password_hash = password_hash("password", PASSWORD_DEFAULT);
+        $user->password_hash = password_hash(
+            $generatedPassword,
+            PASSWORD_DEFAULT
+        );
+        $user->email_verified = 1;
         $user->role = "admin";
         $userId = $user->save();
 
@@ -241,6 +263,18 @@ class AdminUserService
         $admin->id = $userId;
         $admin->admin_type_id = $adminType->id;
         $admin->save();
+
+        mailer()->sendTemplate(
+            $email,
+            "new-admin",
+            [
+                "username" => $name,
+                "generatedPassword" => $generatedPassword,
+                "appUrl" => config('app.url'),
+                "adminType" => $adminType->type,
+            ],
+            "New Admin Account"
+        );
     }
 
     public function editAdminUser(int $id, string $name, string $email, string $type)
