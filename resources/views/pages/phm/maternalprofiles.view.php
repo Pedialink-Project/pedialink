@@ -243,7 +243,10 @@ Maternal Profiles - Overview
                 @if(count($maternals) === 0)
                 <tr>
                     <td colspan="6">
-                        <div class="table-empty">No items found</div>
+                        <c-emptytable
+                            alt="No Maternals found"
+                            title="No Maternal Profiles Available"
+                            description="No maternal profiles match your current search or filters. Try adjusting them to see more results." />
                     </td>
                 </tr>
                 @endif
