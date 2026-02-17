@@ -12,6 +12,8 @@ use App\Helpers\Validator;
 use App\Rules\DateRule;
 use App\Models\Area;
 use App\Models\PublicHealthMidwife;
+use Library\Framework\Database\QueryBuilder;
+
 use App\Models\User;
 
 class MaternalService
@@ -44,17 +46,6 @@ class MaternalService
 
         return $resource;
     }
-
-    // public function calculatePregnancyDuration( $date)
-    // {
-    //     $start = new \DateTime($date);
-    //     $end = new \DateTime(); 
-    //     $interval = $start->diff($end);
-
-    //     return $interval->days;
-    // }
-
-
 
     public function getMaternalById($id)
     {
@@ -168,6 +159,8 @@ class MaternalService
 
         $maternalQuery = Maternal::query();
 
+        //search implmeted yet 
+
         $results = $maternalQuery
             ->orderBy('id', 'ASC')
             ->paginate(10)
@@ -206,6 +199,11 @@ class MaternalService
 
             if (!empty($filters['access_status'])) {
                 if (!in_array($accessStatus, $filters['access_status'])) {
+                    continue;
+                }
+            }
+            if (!empty($filters['type'])) {
+                if (!in_array($maternal->type, $filters['type'])) {
                     continue;
                 }
             }

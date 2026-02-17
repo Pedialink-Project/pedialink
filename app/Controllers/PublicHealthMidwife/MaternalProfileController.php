@@ -15,11 +15,12 @@ class MaternalProfileController
     }
     public function index(Request $request)
     {
+        $search = $request->input("search");
+        $filters = $request->input("filters");
         $phmId = auth()->user()->id;
-       [ $maternals,$links] = $this->maternalService->getMaternalByPhmId($phmId);
-        var_dump($maternals);
+       [ $maternals,$links] = $this->maternalService->getMaternalByPhmId($phmId, $search, $filters);
         $unMaternalProfiles = $this->maternalService->getParentsWithoutMaternal($phmId);
-        return view("phm/maternalprofiles", ['maternals' => $maternals, 'unMaternalProfiles' => $unMaternalProfiles]);
+        return view("phm/maternalprofiles", ['maternals' => $maternals, 'unMaternalProfiles' => $unMaternalProfiles,'links'=> $links]);
     }
 
     public function createMaternal(Request $request)
