@@ -42,7 +42,7 @@ class Calculator
         return round($bmi, 2);
     }
 
-     public static function evaluateChildHealthStatus(
+    public static function evaluateChildHealthStatus(
         int $ageMonths,
         ?float $heightCm,
         ?float $weightKg,
@@ -85,4 +85,13 @@ class Calculator
         };
     }
 
+    public static function  calculateEdd(string $lmp): string
+    {
+        $lmpDate = new \DateTime($lmp);
+
+        // Add 280 days (40 weeks)
+        $lmpDate->modify('+280 days');
+
+        return $lmpDate->format('Y-m-d');
+    }
 }
