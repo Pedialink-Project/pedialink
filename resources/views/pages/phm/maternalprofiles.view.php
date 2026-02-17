@@ -138,7 +138,23 @@ Maternal Profiles - Overview
                                     </c-slot>
 
                                     <c-slot name="headerSuffix">
-                                        <c-badge type="green">Good</c-badge>
+                                        @if($maternal['access_status'] === 'accepted')
+                                        @if( $maternal['record'])
+                                        @if (strtolower($maternal['record']['health_status']) === "good")
+                                        <c-badge type="green">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($maternal['record']['health_status']) === "at_risk")
+                                        <c-badge type="yellow">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($maternal['record']['health_status']) === "critical")
+                                        <c-badge type="red">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @endif
+                                        @endif
+                                        @endif
                                     </c-slot>
 
                                     <c-slot name="headerPrefix">
@@ -150,26 +166,26 @@ Maternal Profiles - Overview
                                     </c-slot>
 
                                     <c-modal.viewcard>
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Maternal ID"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="Maternal ID"
                                             info="C-00{{ $maternal['id'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
                                             info="{{ $maternal['name'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
                                             title="Age" info="{{ $maternal['age'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}"
                                             title="Maternal Type" info="{{ ucfirst($maternal['type'] )}}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Height" info="{{ $maternal['height'] }} cm" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
                                             title="Blood Type" info="{{ $maternal['blood_type'] }}" />
                                         @if($maternal['access_status'] === 'accepted')
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}" title="LMP"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}" title="LMP"
                                             info="{{ $maternal['lmp'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="EED" info="{{ $maternal['eed'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
+                                            title="EDD" info="{{ $maternal['edd'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
                                             title="Gravida" info="{{ $maternal['gravida'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
                                             title="Para" info="{{ $maternal['para'] }}" />
                                         @endif
                                     </c-modal.viewcard>

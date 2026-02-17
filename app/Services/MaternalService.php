@@ -60,7 +60,7 @@ class MaternalService
         string $reasonDescription
     ): ?string {
 
-    $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
+        $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
         // Prevent duplicate requests
         $existing = MaternalAccessRequest::query()
             ->where('staff_id', '=', $staffId)
@@ -232,22 +232,20 @@ class MaternalService
 
                 if ($latestPregnancy) {
                     $latestRecord = MaternalRecord::query()
-                        ->where('pregnancy_id', '=', $latestPregnancy->id)
+                        ->where('parent_id', '=', $maternal->parent_id)
                         ->orderBy('visit_date', 'DESC')
                         ->first();
                 }
 
                 $maternalData = array_merge($maternalData, [
-
-                    'latest_pregnancy' => $latestPregnancy ? [
-                        'lmp' => $latestPregnancy->lmp,
-                        'edd' => $latestPregnancy->edd,
-                        'gravida' => $latestPregnancy->gravida,
-                        'para' => $latestPregnancy->para,
-                        'delivery_outcome' => $latestPregnancy->delivery_outcome,
-                        'latest_record' => $latestRecord ? [
+                    'lmp' => $latestPregnancy->lmp,
+                    'edd' => $latestPregnancy->edd,
+                    'gravida' => $latestPregnancy->gravida,
+                    'para' => $latestPregnancy->para,
+                    'delivery_outcome' => $latestPregnancy->delivery_outcome,
+                           'record' => $latestRecord ? [
                             'visit_date' => $latestRecord->visit_date,
-                            'trimester'=> $latestRecord->trimester,
+                            'trimester' => $latestRecord->trimester,
                             'weight' => $latestRecord->weight,
                             'blood_pressure' => $latestRecord->blood_pressure,
                             'bmi' => $latestRecord->bmi,
@@ -257,7 +255,6 @@ class MaternalService
                             'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
                             'health_status' => $latestRecord->health_status,
                         ] : null
-                    ] : null
                 ]);
             }
 
