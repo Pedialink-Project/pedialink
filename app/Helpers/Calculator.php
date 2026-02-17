@@ -105,4 +105,34 @@ class Calculator
 
         return $lmpDate->format('Y-m-d');
     }
+
+
+    public static function calculateMaternalHealthStatus(
+        ?float $hemoglobin,
+        ?float $glucose,
+        ?int $blood_pressure
+    ): string {
+
+        $hb = $hemoglobin;
+        $gl = $glucose;
+        $bp = $blood_pressure;
+
+        if (
+            ($bp !== null && $bp >= 160) ||
+            ($hb !== null && $hb < 7) ||
+            ($gl !== null && $gl >= 11)
+        ) {
+            return 'critical';
+        }
+
+        if (
+            ($bp !== null && $bp >= 140) ||
+            ($hb !== null && $hb < 10) ||
+            ($gl !== null && $gl >= 7.8)
+        ) {
+            return 'at_risk';
+        }
+
+        return 'good';
+    }
 }
