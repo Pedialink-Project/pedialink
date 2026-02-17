@@ -24,6 +24,17 @@ class Calculator
         return $months;
     }
 
+    public static function calculateAge(string $dateOfBirth): int
+    {
+        $dob = new \DateTime($dateOfBirth);
+        $today = new \DateTime();
+
+        $diff = $today->diff($dob);
+
+        return $diff->y;
+    }
+
+
 
     public static function calculateBMI(?float $heightCm, ?float $weightKg): ?float
     {
