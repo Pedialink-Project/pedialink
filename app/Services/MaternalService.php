@@ -18,6 +18,13 @@ class MaternalService
 {
 
     use DateRule;
+
+    private $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = new NotificationService();
+    }
     public function getAllMaternal()
     {
         $maternals = Maternal::all();
@@ -52,6 +59,43 @@ class MaternalService
     public function getMaternalById($id)
     {
         return Maternal::find($id);
+    }
+
+
+    public function requestMaternalAccess(
+        int $staffId,
+        int $maternalId,
+        string $reasonTitle,
+        string $reasonDescription
+    ): ?string {
+        // Prevent duplicate requests
+        $existing = MaternalAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->where('maternal_id', '=', $maternalId)
+            ->first();
+
+        if ($existing) {
+            return "Access request already exists";
+        }
+
+        $request = new MaternalAccessRequest();
+        $request->staff_id = $staffId;
+        $request->maternal_id = $maternalId;
+        $request->reason_title = $reasonTitle;
+        $request->reason_description = $reasonDescription;
+        $request->save();
+
+        $staff = User::find($staffId);
+        $maternal = Maternal::find($maternalId);
+
+        $this->notificationService->notifyAdmins(
+            "Maternal Access Request",
+            "{$staff->name} requested access to maternal profile {$maternal->name}. Reason: {$reasonTitle}",
+            "maternal_access_request",
+            $request->id
+        );
+
+        return null;
     }
 
     public function getDoctorMaternalDetails()
@@ -321,8 +365,15 @@ class MaternalService
         $pregnancy->para = 0;
         $pregnancy->save();
 
+        $this->requestMaternalAccess($phmId, $maternal->id, "New Maternal Profile Created", "A new maternal profile named {$maternal->name} has been created and is awaiting your approval.");
 
-
+        $this->notificationService->notify(
+            $parentId,
+            "Your maternal profile has been created",
+            "Your maternal profile has been successfully created and is now awaiting approval from your assigned Public Health Midwife.",
+            "maternal_profile_created",
+            $maternal->id
+        );
         return null;
     }
 }
