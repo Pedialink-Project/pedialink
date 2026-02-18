@@ -60,8 +60,13 @@ $menuItems = [
             ],
             [
                 'name' => 'Appointments',
-                'link' => route('admin.appointment'),
+                'link' => '#',
+                // 'link' => route('admin.appointment'),
                 'icon' => asset('/assets/icons/profile.svg'),
+                'children' => [
+                    ['name' => 'Overview', 'link' => route('admin.appointment.overview')],
+                    ['name' => 'Configure', 'link' => route('admin.appointment.configure')],
+                ]
             ],
             [
                 'name' => 'Events & Campaigns',
