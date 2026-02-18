@@ -27,14 +27,14 @@ class MaternalProfileController
 
             // Calculate age from date of birth
             $age = '-';
-            // $dob = $parent->date_of_birth ?? $user->date_of_birth ?? null;
-            // if ($dob) {
-            //     try {
-            //         $age = calculateAge($dob);
-            //     } catch (\Exception $e) {
-            //         $age = '-';
-            //     }
-            // }
+            $dob = $parent->date_of_birth ?? $user->date_of_birth ?? null;
+            if ($dob) {
+                try {
+                    $age = calculateAge($dob);
+                } catch (\Exception $e) {
+                    $age = '-';
+                }
+            }
 
             return [
                 'id' => $parent->id,
