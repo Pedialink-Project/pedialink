@@ -6,8 +6,13 @@ use Library\Framework\Http\Request;
 
 class AppointmentController
 {
-    public function index(Request $request)
+    public function overview(Request $request)
     {
-        return view("doctor/appointment");
+        return view("doctor/appointment/overview");
+    }
+
+    public function configure(Request $request)
+    {
+        return view("doctor/appointment/configure");
     }
 }
