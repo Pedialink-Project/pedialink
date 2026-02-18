@@ -156,4 +156,34 @@ class DashboardService
 
         return $diff->y + ($diff->m / 12);
     }
+
+    public function getRecentChildRecords(int $doctorId): array
+    {
+        // Get accepted child IDs for this doctor
+        $childIds = ChildAccessRequest::query()
+            ->where('staff_id', '=', $doctorId)
+            ->where('accepted', '=', 1)
+            ->pluck('child_id');
+
+        if (empty($childIds)) return [];
+
+        // Get latest 3 records
+        return ChildRecord::query()
+            ->whereIn('child_id', $childIds)
+            ->orderBy('visit_date', 'DESC')
+            ->limit(3)
+            ->get();
+    }
+
+    public function getRecentMaternalRecords(): array
+    {
+        return MaternalRecord::query()
+            ->orderBy('visit_date', 'DESC')
+            ->limit(3)
+            ->get();
+    }
+    
+
+
+
 }
