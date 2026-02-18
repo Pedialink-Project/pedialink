@@ -68,4 +68,24 @@ class AppointmentController
             ->withMessage("Availability updated successfully.", "Success", "success");
     }
 
+    public function enableAvailability(Request $request, int $id)
+    {
+        $clinicWeeklyAvailability = ClinicWeeklyAvailability::find($id);
+        $clinicWeeklyAvailability->active = 1;
+        $clinicWeeklyAvailability->save();
+
+        return redirect(route("admin.appointment.configure"))
+            ->withMessage("Availability enabled successfully.", "Success", "success");
+    }
+
+    public function disableAvailability(Request $request, int $id)
+    {
+        $clinicWeeklyAvailability = ClinicWeeklyAvailability::find($id);
+        $clinicWeeklyAvailability->active = 0;
+        $clinicWeeklyAvailability->save();
+
+        return redirect(route("admin.appointment.configure"))
+            ->withMessage("Availability disabled successfully.", "Success", "success");
+    }
+
 }
