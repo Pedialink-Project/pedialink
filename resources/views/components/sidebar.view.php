@@ -187,8 +187,12 @@ $menuItems = [
             ],
             [
                 'name' => 'Appointments',
-                'link' => route('parent.appointments'),
+                'link' => '#',
                 'icon' => asset('/assets/icons/profile.svg'),
+                'children' => [
+                    ['name' => 'My Appointments', 'link' => route('parent.appointments.my')],
+                    ['name' => 'Child Appointment', 'link' => route('parent.appointments.child')],
+                ]
             ],
             [
                 'name' => 'Events & Campaigns',
