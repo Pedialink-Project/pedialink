@@ -3,9 +3,9 @@
 namespace App\Services\Admin;
 
 use App\Helpers\IntToDayName;
+use App\Helpers\Validator;
 use App\Models\Appointment;
 use App\Models\ClinicWeeklyAvailability;
-use InfiniteIterator;
 
 class AppointmentService
 {
@@ -74,7 +74,7 @@ class AppointmentService
 
         if (isset($filters['status'])) {
             $filterStatus = [1, 0];
-            
+
             foreach ($filters as $filterKey => $filterValue) {
                 if ($filterKey === "status") {
                     $filterStatus = array_map(function($status) {
@@ -87,7 +87,9 @@ class AppointmentService
                 ->whereIn("active", $filterStatus);
         }
 
-        $clinicWeeklyAvailability = $clinicWeeklyAvailability->get();
+        $clinicWeeklyAvailability = $clinicWeeklyAvailability
+            ->orderBy('weekday', 'ASC')
+            ->get();
 
         $resource = [];
 
@@ -103,5 +105,72 @@ class AppointmentService
         }
 
         return $resource;
+    }
+
+    private function validateStartAndEndTime(string $startTime, string $endTime)
+    {
+        $error = null;
+        if (!Validator::validateFieldExistence($startTime)) {
+            $error = ["type" => "start", "error" => "Start time is required"];
+            return $error;
+        }
+
+        if (!Validator::validateFieldExistence($endTime)) {
+            $error = ["type" => "end", "error" => "End time is required"];
+            return $error;
+        }
+
+        // if (!Validator::validateTimeFormat($startTime)) {
+        //     $error = ["type" => "start", "error" => "Invalid start time format"];
+        //     return $error;
+        // }
+
+        // if (!Validator::validateTimeFormat($endTime)) {
+        //     $error = ["type" => "end", "error" => "Invalid end time format"];
+        //     return $error;
+        // }
+        if (strtotime($startTime) >= strtotime($endTime)) {
+            $error = ["type" => "start", "error" => "Start time must be before end time"];
+            return $error;
+        }
+
+        return $error;
+    }
+
+    private function validateSlotLength(int $slotLength)
+    {
+        $error = null;
+        if (!Validator::validateFieldExistence($slotLength)) {
+            $error = ["Slot length is required"];
+            return $error;
+        }
+
+        return $error;
+    }
+
+    public function validateAvailabilityData(array $data, $edit = false)
+    {
+        $errors = [];
+
+        $prefix = '';
+        if ($edit) {
+            $prefix = 'e_';
+        }
+
+        $startAndEndTimeError = $this->validateStartAndEndTime($data[$prefix . 'start_time'], $data[$prefix . 'end_time']);
+        if ($startAndEndTimeError) {
+            if ($startAndEndTimeError['type'] === "start") {
+                $errors[$prefix . 'start_time'] = $startAndEndTimeError['error'];
+            } else if ($startAndEndTimeError['type'] === "end") {
+                $errors[$prefix . 'end_time'] = $startAndEndTimeError['error'];
+            }
+        }
+
+        $slotLengthError = $this->validateSlotLength($data[$prefix . 'slot_length_minutes']);
+        if ($slotLengthError) {
+            $errors[$prefix . 'slot_length_minutes'] = $slotLengthError[0];
+        }
+
+        return $errors;
     }
 }
