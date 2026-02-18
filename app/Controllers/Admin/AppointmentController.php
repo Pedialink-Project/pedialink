@@ -29,7 +29,15 @@ class AppointmentController
 
     public function configure(Request $request)
     {
-        return view("admin/appointment/configure");
+        $search = $request->query("search", "");
+        $filters = $request->query("filters", []);
+
+        $clinicWeeklyAvailability = $this->appointmentService
+            ->getAppointmentConfigurationData($search, $filters);
+
+        return view("admin/appointment/configure", [
+            "clinicWeeklyAvailability" => $clinicWeeklyAvailability
+        ]);
     }
 
 }
