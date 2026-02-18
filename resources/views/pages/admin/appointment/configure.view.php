@@ -126,7 +126,7 @@
                                                     Do you want to disable {{ $availability['weekday'] }} from available appointment days? This will make all appointments on this day unavailable for booking.
                                                 </p>
                                                 
-                                                <form id="disable-day-{{ $key }}" action="" method="post"></form>
+                                                <form id="disable-day-{{ $key }}" action="{{ route('admin.appointment.configure.disable', ['id' => $availability['id']]) }}" method="post"></form>
 
                                                 <c-slot name="close">
                                                     Close
@@ -154,7 +154,7 @@
                                                     Do you want to enable {{ $availability['weekday'] }} as an active day for appointments with time from {{ $availability['start_time'] }} to {{ $availability['end_time'] }} and slot length of {{ $availability['slot_length_minutes'] }} minutes?
                                                 </p>
                                                 
-                                                <form id="enable-day-{{ $key }}" action="" method="post"></form>
+                                                <form id="enable-day-{{ $key }}" action="{{ route('admin.appointment.configure.enable', ['id' => $availability['id']]) }}" method="post"></form>
 
                                                 <c-slot name="close">
                                                     Close
