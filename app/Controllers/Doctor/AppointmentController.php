@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Doctor;
 
+use App\Models\DoctorWeeklyAvailability;
 use App\Services\Doctor\AppointmentService;
 use Library\Framework\Http\Request;
 
@@ -28,6 +29,36 @@ class AppointmentController
 
     public function configure(Request $request)
     {
-        return view("doctor/appointment/configure");
+        $search = $request->query("search", "");
+
+        $clinicWeeklyAvailability = $this->appointmentService
+            ->getAppointmentConfigurationData($search);
+        return view("doctor/appointment/configure", [
+            "clinicWeeklyAvailability" => $clinicWeeklyAvailability
+        ]);
+    }
+
+    public function editAvailability(Request $request, int $id)
+    {
+        $data = [
+            "e_start_time" => $request->input("e_start_time", ""),
+            "e_end_time" => $request->input("e_end_time", ""),
+        ];
+        
+        $errors = $this->appointmentService->validateAvailabilityData($data, true);
+
+        if (count($errors) > 0) {
+            return redirect(route("doctor.appointments.configure"))
+                ->withErrors($errors)
+                ->withInput($data)
+                ->with('edit', $id);
+        }
+
+        $doctorWeeklyAvailability = DoctorWeeklyAvailability::find($id);
+        $doctorWeeklyAvailability->start_time = $data['e_start_time'];
+        $doctorWeeklyAvailability->end_time = $data['e_end_time'];
+        $doctorWeeklyAvailability->save();
+        return redirect(route("doctor.appointments.configure"))
+            ->withMessage("Availability updated successfully.", "Success", "success");
     }
 }
