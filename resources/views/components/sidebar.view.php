@@ -237,8 +237,13 @@ $menuItems = [
           
             [
                 'name' => 'Appointments',
-                'link' => route('doctor.appointments'),
+                'link' => '#',
+                // 'link' => route('doctor.appointments'),
                 'icon' => asset('/assets/icons/profile.svg'),
+                'children' => [
+                    ['name' => 'Overview', 'link' => route('doctor.appointments.overview')],
+                    ['name' => 'Configure', 'link' => route('doctor.appointments.configure')],
+                ]
             ],
            
              
