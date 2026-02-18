@@ -23,10 +23,15 @@ class DashboardController
         $childrenChartData = $this->dashboardService->getChildHealthStatusCounts($doctorId);
         $maternalChartData  = $this->dashboardService->getMaternalHealthStatusCounts();
 
+        $recentChildren = $this->dashboardService->getRecentChildRecords($doctorId);
+        $recentMothers  = $this->dashboardService->getRecentMaternalRecords();
+
         // Pass data to the dashboard view
         return view("doctor/dashboard", [
             'childrenChartData' => $childrenChartData,
             'maternalChartData' => $maternalChartData,
+            'recentChildren' => $recentChildren,
+            'recentMothers' => $recentMothers,
         ]);
     }
 }
