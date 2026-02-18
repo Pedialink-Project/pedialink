@@ -60,7 +60,7 @@
                                     </c-slot>
                                     <c-slot name="menu">
                                         <c-dropdown.sep />
-                                        <c-modal size="md" :initOpen="false">
+                                        <c-modal size="md" :initOpen="flash('edit') == $availability['id'] ? true : false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>Edit Details</c-dropdown.item>
                                             </c-slot>
@@ -70,29 +70,32 @@
                                             </c-slot>
 
                                             <c-slot name="header">
-                                                <div>Edit Abailable Appointment day</div>
+                                                <div>Edit Available Appointment day</div>
                                             </c-slot>
 
-                                            <form id="edit-availability-{{ $key }}" class="edit-availability-form" action="" method="POST">
+                                            <form id="edit-availability-{{ $key }}" class="edit-availability-form" action="{{ route('admin.appointment.configure.edit', ['id' => $availability['id']]) }}" method="POST">
                                                 <c-input
                                                     type="time"
                                                     name="e_start_time"
                                                     label="Start Time"
-                                                    value="{{ $availability['start_time'] }}"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_start_time') ?? '' : $availability['start_time'] }}"
+                                                    error="{{ flash('edit') == $availability['id'] ? errors('e_start_time') ?? '' : '' }}"
                                                     required
                                                 />
                                                 <c-input
                                                     type="time"
                                                     name="e_end_time"
                                                     label="End Time"
-                                                    value="{{ $availability['end_time'] }}"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_end_time') ?? '' : $availability['end_time'] }}"
+                                                    error="{{ flash('edit') == $availability['id'] ? errors('e_end_time') ?? '' : '' }}"
                                                     required
                                                 />
                                                 <c-input
                                                     type="number"
                                                     name="e_slot_length_minutes"
                                                     label="Slot Length (minutes)"
-                                                    value="{{ $availability['slot_length_minutes'] }}"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_slot_length_minutes') ?? '' : $availability['slot_length_minutes'] }}"
+                                                    error="{{ flash('edit') == $availability['id'] ? errors('e_slot_length_minutes') ?? '' : '' }}"
                                                     required
                                                 />
                                             </form>
