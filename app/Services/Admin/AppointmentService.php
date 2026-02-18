@@ -2,13 +2,23 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\IntToDayName;
 use App\Models\Appointment;
+use App\Models\ClinicWeeklyAvailability;
+use InfiniteIterator;
 
 class AppointmentService
 {
-    public function getAppointmentOverviewData(string $search)
+    public function getAppointmentOverviewData(string $search, array $filters = [])
     {
-        $appointments = Appointment::query()
+        $appointments = Appointment::query();
+
+            if (isset($filters['status'])) {
+                $appointments = $appointments
+                    ->whereIn("status", $filters['status']);
+            }
+
+        $appointments = $appointments
             ->orderBy("id", "ASC")
             ->paginate(10)
             ->toArray();
