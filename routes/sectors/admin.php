@@ -64,7 +64,11 @@ return [
     ['POST', '/admin/vaccination/schedule/{schedule_id}/manage/{id}/delete', [VaccineController::class, 'deleteVaccineFromSchedule'], 'admin.vaccination.schedule.manage.delete', ['dataAdmin', 'verified']],
 
     // Admin appointment
-    ['GET', '/admin/appointment', [AppointmentController::class, 'index'], 'admin.appointment', ['dataAdmin', 'verified']],
+    ['GET', '/admin/appointment/overview', [AppointmentController::class, 'overview'], 'admin.appointment.overview', ['dataAdmin', 'verified']],
+    ['GET', '/admin/appointment/configure', [AppointmentController::class, 'configure'], 'admin.appointment.configure', ['dataAdmin', 'verified']],
+    ['POST', '/admin/appointment/configure/{id}/edit', [AppointmentController::class, 'editAvailability'], 'admin.appointment.configure.edit', ['dataAdmin', 'verified']],
+    ['POST', '/admin/appointment/configure/{id}/enable', [AppointmentController::class, 'enableAvailability'], 'admin.appointment.configure.enable', ['dataAdmin', 'verified']],
+    ['POST', '/admin/appointment/configure/{id}/disable', [AppointmentController::class, 'disableAvailability'], 'admin.appointment.configure.disable', ['dataAdmin', 'verified']],
 
     // Admin events and campaigns
     ['GET', '/admin/events-and-campaigns', [EventController::class, 'index'], 'admin.event', ['dataAdmin', 'verified']],

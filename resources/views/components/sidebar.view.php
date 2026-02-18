@@ -60,8 +60,13 @@ $menuItems = [
             ],
             [
                 'name' => 'Appointments',
-                'link' => route('admin.appointment'),
+                'link' => '#',
+                // 'link' => route('admin.appointment'),
                 'icon' => asset('/assets/icons/profile.svg'),
+                'children' => [
+                    ['name' => 'Overview', 'link' => route('admin.appointment.overview')],
+                    ['name' => 'Configure', 'link' => route('admin.appointment.configure')],
+                ]
             ],
             [
                 'name' => 'Events & Campaigns',
@@ -232,8 +237,13 @@ $menuItems = [
           
             [
                 'name' => 'Appointments',
-                'link' => route('doctor.appointments'),
+                'link' => '#',
+                // 'link' => route('doctor.appointments'),
                 'icon' => asset('/assets/icons/profile.svg'),
+                'children' => [
+                    ['name' => 'Overview', 'link' => route('doctor.appointments.overview')],
+                    ['name' => 'Configure', 'link' => route('doctor.appointments.configure')],
+                ]
             ],
            
              
