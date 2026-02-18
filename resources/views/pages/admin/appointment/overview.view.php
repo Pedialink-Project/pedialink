@@ -13,7 +13,7 @@
 @endsection
 
 @section('content')
-    <c-table.controls :columns='["Name","Date & Time","Location","Staff","Status"]'>
+    <c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ route('admin.appointment.overview')}}">
         <c-slot name="filter">
             <c-button variant="outline">
                 <img src="{{ asset('assets/icons/filter.svg') }}" />
@@ -59,7 +59,7 @@
                                 @if (strtolower($appointment['status']) === "attended")
                                     <c-badge class="status-appointment" type="green">{{ ucfirst($appointment['status']) }}</c-badge>
                                 @elseif (in_array(strtolower($appointment['status']), ["upcoming", "confirmed"]))
-                                    <c-badge class="status-appointment" type="primary">upcoming</c-badge>
+                                    <c-badge class="status-appointment" type="primary">{{ ucfirst($appointment['status']) }}</c-badge>
                                 @elseif (in_array(strtolower($appointment['status']), ["cancelled", "no-show"]))
                                     <c-badge class="status-appointment" type="red">{{ ucfirst($appointment['status']) }}</c-badge>
                                 @elseif (in_array(strtolower($appointment['status']), ["pending"]))
