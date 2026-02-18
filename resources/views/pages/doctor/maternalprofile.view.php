@@ -75,7 +75,7 @@ Maternal Profiles - Overview
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-dropdown.item>Copy Mother ID</c-dropdown.item>
+                                <!-- <c-dropdown.item>Copy Mother ID</c-dropdown.item> -->
                                 <c-dropdown.sep />
                                 <c-modal id="view-maternal-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="trigger">
@@ -121,8 +121,8 @@ Maternal Profiles - Overview
                                             info="{{ $item['type'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
                                             title="Pregnancy Stage" info="{{ $item['stage'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Duration" info="10 weeks" />
+                                        <!-- <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
+                                            title="Pregnancy Duration" info="10 weeks" /> -->
                                     </c-modal.viewcard>
 
                                     <c-modal.viewlist title="Medical Records">
