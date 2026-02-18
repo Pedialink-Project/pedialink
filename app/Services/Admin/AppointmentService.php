@@ -60,4 +60,48 @@ class AppointmentService
             $links
         ];
     }
+
+    public function getAppointmentConfigurationData(string $search, array $filters = [])
+    {
+        $clinicWeeklyAvailability = ClinicWeeklyAvailability::query();
+
+        // if ($search) {
+        //     if (preg_match("/^\d+$/", $search)) {
+        //         $clinicWeeklyAvailability = $clinicWeeklyAvailability
+        //             ->where("weekday", "=", $search);
+        //     }
+        // }
+
+        if (isset($filters['status'])) {
+            $filterStatus = [1, 0];
+            
+            foreach ($filters as $filterKey => $filterValue) {
+                if ($filterKey === "status") {
+                    $filterStatus = array_map(function($status) {
+                        return $status === "active" ? 1 : 0;
+                    }, $filterValue);
+                }
+            }
+
+            $clinicWeeklyAvailability = $clinicWeeklyAvailability
+                ->whereIn("active", $filterStatus);
+        }
+
+        $clinicWeeklyAvailability = $clinicWeeklyAvailability->get();
+
+        $resource = [];
+
+        foreach ($clinicWeeklyAvailability as $availability) {
+            $resource[] = [
+                "id" => $availability->id,
+                "weekday" => IntToDayName::convert($availability->weekday),
+                "active" => $availability->active,
+                "start_time" => $availability->start_time,
+                "end_time" => $availability->end_time,
+                "slot_length_minutes" => $availability->slot_length_minutes
+            ];
+        }
+
+        return $resource;
+    }
 }
