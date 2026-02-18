@@ -17,8 +17,9 @@ class AppointmentController
     public function overview(Request $request)
     {
         $search = $request->query("search", "");
+        $filters = $request->query("filters", []);
         [$appointments, $links] = $this->appointmentService
-            ->getAppointmentOverviewData($search);
+            ->getAppointmentOverviewData($search, $filters);
             
         return view("admin/appointment/overview", [
             "appointments" => $appointments,
