@@ -36,7 +36,7 @@ class Migration_20260217144158_alter_maternal_records_table implements \Library\
             DROP COLUMN IF EXISTS glucose,
             DROP COLUMN IF EXISTS fetal_heart_rate,
             DROP COLUMN IF EXISTS fundal_height,
-            DROP COLUMN IF EXISTS health_status,
+            DROP COLUMN IF EXISTS health_status;
          ");
     }
 }

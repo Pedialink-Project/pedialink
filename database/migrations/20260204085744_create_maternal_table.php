@@ -13,12 +13,10 @@ class Migration_20260204085744_create_maternal_table implements \Library\Framewo
 {
     public function up(): void
     {
-        QueryBuilder::raw("CREATE TYPE maternal_type AS ENUM('pregnant', 'none')");
         QueryBuilder::raw(
             "CREATE TABLE IF NOT EXISTS maternal (
                 id SERIAL PRIMARY KEY,
-                parent_id INT REFERENCES parents (id),
-                type maternal_type NOT NULL
+                parent_id INT REFERENCES parents (id)
             );"
         );
     }
