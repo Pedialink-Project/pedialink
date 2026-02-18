@@ -14,15 +14,6 @@ class Migration_20260217201537_alter_maternal_type implements \Library\Framework
    public function up(): void
 {
     QueryBuilder::raw("
-        ALTER TABLE maternal
-        ALTER COLUMN type TYPE TEXT;
-    ");
-
-    QueryBuilder::raw("
-        DROP TYPE IF EXISTS maternal_type;
-    ");
-
-    QueryBuilder::raw("
         CREATE TYPE maternal_type AS ENUM(
             'antenatal',
             'postnatal',
@@ -32,8 +23,7 @@ class Migration_20260217201537_alter_maternal_type implements \Library\Framework
 
     QueryBuilder::raw("
         ALTER TABLE maternal
-        ALTER COLUMN type TYPE maternal_type
-        USING type::maternal_type;
+        ADD COLUMN IF NOT EXISTS type maternal_type NOT NULL;;
     ");
 }
 
@@ -42,7 +32,7 @@ class Migration_20260217201537_alter_maternal_type implements \Library\Framework
     {
     QueryBuilder::raw("
         ALTER TABLE maternal
-        ALTER COLUMN type TYPE TEXT;
+        DROP COLUMN IF EXISTS type;
     ");
 
     QueryBuilder::raw("
