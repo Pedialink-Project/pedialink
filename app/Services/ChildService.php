@@ -10,6 +10,7 @@ use App\Models\ChildRecord;
 // use App\Models\Patient;
 use App\Helpers\Validator;
 use DateTime;
+use Library\Framework\Database\QueryBuilder;
 
 class ChildService
 {
@@ -42,11 +43,23 @@ class ChildService
 
     public function getAllChildren()
     {
-        $children = Child::all();
+        // Get only non-archived children using raw query for proper NULL checking
+        $children = QueryBuilder::rawGet(
+            "SELECT * FROM children WHERE archived_at IS NULL ORDER BY id DESC"
+        );
+        
+        // Convert to Child models
+        $childModels = [];
+        foreach ($children as $row) {
+            $child = new Child();
+            $child->hydrate($row);
+            $childModels[] = $child;
+        }
+        
         $childRecordService = new ChildRecordService();
 
         $resource = [];
-        foreach ($children as $child) {
+        foreach ($childModels as $child) {
 
             $parent = ParentM::find($child->parent_id);
 
@@ -81,10 +94,22 @@ class ChildService
 
     public function getChildernByParentId(int $parentId)
     {
-        $children = Child::query()->where('parent_id', '=', $parentId)->get();
+        // Get only non-archived children for this parent using raw query
+        $children = QueryBuilder::rawGet(
+            "SELECT * FROM children WHERE parent_id = :parent_id AND archived_at IS NULL ORDER BY id DESC",
+            [':parent_id' => $parentId]
+        );
+
+        // Convert to Child models
+        $childModels = [];
+        foreach ($children as $row) {
+            $child = new Child();
+            $child->hydrate($row);
+            $childModels[] = $child;
+        }
 
         $resource = [];
-        foreach ($children as $child) {
+        foreach ($childModels as $child) {
 
             $parent = ParentM::find($child->parent_id);
 
@@ -286,14 +311,37 @@ class ChildService
         return $errors;
     }
 
-    public function validateDeleteProfile(int $id)
+    public function validateArchiveProfile(int $id)
     {
         $error = null;
 
         $child = Child::find($id);
 
-        if ($child && $child->parent_id !== NULL) {
-            $error = "Cannot delete linked child account";
+        if (!$child) {
+            $error = "Child profile not found";
+            return $error;
+        }
+
+        if ($child->archived_at !== null) {
+            $error = "This child profile is already archived";
+        }
+
+        return $error;
+    }
+
+    public function validateUnarchiveProfile(int $id)
+    {
+        $error = null;
+
+        $child = Child::find($id);
+
+        if (!$child) {
+            $error = "Child profile not found";
+            return $error;
+        }
+
+        if ($child->archived_at === null) {
+            $error = "This child profile is not archived";
         }
 
         return $error;
@@ -338,5 +386,77 @@ class ChildService
          // }
 
          $child->delete();
- }
+     }
+
+    public function archiveChildProfile(int $id)
+    {
+        $child = Child::find($id);
+
+        if ($child) {
+            $child->archived_at = date('Y-m-d H:i:s');
+            $child->save();
+        }
+    }
+
+    public function unarchiveChildProfile(int $id)
+    {
+        $child = Child::find($id);
+
+        if ($child) {
+            $child->archived_at = null;
+            $child->save();
+        }
+    }
+
+    public function getArchivedChildren()
+    {
+        // Get only archived children using raw query
+        $children = QueryBuilder::rawGet(
+            "SELECT * FROM children WHERE archived_at IS NOT NULL ORDER BY archived_at DESC"
+        );
+
+        // Convert to Child models
+        $childModels = [];
+        foreach ($children as $row) {
+            $child = new Child();
+            $child->hydrate($row);
+            $childModels[] = $child;
+        }
+
+        $childRecordService = new ChildRecordService();
+
+        $resource = [];
+        foreach ($childModels as $child) {
+
+            $parent = ParentM::find($child->parent_id);
+
+            $parentResource = NULL;
+            if ($parent) {
+                $parentResource = [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                    'type' => $parent->type,
+                ];
+            }
+
+            $latestHealthRecord = $childRecordService->getLatestChildRecord($child->id);
+
+            $resource[] = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'age' => $this->calculateAge($child->date_of_birth),
+                'date_of_birth' => $child->date_of_birth,
+                'gender' => $child->gender,
+                'health_status' => $child->health_status,
+                'area' => $child->getArea()?->code ?? 'Unknown',
+                'birth_certificate' => $child->birth_certificate,
+                'notes' => $child->notes,
+                'parent' => $parentResource,
+                'latest_health_record' => $latestHealthRecord,
+                'archived_at' => $child->archived_at,
+            ];
+        }
+
+        return $resource;
+    }
 }

@@ -91,7 +91,7 @@ class ChildProfileController
 
     public function deleteChild(Request $request, int $id)
     {
-        $error = $this->childService->validateDeleteProfile($id);
+        $error = $this->childService->validateArchiveProfile($id);
 
         if ($error !== NULL) {
             return redirect(route('phm.child.profiles'))
@@ -102,10 +102,39 @@ class ChildProfileController
                 );
         }
 
-        $this->childService->deleteChildProfile($id);
+        $this->childService->archiveChildProfile($id);
         return redirect(route('phm.child.profiles'))
                 ->withMessage(
-                    "Deleted successfully",
+                    "Child profile archived successfully",
+                    "Success",
+                    "success",
+                );
+    }
+
+    public function viewArchivedChildren(Request $request)
+    {
+        $archivedChildren = $this->childService->getArchivedChildren();
+        
+        return view("phm/archivedchildprofiles", ['children' => $archivedChildren]);
+    }
+
+    public function restoreChild(Request $request, int $id)
+    {
+        $error = $this->childService->validateUnarchiveProfile($id);
+
+        if ($error !== NULL) {
+            return redirect(route('phm.child.archived'))
+                ->withMessage(
+                    $error,
+                    "Error",
+                    "error",
+                );
+        }
+
+        $this->childService->unarchiveChildProfile($id);
+        return redirect(route('phm.child.archived'))
+                ->withMessage(
+                    "Child profile restored successfully",
                     "Success",
                     "success",
                 );
