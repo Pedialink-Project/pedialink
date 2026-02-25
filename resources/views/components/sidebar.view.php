@@ -100,11 +100,20 @@ $menuItems = [
                 'icon' => asset('/assets/icons/dashboard-square-02.svg'),
 
             ],
+            // [
+            //     'name' => 'Child Profiles',
+            //     'link' => route('phm.child.profiles'),
+            //     'icon' => asset('/assets/icons/baby-01.svg'),
+               
+            // ],
             [
                 'name' => 'Child Profiles',
-                'link' => route('phm.child.profiles'),
+                'link' => '#',
                 'icon' => asset('/assets/icons/baby-01.svg'),
-               
+               'children' => [
+                    ['name' => 'Active Child Profiles', 'link' => route('phm.child.profiles')],
+                    ['name' => 'Archived Child Profiles', 'link' => route('phm.child.archived')],
+                ]
             ],
             [
                 'name' => 'Maternal Profiles',

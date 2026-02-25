@@ -20,6 +20,8 @@ use App\Controllers\PublicHealthMidwife\maternalhealthrecordController;
 return [
     ['GET', '/phm/dashboard', [DashboardController::class, 'index'], 'phm.dashboard', ['phm']],
     ['GET', '/phm/child-profiles', [ChildProfileController::class, 'index'], 'phm.child.profiles', ['phm']],
+    ['GET', '/phm/child-profiles/archived', [ChildProfileController::class, 'viewArchivedChildren'], 'phm.child.archived', ['phm']],
+    ['POST', '/phm/child-profile/{id}/restore', [ChildProfileController::class, 'restoreChild'], 'phm.child.restore', ['phm']],
     ['GET', '/phm/child-profiles/{id}/health-records', [ChildHealthController::class, 'index'], 'phm.child.health.records', ['phm']],
     ['POST', '/phm/child-profiles/{id}/health-records/add', [ChildHealthController::class, 'createHealthRecord'], 'phm.child.health.add', ['phm']],
     ['POST', '/phm/child-profile/create', [ChildProfileController::class, 'createChild'], 'phm.child.create', ['phm']],

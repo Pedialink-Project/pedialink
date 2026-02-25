@@ -107,7 +107,7 @@ PHM Child Profiles
                 <c-table.tr>
                     <c-table.th sortable="1">ID</c-table.th>
                     <c-table.th sortable="1">Name</c-table.th>
-                    <c-table.th sortable="1">Age</c-table.th>
+                    <c-table.th >Age</c-table.th>
                     <c-table.th>Gender</c-table.th>
                     <c-table.th>Area</c-table.th>
                     <c-table.th class="table-actions">Actions</c-table.th>
@@ -185,7 +185,7 @@ PHM Child Profiles
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
                                             title="Birth Certificate No" info="{{ $child['birth_certificate'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
-                                            info="{{ date('d M, Y', strtotime($child['date_of_birth'])) }}" />    
+                                            info="{{ date('d M Y', strtotime($child['date_of_birth'])) }}" />    
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Gender"
                                             info="{{ strtolower($child['gender']) === 'm' ? 'Male' : 'Female' }}"
                                             />
@@ -345,28 +345,23 @@ PHM Child Profiles
                                 <c-dropdown-sep />
                                 <c-modal>
                                     <c-slot name="trigger">
-                                        @if ($child['parent'])
-                                        <c-dropdown.item class="disabled-delete-btn" disabled>Delete Child
-                                            Profile</c-dropdown.item>
-                                        @else
-                                        <c-dropdown.item>Delete Child Profile</c-dropdown.item>
-                                        @endif
+                                        <c-dropdown.item>Archive Child Profile</c-dropdown.item>
                                     </c-slot>
                                     <c-slot name="header">
-                                        <div>Delete Child Profile</div>
+                                        <div>Archive Child Profile</div>
                                     </c-slot>
 
-                                    <p>Do you want to delete this child profile?</p>
-                                    <form id="delete-profile-{{ $child['id'] }}" class="hidden"
+                                    <p>Do you want to archive this child profile?</p>
+                                    <form id="archive-profile-{{ $child['id'] }}" class="hidden"
                                         action="{{ route('phm.child.delete',['id'=>$child['id']]) }}" method="POST">
                                     </form>
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
                                     <c-slot name="footer">
-                                        <c-button type="submit" form="delete-profile-{{ $child['id'] }}"
+                                        <c-button type="submit" form="archive-profile-{{ $child['id'] }}"
                                             variant="destructive">
-                                            Delete
+                                            Archive
                                         </c-button>
                                     </c-slot>
                                 </c-modal>
