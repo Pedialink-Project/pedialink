@@ -3,6 +3,7 @@
 namespace App\Controllers\PublicHealthMidwife;
 
 use Library\Framework\Http\Request;
+use Library\Framework\Database\QueryBuilder;
 use App\Models\Child;
 use App\Models\ChildRecord;
 use App\Services\ChildRecordService;
@@ -24,7 +25,19 @@ class GrowthMonitorController
         $phmId = auth()->id();
 
         $childRecordService = new ChildRecordService();
-        $children = Child::query()->where('phm_id', '=', $phmId)->get();
+        
+        // Get only active (non-archived) children
+        $childRows = QueryBuilder::rawGet(
+            "SELECT * FROM children WHERE phm_id = :phm_id AND archived_at IS NULL ORDER BY id DESC",
+            [':phm_id' => $phmId]
+        );
+        
+        $children = [];
+        foreach ($childRows as $row) {
+            $child = new Child();
+            $child->hydrate($row);
+            $children[] = $child;
+        }
         $childrenById = [];
         $childrenList = [];
         $selectedChildName = null;
