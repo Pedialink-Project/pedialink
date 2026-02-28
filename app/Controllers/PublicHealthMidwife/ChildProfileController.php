@@ -89,7 +89,7 @@ class ChildProfileController
             );   
     }
 
-    public function deleteChild(Request $request, int $id)
+    public function ArchiveChild(Request $request, int $id)
     {
         $error = $this->childService->validateArchiveProfile($id);
 

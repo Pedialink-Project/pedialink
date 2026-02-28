@@ -353,7 +353,7 @@ PHM Child Profiles
 
                                     <p>Do you want to archive this child profile?</p>
                                     <form id="archive-profile-{{ $child['id'] }}" class="hidden"
-                                        action="{{ route('phm.child.delete',['id'=>$child['id']]) }}" method="POST">
+                                        action="{{ route('phm.child.archive',['id'=>$child['id']]) }}" method="POST">
                                     </form>
                                     <c-slot name="close">
                                         Close
