@@ -26,7 +26,7 @@ return [
     ['POST', '/phm/child-profiles/{id}/health-records/add', [ChildHealthController::class, 'createHealthRecord'], 'phm.child.health.add', ['phm']],
     ['POST', '/phm/child-profile/create', [ChildProfileController::class, 'createChild'], 'phm.child.create', ['phm']],
     ['POST', '/phm/child-profile/{id}/edit', [ChildProfileController::class, 'editChild'], 'phm.child.edit', ['phm']],
-    ['POST', '/phm/child-profile/{id}/delete', [ChildProfileController::class, 'deleteChild'], 'phm.child.delete', ['phm']],
+    ['POST', '/phm/child-profile/{id}/archive', [ChildProfileController::class, 'ArchiveChild'], 'phm.child.archive', ['phm']],
     ['GET', '/phm/maternal-profiles', [MaternalProfileController::class, 'index'], 'phm.maternal.profiles', ['phm']],
     ['GET', '/phm/maternal-profiles/{id}/health-records', [maternalhealthrecordController::class, 'index'], 'phm.maternal.health', ['phm']],
     ['POST', '/phm/maternal-profiles/{id}/health-records/add', [maternalhealthrecordController::class, 'createMaternalRecord'], 'phm.maternal.health.add', ['phm']],
