@@ -318,14 +318,33 @@ class MaternalRecordService
 
 
 
-    public function deleteMaternalStat($id)
+    public function markAsInvalidRecord($recordId, $staffId)
     {
-        $maternalStat = MaternalStat::find($id);
+        $record = MaternalRecord::find($recordId);
 
-        if (!$maternalStat) {
-            throw new \Exception("MaternalStat not found");
+
+        $recordStaffId = $record->staff_id;
+
+        if (!$record) {
+            return "Record not found.";
         }
 
-        $maternalStat->delete();
+        $record->mark_as_invalid = true;
+
+        $record->save();
+
+        if ($recordStaffId !== $staffId) {
+
+            $this->notificationService->notify(
+                $recordStaffId,
+                "Health record marked as invalid",
+                "The health record of maternal M-00 " . $record->maternal_id . " has been marked as invalid.",
+                "maternal_record_updated",
+                $record->maternal_id . "" . $record->maternal_id
+
+            );
+        }
+
+        return null;
     }
 }

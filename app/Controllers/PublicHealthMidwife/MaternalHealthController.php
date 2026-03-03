@@ -144,4 +144,20 @@ class MaternalHealthController
         return redirect(route("phm.maternal.health", ["id" => $id]))
             ->withMessage("Health record updated successfully.", "Success", "success");
     }
+
+    public function markAsInvalid(Request $request, int $id, int $recordId)
+    {
+        $staffId = auth()->user()->id;
+
+        $error = $this->maternalRecordService->markAsInvalidRecord($recordId, $staffId);
+
+        if ($error) {
+            return redirect(route("phm.maternal.health", ["id" => $id]))
+                ->withMessage($error, "Error", "error");
+        }
+
+        return redirect(route("phm.child.health", ["id" => $id]))
+            ->withMessage("Health record marked as invalid successfully.", "Success", "success");
+    }
+
 }
