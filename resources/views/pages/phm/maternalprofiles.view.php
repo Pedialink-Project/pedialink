@@ -225,7 +225,7 @@ Maternal Profiles - Overview
                                     </c-slot>
                                 </c-modal>
                                 @if ($maternal['access_status'] === "accepted")
-                                <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$key,])}}">
+                                <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
                                 @if ($maternal['type'] === "antenatal")
