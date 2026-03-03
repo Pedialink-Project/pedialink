@@ -24,7 +24,7 @@ class Calculator
         return $months;
     }
 
-    public static function calculateAge(string $dateOfBirth): int
+    public static function calculateAgeInYears(string $dateOfBirth): int
     {
         $dob = new \DateTime($dateOfBirth);
         $today = new \DateTime();
