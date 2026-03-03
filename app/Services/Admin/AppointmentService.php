@@ -16,11 +16,12 @@ class AppointmentService
 
             if (isset($filters['status'])) {
                 $appointments = $appointments
-                    ->whereIn("status", $filters['status']);
+                    ->whereIn("appointments.status", $filters['status']);
             }
 
         $appointments = $appointments
-            ->orderBy("id", "ASC")
+            ->join("appointment_slots as s", "s.id", "=", "appointments.slot_id")
+            ->orderBy("s.slot_date", "DESC")
             ->paginate(10)
             ->toArray();
 
