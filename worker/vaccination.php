@@ -36,6 +36,24 @@ register_shutdown_function(function () use ($lockKey) {
     }
 });
 
+// ---------------- Mark overdue reminders ----------------
+// Update pending vaccination reminders with scheduled_date < today to 'overdue'
+$today = new DateTimeImmutable('today');
+$todayStr = $today->format('Y-m-d');
+
+$overdueUpdateSql = "
+    UPDATE vaccination_reminders 
+    SET status = 'overdue'
+    WHERE status = 'pending' AND scheduled_date < :today
+";
+
+try {
+    QueryBuilder::rawExec($overdueUpdateSql, [':today' => $todayStr]);
+    echo "[" . date('Y-m-d H:i:s') . "] checked and updated overdue vaccination reminders\n";
+} catch (Throwable $e) {
+    echo "[" . date('Y-m-d H:i:s') . "] error updating overdue reminders: " . $e->getMessage() . "\n";
+}
+
 // ---------------- date window ----------------
 $monthArg = $argv[1] ?? null;
 if ($monthArg === null) {
@@ -89,7 +107,13 @@ if (empty($children)) {
 $insertSql = "
     INSERT INTO vaccination_reminders (child_id, schedule_vaccine_id, scheduled_date, status)
     VALUES (:child_id, :sv_id, :scheduled_date, 'pending')
-    ON CONFLICT (child_id, schedule_vaccine_id, scheduled_date) DO NOTHING
+";
+
+// Check if reminder already exists
+$checkExistsSql = "
+    SELECT id FROM vaccination_reminders 
+    WHERE child_id = :child_id AND schedule_vaccine_id = :sv_id AND scheduled_date = :scheduled_date
+    LIMIT 1
 ";
 
 foreach ($children as $child) {
@@ -178,24 +202,31 @@ foreach ($children as $child) {
 
         // include if candidate in target month window
         if ($candidate >= $start && $candidate <= $end) {
-            // insert reminder (idempotent)
             $params = [
                 ':child_id' => $childId,
                 ':sv_id' => $svId,
                 ':scheduled_date' => $candidate->format('Y-m-d'),
             ];
+            
             try {
-                $rowCount = QueryBuilder::rawExec($insertSql, $params);
-                if ($rowCount > 0) {
-                    echo sprintf(
-                        "[%s] Reminder queued: child=%d (%s) dose=%d scheduled=%s\n",
-                        date('Y-m-d H:i:s'),
-                        $childId,
-                        $childName,
-                        $doseNum,
-                        $candidate->format('Y-m-d')
-                    );
+                // First check if reminder already exists to avoid incrementing serial ID
+                $existingRow = QueryBuilder::rawGet($checkExistsSql, $params);
+                
+                if (empty($existingRow)) {
+                    // Record doesn't exist, insert it
+                    $rowCount = QueryBuilder::rawExec($insertSql, $params);
+                    if ($rowCount > 0) {
+                        echo sprintf(
+                            "[%s] Reminder queued: child=%d (%s) dose=%d scheduled=%s\n",
+                            date('Y-m-d H:i:s'),
+                            $childId,
+                            $childName,
+                            $doseNum,
+                            $candidate->format('Y-m-d')
+                        );
+                    }
                 }
+                // If record exists, silently skip (no log needed)
             } catch (Throwable $e) {
                 // log and continue
                 echo "[" . 
