@@ -42,14 +42,17 @@ return [
 
 
     //Maternal Health Record Routes
-    ['GET', '/phm/maternal-profiles/{id}/health-records', [MaternalHealthController::class, 'index'], 'phm.maternal.health', ['phm', 'verified']],
-    ['GET', '/phm/child-vaccinations/{id}/records', [ChildHealthController::class, 'vaccinationIndex'], 'phm.child.vaccinations', ['phm', 'verified']],
-    ['GET', '/phm/growth-monitoring', [GrowthMonitorController::class, 'index'], 'phm.growth.monitoring', ['phm', 'verified']],
-    ['GET', '/phm/growth-monitoring/{id}', [GrowthMonitorController::class, 'childGrowthIndex'], 'phm.growth.monitoring.child', ['phm', 'verified']],
-    ['GET', '/phm/vaccination', [VaccinationController::class, 'index'], 'phm.vaccination', ['phm', 'verified']],
-    ['GET', '/phm/nutrition-tracking', [TestController::class, 'nutritionTracking'], 'phm.nutrition.tracking', ['phm', 'verified']],
-    ['GET', '/phm/appointments', [AppointmentsController::class, 'index'], 'phm.appointments', ['phm', 'verified']],
-    ['GET', '/phm/appointment-requests', [AppointmentRequestController::class, 'index'], 'phm.appointments.requests', ['phm', 'verified']],
+    ['GET', '/phm/maternal-profiles/{id}/health-records', [MaternalHealthController::class, 'index'], 'phm.maternal.health', ['phm','verified']],
+    ['GET', '/phm/child-vaccinations/{id}/records', [ChildHealthController::class, 'vaccinationIndex'], 'phm.child.vaccinations', ['phm','verified']],
+    ['GET', '/phm/growth-monitoring', [GrowthMonitorController::class, 'index'], 'phm.growth.monitoring', ['phm','verified']],
+    ['GET', '/phm/growth-monitoring/{id}', [GrowthMonitorController::class, 'childGrowthIndex'], 'phm.growth.monitoring.child', ['phm','verified']],
+    ['GET', '/phm/vaccination', [VaccinationController::class, 'index'], 'phm.vaccination', ['phm','verified']],
+    ['GET', '/phm/nutrition-tracking', [TestController::class, 'nutritionTracking'], 'phm.nutrition.tracking', ['phm','verified']],
+
+
+    ['GET', '/phm/appointments', [AppointmentsController::class, 'index'], 'phm.appointments', ['phm','verified']],
+    ['POST', '/phm/appointments/{id}/attend', [AppointmentsController::class, 'attendAppointment'], 'phm.appointments.attend', ['phm','verified']],
+    ['POST', '/phm/appointments/{id}/cancel', [AppointmentsController::class, 'cancelAppointment'], 'phm.appointments.cancel', ['phm','verified']],
 
     // Notification and Settings Routes
     ['GET', '/phm/notification', [NotificationController::class, 'index'], 'phm.notification', ['phm', 'verified']],

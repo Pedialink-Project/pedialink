@@ -2,6 +2,7 @@
 
 namespace App\Services\Doctor;
 
+use App\Helpers\AppointmentConfigurationHelper;
 use App\Helpers\IntToDayName;
 use App\Helpers\Validator;
 use App\Models\Appointment;
@@ -16,10 +17,12 @@ class AppointmentService
 
             if (isset($filters['status'])) {
                 $appointments = $appointments
-                    ->whereIn("status", $filters['status']);
+                    ->whereIn("appointments.status", $filters['status']);
             }
 
         $appointments = $appointments
+            ->join('appointment_slots', 'appointments.slot_id', '=', 'appointment_slots.id')
+            ->whereNotNull("appointment_slots.doctor_id")
             ->orderBy("id", "ASC")
             ->paginate(10)
             ->toArray();
@@ -67,16 +70,71 @@ class AppointmentService
         ];
     }
 
-    public function getAppointmentConfigurationData(string $search)
+    public function getAvailableWeekdays(): array
+    {
+        $availableWeekdays = [];
+        for ($i = 0; $i < 7; $i++) {
+            $availableWeekdays[] = [
+                "value" => $i,
+                "name" => IntToDayName::convert($i)
+            ];
+        }
+
+        $doctorWeeklyAvailability = DoctorWeeklyAvailability::query()
+            ->select("weekday")
+            ->where("doctor_id", "=", auth()->user()?->id)
+            ->get();
+
+        $doctorWeekdays = [];
+        foreach ($doctorWeeklyAvailability as $availability) {
+            $doctorWeekdays[] = $availability->weekday;
+        }
+
+        foreach ($availableWeekdays as $key => $weekday) {
+            if (in_array($weekday['value'], $doctorWeekdays)) {
+                unset($availableWeekdays[$key]);
+            }
+        }
+
+        return array_values($availableWeekdays);
+    }
+
+    public function getAvailableClinicWeekdays()
+    {
+        $clinicWeeklyAvailability = ClinicWeeklyAvailability::query()
+            ->where("active", "=", 1)
+            ->orderBy('weekday', 'ASC')
+            ->get();
+
+        $weekday = [];
+
+        foreach ($clinicWeeklyAvailability as $availability) {
+            $weekday[] = [
+                "value" => $availability->weekday,
+                "name" => IntToDayName::convert($availability->weekday),
+            ];
+        }
+
+        return $weekday;
+    }
+
+    public function getAppointmentConfigurationData(string $search, array $filters)
     {
         $clinicWeeklyAvailability = DoctorWeeklyAvailability::query();
 
-        // if ($search) {
-        //     if (preg_match("/^\d+$/", $search)) {
-        //         $clinicWeeklyAvailability = $clinicWeeklyAvailability
-        //             ->where("weekday", "=", $search);
-        //     }
-        // }
+        if ($search !== "") {
+            $weekday = AppointmentConfigurationHelper::weekdaySearch($search);
+            if ($weekday !== -1) {
+                $clinicWeeklyAvailability = $clinicWeeklyAvailability
+                    ->where("weekday", "=", $weekday);
+            }
+        }
+
+        if (isset($filters['status'])) {
+            $value = AppointmentConfigurationHelper::statusFilter($filters['status']);
+            $clinicWeeklyAvailability = $clinicWeeklyAvailability
+                ->whereIn("active", $value);
+        }
 
         $clinicWeeklyAvailability = $clinicWeeklyAvailability
             ->where("doctor_id", "=", auth()->user()?->id)
@@ -97,6 +155,38 @@ class AppointmentService
         }
 
         return $resource;
+    }
+
+    private function validateWeekday(string $weekday)
+    {
+        if (!Validator::validateFieldExistence($weekday)) {
+            return "Weekday is required";
+        }
+
+        $weekday = $weekday !== '' ? (int)$weekday : -1;
+
+        if (IntToDayName::convert($weekday) === "Unknown") {
+            return "Invalid weekday";
+        }
+
+        $doctorAvailability = DoctorWeeklyAvailability::query()
+            ->where("weekday", "=", $weekday)
+            ->where("doctor_id", "=", auth()->user()?->id)
+            ->first();
+
+        if ($doctorAvailability) {
+            return "Weekday is already configured";
+        }
+
+        $clinicAvailability = ClinicWeeklyAvailability::query()
+            ->where("weekday", "=", $weekday)
+            ->first();
+
+        if (!$clinicAvailability) {
+            return "Weekday is not available according to clinic configuration";
+        }
+
+        return null;
     }
 
     private function validateStartAndEndTime(string $startTime, string $endTime)
@@ -136,6 +226,12 @@ class AppointmentService
         $prefix = '';
         if ($edit) {
             $prefix = 'e_';
+        } else {
+            // Only for create weekday form
+            $weekdayError = $this->validateWeekday($data['weekday']);
+            if ($weekdayError) {
+                $errors['weekday'] = $weekdayError;
+            }
         }
 
         $startAndEndTimeError = $this->validateStartAndEndTime($data[$prefix . 'start_time'], $data[$prefix . 'end_time']);

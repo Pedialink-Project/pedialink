@@ -22,73 +22,8 @@
 @endsection
 
 @section('content')
-    <?php
-    $items = [
-        ['id' => 'P-1345', 'name' => 'Nancy Drew', 'Age' => '28', 'Category' => 'Mother', 'Date & Time' =>'2023-01-19', 'Status' => 'Upcoming'],
-        ['id' => 'D-1345', 'name' => 'John peter', 'Age' => '32', 'Category' => 'Mother', 'Date & Time' =>'2023-02-17', 'Status' => 'Pending'],
-        ['id' => 'S-1345', 'name' => 'Femke Bol', 'Age' => '2', 'Category' => 'Baby', 'Date & Time' =>'2023-01-16', 'Status' => 'Completed'],
-        ['id' => 'T-1345', 'name' => 'Daniel Parker', 'Age' => '1', 'Category' => 'Baby', 'Date & Time' =>'2023-01-17', 'Status' => 'overdue'],
-        ['id' => 'R-1345', 'name' => 'Alice Smith', 'Age' => '31', 'Category' => 'Mother', 'Date & Time' =>'2023-03-01', 'Status' => 'Completed'],
-        ['id' => 'I-1345', 'name' => 'Bob Johnson', 'Age' => '4', 'Category' => 'Baby', 'Date & Time' =>'2023-03-05', 'Status' => 'Pending'],
-        ['id' => 'N-1345', 'name' => 'Charlie Lee', 'Age' => '5', 'Category' => 'Baby', 'Date & Time' =>'2023-03-10', 'Status' => 'Upcoming'],
-        ['id' => 'P-1345', 'name' => 'Diana King', 'Age' => '6', 'Category' => 'Baby', 'Date & Time' =>'2023-03-15', 'Status' => 'Overdue'],
-        ['id' => 'W-1345', 'name' => 'Ethan Clark', 'Age' => '27', 'Category' => 'Mother', 'Date & Time' =>'2023-03-20', 'Status' => 'Completed'],
-        ['id' => 'A-1345', 'name' => 'Fiona Adams', 'Age' => '38', 'Category' => 'Mother', 'Date & Time' =>'2023-03-25', 'Status' => 'Pending'],
-        ['id' => 'A-1345', 'name' => 'George Baker', 'Age' => '9', 'Category' => 'Baby', 'Date & Time' =>'2023-03-30', 'Status' => 'Upcoming'],
-        ['id' => 'D-1345', 'name' => 'Hannah Evans', 'Age' => '10', 'Category' => 'Baby', 'Date & Time' =>'2023-04-04', 'Status' => 'Overdue'],
-    ];
-    ?>
+    <c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ route('phm.appointments')}}">
 
-    <c-table.controls :columns='["ID","Name","Age","Category","Date & Time","Status"]'>
-
-        <c-slot name="filter">
-            <c-button variant="outline">
-                <img src="{{ asset('assets/icons/filter.svg') }}" />
-                Category
-            </c-button>
-            <c-button variant="outline">
-                <img src="{{ asset('assets/icons/filter.svg') }}" />
-                Status
-            </c-button>
-        </c-slot>
-
-        <c-slot name="extrabtn">
-            <c-modal id="registerStaff" size="sm" :initOpen="false">
-                <c-slot name="trigger">
-                    <c-button variant="primary">
-                        Add Appointment 
-                    </c-button>
-                </c-slot>
-
-                <c-slot name="headerPrefix">
-                    <img src="{{ asset('assets/icons/profile.svg' )}}"/>
-                </c-slot>
-
-                <c-slot name="header">
-                    <div>Add Appointment</div>
-                </c-slot>
-
-                <form id="admin-register-form" action="">
-                    <c-input type="text" label="ID:" placeholder="Enter ID" required />
-                    <c-input type="text" label="Name:" placeholder="Enter Name of the Mother/Child" required />
-                    <c-input type="text" label="Age(yrs):" placeholder="Enter Age" required />
-                    <c-input type="text" label="Category:" placeholder="Enter the Category" required />
-                    <c-input type="text" label="Date & Time:" placeholder="Enter Date & Time" required />
-                    <c-select label="Status:" name="permissions" searchable="1">
-                        <li class="select-item" data-value="child">Upcoming</li>
-                        <li class="select-item" data-value="maternal">Pending</li>
-                        <li class="select-item" data-value="infant">Completed</li>
-                        <li class="select-item" data-value="toddler">Overdue</li>
-                    </c-select>
-                </form>
-                <c-slot name="close">
-                        Close
-                </c-slot>
-                <c-slot name="footer">
-                    <c-button type="submit" form="admin-register-form" variant="primary">Add Appointment</c-button>
-                </c-slot>
-            </c-modal>
-        </c-slot>
     </c-table.controls>
 
     <c-table.wrapper card="1">
@@ -96,34 +31,51 @@
             <c-table.main sticky="1" size="comfortable">
                 <c-table.thead>
                     <c-table.tr>
-                        <c-table.th sortable="1" width="200px">ID</c-table.th>
-                        <c-table.th sortable="1" width="220px">Name</c-table.th>
-                        <c-table.th sortable="1" width="200px">Age(yrs)</c-table.th>
-                        <c-table.th sortable="1" width="220px">Category</c-table.th>
-                        <c-table.th align="left" sortable="1" width="200px">Date & Time</c-table.th>
-                        <c-table.th align="left" sortable="1" width="220px">Status</c-table.th>
+                        <c-table.th sortable="1">ID</c-table.th>
+                        <c-table.th sortable="1">Name</c-table.th>
+                        <c-table.th sortable="1">Category</c-table.th>
+                        <c-table.th align="left" sortable="1">Date & Time</c-table.th>
+                        <c-table.th align="left" sortable="1">Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
                 <c-table.tbody>
-                    @foreach ($items as $key => $item)
+                    @foreach ($appointments as $key => $appointment)
                         <c-table.tr>
-                            <c-table.td col="id">{{ $item['id'] }}</c-table.td>
-                            <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                            <c-table.td col="Age">{{ $item['Age'] }}</c-table.td>
-                            <c-table.td col="Category">{{ $item['Category'] }}</c-table.td>
-                            <c-table.td col="Date & Time">{{ $item['Date & Time'] }}</c-table.td>
+                            <c-table.td col="id">{{ $appointment['id'] }}</c-table.td>
+                            <c-table.td col="name">
+                                @if ($appointment['child'])
+                                    {{ $appointment['child']['name'] }}
+                                @elseif ($appointment['maternal'])
+                                    {{ $appointment['maternal']['name'] }}
+                                @else
+                                    N/A
+                                @endif
+                            </c-table.td>
+                            <c-table.td col="Category">
+                                @if ($appointment['child'])
+                                    Child
+                                @elseif ($appointment['maternal'])
+                                    Maternal
+                                @else
+                                    N/A
+                                @endif
+                            </c-table.td>
+                            <c-table.td col="Date & Time">
+                                {{ $appointment['slot_date'] }} @ {{ $appointment['start_time'] }} - {{ $appointment['end_time'] }}
+                            </c-table.td>
                             <c-table.td col="Status">
-                                @if (strtolower($item["Status"]) === "completed")
-                                    <c-badge type="yellow">{{ $item['Status']}}</c-badge>
-                                @elseif (strtolower($item["Status"]) === "pending")
-                                    <c-badge type="green">{{ $item['Status']}}</c-badge>
-                                @elseif (strtolower($item["Status"]) === "overdue")
-                                    <c-badge type="red">{{ $item['Status']}}</c-badge>
-                                @elseif (strtolower($item["Status"]) === "upcoming")
-                                    <c-badge type="purple">{{ $item['Status']}}</c-badge>
-                                    
+                                @if (strtolower($appointment["status"]) === "confirmed")
+                                    <c-badge type="primary">{{ $appointment['status']}}</c-badge>
+                                @elseif (strtolower($appointment["status"]) === "pending")
+                                    <c-badge type="yellow">{{ $appointment['status']}}</c-badge>
+                                @elseif (strtolower($appointment["status"]) === "attended")
+                                    <c-badge type="green">{{ $appointment['status']}}</c-badge>
+                                @elseif (strtolower($appointment["status"]) === "cancelled")
+                                    <c-badge type="destructive">{{ $appointment['status']}}</c-badge>
+                                @elseif (strtolower($appointment["status"]) === "no-show")
+                                    <c-badge type="red">{{ $appointment['status']}}</c-badge>
                                 @endif
                             </c-table.td>
                             <c-table.td class="table-actions" align="center">
@@ -141,15 +93,17 @@
                                             </c-slot>
 
                                             <c-slot name="headerSuffix">
-                                                @if (strtolower($item["Status"]) === "completed")
-                                                    <c-badge type="yellow">{{ $item['Status']}}</c-badge>
-                                                @elseif (strtolower($item["Status"]) === "pending")
-                                                    <c-badge type="green">{{ $item['Status']}}</c-badge>
-                                                @elseif (strtolower($item["Status"]) === "overdue")
-                                                    <c-badge type="red">{{ $item['Status']}}</c-badge>
-                                                @elseif (strtolower($item["Status"]) === "upcoming")
-                                                    <c-badge type="purple">{{ $item['Status']}}</c-badge>
-                                                @endif    
+                                               @if (strtolower($appointment["status"]) === "confirmed")
+                                                    <c-badge type="primary">{{ $appointment['status']}}</c-badge>
+                                                @elseif (strtolower($appointment["status"]) === "pending")
+                                                    <c-badge type="yellow">{{ $appointment['status']}}</c-badge>
+                                                @elseif (strtolower($appointment["status"]) === "attended")
+                                                    <c-badge type="green">{{ $appointment['status']}}</c-badge>
+                                                @elseif (strtolower($appointment["status"]) === "cancelled")
+                                                    <c-badge type="destructive">{{ $appointment['status']}}</c-badge>
+                                                @elseif (strtolower($appointment["status"]) === "no-show")
+                                                    <c-badge type="red">{{ $appointment['status']}}</c-badge>
+                                                @endif  
                                             </c-slot>
 
                                             <c-slot name="header">
@@ -160,128 +114,120 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Record ID"
-                                                    info="12000"
+                                                    info="{{ $appointment['id'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"
                                                     title="Name"
-                                                    info="{{ $item['name'] }}"
+                                                    info="{{ $appointment['child']['name'] ?? ($appointment['maternal']['name'] ?? 'N/A') }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
                                                     title="Age"
-                                                    info="2 Years"
+                                                    info="{{ $appointment['child'] ? $appointment['child']['age'] : ($appointment['maternal'] ? $appointment['maternal']['age'] : 'N/A') }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"
                                                     title="Category"
-                                                    info="{{ $item['Category'] }}"
+                                                    info="{{ $appointment['child'] ? 'Child' : ($appointment['maternal'] ? 'Maternal' : 'N/A') }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/calendar-02.svg') }}"
-                                                    title="Date & Time"
-                                                    info="{{ $item['Date & Time'] }}"
+                                                    title="Date"
+                                                    info="{{ $appointment['slot_date'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                                    title="Age"
-                                                    info="{{ $item['Age'] }}"
+                                                    title="Time"
+                                                    info="{{ $appointment['start_time'] }} - {{ $appointment['end_time'] }}"
                                                 />
                                                 <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                                    title="Vaccination Status"
-                                                    info="{{ $item['Status'] }}"
-                                                />
-                                                <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/student-card.svg') }}"
-                                                    title="Type of Vaccine"
-                                                    info="B.C.G."
+                                                    icon="{{ asset('assets/icons/user.svg') }}"
+                                                    title="Doctor"
+                                                    info="{{ $appointment['doctor'] ? $appointment['doctor']['name'] : 'N/A' }}"
                                                 />
                                             </c-modal.viewcard>
                                             
-                                            <h4>Additional Information</h4>
-                                            <ul>
-                                                <li>Nutrition Facts: Good</li>
-                                                <li>Lorem Ipsum</li>
+                                            @if ($appointment['status'] !== 'cancelled')
+
+                                                <h4 class="view-heading-appointment">Purpose of visit</h4>
+                                            @else
+                                                <h4 class="view-heading-appointment">Reason for cancellation</h4>
+                                            @endif
+                                                
+                                            <ul class="view-list-appointment">
+                                                <li>{{ $appointment['reason'] }}</li>
                                             </ul>  
                                             
                                             <c-slot name="close">
                                                 Close
                                             </c-slot>
                                         </c-modal>
-                                        <c-dropdown.sep />
-                                        <c-modal id="edit-appointment-{{ $key }}" size="sm" :initOpen="false">
-                                            <c-slot name="trigger">
-                                            <c-dropdown.item>Edit Appointment Details</c-dropdown.item>
-                                            </c-slot>
+                                        @if ($appointment['status'] === 'pending' || $appointment['status'] === 'confirmed')
+                                             <c-modal id="attend-appointment-{{ $key }}" size="sm" :initOpen="false">
+                                                <c-slot name="trigger">
+                                                    <c-dropdown.item>Mark as Attended</c-dropdown.item>
+                                                </c-slot>
+                                                <c-slot name="headerPrefix">
+                                                    <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
+                                                </c-slot>
+            
+                                                <c-slot name="header">
+                                                    Mark Appointment as Attended
+                                                </c-slot>
 
-                                            <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/configuration-02.svg' )}}"/>
-                                            </c-slot>
+                                                <p>Are you sure you want to mark this appointment as attended?</p>
 
-                                            <c-slot name="header">
-                                                    <div>Edit Appointment Details</div>
-                                            </c-slot>
+                                                <form id="attend-appointment-form-{{ $key }}" action="{{ route('phm.appointments.attend', ['id' => $appointment['id']]) }}" method="POST">
+                                                </form>
+                                                <c-slot name="close">
+                                                    Close
+                                                </c-slot>
+                                                <c-slot name="footer">
+                                                    <c-button form="attend-appointment-form-{{ $key }}" type="submit" variant="primary">Mark as Attended</c-button>
+                                                </c-slot>
+                                            </c-modal>
 
-                                            <form action="">
-                                                <c-input type="text" label="ID:" placeholder="{{ $item['id'] }}" required />
-                                                <c-input type="text" label="Name:" placeholder="{{ $item['name'] }}" required />
-                                                <c-input type="text" label="Age:" placeholder="{{ $item['Age'] }}" required />
-                                                <c-select label="Category:" name="permissions" multiple="1" searchable="1">
-                                                        <li class="select-item" data-value="child">Mother</li>
-                                                        <li class="select-item" data-value="maternal">Baby</li>
-                                                </c-select>
-                                                <c-input type="text" label="Date & Time:" placeholder="{{ $item['Date & Time'] }}" required />
-                                                <c-select label="Status:" name="permissions" searchable="1">
-                                                        <li class="select-item" data-value="child">Upcoming</li>
-                                                        <li class="select-item" data-value="maternal">Pending</li>
-                                                        <li class="select-item" data-value="infant">Completed</li>
-                                                        <li class="select-item" data-value="toddler">Overdue</li>
-                                                </c-select>
-                                            </form>
-                                            <c-slot name="close">
-                                                Close
-                                            </c-slot>
-                                            <c-slot name="footer">
-                                                <c-button type="submit" variant="primary">Save Changes</c-button>
-                                            </c-slot>
-                                        </c-modal>
-                                        <c-modal id="cancel-appointment-{{ $key }}" size="sm" :initOpen="false">
-                                            <c-slot name="trigger">
-                                                <c-dropdown.item>Cancel Appointment</c-dropdown.item>
-                                            </c-slot>
-                                            <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
-                                            </c-slot>
-        
-                                            <c-slot name="header">
-                                                Cancel Appointment
-                                            </c-slot>
+                                            <c-modal id="cancel-appointment-{{ $key }}" size="sm" :initOpen="false">
+                                                <c-slot name="trigger">
+                                                    <c-dropdown.item>Cancel Appointment</c-dropdown.item>
+                                                </c-slot>
+                                                <c-slot name="headerPrefix">
+                                                    <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
+                                                </c-slot>
+            
+                                                <c-slot name="header">
+                                                    Cancel Appointment
+                                                </c-slot>
 
-                                            <form id="admin-register-form" action="">
-                                                <c-textarea label="Reason for Cancellation:" placeholder="Enter your reason..." rows="3"></c-textarea>
-                                                <c-textarea label="Additional Notes:" placeholder="Any additional notes or others" rows="4"></c-textarea>
-                                            </form>
-                                            <c-slot name="close">
-                                                Close
-                                            </c-slot>
-                                            <c-slot name="footer">
-                                                <c-button type="submit" variant="destructive">Cancel Appointment</c-button>
-                                            </c-slot>
-                                        </c-modal>
+                                                <form id="cancel-appointment-form-{{ $key }}" action="{{ route('phm.appointments.cancel', ['id' => $appointment['id']]) }}" method="POST">
+                                                    <c-textarea label="Reason for Cancellation:" name="reason" placeholder="Enter your reason..." rows="3" required></c-textarea>
+                                                </form>
+                                                <c-slot name="close">
+                                                    Close
+                                                </c-slot>
+                                                <c-slot name="footer">
+                                                    <c-button form="cancel-appointment-form-{{ $key }}" type="submit" variant="destructive">Cancel Appointment</c-button>
+                                                </c-slot>
+                                            </c-modal>
+                                        @endif
                                     </c-slot>
                                 </c-dropdown.main>
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-
-                    @if(count($items) === 0)
-                        <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
-                    @endif
                 </c-table.tbody>
             </c-table.main>
         </div>
     </c-table.wrapper>
 
-    <c-table.pagination />
+    @if(count($appointments) === 0)
+        <c-emptytable
+            alt="Empty"
+            title="No Appointments Found"
+            description="You currently have no appointments. Please check back later"
+        />
+    @endif
+
+    <c-table.pagination :links="$links" />
 @endsection

@@ -13,4 +13,9 @@ class Doctor extends Model
     {
         return Staff::find($this->id);
     }
+
+    public function getUser()
+    {
+        return User::find($this->id);
+    }
 }

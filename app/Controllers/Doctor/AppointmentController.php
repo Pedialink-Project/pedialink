@@ -30,12 +30,45 @@ class AppointmentController
     public function configure(Request $request)
     {
         $search = $request->query("search", "");
+        $filter = $request->query("filters", []);
 
         $clinicWeeklyAvailability = $this->appointmentService
-            ->getAppointmentConfigurationData($search);
+            ->getAppointmentConfigurationData($search, $filter);
+        $availableWeekdays = $this->appointmentService->getAvailableWeekdays();
+        $availableClinicWeekdays = $this->appointmentService->getAvailableClinicWeekdays();
         return view("doctor/appointment/configure", [
-            "clinicWeeklyAvailability" => $clinicWeeklyAvailability
+            "clinicWeeklyAvailability" => $clinicWeeklyAvailability,
+            "availableWeekdays" => $availableWeekdays,
+            "availableClinicWeekdays" => $availableClinicWeekdays,
         ]);
+    }
+
+    public function createAvailability(Request $request)
+    {
+        $data = [
+            "weekday" => $request->input("weekday", ""),
+            "start_time" => $request->input("start_time", ""),
+            "end_time" => $request->input("end_time", ""),
+        ];
+
+        $errors = $this->appointmentService->validateAvailabilityData($data);
+
+        if (count($errors) > 0) {
+            return redirect(route("doctor.appointments.configure"))
+                ->withErrors($errors)
+                ->withInput($data)
+                ->with('add', true);
+        }
+
+        $doctorWeeklyAvailability = new DoctorWeeklyAvailability();
+        $doctorWeeklyAvailability->doctor_id = auth()->user()->id;
+        $doctorWeeklyAvailability->weekday = $data['weekday'];
+        $doctorWeeklyAvailability->start_time = $data['start_time'];
+        $doctorWeeklyAvailability->end_time = $data['end_time'];
+        $doctorWeeklyAvailability->save();
+        
+        return redirect(route("doctor.appointments.configure"))
+            ->withMessage("Availability created successfully.", "Success", "success");
     }
 
     public function editAvailability(Request $request, int $id)
@@ -60,5 +93,23 @@ class AppointmentController
         $doctorWeeklyAvailability->save();
         return redirect(route("doctor.appointments.configure"))
             ->withMessage("Availability updated successfully.", "Success", "success");
+    }
+
+    public function disableAvailability(Request $request, int $id)
+    {
+        $doctorWeeklyAvailability = DoctorWeeklyAvailability::find($id);
+        $doctorWeeklyAvailability->active = 0;
+        $doctorWeeklyAvailability->save();
+        return redirect(route("doctor.appointments.configure"))
+            ->withMessage("Availability disabled successfully.", "Success", "success");
+    }
+
+    public function enableAvailability(Request $request, int $id)
+    {
+        $doctorWeeklyAvailability = DoctorWeeklyAvailability::find($id);
+        $doctorWeeklyAvailability->active = 1;
+        $doctorWeeklyAvailability->save();
+        return redirect(route("doctor.appointments.configure"))
+            ->withMessage("Availability enabled successfully.", "Success", "success");
     }
 }

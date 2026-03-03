@@ -54,6 +54,34 @@ register_shutdown_function(function() {
 
 logMsg('Lock acquired — starting run.');
 
+// Mark past appointments as no-show (only for pending/confirmed status)
+$now = new DateTimeImmutable('now');
+$currentDate = $now->format('Y-m-d');
+$currentTime = $now->format('H:i:s');
+
+// Update appointments where the slot date has passed, or slot date is today but end_time has passed
+$noShowUpdateSql = "
+    UPDATE appointments 
+    SET status = 'no-show'
+    WHERE status IN ('pending', 'confirmed')
+    AND slot_id IN (
+        SELECT s.id FROM appointment_slots s
+        WHERE s.slot_date < :current_date
+        OR (s.slot_date = :current_date2 AND s.end_time < :current_time)
+    )
+";
+
+try {
+    QueryBuilder::rawExec($noShowUpdateSql, [
+        ':current_date' => $currentDate,
+        ':current_date2' => $currentDate,
+        ':current_time' => $currentTime,
+    ]);
+    logMsg("Checked and updated past appointments to no-show status.");
+} catch (Throwable $e) {
+    logMsg("Error updating no-show appointments: " . $e->getMessage());
+}
+
 // Load clinic weekly availability (0 = Monday .. 6 = Sunday)
 $clinicAvailRows = QueryBuilder::rawGet(
     'SELECT weekday, active, start_time, end_time, slot_length_minutes 
@@ -69,6 +97,45 @@ $clinicAvail = [];
 foreach ($clinicAvailRows as $r) {
     $weekday = (int)$r['weekday'];
     $clinicAvail[$weekday] = $r;
+}
+
+// Load doctor weekly availability (0 = Monday .. 6 = Sunday)
+$doctorAvailRows = QueryBuilder::rawGet(
+    'SELECT doctor_id, weekday, start_time, end_time 
+    FROM doctor_weekly_availability WHERE active = TRUE'
+);
+
+// Map by weekday for quick lookup: weekday => array of doctor availability rows
+$doctorAvail = [];
+foreach ($doctorAvailRows as $r) {
+    $weekday = (int)$r['weekday'];
+    if (!isset($doctorAvail[$weekday])) {
+        $doctorAvail[$weekday] = [];
+    }
+    $doctorAvail[$weekday][] = $r;
+}
+
+/**
+ * Find an available doctor for a given weekday and time slot
+ * Returns doctor_id or null if no doctor available
+ */
+function findAvailableDoctor(array $doctorAvail, int $weekday, string $slotStartTime, string $slotEndTime): ?int {
+    if (!isset($doctorAvail[$weekday])) {
+        return null;
+    }
+    
+    foreach ($doctorAvail[$weekday] as $docAvail) {
+        $docStart = $docAvail['start_time'];
+        $docEnd = $docAvail['end_time'];
+        
+        // Check if slot time falls within doctor's availability window
+        // Slot must start at or after doctor's start time AND end at or before doctor's end time
+        if ($slotStartTime >= $docStart && $slotEndTime <= $docEnd) {
+            return (int)$docAvail['doctor_id'];
+        }
+    }
+    
+    return null;
 }
 
 // Load children with a DOB
@@ -156,6 +223,17 @@ foreach ($children as $child) {
         continue;
     }
 
+    // Check if child has a recent cancelled/no-show appointment (today or yesterday)
+    // If so, start from tomorrow to prevent immediate re-booking contention
+    $recentCancelledOrNoShow = QueryBuilder::rawGet(
+        "SELECT a.id FROM appointments a
+        JOIN appointment_slots s ON a.slot_id = s.id
+        WHERE a.child_id = ? AND s.slot_date >= (current_date - interval '1 day') AND a.status IN ('cancelled', 'no-show') LIMIT 1",
+        [$childId]
+    );
+
+    $hasRecentCancelledOrNoShow = !empty($recentCancelledOrNoShow);
+
     logMsg(
         "Child {$childId} ({$childName}) requires appointment: {$reason} — searching slots next " .
         DAYS_AHEAD .
@@ -163,7 +241,8 @@ foreach ($children as $child) {
     );
 
     // Compute target window
-    $windowStart = $today;
+    // If child had a recent cancelled/no-show, start from tomorrow to add a gap
+    $windowStart = $hasRecentCancelledOrNoShow ? $today->modify('+1 day') : $today;
     $windowEnd = $today->modify('+' . DAYS_AHEAD . ' days');
 
     $assigned = false;
@@ -199,6 +278,10 @@ foreach ($children as $child) {
             continue;
         }
 
+        // For today's date, skip slots that have already passed
+        $isToday = ($slotDateStr === $today->format('Y-m-d'));
+        $currentTimeNow = new DateTimeImmutable('now');
+
         // iterate slot times
         while ($slotCursor < $slotEndBoundary) {
             $slotStart = $slotCursor;
@@ -207,13 +290,22 @@ foreach ($children as $child) {
             // if slotFinish exceeds end boundary, break
             if ($slotFinish > $slotEndBoundary) break;
 
+            // Skip slots that have already passed (for today only)
+            if ($isToday && $slotFinish <= $currentTimeNow) {
+                $slotCursor = $slotCursor->modify('+' . $slotLengthMinutes . ' minutes');
+                continue;
+            }
+
             $startTimeOnly = $slotStart->format('H:i:s');
             $endTimeOnly = $slotFinish->format('H:i:s');
 
-            // 1) ensure slot exists (clinic-level slots: doctor_id = NULL)
+            // Check if a doctor is available for this time slot
+            $assignedDoctorId = findAvailableDoctor($doctorAvail, $weekdayIndex, $startTimeOnly, $endTimeOnly);
+
+            // 1) ensure slot exists (with doctor_id if available, otherwise NULL)
             $insertSlotSql = '
                 INSERT INTO appointment_slots (slot_date, start_time, end_time, doctor_id, capacity)
-                VALUES (:slot_date, :start_time, :end_time, NULL, :capacity)
+                VALUES (:slot_date, :start_time, :end_time, :doctor_id, :capacity)
                 ON CONFLICT (slot_date, start_time, doctor_id) DO NOTHING
             ';
             try {
@@ -221,6 +313,7 @@ foreach ($children as $child) {
                     ':slot_date' => $slotDateStr,
                     ':start_time' => $startTimeOnly,
                     ':end_time' => $endTimeOnly,
+                    ':doctor_id' => $assignedDoctorId,
                     ':capacity' => SLOT_DEFAULT_CAPACITY,
                 ]);
             } catch (Throwable $e) {
@@ -228,11 +321,18 @@ foreach ($children as $child) {
                 // continue trying other slots
             }
 
-            // 2) fetch slot id
-            $slotRow = QueryBuilder::rawGet(
-                'SELECT id, booked_count, capacity FROM appointment_slots WHERE slot_date = ? AND start_time = ? AND doctor_id IS NULL LIMIT 1',
-                [$slotDateStr, $startTimeOnly]
-            );
+            // 2) fetch slot id (match by doctor_id - could be NULL)
+            if ($assignedDoctorId !== null) {
+                $slotRow = QueryBuilder::rawGet(
+                    'SELECT id, booked_count, capacity FROM appointment_slots WHERE slot_date = ? AND start_time = ? AND doctor_id = ? LIMIT 1',
+                    [$slotDateStr, $startTimeOnly, $assignedDoctorId]
+                );
+            } else {
+                $slotRow = QueryBuilder::rawGet(
+                    'SELECT id, booked_count, capacity FROM appointment_slots WHERE slot_date = ? AND start_time = ? AND doctor_id IS NULL LIMIT 1',
+                    [$slotDateStr, $startTimeOnly]
+                );
+            }
             if (empty($slotRow)) {
                 // unexpected: slot not found; try next slot time
                 $slotCursor = $slotCursor->modify('+' . $slotLengthMinutes . ' minutes');
@@ -265,7 +365,8 @@ foreach ($children as $child) {
                     );
 
                     QueryBuilder::raw('COMMIT');
-                    logMsg("Assigned slot {$slotDateStr} {$startTimeOnly} to child {$childId} ({$childName}).");
+                    $doctorInfo = $assignedDoctorId !== null ? " (doctor_id: {$assignedDoctorId})" : " (no doctor assigned)";
+                    logMsg("Assigned slot {$slotDateStr} {$startTimeOnly} to child {$childId} ({$childName}){$doctorInfo}.");
                     $assigned = true;
                     break 2; // break out of both slot loops (child assigned)
                 } else {

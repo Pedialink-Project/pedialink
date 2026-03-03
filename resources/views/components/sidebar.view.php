@@ -136,13 +136,8 @@ $menuItems = [
             // ],
             [
                 'name' => 'Appointments',
-                'link' => '#',
+                'link' => route('phm.appointments'),
                 'icon' => asset('/assets/icons/profile.svg'),
-
-                'children' => [
-                    ['name' => 'My Appointments', 'link' => route('phm.appointments')],
-                    ['name' => 'Request Appointments', 'link' => route('phm.appointments.requests')],
-                ]
             ],
            
              

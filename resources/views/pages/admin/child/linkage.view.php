@@ -109,7 +109,7 @@
                         </c-slot>
                     </c-dropdown.main>
                 </c-slot>
-                <p class="linkage-card-content">P-{{ $request["parent_id"] }} requested to link with child account</p>
+                <p class="linkage-card-content">P-{{ $request["parent"]['id'] }} requested to link with child account</p>
                 <c-slot name="footer">
                     <div class="linkage-card-btn-grp">
                         <c-modal size="sm">

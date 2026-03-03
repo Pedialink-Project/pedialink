@@ -11,7 +11,7 @@ class ChildMisc extends Model
 
     public function getChild(): object|null
     {
-        return Child::find($this->child_id);
+        return Child::find($this->children_id);
     }
 
     public function getParent(): object|null
