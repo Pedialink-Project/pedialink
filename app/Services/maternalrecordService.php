@@ -1,30 +1,35 @@
 <?php
 
 namespace App\Services;
+use App\Models\MaternalStat;
+use App\Models\Maternal;
 use App\Models\MaternalRecord;
-use App\Helpers\Validator;
 
-class maternalrecordService
+class MaternalRecordService
 {
     public function getAllMaternalRecords()
     {
-        $maternalrecords = MaternalRecord::all();
+        $maternalRecords = MaternalRecord::all();
 
         $resource = [];
-        foreach ($maternalrecords as $record) {
-            $resource[] = [
+        foreach ($maternalRecords as $record) {
+             $resource[] = [
                 'id' => $record->id,
+                'maternal_id' => $record->maternal_id,
                 'parent_id' => $record->parent_id,
+                'staff_id' => $record->staff_id,
                 'visit_date' => $record->visit_date,
-                'height' => $record->height,
+                'trimester' => $record->trimester,
                 'bmi' => $record->bmi,
+                'weight' => $record->weight,
+                'height' => $record->height,
                 'blood_sugar' => $record->blood_sugar,
                 'blood_pressure' => $record->blood_pressure,
-                'weight' => $record->weight,
-                'trimester' => $record->trimester,
                 'health_status' => $record->health_status,
-                'notes' => $record->notes,
+                'fundal_height' => $record->fundal_height,
+                'notes' => json_decode($record->notes),
             ];
+            
         }
 
 
@@ -33,122 +38,35 @@ class maternalrecordService
 
 
 
-    public function getMaternalRecordByMaternalId($id)
+    public function getMaternalStatByMaternalId($id)
     {
-        $maternalrecords = MaternalRecord::query()->where('parent_id', '=', $id)->get();
+        $maternalStats = MaternalStat::query()->where('maternal_id', '=', $id)->get();
         $resource = [];
-        foreach ($maternalrecords as $record) {
+        foreach ($maternalStats as $stat) {
             $resource[] = [
-                'id' => $record->id,
-                'parent_id' => $record->parent_id,
-                'visit_date' => $record->visit_date,
-                'height' => $record->height,
-                'bmi' => $record->bmi,
-                'blood_sugar' => $record->blood_sugar,
-                'blood_pressure' => $record->blood_pressure,
-                'weight' => $record->weight,
-                'trimester' => $record->trimester,
-                'health_status' => $record->health_status,
-                'notes' => $record->notes,
+                'id' => $stat->id,
+                'maternal_id' => $stat->maternal_id,
+                'visit_date' => $stat->visit_date,
+                'trimester' => $stat->trimester,
+                'bmi' => $stat->bmi,
+                'weight' => $stat->weight,
+                'height' => $stat->height,
+                'blood_sugar' => $stat->blood_sugar,
+                'blood_pressure' => $stat->blood_pressure,
+                'health_status' => $stat->health_status,
+                'fundal_height' => $stat->fundal_height,
+                'notes' => json_decode($stat->notes),
             ];
         }
+
         return $resource;
-    }
-
-    public function calculateBMI($weight, $height)
-    {
-        // BMI = weight (kg) / (height (m))^2
-        // Convert to float and validate
-        $weight = (float)$weight;
-        $height = (float)$height;
-        
-        // Return null if weight or height are invalid
-        if ($weight <= 0 || $height <= 0) {
-            return null;
-        }
-        
-        $heightInMeters = $height / 100; // Convert cm to meters
-        $bmi = $weight / ($heightInMeters * $heightInMeters);
-        
-        return round($bmi, 2);
-    }
-
-    public function determineHealthStatus($bloodSugar, $bloodPressure, $bmi)
-    {
-        /**
-         * Determine health status based on vital signs
-         * 
-         * Blood Pressure format: "120/80" (systolic/diastolic)
-         * Blood Sugar: in mg/dL
-         * BMI: numeric value
-         * 
-         * Returns: 'critical', 'bad', or 'good'
-         */
-        
-        $criticalCount = 0;
-        $badCount = 0;
-        
-        // Parse blood pressure
-        if (!empty($bloodPressure)) {
-            $bpValues = explode('/', $bloodPressure);
-            if (count($bpValues) === 2) {
-                $systolic = (float)$bpValues[0];
-                $diastolic = (float)$bpValues[1];
-                
-                // Critical: Systolic >= 160 or Diastolic >= 110 (Hypertensive Crisis)
-                if ($systolic >= 160 || $diastolic >= 110) {
-                    $criticalCount++;
-                }
-                // Bad: Systolic 140-159 or Diastolic 90-109 (Stage 2 Hypertension)
-                elseif ($systolic >= 140 || $diastolic >= 90) {
-                    $badCount++;
-                }
-            }
-        }
-        
-        // Check blood sugar
-        if (!empty($bloodSugar)) {
-            $sugar = (float)$bloodSugar;
-            
-            // Critical: > 300 mg/dL (Severe Hyperglycemia)
-            if ($sugar > 300) {
-                $criticalCount++;
-            }
-            // Bad: 150-300 mg/dL (Moderate Hyperglycemia) or < 70 mg/dL (Hypoglycemia)
-            elseif (($sugar >= 150 && $sugar <= 300) || $sugar < 70) {
-                $badCount++;
-            }
-        }
-        
-        // Check BMI
-        if (!empty($bmi)) {
-            $bmiValue = (float)$bmi;
-            
-            // Critical: BMI >= 35 (Severe Obesity) or < 16 (Severe Underweight)
-            if ($bmiValue >= 35 || $bmiValue < 16) {
-                $criticalCount++;
-            }
-            // Bad: BMI 30-34.9 (Obesity) or 16-18.4 (Underweight)
-            elseif (($bmiValue >= 30 && $bmiValue < 35) || ($bmiValue >= 16 && $bmiValue < 18.5)) {
-                $badCount++;
-            }
-        }
-        
-        // Determine overall health status
-        if ($criticalCount > 0) {
-            return 'critical';
-        } elseif ($badCount > 0) {
-            return 'bad';
-        } else {
-            return 'good';
-        }
     }
 
     public function validateNumericStat($data, $attributeName)
     {
 
         $error = null;
-        if ($data === null || trim((string)$data) === '') {
+        if (!Validator::validateFieldExistence($data)) {
             $error = "$attributeName can not be empty";
             return $error;
         }
@@ -175,7 +93,7 @@ class maternalrecordService
     public function validateCommonFields($data, $attributeName)
     {
         $error = null;
-        if ($data === null || trim((string)$data) === '') {
+        if (!Validator::validateFieldExistence($data)) {
             $error = "$attributeName can not be empty";
             return $error;
         }
@@ -184,26 +102,25 @@ class maternalrecordService
     }
 
     public function validateDate($date)
-{
-    $error = null;
+    {
+        $error = null;
 
-    // FIRST: check for null or empty
-    if ($date === null || trim($date) === '') {
-        return "Visit date cannot be empty";
+        if (!Validator::validateFieldExistence($date)) {
+            $error = "Recorded At Date cannot be empty";
+            return $error;
+        }
+
+
+
+
+        return $error;
+
+
     }
 
-    // THEN: safe to call validator
-    if (!Validator::validateFieldExistence((string)$date)) {
-        return "Visit date cannot be empty";
-    }
-
-    return $error;
-}
 
 
-
-
-    public function validateMaternalRecordData($visitdate, $height, $bloodPressure, $bloodSugar,$weight,$trimester, $healthStatus,$additionalNotes, $edit = false)
+    public function validateMaternalStatData($recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $edit = false)
     {
         $errorSuffix = '';
         if ($edit) {
@@ -211,17 +128,17 @@ class maternalrecordService
         }
         $errors = [];
 
-        $visitDateError = $this->validateDate($visitdate);
-        if ($visitDateError) {
-            $errors["{$errorSuffix}visit_date"] = $visitDateError;
+        $recordedAtError = $this->validateDate($recordedAt);
+        if ($recordedAtError) {
+            $errors["{$errorSuffix}recorded_at"] = $recordedAtError;
         }
 
-        $heightError = $this->validateNumericStat($height, "Height");
-        if ($heightError) {
-            $errors["{$errorSuffix}height"] = $heightError;
+        $bmiError = $this->validateNumericStat($bmi, "BMI");
+        if ($bmiError) {
+            $errors["{$errorSuffix}bmi"] = $bmiError;
         }
 
-        $bloodPressureError = $this->validateCommonFields($bloodPressure, "Blood Pressure");
+        $bloodPressureError = $this->validateNumericStat($bloodPressure, "Blood Pressure");
         if ($bloodPressureError) {
             $errors["{$errorSuffix}blood_pressure"] = $bloodPressureError;
         }
@@ -236,13 +153,26 @@ class maternalrecordService
             $errors["{$errorSuffix}weight"] = $weightError;
         }
 
-        $trimesterError = $this->validateCommonFields($trimester, "Trimester");
-        if ($trimesterError) {
-            $errors["{$errorSuffix}trimester"] = $trimesterError;
+        $heightError = $this->validateNumericStat($height, "Height");
+        if ($heightError) {
+            $errors["{$errorSuffix}height"] = $heightError;
         }
 
-        // Health status is now auto-calculated, so no validation needed
-        // Notes are optional, no validation needed
+        $fundalHeightError = $this->validateNumericStat($fundalHeight, "Fundal Height");
+        if ($fundalHeightError) {
+            $errors["{$errorSuffix}fundal_height"] = $fundalHeightError;
+        }
+
+        $healthStatusError = $this->validateCommonFields($healthStatus, "Health Status");
+        if ($healthStatusError) {
+            $errors["{$errorSuffix}health_status"] = $healthStatusError;
+        }
+
+        $prenacyStageError = $this->validateCommonFields($prenacyStage, "Pregnancy Stage");
+        if ($prenacyStageError) {
+            $errors["{$errorSuffix}pregnancy_stage"] = $prenacyStageError;
+        }
+
 
         return $errors;
     }
@@ -259,90 +189,61 @@ class maternalrecordService
         return json_encode($notesArray, JSON_UNESCAPED_UNICODE);
     }
 
-    public function createMaternalRecord($parentId,$visitdate, $height, $bloodPressure, $bloodSugar,$weight,$trimester,$healthStatus,$additionalNotes){
+    public function createMaternalStat($maternalId,$recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $notes){
 
-        // Calculate BMI from height and weight
-        $bmi = $this->calculateBMI($weight, $height);
+
         
-        $maternalrecord = new MaternalRecord();
-        $maternalrecord->parent_id = $parentId;
-        $maternalrecord->visit_date = $visitdate;
-        $maternalrecord->height = $height;
-        $maternalrecord->bmi = $bmi;
-        $maternalrecord->blood_pressure = $bloodPressure;
-        $maternalrecord->blood_sugar = $bloodSugar;
-        $maternalrecord->weight = $weight;
-        $maternalrecord->trimester = $trimester;
-        $maternalrecord->health_status = $healthStatus;
-        $maternalrecord->notes = $additionalNotes;
+        $maternalStat = new MaternalStat();
+        $maternalStat->maternal_id = $maternalId;
+        $maternalStat->visit_date = $recordedAt;
+        $maternalStat->bmi = $bmi;
+        $maternalStat->blood_pressure = $bloodPressure;
+        $maternalStat->blood_sugar = $bloodSugar;
+        $maternalStat->weight = $weight;
+        $maternalStat->height = $height;
+        $maternalStat->fundal_height = $fundalHeight;
+        $maternalStat->health_status = $healthStatus;
+        $maternalStat->trimester= $prenacyStage;
+        $maternalStat->notes = $this->formatNotes($notes);
 
-        $maternalrecord->save();
+        $maternalStat->save();
 
-        return $maternalrecord;
+        return $maternalStat;
     }
 
-    public function editMaternalRecord($recordId, $visitdate, $height, $bloodPressure, $bloodSugar,$weight,$trimester,$healthStatus,$additionalNotes){
-        $maternalrecord = MaternalRecord::find($recordId);
+    public function editMaternalStat($id, $recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $notes){
+        $maternalStat = MaternalStat::find($id);
 
-        if (!$maternalrecord) {
-            throw new \Exception("Maternal Record not found");
+        if (!$maternalStat) {
+            throw new \Exception("MaternalStat not found");
         }
 
-        // Calculate BMI from height and weight
-        $bmi = $this->calculateBMI($weight, $height);
+        $maternalStat->visit_date = $recordedAt;
+        $maternalStat->bmi = $bmi;
+        $maternalStat->blood_pressure = $bloodPressure;
+        $maternalStat->blood_sugar = $bloodSugar;
+        $maternalStat->weight = $weight;
+        $maternalStat->height = $height;
+        $maternalStat->fundal_height = $fundalHeight;
+        $maternalStat->health_status = $healthStatus;
+        $maternalStat->trimester = $prenacyStage;
+        $maternalStat->notes = $this->formatNotes($notes);
 
-        $maternalrecord->visit_date = $visitdate;
-        $maternalrecord->height = $height;
-        $maternalrecord->bmi = $bmi;
-        $maternalrecord->blood_pressure = $bloodPressure;
-        $maternalrecord->blood_sugar = $bloodSugar;
-        $maternalrecord->weight = $weight;
-        $maternalrecord->trimester = $trimester;
-        $maternalrecord->health_status = $healthStatus;
-        $maternalrecord->notes = $additionalNotes;
+        $maternalStat->save();
 
-        $maternalrecord->save();
-
-        return $maternalrecord;
+        return $maternalStat;
     }
 
-    public function markAsInvalid($recordId)
-    {
-        $maternalrecord = MaternalRecord::find($recordId);
+    public function deleteMaternalStat($id){
+        $maternalStat = MaternalStat::find($id);
 
-        if (!$maternalrecord) {
-            throw new \Exception("Maternal Record not found");
+        if (!$maternalStat) {
+            throw new \Exception("MaternalStat not found");
         }
 
-        $maternalrecord->health_status = 'invalid';
-        $maternalrecord->save();
-
-        return $maternalrecord;
+        $maternalStat->delete();
     }
-    public function getLatestMaternalRecord($maternalId)
-    {
-        $maternalRecord = MaternalRecord::query()
-            ->where('parent_id', '=', $maternalId)
-            ->where('health_status', '!=', 'invalid')
-            ->orderBy('visit_date', 'DESC')
-            ->first();
 
-        if (!$maternalRecord) {
-            return null;
-        }
 
-        return [
-            'id' => $maternalRecord->id,
-            'maternal_id' => $maternalRecord->parent_id,
-            'visit_date' => $maternalRecord->visit_date,
-            'trimester' => $maternalRecord->trimester,
-            'height' => $maternalRecord->height ?? '-',
-            'bmi' => $maternalRecord->bmi ?? '-',
-            'weight' => $maternalRecord->weight ?? '-',
-            'blood_sugar' => $maternalRecord->blood_sugar ?? '-',
-            'blood_pressure' => $maternalRecord->blood_pressure ?? '-',
-            'health_status' => $maternalRecord->health_status ?? '-',
-            'notes' => $maternalRecord->notes ? json_decode($maternalRecord->notes) : null,
-        ];
-    }
+
 }
