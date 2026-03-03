@@ -146,4 +146,19 @@ class Calculator
         default => 'good',
     };
 }
+
+
+public static function calculateTrimester(?int $gestationWeeks): ?string
+{
+    if ($gestationWeeks === null || $gestationWeeks < 0) {
+        return null;
+    }
+
+    return match (true) {
+        $gestationWeeks <= 12 => 'first_trimester',
+        $gestationWeeks <= 27 => 'second_trimester',
+        $gestationWeeks <= 40 => 'third_trimester',
+        default => 'post_term',
+    };
+}
 }
