@@ -108,129 +108,82 @@ class MaternalRecordService
     }
 
 
-    public function validateNumericStat($data, $attributeName)
-    {
+    
+    public function validateMaternalHealthData(
+        $visitDate,
+        $bloodPressure,
+        $weight,
+        $hemoglobin,
+        $glucose,
+        $fetalHeartRate,
+        $fundalHeight,
+        bool $edit = false
+    ): array {
 
-        $error = null;
-        if (!Validator::validateFieldExistence($data)) {
-            $error = "$attributeName can not be empty";
-            return $error;
-        }
-
-        if (!is_numeric($data)) {
-            $error = "$attributeName must be a valid number";
-            return $error;
-        }
-
-        if (intval($data) < 0) {
-            $error = "$attributeName cannot be negative";
-            return $error;
-        }
-
-        if (strlen(explode('.', $data, 2)[0]) > 3) {
-            $error = "$attributeName is too large";
-            return $error;
-        }
-
-        return $error;
-    }
-
-    public function validateCommonFields($data, $attributeName)
-    {
-        $error = null;
-        if (!Validator::validateFieldExistence($data)) {
-            $error = "$attributeName can not be empty";
-            return $error;
-        }
-
-        return $error;
-    }
-
-    public function validateDate($date)
-    {
-        $error = null;
-
-        if (!Validator::validateFieldExistence($date)) {
-            $error = "Recorded At Date cannot be empty";
-            return $error;
-        }
-
-
-
-
-        return $error;
-    }
-
-
-
-    public function validateMaternalStatData($recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $edit = false)
-    {
-        $errorSuffix = '';
-        if ($edit) {
-            $errorSuffix = 'e_';
-        }
         $errors = [];
+        $prefix = $edit ? 'e_' : '';
 
-        $recordedAtError = $this->validateDate($recordedAt);
-        if ($recordedAtError) {
-            $errors["{$errorSuffix}recorded_at"] = $recordedAtError;
+
+        if (!$visitDate) {
+            $errors["{$prefix}visit_date"] = 'Visit date is required.';
+        } elseif (!strtotime($visitDate)) {
+            $errors["{$prefix}visit_date"] = 'Invalid visit date.';
+        } elseif ($visitDate > date('Y-m-d')) {
+            $errors["{$prefix}visit_date"] = 'Visit date cannot be in the future.';
         }
 
-        $bmiError = $this->validateNumericStat($bmi, "BMI");
-        if ($bmiError) {
-            $errors["{$errorSuffix}bmi"] = $bmiError;
+        if ($weight !== null) {
+            if (!is_numeric($weight)) {
+                $errors["{$prefix}weight"] = 'Weight must be numeric.';
+            } elseif ($weight < 30 || $weight > 200) {
+                $errors["{$prefix}weight"] = 'Weight must be between 30kg and 200kg.';
+            }
         }
 
-        $bloodPressureError = $this->validateNumericStat($bloodPressure, "Blood Pressure");
-        if ($bloodPressureError) {
-            $errors["{$errorSuffix}blood_pressure"] = $bloodPressureError;
+        if ($hemoglobin !== null) {
+            if (!is_numeric($hemoglobin)) {
+                $errors["{$prefix}hemoglobin"] = 'Hemoglobin must be numeric.';
+            } elseif ($hemoglobin < 7 || $hemoglobin > 20) {
+                $errors["{$prefix}hemoglobin"] = 'Hemoglobin must be between 7g/dL and 20g/dL.';
+            }
         }
 
-        $bloodSugarError = $this->validateNumericStat($bloodSugar, "Blood Sugar");
-        if ($bloodSugarError) {
-            $errors["{$errorSuffix}blood_sugar"] = $bloodSugarError;
+        if ($glucose !== null) {
+            if (!is_numeric($glucose)) {
+                $errors["{$prefix}glucose"] = 'Glucose must be numeric.';
+            } elseif ($glucose < 50 || $glucose > 500) {
+                $errors["{$prefix}glucose"] = 'Glucose must be between 50mg/dL and 500mg/dL.';
+            }
         }
 
-        $weightError = $this->validateNumericStat($weight, "Weight");
-        if ($weightError) {
-            $errors["{$errorSuffix}weight"] = $weightError;
+        if ($bloodPressure !== null) {
+             if (!is_numeric($bloodPressure)) {
+            $errors["{$prefix}blood_pressure"] = 'Blood pressure must be numeric.';
+            } elseif ($bloodPressure < 50 || $bloodPressure > 250) {
+            $errors["{$prefix}blood_pressure"] = 'Blood pressure must be between 50 and 250 mmHg.';
+            }
         }
 
-        $heightError = $this->validateNumericStat($height, "Height");
-        if ($heightError) {
-            $errors["{$errorSuffix}height"] = $heightError;
+        if ($fetalHeartRate !== null) {
+            if (!is_numeric($fetalHeartRate)) {
+                $errors["{$prefix}fetal_heart_rate"] = 'Fetal heart rate must be numeric.';
+            } elseif ($fetalHeartRate < 110 || $fetalHeartRate > 160) {
+                $errors["{$prefix}fetal_heart_rate"] = 'Fetal heart rate must be between 110 and 160 bpm.';
+            }
         }
 
-        $fundalHeightError = $this->validateNumericStat($fundalHeight, "Fundal Height");
-        if ($fundalHeightError) {
-            $errors["{$errorSuffix}fundal_height"] = $fundalHeightError;
+        if ($fundalHeight !== null) {
+            if (!is_numeric($fundalHeight)) {
+                $errors["{$prefix}fundal_height"] = 'Fundal height must be numeric.';
+            } elseif ($fundalHeight < 10 || $fundalHeight > 40) {
+                $errors["{$prefix}fundal_height"] = 'Fundal height must be between 10cm and 40cm.';
+            }
         }
-
-        $healthStatusError = $this->validateCommonFields($healthStatus, "Health Status");
-        if ($healthStatusError) {
-            $errors["{$errorSuffix}health_status"] = $healthStatusError;
-        }
-
-        $prenacyStageError = $this->validateCommonFields($prenacyStage, "Pregnancy Stage");
-        if ($prenacyStageError) {
-            $errors["{$errorSuffix}pregnancy_stage"] = $prenacyStageError;
-        }
-
 
         return $errors;
     }
 
-    private function formatNotes(string $notes)
-    {
-        // Split the string by new lines (\r\n, \r, or \n)
-        $lines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $notes)));
-
-        $notesArray = array_map(function ($line) {
-            return ['note' => $line];
-        }, $lines);
-
-        return json_encode($notesArray, JSON_UNESCAPED_UNICODE);
-    }
+   
     public function addHealthRecord(
         $maternalId,
         $staffId,
@@ -250,7 +203,7 @@ class MaternalRecordService
 
         $bmi = Calculator::calculateBMI($height, $weight);
 
-        $lmp = Pregnancy::find($maternalId)->where('maternal_id', $maternalId)->first()->lmp;
+        $lmp = Pregnancy::query()->where('maternal_id', '=',$maternalId)->first()->lmp;
 
 
         $gestationWeeks = Calculator::calculateGestationWeeks($lmp);
