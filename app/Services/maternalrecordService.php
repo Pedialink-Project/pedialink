@@ -91,10 +91,11 @@ class MaternalRecordService
                 'trimester' => $record->trimester,
                 'bmi' => $record->bmi,
                 'weight' => $record->weight,
-                'height' => $record->height,
+                'glucose'=> $record->glucose,
                 'blood_sugar' => $record->blood_sugar,
                 'blood_pressure' => $record->blood_pressure,
                 'health_status' => $record->health_status,
+                'fetal_heart_rate' =>$record->fetal_heart_rate,
                 'fundal_height' => $record->fundal_height,
                 'notes' => json_decode($record->notes),
             ];
