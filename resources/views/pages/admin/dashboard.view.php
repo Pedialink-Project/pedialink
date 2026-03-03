@@ -12,20 +12,20 @@ Admin Dashboard
 <div class="top-section">
 
     <section class="greet">
-        <h1>Good Moring, <br> <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}} !</span>
+        <h1>Good Morning, <br> <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}} !</span>
         </h1>
     </section>
     <section class="pill-container">
         <c-pill>
             <c-slot name="title">Total Childern</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $childrenCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/baby-01.svg')}}">
             </c-slot>
         </c-pill>
         <c-pill>
             <c-slot name="title">Active PHM</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $phmCount }}</c-slot>
             <c-slot name="icon">
                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20.25 9.75V8.25H18.75V6.75H17.25V8.25H15.75V9.75H17.25V11.25H18.75V9.75H20.25Z" fill="#181818"/>
@@ -37,14 +37,14 @@ Admin Dashboard
         </c-pill>
         <c-pill>
             <c-slot name="title">Total Parents</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $parentsCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{ asset('assets/icons/mother.svg') }}">
             </c-slot>
         </c-pill>
         <c-pill>
             <c-slot name="title">Access Requests</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $accessRequestsCount }}</c-slot>
             <c-slot name="icon">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.66663 14.6667C5.77556 11.4104 10.1909 11.2571 13.3333 14.6667M11.3268 6.00001C11.3268 7.84095 9.83224 9.33334 7.98867 9.33334C6.14509 9.33334 4.65058 7.84095 4.65058 6.00001C4.65058 4.15906 6.14509 2.66667 7.98867 2.66667C9.83224 2.66667 11.3268 4.15906 11.3268 6.00001Z" stroke="#181818" stroke-width="1.5" stroke-linecap="round"/>
@@ -57,7 +57,7 @@ Admin Dashboard
         </c-pill>
         <c-pill>
             <c-slot name="title">Linkage Requests</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $linkageRequestsCount }}</c-slot>
             <c-slot name="icon">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5.05174 12.0494C4.10856 12.56 1.6356 13.6025 3.14179 14.907C3.87756 15.5443 4.69701 16 5.72727 16H11.6061C12.6364 16 13.4558 15.5443 14.1916 14.907C15.6978 13.6025 13.2248 12.56 12.2816 12.0494C10.0699 10.8522 7.26348 10.8522 5.05174 12.0494Z" stroke="#181818" stroke-width="1.5"/>
@@ -72,7 +72,7 @@ Admin Dashboard
         </c-pill>
         <c-pill>
             <c-slot name="title">Active Doctors</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $doctorsCount }}</c-slot>
             <c-slot name="icon">
                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12.4868 6.99449L12.528 6.81449C12.6068 6.47999 12.7358 5.98799 13.002 5.50349C13.2735 5.00999 13.6943 4.50974 14.3543 4.18049C15.012 3.85274 15.8363 3.73049 16.8555 3.86549C17.9805 4.01549 20.2403 4.38749 22.2368 5.40299C24.2445 6.42449 26.1255 8.18174 26.1255 11.1082C26.1255 12.6202 25.5405 14.2425 24.9735 15.3C24.7013 15.8085 24.378 16.2945 24.054 16.5562C23.9798 16.6162 23.874 16.6912 23.7428 16.7437C23.3827 17.9269 22.6661 18.97 21.6907 19.7304C20.7154 20.4908 19.529 20.9315 18.2938 20.992C17.0585 21.0526 15.8347 20.7302 14.7897 20.0688C13.7446 19.4075 12.9293 18.4395 12.4553 17.2972L12.4373 17.3002L12.171 16.977L12.1703 16.9755L12.1688 16.974L12.165 16.9687L12.1523 16.9537C12.0881 16.8738 12.0264 16.792 11.967 16.7085C11.8054 16.4836 11.6528 16.2524 11.5095 16.0155C11.157 15.432 10.7318 14.601 10.4595 13.6312C10.188 12.6615 10.0635 11.5245 10.3485 10.3515C10.626 9.20999 11.2808 8.08649 12.4665 7.08299L12.4868 6.99449ZM13.7468 16.473C14.0721 17.4084 14.6967 18.2105 15.5239 18.755C16.3512 19.2995 17.3349 19.556 18.3227 19.4849C19.3105 19.4137 20.2473 19.0188 20.988 18.3614C21.7287 17.704 22.2319 16.8206 22.4198 15.8482L22.5045 15.8767C22.5012 15.8343 22.4997 15.7918 22.5 15.7492C22.5 14.508 22.3275 13.6417 22.167 13.1017C22.1355 12.9967 22.1008 12.8926 22.0628 12.7897L22.032 12.7912H22.002C21.4412 12.8033 20.8805 12.7606 20.328 12.6637C19.0403 12.4462 17.2965 11.9032 15.243 10.6455C15.198 10.746 15.153 10.8592 15.108 10.9852C14.961 11.4015 14.8403 11.8957 14.736 12.4177C14.6438 12.8775 14.568 13.3402 14.496 13.7737L14.4683 13.9447C14.391 14.4097 14.3138 14.8665 14.2238 15.1972C14.0663 15.7717 13.9058 16.1797 13.7468 16.4722M12.6968 15.075C12.3584 14.4934 12.0924 13.8725 11.9048 13.2262C11.6805 12.4267 11.598 11.5612 11.8065 10.7055C12.009 9.87299 12.4988 8.99774 13.506 8.16824C13.6875 8.04524 13.77 7.88024 13.7925 7.83599V7.83524C13.8315 7.754 13.8632 7.66941 13.887 7.58249C13.911 7.49699 13.9373 7.37999 13.962 7.27499L13.9883 7.15724C14.0595 6.85499 14.1518 6.52574 14.3168 6.22499C14.4773 5.93399 14.697 5.68499 15.024 5.52224C15.3525 5.35799 15.861 5.24549 16.6575 5.35199C17.7473 5.49674 19.797 5.84399 21.5565 6.73949C23.304 7.62824 24.6255 8.97374 24.6255 11.1075C24.6255 12.09 24.2955 13.2075 23.898 14.0887C23.823 13.5142 23.715 13.0447 23.604 12.6727C23.5258 12.4071 23.4293 12.1473 23.3153 11.895C23.2715 11.8018 23.224 11.7105 23.1728 11.6212L23.16 11.601L23.1555 11.5935L23.1533 11.5897L23.1518 11.5875L22.8743 11.157L22.3778 11.2567L22.3673 11.259L22.2945 11.2687C22.1829 11.2813 22.0708 11.2888 21.9585 11.2912C21.4961 11.3001 21.0339 11.2639 20.5785 11.1832C19.3688 10.9792 17.5913 10.4235 15.432 8.98574L14.907 8.63549L14.4728 9.09299C14.115 9.46949 13.872 9.98324 13.6943 10.4835C13.5128 10.9972 13.3755 11.571 13.2653 12.1215C13.1738 12.59 13.0908 13.06 13.0163 13.5315L12.9878 13.6995C12.9075 14.1877 12.8423 14.5605 12.7763 14.802C12.7493 14.9015 12.7228 14.9925 12.6968 15.075Z" fill="#181818"/>
@@ -107,126 +107,99 @@ Admin Dashboard
                     <span class="card-title">Parent Approval Request</span>
                     <span class="card-subtitle">Latest parent accounts to be verified</span>
                 </div>
-                <c-button varient="secondary" size="sm">View All</c-button>
+                <c-link type="secondary" href="{{ route('admin.user.parent') }}">View All</c-link>
             </div>
             <hr class="divider">
 
             <div class="card-body">
+                @if (count($parentApprovalRequests) <= 0)
+                    <c-emptycard
+                        title="No pending approval requests"
+                        description="All parent accounts have been verified."
+                    />
+                @endif
                 <!-- Event Item -->
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">User 1</div>
-
-                        <div class="sub-details">
-                            <div class="sub-name">
-                                Parent
+                @foreach ($parentApprovalRequests as $reqKey => $request)
+                    <div class="row event">
+                        <div class="primary-details">
+                            <div class="name">{{ $request['name'] }}</div>
+                            <div class="sub-details">
+                                <div class="sub-name">
+                                    {{ $request['type'] }}
+                                </div>
                             </div>
                         </div>
-                        
-                    </div>
-                    <div class="secondary-details">
-                        <c-badge type="secondary">Pending</c-badge>
-                    </div>
-
-                    <div class="secondary-details">
-                        <div class="approval-request-btn-group">
-                            <c-button variant="primary" size="sm">
-                                <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                Approve
-                            </c-button>
-                            <c-button variant="destructive" size="sm">
-                                <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                Deny
-                            </c-button>
+                        <div class="secondary-details">
+                            <c-badge type="secondary">Pending</c-badge>
                         </div>
-                    </div>
-                </div>
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">User 1</div>
+                        <div class="secondary-details">
+                            <div class="approval-request-btn-group">
+                                <c-modal size="sm">
+                                    <c-slot name="trigger">
+                                        <c-button variant="primary">
+                                            <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
+                                            Approve
+                                        </c-button>
+                                    </c-slot>
 
-                        <div class="sub-details">
-                            <div class="sub-name">
-                                Parent
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/checkmark-circle-02-dark.svg') }}" />
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        Approve Account
+                                    </c-slot>
+
+                                    <p>Approve parent <span class="parent-name-approve">"{{ $request["name"] }}"</span> of id <span class="parent-id-approve">P-{{ $request["id"] }}</span>?</p>
+
+                                    <form id="approve-account-{{ $reqKey }}" method="POST" action="{{ route('admin.user.parent.approve', ['id' => $request['id']], ['quick' => true])}}" class="hidden">
+
+                                    </form>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button type="submit" variant="primary" form="approve-account-{{ $reqKey }}">
+                                            Approve Account
+                                        </c-button>
+                                    </c-slot>
+                                </c-modal>
+                                <c-modal size="sm">
+                                    <c-slot name="trigger">
+                                        <c-button variant="destructive">
+                                            <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
+                                            Deny
+                                        </c-button>
+                                    </c-slot>
+
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/cancel-circle-dark.svg') }}" />
+                                    </c-slot>
+                                    
+                                    <c-slot name="header">
+                                        Deny Account
+                                    </c-slot>
+
+                                    <p>Deny parent <span class="parent-name-deny">"{{ $request["name"] }}"</span> of id <span class="parent-id-deny">P-{{ $request["id"] }}</span>?</p>
+
+                                    <form id="deny-account-{{ $reqKey }}" method="POST" action="{{ route('admin.user.parent.deny', ['id' => $request['id']], ['quick' => true])}}" class="hidden"></form>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button type="submit" variant="destructive" form="deny-account-{{ $reqKey }}">
+                                            Deny Account
+                                        </c-button>
+                                    </c-slot>
+                                </c-modal>
                             </div>
                         </div>
-                        
                     </div>
-                    <div class="secondary-details">
-                        <c-badge type="secondary">Pending</c-badge>
-                    </div>
-
-                    <div class="secondary-details">
-                        <div class="approval-request-btn-group">
-                            <c-button variant="primary" size="sm">
-                                <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                Approve
-                            </c-button>
-                            <c-button variant="destructive" size="sm">
-                                <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                Deny
-                            </c-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">User 1</div>
-
-                        <div class="sub-details">
-                            <div class="sub-name">
-                                Parent
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="secondary-details">
-                        <c-badge type="secondary">Pending</c-badge>
-                    </div>
-
-                    <div class="secondary-details">
-                        <div class="approval-request-btn-group">
-                            <c-button variant="primary" size="sm">
-                                <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                Approve
-                            </c-button>
-                            <c-button variant="destructive" size="sm">
-                                <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                Deny
-                            </c-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">User 1</div>
-
-                        <div class="sub-details">
-                            <div class="sub-name">
-                                Parent
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="secondary-details">
-                        <c-badge type="secondary">Pending</c-badge>
-
-                        
-                    </div>
-
-                    <div class="secondary-details">
-                        <div class="approval-request-btn-group">
-                            <c-button variant="primary" size="sm">
-                                <img src="{{ asset('assets/icons/checkmark-circle-02.svg')}}">
-                                Approve
-                            </c-button>
-                            <c-button variant="destructive" size="sm">
-                                <img class="deny-icon" src="{{ asset('assets/icons/cancel-circle.svg')}}">
-                                Deny
-                            </c-button>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </c-card>
 
@@ -237,200 +210,77 @@ Admin Dashboard
                     <span class="card-title">Upcoming Events & Campaigns</span>
                     <span class="card-subtitle">Scheduled health events and vaccination drives</span>
                 </div>
-                <c-button varient="secondary" size="sm">View All</c-button>
+                <c-link type="secondary" href="{{ route('admin.event') }}">View All</c-link>
             </div>
             <hr class="divider">
 
             <div class="card-body">
                 <!-- Event Item -->
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">Maternal Health Seminar</div>
-                        <div class="sub-details">
-                            <!-- Calender Icon-->
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M18 2V4M6 2V4" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M11.9955 13H12.0045M11.9955 17H12.0045M15.991 13H16M8 13H8.00897M8 17H8.00897"
-                                    stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M3.5 8H20.5" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M2.5 12.2432C2.5 7.88594 2.5 5.70728 3.75212 4.35364C5.00424 3 7.01949 3 11.05 3H12.95C16.9805 3 18.9958 3 20.2479 4.35364C21.5 5.70728 21.5 7.88594 21.5 12.2432V12.7568C21.5 17.1141 21.5 19.2927 20.2479 20.6464C18.9958 22 16.9805 22 12.95 22H11.05C7.01949 22 5.00424 22 3.75212 20.6464C2.5 19.2927 2.5 17.1141 2.5 12.7568V12.2432Z"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M3 8H21" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
+                @foreach ($eventsData as $event)
+                    <div class="row event">
+                        <div class="primary-details">
+                            <div class="name">{{ $event['title'] }}</div>
+                            <div class="sub-details">
+                                <!-- Calender Icon-->
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 2V4M6 2V4" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M11.9955 13H12.0045M11.9955 17H12.0045M15.991 13H16M8 13H8.00897M8 17H8.00897"
+                                        stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M3.5 8H20.5" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M2.5 12.2432C2.5 7.88594 2.5 5.70728 3.75212 4.35364C5.00424 3 7.01949 3 11.05 3H12.95C16.9805 3 18.9958 3 20.2479 4.35364C21.5 5.70728 21.5 7.88594 21.5 12.2432V12.7568C21.5 17.1141 21.5 19.2927 20.2479 20.6464C18.9958 22 16.9805 22 12.95 22H11.05C7.01949 22 5.00424 22 3.75212 20.6464C2.5 19.2927 2.5 17.1141 2.5 12.7568V12.2432Z"
+                                        stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M3 8H21" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
 
 
-                            <div class="sub-name">2024-06-15 at 09.00 AM</div>
+                                <div class="sub-name">{{ $event['date'] }} at {{ $event['start_time'] }}</div>
+                            </div>
+                            <div class="sub-details">
+                                <!-- Participants Icon-->
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M20.774 18C21.5233 18 22.1193 17.5285 22.6545 16.8691C23.7499 15.5194 21.9513 14.4408 21.2654 13.9126C20.568 13.3756 19.7894 13.0714 19 13M18 11C19.3807 11 20.5 9.88071 20.5 8.5C20.5 7.11929 19.3807 6 18 6"
+                                        stroke="#71717A" stroke-width="1.5" stroke-linecap="round" />
+                                    <path
+                                        d="M3.22596 18C2.47666 18 1.88067 17.5285 1.34555 16.8691C0.250089 15.5194 2.04867 14.4408 2.73465 13.9126C3.43197 13.3756 4.21058 13.0714 5 13M5.5 11C4.11929 11 3 9.88071 3 8.5C3 7.11929 4.11929 6 5.5 6"
+                                        stroke="#71717A" stroke-width="1.5" stroke-linecap="round" />
+                                    <path
+                                        d="M8.0838 15.1112C7.06203 15.743 4.38299 17.0331 6.0147 18.6474C6.81178 19.436 7.69952 20 8.81563 20H15.1844C16.3005 20 17.1882 19.436 17.9853 18.6474C19.617 17.0331 16.938 15.743 15.9162 15.1112C13.5201 13.6296 10.4799 13.6296 8.0838 15.1112Z"
+                                        stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M15.5 7.5C15.5 9.433 13.933 11 12 11C10.067 11 8.5 9.433 8.5 7.5C8.5 5.567 10.067 4 12 4C13.933 4 15.5 5.567 15.5 7.5Z"
+                                        stroke="#71717A" stroke-width="1.5" />
+                                </svg>
+
+                                <div class="sub-name">{{ $event['count'] }} Participants</div>
+                                <!-- Location Icon -->
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
+                                        stroke="#71717A" stroke-width="1.5" />
+                                    <path
+                                        d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
+                                        stroke="#71717A" stroke-width="1.5" />
+                                    <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
+                                        stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                                <div class="sub-name">{{ $event['location'] }}</div>
+                            </div>
                         </div>
-                        <div class="sub-details">
-                            <!-- Participants Icon-->
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M20.774 18C21.5233 18 22.1193 17.5285 22.6545 16.8691C23.7499 15.5194 21.9513 14.4408 21.2654 13.9126C20.568 13.3756 19.7894 13.0714 19 13M18 11C19.3807 11 20.5 9.88071 20.5 8.5C20.5 7.11929 19.3807 6 18 6"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round" />
-                                <path
-                                    d="M3.22596 18C2.47666 18 1.88067 17.5285 1.34555 16.8691C0.250089 15.5194 2.04867 14.4408 2.73465 13.9126C3.43197 13.3756 4.21058 13.0714 5 13M5.5 11C4.11929 11 3 9.88071 3 8.5C3 7.11929 4.11929 6 5.5 6"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round" />
-                                <path
-                                    d="M8.0838 15.1112C7.06203 15.743 4.38299 17.0331 6.0147 18.6474C6.81178 19.436 7.69952 20 8.81563 20H15.1844C16.3005 20 17.1882 19.436 17.9853 18.6474C19.617 17.0331 16.938 15.743 15.9162 15.1112C13.5201 13.6296 10.4799 13.6296 8.0838 15.1112Z"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M15.5 7.5C15.5 9.433 13.933 11 12 11C10.067 11 8.5 9.433 8.5 7.5C8.5 5.567 10.067 4 12 4C13.933 4 15.5 5.567 15.5 7.5Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                            </svg>
-
-                            <div class="sub-name">45 Participants</div>
-                            <!-- Location Icon -->
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                                <path
-                                    d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                                <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
-                                    stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
-                            <div class="sub-name">RHU Center A</div>
-                        </div>
-                    </div>
-                    <div class="secondary-details">
-                        <c-badge type="purple">Upcoming</c-badge>
-                    </div>
-
-
-                </div>
-                <!-- Repeatable rows for other events -->
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">Baby Care Seminar</div>
-                        <div class="sub-details">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M18 2V4M6 2V4" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M11.9955 13H12.0045M11.9955 17H12.0045M15.991 13H16M8 13H8.00897M8 17H8.00897"
-                                    stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M3.5 8H20.5" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M2.5 12.2432C2.5 7.88594 2.5 5.70728 3.75212 4.35364C5.00424 3 7.01949 3 11.05 3H12.95C16.9805 3 18.9958 3 20.2479 4.35364C21.5 5.70728 21.5 7.88594 21.5 12.2432V12.7568C21.5 17.1141 21.5 19.2927 20.2479 20.6464C18.9958 22 16.9805 22 12.95 22H11.05C7.01949 22 5.00424 22 3.75212 20.6464C2.5 19.2927 2.5 17.1141 2.5 12.7568V12.2432Z"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M3 8H21" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-
-
-                            <div class="sub-name">2024-06-15 at 03.00 PM</div>
-                        </div>
-                        <div class="sub-details">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M20.774 18C21.5233 18 22.1193 17.5285 22.6545 16.8691C23.7499 15.5194 21.9513 14.4408 21.2654 13.9126C20.568 13.3756 19.7894 13.0714 19 13M18 11C19.3807 11 20.5 9.88071 20.5 8.5C20.5 7.11929 19.3807 6 18 6"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round" />
-                                <path
-                                    d="M3.22596 18C2.47666 18 1.88067 17.5285 1.34555 16.8691C0.250089 15.5194 2.04867 14.4408 2.73465 13.9126C3.43197 13.3756 4.21058 13.0714 5 13M5.5 11C4.11929 11 3 9.88071 3 8.5C3 7.11929 4.11929 6 5.5 6"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round" />
-                                <path
-                                    d="M8.0838 15.1112C7.06203 15.743 4.38299 17.0331 6.0147 18.6474C6.81178 19.436 7.69952 20 8.81563 20H15.1844C16.3005 20 17.1882 19.436 17.9853 18.6474C19.617 17.0331 16.938 15.743 15.9162 15.1112C13.5201 13.6296 10.4799 13.6296 8.0838 15.1112Z"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M15.5 7.5C15.5 9.433 13.933 11 12 11C10.067 11 8.5 9.433 8.5 7.5C8.5 5.567 10.067 4 12 4C13.933 4 15.5 5.567 15.5 7.5Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                            </svg>
-
-                            <div class="sub-name">45 Participants</div>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                                <path
-                                    d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                                <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
-                                    stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
-                            <div class="sub-name">RHU Center A</div>
+                        <div class="secondary-details">
+                            <c-badge type="purple">{{ $event['status'] }}</c-badge>
                         </div>
                     </div>
-                    <div class="secondary-details">
-                        <c-badge type="purple">Upcoming</c-badge>
-                    </div>
-
-                </div>
-                <div class="row event">
-                    <div class="primary-details">
-                        <div class="name">Maternal Health Seminar</div>
-                        <div class="sub-details">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M18 2V4M6 2V4" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M11.9955 13H12.0045M11.9955 17H12.0045M15.991 13H16M8 13H8.00897M8 17H8.00897"
-                                    stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M3.5 8H20.5" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M2.5 12.2432C2.5 7.88594 2.5 5.70728 3.75212 4.35364C5.00424 3 7.01949 3 11.05 3H12.95C16.9805 3 18.9958 3 20.2479 4.35364C21.5 5.70728 21.5 7.88594 21.5 12.2432V12.7568C21.5 17.1141 21.5 19.2927 20.2479 20.6464C18.9958 22 16.9805 22 12.95 22H11.05C7.01949 22 5.00424 22 3.75212 20.6464C2.5 19.2927 2.5 17.1141 2.5 12.7568V12.2432Z"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M3 8H21" stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-
-
-                            <div class="sub-name">2024-01-15 at 09.00 AM</div>
-                        </div>
-                        <div class="sub-details">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M20.774 18C21.5233 18 22.1193 17.5285 22.6545 16.8691C23.7499 15.5194 21.9513 14.4408 21.2654 13.9126C20.568 13.3756 19.7894 13.0714 19 13M18 11C19.3807 11 20.5 9.88071 20.5 8.5C20.5 7.11929 19.3807 6 18 6"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round" />
-                                <path
-                                    d="M3.22596 18C2.47666 18 1.88067 17.5285 1.34555 16.8691C0.250089 15.5194 2.04867 14.4408 2.73465 13.9126C3.43197 13.3756 4.21058 13.0714 5 13M5.5 11C4.11929 11 3 9.88071 3 8.5C3 7.11929 4.11929 6 5.5 6"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round" />
-                                <path
-                                    d="M8.0838 15.1112C7.06203 15.743 4.38299 17.0331 6.0147 18.6474C6.81178 19.436 7.69952 20 8.81563 20H15.1844C16.3005 20 17.1882 19.436 17.9853 18.6474C19.617 17.0331 16.938 15.743 15.9162 15.1112C13.5201 13.6296 10.4799 13.6296 8.0838 15.1112Z"
-                                    stroke="#71717A" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M15.5 7.5C15.5 9.433 13.933 11 12 11C10.067 11 8.5 9.433 8.5 7.5C8.5 5.567 10.067 4 12 4C13.933 4 15.5 5.567 15.5 7.5Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                            </svg>
-
-                            <div class="sub-name">45 Participants</div>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M14.5 9C14.5 10.3807 13.3807 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C13.3807 6.5 14.5 7.61929 14.5 9Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                                <path
-                                    d="M13.2574 17.4936C12.9201 17.8184 12.4693 18 12.0002 18C11.531 18 11.0802 17.8184 10.7429 17.4936C7.6543 14.5008 3.51519 11.1575 5.53371 6.30373C6.6251 3.67932 9.24494 2 12.0002 2C14.7554 2 17.3752 3.67933 18.4666 6.30373C20.4826 11.1514 16.3536 14.5111 13.2574 17.4936Z"
-                                    stroke="#71717A" stroke-width="1.5" />
-                                <path d="M18 20C18 21.1046 15.3137 22 12 22C8.68629 22 6 21.1046 6 20" stroke="#71717A"
-                                    stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
-                            <div class="sub-name">RHU Center A</div>
-                        </div>
-                    </div>
-                    <div class="secondary-details">
-                        <c-badge type="green">Completed</c-badge>
-                    </div>
-
-                </div>
+                @endforeach
             </div>
         </c-card>
 
@@ -608,8 +458,8 @@ Admin Dashboard
 <script>
     // --- Data for the left chart (monthly) ---
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const scheduled = [2, 0, 0, 100, 80, 60, 80, 20, 10, 40, 60, 50]; // blue-ish small area
-    const completed = [150,110,220,240,420,400,310,330,320,350,280,180]; // pink/peach large area
+    const scheduled = <?php echo json_encode($vaccinationChartData['scheduled']); ?>; // blue-ish small area
+    const completed = <?php echo json_encode($vaccinationChartData['completed']); ?>; // pink/peach large area
 
     // Create gradients (requires canvas context)
     const ctxLine = document.getElementById('lineAreaChart').getContext('2d');

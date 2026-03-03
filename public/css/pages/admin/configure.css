@@ -1,0 +1,14 @@
+.status-weekday {
+    width: 100px;
+    justify-content: center;
+}
+
+.weekday-tdata {
+    white-space: nowrap;
+}
+
+.edit-availability-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}

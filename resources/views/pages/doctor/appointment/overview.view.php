@@ -13,21 +13,7 @@
 @endsection
 
 @section('content')
-    <?php
-    $appointments = [
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "completed"],
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "completed"],
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "pending"],
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "completed"],
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "overdue"],
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "completed"],
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "pending"],
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "overdue"],
-        ["name" => "Sarah Johnson", "date" => "2024-01-15 at 09.00 AM", "location" => "MOH Office Clinic", "staff" => "Dr Smith Watson", "status" => "completed"],
-    ];
-    ?>
-
-    <c-table.controls :columns='["Name","Date & Time","Location","Staff","Status"]'>
+    <c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ route('doctor.appointments.overview')}}">
         <c-slot name="filter">
             <c-button variant="outline">
                 <img src="{{ asset('assets/icons/filter.svg') }}" />
@@ -42,9 +28,9 @@
                 <c-table.thead>
                     <c-table.tr>
                         <c-table.th sortable="1">Name</c-table.th>
-                        <c-table.th sortable="1">Date & Time</c-table.th>
-                        <c-table.th sortable="1">Location</c-table.th>
-                        <c-table.th sortable="1">Staff</c-table.th>
+                        <c-table.th sortable="1">Date</c-table.th>
+                        <c-table.th sortable="1">Time</c-table.th>
+                        <c-table.th sortable="1">Doctor</c-table.th>
                         <c-table.th>Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
@@ -53,19 +39,31 @@
                 <c-table.tbody>
                     @foreach ($appointments as $key => $appointment)
                         <c-table.tr>
-                            <c-table.td class="appointment-tdata" col="name">{{ $appointment['name'] }}</c-table.td>
-                            <c-table.td class="appointment-tdata" col="date">{{ $appointment['date'] }}</c-table.td>
-                            <c-table.td class="appointment-tdata" col="location">{{ $appointment['location'] }}</c-table.td>
-                            <c-table.td class="appointment-tdata" col="staff">{{ $appointment['staff'] }}</c-table.td>
+                            <c-table.td class="appointment-tdata" col="name">
+                                @if ($appointment['child'])
+                                    {{ $appointment['child']['name'] }}
+                                @elseif ($appointment['maternal'])
+                                    {{ $appointment['maternal']['name'] }}
+                                @else
+                                    N/A
+                                @endif
+                            </c-table.td>
+                            <c-table.td class="appointment-tdata" col="date">{{ $appointment['slot_date'] }}</c-table.td>
+                            <c-table.td class="appointment-tdata" col="time">
+                                {{ $appointment['start_time'] }} - {{ $appointment['end_time'] }}
+                            </c-table.td>
+                            <c-table.td class="appointment-tdata" col="doctor">
+                                {{ $appointment['doctor'] ? $appointment['doctor']['name'] : 'N/A' }}
+                            </c-table.td>
                             <c-table.td class="appointment-tdata" col="status">
-                                @if (strtolower($appointment['status']) === "completed")
+                                @if (strtolower($appointment['status']) === "attended")
                                     <c-badge class="status-appointment" type="green">{{ ucfirst($appointment['status']) }}</c-badge>
-                                @elseif (strtolower($appointment['status']) === "upcoming")
+                                @elseif (in_array(strtolower($appointment['status']), ["upcoming", "confirmed"]))
                                     <c-badge class="status-appointment" type="primary">{{ ucfirst($appointment['status']) }}</c-badge>
-                                @elseif (strtolower($appointment['status']) === "overdue")
+                                @elseif (in_array(strtolower($appointment['status']), ["cancelled", "no-show"]))
                                     <c-badge class="status-appointment" type="red">{{ ucfirst($appointment['status']) }}</c-badge>
-                                @elseif (strtolower($appointment['status']) === "pending")
-                                    <c-badge class="status-appointment" type="yellow">{{ ucfirst($appointment['status']) }}</c-badge>                                  
+                                @elseif (in_array(strtolower($appointment['status']), ["pending"]))
+                                    <c-badge class="status-appointment" type="yellow">pending</c-badge>                                  
                                 @endif
                             </c-table.td>
                             <c-table.td class="table-actions" align="center">
@@ -94,17 +92,17 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Requestor"
-                                                    info="{{ $appointment['name'] }}"
+                                                    info="{{ $appointment['maternal'] ? $appointment['maternal']['name'] : ($appointment['child'] ? $appointment['child']['name'] : 'N/A') }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"
-                                                    title="Staff"
-                                                    info="{{ $appointment['staff'] }}"
+                                                    title="Doctor"
+                                                    info="{{ $appointment['doctor'] ? $appointment['doctor']['name'] : 'N/A' }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                                     title="Appointment ID"
-                                                    info="Borella"
+                                                    info="{{ $appointment['id'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/location-05.svg') }}"
@@ -114,35 +112,28 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/mother.svg') }}"
                                                     title="Account Type"
-                                                    info="Parent"
+                                                    info="{{ $appointment['maternal'] ? 'Maternal' : ($appointment['child'] ? 'Child' : 'N/A') }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/location-05.svg') }}"
                                                     title="Requestor GS Division"
-                                                    info="Borella"
+                                                    info="{{ $appointment['maternal'] ? $appointment['maternal']['division'] : ($appointment['child'] ? $appointment['child']['division'] : 'N/A') }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                                     title="Date"
-                                                    info="Monday, January 15, 2023"
+                                                    info="{{ $appointment['slot_date'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/clock-01.svg') }}"
                                                     title="Time"
-                                                    info="10:30 AM"
+                                                    info="{{ $appointment['start_time'] }} - {{ $appointment['end_time'] }}"
                                                 />
                                             </c-modal.viewcard>
 
                                             <c-modal.viewlist title="Purpose of Visit">
                                                 <c-slot name="list">
-                                                    <li>Regular Checkup</li>
-                                                </c-slot>
-                                            </c-modal.viewlist>
-
-                                            <c-modal.viewlist title="Important Notes">
-                                                <c-slot name="list">
-                                                    <li>Bring child vaccination card</li>
-                                                    <li>Valid ID for parent/guardian</li>
+                                                    <li>{{ $appointment['reason'] }}</li>
                                                 </c-slot>
                                             </c-modal.viewlist>
 
@@ -155,13 +146,18 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($appointment) === 0)
-                        <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
-                    @endif
+                    
                 </c-table.tbody>
             </c-table.main>
         </div>
     </c-table.wrapper>
+    @if(count($appointments) === 0)
+        <c-emptytable
+            alt="No appointments"
+            title="No Appointments"
+            description="There are currently no appointments to display."
+        />
+    @endif
 
-    <c-table.pagination />
+    <c-table.pagination :links="$links" />
 @endsection

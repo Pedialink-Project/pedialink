@@ -14,5 +14,11 @@ class ChildMisc extends Model
         return Child::find($this->child_id);
     }
 
-    
+    public function getParent(): object|null
+    {
+        return ParentM::query()
+            ->where("nic", "=", $this->parent_nic)
+            ->first();
+    }
+
 }

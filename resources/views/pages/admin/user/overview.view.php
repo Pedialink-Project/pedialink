@@ -302,13 +302,17 @@
                             </c-table.td>
                         </c-table.tr>
                     @endforeach
-                    @if(count($users) === 0)
-                        <tr><td colspan="6"><div class="table-empty">No items found</div></td></tr>
-                    @endif
                 </c-table.tbody>
             </c-table.main>
         </div>
     </c-table.wrapper>
+     @if(count($users) === 0)
+        <c-emptytable
+            alt="empty"
+            title="No data available"
+            description="No user entries found"
+        />
+    @endif
 
     <c-table.pagination :links="$links" />
 @endsection

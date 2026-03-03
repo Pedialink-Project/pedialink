@@ -268,7 +268,5 @@
         @endforeach
     </div>
 
-    @if (count($parents) > 0)
-        <c-table.pagination :links="$links" />
-    @endif
+    <c-table.pagination :links="$links" />
 @endsection

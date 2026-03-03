@@ -76,7 +76,7 @@ Doctor Dashboard
                     <span class="card-title">Upcoming Appoinments</span>
                     <span class="card-subtitle">Your scheduled visits to the clinic</span>
                 </div>
-                <c-link type="secondary" href="{{ route('doctor.appointments') }}">View Schedule</c-link>
+                <c-link type="secondary" href="{{ route('doctor.appointments.overview') }}">View Schedule</c-link>
             </div>
             <hr class="divider">
             <div class="card-body">
