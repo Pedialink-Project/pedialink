@@ -165,9 +165,9 @@ public static function calculateTrimester(?int $gestationWeeks): ?string
     }
 
     return match (true) {
-        $gestationWeeks <= 12 => 'first_trimester',
-        $gestationWeeks <= 27 => 'second_trimester',
-        $gestationWeeks <= 40 => 'third_trimester',
+        $gestationWeeks <= 12 => 'first',
+        $gestationWeeks <= 27 => 'second',
+        $gestationWeeks <= 40 => 'third',
         default => 'post_term',
     };
 }
