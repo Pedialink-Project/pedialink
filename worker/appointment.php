@@ -184,6 +184,17 @@ foreach ($children as $child) {
         continue;
     }
 
+    // Check if child has a recent cancelled/no-show appointment (today or yesterday)
+    // If so, start from tomorrow to prevent immediate re-booking contention
+    $recentCancelledOrNoShow = QueryBuilder::rawGet(
+        "SELECT a.id FROM appointments a
+        JOIN appointment_slots s ON a.slot_id = s.id
+        WHERE a.child_id = ? AND s.slot_date >= (current_date - interval '1 day') AND a.status IN ('cancelled', 'no-show') LIMIT 1",
+        [$childId]
+    );
+
+    $hasRecentCancelledOrNoShow = !empty($recentCancelledOrNoShow);
+
     logMsg(
         "Child {$childId} ({$childName}) requires appointment: {$reason} — searching slots next " .
         DAYS_AHEAD .
@@ -191,7 +202,8 @@ foreach ($children as $child) {
     );
 
     // Compute target window
-    $windowStart = $today;
+    // If child had a recent cancelled/no-show, start from tomorrow to add a gap
+    $windowStart = $hasRecentCancelledOrNoShow ? $today->modify('+1 day') : $today;
     $windowEnd = $today->modify('+' . DAYS_AHEAD . ' days');
 
     $assigned = false;
@@ -227,6 +239,10 @@ foreach ($children as $child) {
             continue;
         }
 
+        // For today's date, skip slots that have already passed
+        $isToday = ($slotDateStr === $today->format('Y-m-d'));
+        $currentTimeNow = new DateTimeImmutable('now');
+
         // iterate slot times
         while ($slotCursor < $slotEndBoundary) {
             $slotStart = $slotCursor;
@@ -234,6 +250,12 @@ foreach ($children as $child) {
 
             // if slotFinish exceeds end boundary, break
             if ($slotFinish > $slotEndBoundary) break;
+
+            // Skip slots that have already passed (for today only)
+            if ($isToday && $slotFinish <= $currentTimeNow) {
+                $slotCursor = $slotCursor->modify('+' . $slotLengthMinutes . ' minutes');
+                continue;
+            }
 
             $startTimeOnly = $slotStart->format('H:i:s');
             $endTimeOnly = $slotFinish->format('H:i:s');
