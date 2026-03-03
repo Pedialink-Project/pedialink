@@ -19,7 +19,6 @@ class Migration_20260204092547_create_pregnancy_table implements \Library\Framew
         QueryBuilder::raw(
             "CREATE TABLE IF NOT EXISTS pregnancy (
                 id SERIAL PRIMARY KEY,
-                started_at DATE NOT NULL,
                 end_at DATE,
                 maternal_id INT REFERENCES maternal (id)
             );"

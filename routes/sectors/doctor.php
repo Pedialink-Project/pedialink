@@ -26,7 +26,9 @@ return [
     ['POST', '/doctor/maternal-profiles/{id}/health-records/add', [maternalhealthrecordController::class, 'createMaternalRecord'], 'doctor.maternal.health.add', ['doctor']],
     ['POST', '/doctor/maternal-profiles/{id}/health-records/{recordId}/edit', [maternalhealthrecordController::class, 'editMaternalRecord'], 'doctor.maternal.health.edit', ['doctor']],
     ['POST', '/doctor/maternal-profiles/{id}/health-records/{recordId}/delete', [maternalhealthrecordController::class, 'deleteMaternalRecord'], 'doctor.maternal.health.delete', ['doctor']],
-    ['GET', '/doctor/appointments', [AppointmentController::class, 'index'], 'doctor.appointments', ['doctor']],
+    ['GET', '/doctor/appointments/overview', [AppointmentController::class, 'overview'], 'doctor.appointments.overview', ['doctor']],
+    ['GET', '/doctor/appointments/configure', [AppointmentController::class, 'configure'], 'doctor.appointments.configure', ['doctor']],
+    ['POST', '/doctor/appointments/configure/{id}/edit', [AppointmentController::class, 'editAvailability'], 'doctor.appointments.configure.edit', ['doctor']],
     ['GET', '/doctor/notification', [NotificationController::class, 'index'], 'doctor.notification', ['doctor']],
     ['GET', '/doctor/settings', [SettingController::class, 'index'], 'doctor.settings', ['doctor']],
 ];
