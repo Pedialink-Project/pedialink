@@ -23,14 +23,12 @@ class ChildProfileController
         $filters = $request->input("filters");
         $phmId = auth()->user()->id;
         [$children, $links] = $this->childService->getChildrenByPhmId($phmId, $search, $filters);
-        $areas = $this->getAllAreaDetails();
-        return view("phm/childprofiles", ['children' => $children, 'areas' => $areas, 'links' => $links]);
+        return view("phm/childprofiles", ['children' => $children, 'links' => $links]);
     }
 
     public function createChild(Request $request)
     {
         $name = $request->input('name');
-        $areaId = $request->input('area');
         $dob = $request->input('date_of_birth');
         $birthCertificate = $request->input('birth_certificate');
         $gender = $request->input('gender');
@@ -38,14 +36,13 @@ class ChildProfileController
         $mother_nic = $request->input('mother_nic');
         $father_nic = $request->input('father_nic');
 
-        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType, $mother_nic, $father_nic);
+        $errors = $this->childService->validateChildProfile($name, $dob, $gender, $birthCertificate, $bloodType, $mother_nic, $father_nic);
 
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
                 ->withErrors($errors)
                 ->withInput([
                     "name" => $name,
-                    "area" => $areaId,
                     "date_of_birth" => $dob,
                     "gender" => $gender,
                     "birth_certificate" => $birthCertificate,
@@ -56,7 +53,7 @@ class ChildProfileController
                 ->with("create", true);
         }
 
-        $this->childService->createChildProfile($name, $areaId, $dob, $gender, $birthCertificate, $bloodType, $mother_nic, $father_nic);
+        $this->childService->createChildProfile($name, $dob, $gender, $birthCertificate, $bloodType, $mother_nic, $father_nic);
 
         return redirect(route('phm.child.profiles'))
             ->withMessage(
@@ -69,18 +66,16 @@ class ChildProfileController
     public function editChild(Request $request, int $id)
     {
         $name = $request->input('e_name');
-        $areaId = $request->input('e_area');
         $dob = $request->input('e_date_of_birth');
         $gender = $request->input('e_gender');
         $bloodType = $request->input('e_blood_type');
-        $errors = $this->childService->validateChildProfile($name, $areaId, $dob, $gender, null, $bloodType, null, true);
+        $errors = $this->childService->validateChildProfile($name, $dob, $gender, null, $bloodType, null, true);
 
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
                 ->withErrors($errors)
                 ->withInput([
                     "e_name" => $name,
-                    "e_area" => $areaId,
                     "e_date_of_birth" => $dob,
                     "e_gender" => $gender,
                     "e_blood_type" => $bloodType,
@@ -88,7 +83,7 @@ class ChildProfileController
                 ->with("edit", $id);
         }
 
-        $this->childService->editChildProfile($id, $name, $areaId, $dob, $gender, $bloodType);
+        $this->childService->editChildProfile($id, $name, $dob, $gender, $bloodType);
 
         return redirect(route('phm.child.profiles'))
             ->withMessage(
