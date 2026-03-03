@@ -163,30 +163,54 @@
                                                 Close
                                             </c-slot>
                                         </c-modal>
-                                        <c-dropdown.sep />
-                                        <c-modal id="cancel-appointment-{{ $key }}" size="sm" :initOpen="false">
-                                            <c-slot name="trigger">
-                                                <c-dropdown.item>Cancel Appointment</c-dropdown.item>
-                                            </c-slot>
-                                            <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
-                                            </c-slot>
-        
-                                            <c-slot name="header">
-                                                Cancel Appointment
-                                            </c-slot>
+                                        @if ($appointment['status'] === 'pending' || $appointment['status'] === 'confirmed')
+                                             <c-modal id="attend-appointment-{{ $key }}" size="sm" :initOpen="false">
+                                                <c-slot name="trigger">
+                                                    <c-dropdown.item>Mark as Attended</c-dropdown.item>
+                                                </c-slot>
+                                                <c-slot name="headerPrefix">
+                                                    <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
+                                                </c-slot>
+            
+                                                <c-slot name="header">
+                                                    Mark Appointment as Attended
+                                                </c-slot>
 
-                                            <form id="admin-register-form" action="">
-                                                <c-textarea label="Reason for Cancellation:" placeholder="Enter your reason..." rows="3"></c-textarea>
-                                                <c-textarea label="Additional Notes:" placeholder="Any additional notes or others" rows="4"></c-textarea>
-                                            </form>
-                                            <c-slot name="close">
-                                                Close
-                                            </c-slot>
-                                            <c-slot name="footer">
-                                                <c-button type="submit" variant="destructive">Cancel Appointment</c-button>
-                                            </c-slot>
-                                        </c-modal>
+                                                <p>Are you sure you want to mark this appointment as attended?</p>
+
+                                                <form id="attend-appointment-form-{{ $key }}" action="{{ route('phm.appointments.attend', ['id' => $appointment['id']]) }}" method="POST">
+                                                </form>
+                                                <c-slot name="close">
+                                                    Close
+                                                </c-slot>
+                                                <c-slot name="footer">
+                                                    <c-button form="attend-appointment-form-{{ $key }}" type="submit" variant="primary">Mark as Attended</c-button>
+                                                </c-slot>
+                                            </c-modal>
+
+                                            <c-modal id="cancel-appointment-{{ $key }}" size="sm" :initOpen="false">
+                                                <c-slot name="trigger">
+                                                    <c-dropdown.item>Cancel Appointment</c-dropdown.item>
+                                                </c-slot>
+                                                <c-slot name="headerPrefix">
+                                                    <img src="{{ asset('assets/icons/user-add--01.svg' )}}"/>
+                                                </c-slot>
+            
+                                                <c-slot name="header">
+                                                    Cancel Appointment
+                                                </c-slot>
+
+                                                <form id="cancel-appointment-form-{{ $key }}" action="{{ route('phm.appointments.cancel', ['id' => $appointment['id']]) }}" method="POST">
+                                                    <c-textarea label="Reason for Cancellation:" name="reason" placeholder="Enter your reason..." rows="3" required></c-textarea>
+                                                </form>
+                                                <c-slot name="close">
+                                                    Close
+                                                </c-slot>
+                                                <c-slot name="footer">
+                                                    <c-button form="cancel-appointment-form-{{ $key }}" type="submit" variant="destructive">Cancel Appointment</c-button>
+                                                </c-slot>
+                                            </c-modal>
+                                        @endif
                                     </c-slot>
                                 </c-dropdown.main>
                             </c-table.td>
