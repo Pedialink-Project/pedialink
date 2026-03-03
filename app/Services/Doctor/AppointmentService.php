@@ -99,6 +99,25 @@ class AppointmentService
         return array_values($availableWeekdays);
     }
 
+    public function getAvailableClinicWeekdays()
+    {
+        $clinicWeeklyAvailability = ClinicWeeklyAvailability::query()
+            ->where("active", "=", 1)
+            ->orderBy('weekday', 'ASC')
+            ->get();
+
+        $weekday = [];
+
+        foreach ($clinicWeeklyAvailability as $availability) {
+            $weekday[] = [
+                "value" => $availability->weekday,
+                "name" => IntToDayName::convert($availability->weekday),
+            ];
+        }
+
+        return $weekday;
+    }
+
     public function getAppointmentConfigurationData(string $search, array $filters)
     {
         $clinicWeeklyAvailability = DoctorWeeklyAvailability::query();
@@ -138,6 +157,38 @@ class AppointmentService
         return $resource;
     }
 
+    private function validateWeekday(string $weekday)
+    {
+        if (!Validator::validateFieldExistence($weekday)) {
+            return "Weekday is required";
+        }
+
+        $weekday = $weekday !== '' ? (int)$weekday : -1;
+
+        if (IntToDayName::convert($weekday) === "Unknown") {
+            return "Invalid weekday";
+        }
+
+        $doctorAvailability = DoctorWeeklyAvailability::query()
+            ->where("weekday", "=", $weekday)
+            ->where("doctor_id", "=", auth()->user()?->id)
+            ->first();
+
+        if ($doctorAvailability) {
+            return "Weekday is already configured";
+        }
+
+        $clinicAvailability = ClinicWeeklyAvailability::query()
+            ->where("weekday", "=", $weekday)
+            ->first();
+
+        if (!$clinicAvailability) {
+            return "Weekday is not available according to clinic configuration";
+        }
+
+        return null;
+    }
+
     private function validateStartAndEndTime(string $startTime, string $endTime)
     {
         $error = null;
@@ -175,6 +226,12 @@ class AppointmentService
         $prefix = '';
         if ($edit) {
             $prefix = 'e_';
+        } else {
+            // Only for create weekday form
+            $weekdayError = $this->validateWeekday($data['weekday']);
+            if ($weekdayError) {
+                $errors['weekday'] = $weekdayError;
+            }
         }
 
         $startAndEndTimeError = $this->validateStartAndEndTime($data[$prefix . 'start_time'], $data[$prefix . 'end_time']);
