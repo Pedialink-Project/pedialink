@@ -7,6 +7,7 @@ use App\Models\MaternalStat;
 use App\Models\Maternal;
 use App\Models\ParentM;
 use App\Models\MaternalRecord;
+use App\Models\Pregnancy;
 use App\Models\User;
 
 class MaternalRecordService
@@ -17,7 +18,7 @@ class MaternalRecordService
 
         $resource = [];
         foreach ($maternalRecords as $record) {
-             $resource[] = [
+            $resource[] = [
                 'id' => $record->id,
                 'maternal_id' => $record->maternal_id,
                 'parent_id' => $record->parent_id,
@@ -33,7 +34,6 @@ class MaternalRecordService
                 'fundal_height' => $record->fundal_height,
                 'notes' => json_decode($record->notes),
             ];
-            
         }
 
 
@@ -42,9 +42,9 @@ class MaternalRecordService
 
 
 
-   
 
-     public function getMaternalRecordsByMaternalId(
+
+    public function getMaternalRecordsByMaternalId(
         int $maternalId,
         ?string $search = null,
         ?array $filters = null
@@ -76,16 +76,16 @@ class MaternalRecordService
                 continue;
             }
 
-           $resource[] = [
+            $resource[] = [
                 'id' => $record->id,
                 'maternal_id' => $record->maternal_id,
                 'parent_id' => $record->parent_id,
-                'age_recorded-at'=> Calculator::calculateAgeInMonths(ParentM::find($record->parent_id)->date_of_birth, $record->visit_date),
+                'age_recorded-at' => Calculator::calculateAgeInMonths(ParentM::find($record->parent_id)->date_of_birth, $record->visit_date),
                 'staff_id' => $record->staff_id,
-                'staff' =>[
-                    'id'=> $record->staff_id,
-                    'name'=> User::find($record->staff_id)->name,
-                    'role'=> User::find($record->staff_id)->role,
+                'staff' => [
+                    'id' => $record->staff_id,
+                    'name' => User::find($record->staff_id)->name,
+                    'role' => User::find($record->staff_id)->role,
                 ],
                 'visit_date' => $record->visit_date,
                 'trimester' => $record->trimester,
@@ -133,7 +133,6 @@ class MaternalRecordService
         }
 
         return $error;
-
     }
 
     public function validateCommonFields($data, $attributeName)
@@ -160,8 +159,6 @@ class MaternalRecordService
 
 
         return $error;
-
-
     }
 
 
@@ -234,30 +231,60 @@ class MaternalRecordService
 
         return json_encode($notesArray, JSON_UNESCAPED_UNICODE);
     }
+    public function addHealthRecord(
+        $maternalId,
+        $staffId,
+        $visitDate,
+        $bloodPressure,
+        $weight,
+        $hemoglobin,
+        $glucose,
+        $fetalHeartRate,
+        $fundalHeight,
+        $notes
+    ) {
 
-    public function createMaternalStat($maternalId,$recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $notes){
+        $parentId = Maternal::find($maternalId)->parent_id;
+
+        $height = Maternal::find($maternalId)->height;
+
+        $bmi = Calculator::calculateBMI($height, $weight);
+
+        $lmp = Pregnancy::find($maternalId)->where('maternal_id', $maternalId)->first()->lmp;
 
 
-        
-        $maternalStat = new MaternalStat();
-        $maternalStat->maternal_id = $maternalId;
-        $maternalStat->visit_date = $recordedAt;
-        $maternalStat->bmi = $bmi;
-        $maternalStat->blood_pressure = $bloodPressure;
-        $maternalStat->blood_sugar = $bloodSugar;
-        $maternalStat->weight = $weight;
-        $maternalStat->height = $height;
-        $maternalStat->fundal_height = $fundalHeight;
-        $maternalStat->health_status = $healthStatus;
-        $maternalStat->trimester= $prenacyStage;
-        $maternalStat->notes = $this->formatNotes($notes);
+        $gestationWeeks = Calculator::calculateGestationWeeks($lmp);
 
-        $maternalStat->save();
+        $trimester = Calculator::calculateTrimester($gestationWeeks);
 
-        return $maternalStat;
+
+        $healthStatus = Calculator::calculateMaternalHealthStatus($hemoglobin, $glucose, $bloodPressure);
+
+        $record = new MaternalRecord();
+
+        $record->parent_id = $parentId;
+        $record->staff_id = $staffId;
+        $record->visit_date = $visitDate;
+        $record->trimester = $trimester;
+        $record->health_status = $healthStatus;
+        $record->weight = $weight;
+        $record->blood_pressure = $bloodPressure;
+        $record->glucose = $glucose;
+        $record->hemoglobin = $hemoglobin;
+        $record->fetal_heart_rate = $fetalHeartRate;
+        $record->fundal_height = $fundalHeight;
+
+        $record->bmi = $bmi;
+        $record->notes = $notes;
+
+
+        $record->save();
+
+        return $record;
     }
 
-    public function editMaternalStat($id, $recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $notes){
+    public function editMaternalStat($id, $recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $notes)
+    {
         $maternalStat = MaternalStat::find($id);
 
         if (!$maternalStat) {
@@ -280,7 +307,8 @@ class MaternalRecordService
         return $maternalStat;
     }
 
-    public function deleteMaternalStat($id){
+    public function deleteMaternalStat($id)
+    {
         $maternalStat = MaternalStat::find($id);
 
         if (!$maternalStat) {
@@ -289,7 +317,4 @@ class MaternalRecordService
 
         $maternalStat->delete();
     }
-
-
-
 }
