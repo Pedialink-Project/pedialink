@@ -24,7 +24,7 @@ class Calculator
         return $months;
     }
 
-    public static function calculateAge(string $dateOfBirth): int
+    public static function calculateAgeInYears(string $dateOfBirth): int
     {
         $dob = new \DateTime($dateOfBirth);
         $today = new \DateTime();
@@ -34,6 +34,31 @@ class Calculator
         return $diff->y;
     }
 
+
+     public static function calculateAge($dob): string
+    {
+        $dobDt = $dob instanceof \DateTime ? clone $dob : new \DateTime($dob);
+        $now = new \DateTime();
+
+        if ($dobDt > $now) {
+            return "0 months"; // simple handling for future dates
+        }
+
+        $diff = $now->diff($dobDt);
+
+        if ($diff->y >= 1) {
+            $y = $diff->y;
+            return $y . ' year' . ($y === 1 ? '' : 's');
+        }
+
+        if ($diff->m >= 1) {
+            $m = $diff->m;
+            return $m . ' month' . ($m === 1 ? '' : 's');
+        }
+
+        $d = $diff->d;
+        return $d . ' day' . ($d === 1 ? '' : 's');
+    }
 
 
     public static function calculateBMI(?float $heightCm, ?float $weightKg): ?float

@@ -69,12 +69,6 @@ PHM Child Profiles
             <form id="add-child-form" class="child-form" action="{{ route('phm.child.create') }}" method="POST">
                 <c-input type="text" label="Child Full Name:" name="name" value="{{ old('name') ?? '' }}"
                     error="{{ errors('name') ?? '' }}" placeholder="Enter Full Name" required />
-                <c-select label="Area" name="area" searchable="1" error="{{ errors('area') ?? '' }}" value="{{ old('area') ?? '' }}"
-                    error="{{ errors('area') ?? '' }}" placeholder="Select Area" required>
-                    @foreach ($areas as $area)
-                    <li class="select-item" data-value="{{ $area['id'] }}">{{ $area['name'] }}</li>
-                    @endforeach
-                </c-select>
                 <c-input type="date" label="Date of Birth:" name="date_of_birth" value="{{ old('date_of_birth') ?? '' }}"
                     error="{{ errors('date_of_birth') ?? ''}}" required />
                 <c-input type="text" label="Birth Certificate No:" name="birth_certificate" value="{{ old('birth_certificate') ?? '' }}"
@@ -114,7 +108,6 @@ PHM Child Profiles
                     <c-table.th>Name</c-table.th>
                     <c-table.th>Age</c-table.th>
                     <c-table.th>Gender</c-table.th>
-                    <c-table.th>Area</c-table.th>
                     <c-table.th>Parent Link Status</c-table.th>
                     <c-table.th>Access</c-table.th>
                     <c-table.th class="table-actions">Actions</c-table.th>
@@ -132,14 +125,7 @@ PHM Child Profiles
                
 
                
-                $selectedAreaId = null;
-
-                foreach ($areas as $area) {
-                if ($area['name'] === $child['area']) {
-                $selectedAreaId = $area['id'];
-                break;
-                }
-                }
+                
                 ?>
 
                 <c-table.tr>
@@ -157,7 +143,6 @@ PHM Child Profiles
                         </c-badge>
                         @endif
                     </c-table.td>
-                    <c-table.td col="area">{{ ucfirst($child['area']) }}</c-table.td>
                     <c-table.td col="linked_status"> @if (strtolower($child['linked_status']) === "linked")
                         <c-badge class="status-event" type="green">{{ ucfirst($child['linked_status']) }}</c-badge>
                         @elseif (strtolower($child['linked_status']) === "unlinked")
@@ -296,15 +281,6 @@ PHM Child Profiles
                                             value="{{ flash('edit') === $child['id'] ? (old('e_name') ?? '') : $child['name'] }}"
                                             error="{{ flash('edit') === $child['id'] ? (errors('e_name') ?? '') : '' }}"
                                             placeholder="Enter Full Name" required />
-                                        <c-select label="Area" name="e_area" searchable="1"
-                                            value="{{ flash('edit') === $child['id'] ? (old('e_area') ?? '') : $selectedAreaId }}"
-                                            error="{{ flash('edit') === $child['id'] ? (errors('e_area') ?? '') : '' }}"
-                                            required>
-                                            @foreach ($areas as $area)
-                                            <li class="select-item" data-value="{{ $area['id'] }}">{{ $area['name'] }}</li>
-                                            @endforeach
-
-                                        </c-select>
                                         <c-input type="date" label="Date of Birth:" name="e_date_of_birth"
                                             value="{{ flash('edit') === $child['id'] ? (old('e_date_of_birth') ?? '') : $child['date_of_birth'] }}"
                                             error="{{ flash('edit') === $child['id'] ? (errors('e_date_of_birth') ?? '') : ''}}"
