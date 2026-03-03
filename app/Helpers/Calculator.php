@@ -132,32 +132,68 @@ class Calculator
     }
 
 
-    public static function calculateMaternalHealthStatus(
-        ?float $hemoglobin,
-        ?float $glucose,
-        ?int $blood_pressure
-    ): string {
+   public static function calculateMaternalHealthStatus(
+    ?float $hemoglobin,
+    ?float $glucose,
+    ?int $bloodPressure, 
+): string {
 
-        $hb = $hemoglobin;
-        $gl = $glucose;
-        $bp = $blood_pressure;
+    $riskScore = 0;
 
-        if (
-            ($bp !== null && $bp >= 160) ||
-            ($hb !== null && $hb < 7) ||
-            ($gl !== null && $gl >= 11)
-        ) {
-            return 'critical';
+    if ($bloodPressure !== null) {
+        if ($bloodPressure >= 160) {
+            $riskScore += 3; // Severe hypertension
+        } elseif ($bloodPressure >= 140) {
+            $riskScore += 2; // Mild hypertension
         }
-
-        if (
-            ($bp !== null && $bp >= 140) ||
-            ($hb !== null && $hb < 10) ||
-            ($gl !== null && $gl >= 7.8)
-        ) {
-            return 'at_risk';
-        }
-
-        return 'good';
     }
+
+    if ($hemoglobin !== null) {
+        if ($hemoglobin < 7) {
+            $riskScore += 3; // Severe anemia
+        } elseif ($hemoglobin < 10) {
+            $riskScore += 2; // Moderate anemia
+        }
+    }
+
+    if ($glucose !== null) {
+        if ($glucose >= 11) {
+            $riskScore += 3; // Very high
+        } elseif ($glucose >= 7.8) {
+            $riskScore += 2; // Borderline
+        }
+    }
+
+    // Final decision
+    return match (true) {
+        $riskScore >= 5 => 'critical',
+        $riskScore >= 3 => 'at_risk',
+        default => 'good',
+    };
+}
+
+public static function calculateGestationWeeks(string $lmp): int
+{
+    $lmpDate = new \DateTime($lmp);
+    $today = new \DateTime();
+
+    $diff = $today->diff($lmpDate);
+
+    return (int) floor($diff->days / 7);
+}
+
+
+public static function calculateTrimester(?int $gestationWeeks): ?string
+{
+    if ($gestationWeeks === null || $gestationWeeks < 0) {
+        return null;
+    }
+
+    return match (true) {
+        $gestationWeeks <= 12 => 'first',
+        $gestationWeeks <= 27 => 'second',
+        $gestationWeeks <= 40 => 'third',
+        default => 'post_term',
+    };
+}
 }
