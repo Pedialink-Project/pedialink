@@ -147,6 +147,16 @@ class Calculator
     };
 }
 
+public static function calculateGestationWeeks(string $lmp): int
+{
+    $lmpDate = new \DateTime($lmp);
+    $today = new \DateTime();
+
+    $diff = $today->diff($lmpDate);
+
+    return (int) floor($diff->days / 7);
+}
+
 
 public static function calculateTrimester(?int $gestationWeeks): ?string
 {
