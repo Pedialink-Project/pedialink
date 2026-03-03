@@ -50,7 +50,7 @@ Health Records View
     </c-slot>
 
     <c-slot name="extrabtn">
-        <c-modal id="add-heath-record-modal" size="sm" :initOpen="false">
+        <c-modal id="add-heath-record-modal" size="md" :initOpen="false">
             <c-slot name="trigger">
                 <c-button variant="primary">
                     Add Record
@@ -65,17 +65,24 @@ Health Records View
                 <div>Add Health Records</div>
             </c-slot>
 
-            <form id="add-health-record-form" class="maternal-health-form" action="">
-                <c-input type="text" label="Recorded at:" placeholder="Enter Recorded Date & Time" required />
-                <c-input type="text" label="BMI:" placeholder="Enter BMI of the Mother" required />
-                <c-input type="text" label="Blood Pressure:" placeholder="Enter Blood Pressure of the Mother (in mmHg)"
-                    required />
-                <c-input type="text" label="Blood Sugar:" placeholder="Enter Blood Sugar of the Mother (in mg/dL )"
-                    required />
-                <c-select label="Status:" name="permissions" searchable="1">
-                    <li class="select-item" data-value="child">Good</li>
-                    <li class="select-item" data-value="maternal">Bad</li>
-                </c-select>
+            <form id="add-health-record-form" class="maternal-health-form" action="{{ route('phm.maternal.health.add', ['id' => $id]) }}" method="POST">
+                 <c-input type="number" name="blood_pressure" label="Blood Pressure (mmHg)" value="{{ old('blood_pressure') ?? '' }}"
+                    error="{{ errors('blood_pressure') ?? '' }}" placeholder="Enter Blood Pressure of the Maternal (in mmHg)" required />
+                <c-input type="number" name="weight" label="Weight (kg)" value="{{ old('weight') ?? '' }}"
+                    error="{{ errors('weight') ?? '' }}" placeholder="Enter Weight of the Maternal (in kg)" required />
+                <c-input type="number" name="hemoglobin" label="Hemoglobin (g/dL)" value="{{ old('hemoglobin') ?? '' }}"
+                    error="{{ errors('hemoglobin') ?? '' }}" placeholder="Enter Hemoglobin of the Maternal (in g/dL)" required />
+                    <c-input type="number" name="glucose" label="Glucose (mg/dL)" value="{{ old('glucose') ?? '' }}"
+                    error="{{ errors('glucose') ?? '' }}" placeholder="Enter Glucose of the Maternal (in mg/dL)" required />
+                    <c-input type="number" name="fetal_heart_rate" label="Fetal Heart Rate (bpm)" value="{{ old('fetal_heart_rate') ?? '' }}"
+                    error="{{ errors('fetal_heart_rate') ?? '' }}" placeholder="Enter Fetal Heart Rate of the Maternal (in bpm)" required />
+                    <c-input type="number" name="fundal_height" label="Fundal Height (cm)" value="{{ old('fundal_height') ?? '' }}"
+                    error="{{ errors('fundal_height') ?? '' }}" placeholder="Enter Fundal Height of the Maternal (in cm)" required/>
+                <c-input type="date" name="visit_date" label="Visit Date" value="{{ old('visit_date') ?? '' }}"
+                    error="{{ errors('visit_date') ?? '' }}" placeholder="Select the Visit Date" required />
+
+                <c-textarea name="notes" label="Additional Notes" value="{{ old('notes') ?? '' }}"
+                    error="{{ errors('notes') ?? '' }}" placeholder="Enter any additional notes here" rows="4"></c-textarea>
             </form>
             <c-slot name="close">
                 Close
