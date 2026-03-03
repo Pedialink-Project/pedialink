@@ -34,8 +34,10 @@ class AppointmentController
 
         $clinicWeeklyAvailability = $this->appointmentService
             ->getAppointmentConfigurationData($search, $filter);
+        $availableWeekdays = $this->appointmentService->getAvailableWeekdays();
         return view("doctor/appointment/configure", [
-            "clinicWeeklyAvailability" => $clinicWeeklyAvailability
+            "clinicWeeklyAvailability" => $clinicWeeklyAvailability,
+            "availableWeekdays" => $availableWeekdays
         ]);
     }
 

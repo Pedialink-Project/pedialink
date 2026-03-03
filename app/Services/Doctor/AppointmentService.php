@@ -70,6 +70,35 @@ class AppointmentService
         ];
     }
 
+    public function getAvailableWeekdays(): array
+    {
+        $availableWeekdays = [];
+        for ($i = 0; $i < 7; $i++) {
+            $availableWeekdays[] = [
+                "value" => $i,
+                "name" => IntToDayName::convert($i)
+            ];
+        }
+
+        $doctorWeeklyAvailability = DoctorWeeklyAvailability::query()
+            ->select("weekday")
+            ->where("doctor_id", "=", auth()->user()?->id)
+            ->get();
+
+        $doctorWeekdays = [];
+        foreach ($doctorWeeklyAvailability as $availability) {
+            $doctorWeekdays[] = $availability->weekday;
+        }
+
+        foreach ($availableWeekdays as $key => $weekday) {
+            if (in_array($weekday['value'], $doctorWeekdays)) {
+                unset($availableWeekdays[$key]);
+            }
+        }
+
+        return array_values($availableWeekdays);
+    }
+
     public function getAppointmentConfigurationData(string $search, array $filters)
     {
         $clinicWeeklyAvailability = DoctorWeeklyAvailability::query();
