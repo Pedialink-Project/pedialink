@@ -30,9 +30,10 @@ class AppointmentController
     public function configure(Request $request)
     {
         $search = $request->query("search", "");
+        $filter = $request->query("filters", []);
 
         $clinicWeeklyAvailability = $this->appointmentService
-            ->getAppointmentConfigurationData($search);
+            ->getAppointmentConfigurationData($search, $filter);
         return view("doctor/appointment/configure", [
             "clinicWeeklyAvailability" => $clinicWeeklyAvailability
         ]);
