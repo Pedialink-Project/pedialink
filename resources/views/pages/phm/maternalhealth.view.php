@@ -282,7 +282,11 @@ Health Records View
                 @if(count($records) === 0)
                 <tr>
                     <td colspan="6">
-                        <div class="table-empty">No items found</div>
+                        <c-emptytable
+                            alt="No Health Records found"
+                            title="No Health Records Available"
+                            description="No health records match your current search or filters. Try adjusting them to see more results." />
+
                     </td>
                 </tr>
                 @endif
@@ -291,5 +295,5 @@ Health Records View
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection
