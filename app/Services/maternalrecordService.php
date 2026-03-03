@@ -12,6 +12,13 @@ use App\Models\User;
 
 class MaternalRecordService
 {
+
+    private $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = new NotificationService();
+    }
     public function getAllMaternalRecords()
     {
         $maternalRecords = MaternalRecord::all();
@@ -91,11 +98,12 @@ class MaternalRecordService
                 'trimester' => $record->trimester,
                 'bmi' => $record->bmi,
                 'weight' => $record->weight,
-                'glucose'=> $record->glucose,
+                'glucose' => $record->glucose,
                 'blood_sugar' => $record->blood_sugar,
+                'hemoglobin' => $record->hemoglobin,
                 'blood_pressure' => $record->blood_pressure,
                 'health_status' => $record->health_status,
-                'fetal_heart_rate' =>$record->fetal_heart_rate,
+                'fetal_heart_rate' => $record->fetal_heart_rate,
                 'fundal_height' => $record->fundal_height,
                 'notes' => json_decode($record->notes),
             ];
@@ -109,7 +117,7 @@ class MaternalRecordService
     }
 
 
-    
+
     public function validateMaternalHealthData(
         $visitDate,
         $bloodPressure,
@@ -124,7 +132,7 @@ class MaternalRecordService
         $errors = [];
         $prefix = $edit ? 'e_' : '';
 
-
+       if(!$edit) {
         if (!$visitDate) {
             $errors["{$prefix}visit_date"] = 'Visit date is required.';
         } elseif (!strtotime($visitDate)) {
@@ -132,6 +140,7 @@ class MaternalRecordService
         } elseif ($visitDate > date('Y-m-d')) {
             $errors["{$prefix}visit_date"] = 'Visit date cannot be in the future.';
         }
+       }
 
         if ($weight !== null) {
             if (!is_numeric($weight)) {
@@ -158,10 +167,10 @@ class MaternalRecordService
         }
 
         if ($bloodPressure !== null) {
-             if (!is_numeric($bloodPressure)) {
-            $errors["{$prefix}blood_pressure"] = 'Blood pressure must be numeric.';
+            if (!is_numeric($bloodPressure)) {
+                $errors["{$prefix}blood_pressure"] = 'Blood pressure must be numeric.';
             } elseif ($bloodPressure < 50 || $bloodPressure > 250) {
-            $errors["{$prefix}blood_pressure"] = 'Blood pressure must be between 50 and 250 mmHg.';
+                $errors["{$prefix}blood_pressure"] = 'Blood pressure must be between 50 and 250 mmHg.';
             }
         }
 
@@ -184,7 +193,7 @@ class MaternalRecordService
         return $errors;
     }
 
-   
+
     public function addHealthRecord(
         $maternalId,
         $staffId,
@@ -204,7 +213,7 @@ class MaternalRecordService
 
         $bmi = Calculator::calculateBMI($height, $weight);
 
-        $lmp = Pregnancy::query()->where('maternal_id', '=',$maternalId)->first()->lmp;
+        $lmp = Pregnancy::query()->where('maternal_id', '=', $maternalId)->first()->lmp;
 
 
         $gestationWeeks = Calculator::calculateGestationWeeks($lmp);
@@ -237,29 +246,77 @@ class MaternalRecordService
         return $record;
     }
 
-    public function editMaternalStat($id, $recordedAt, $bmi, $bloodPressure, $bloodSugar, $weight, $height, $fundalHeight, $healthStatus, $prenacyStage, $notes)
-    {
-        $maternalStat = MaternalStat::find($id);
+    public function editHealthRecord(
+        $recordId,
+        $staffId,
+        $visitDate,
+        $bloodPressure,
+        $weight,
+        $hemoglobin,
+        $glucose,
+        $fetalHeartRate,
+        $fundalHeight
+    ) {
 
-        if (!$maternalStat) {
-            throw new \Exception("MaternalStat not found");
+        $record = MaternalRecord::find($recordId);
+
+        if (!$record) {
+            return "Record not found.";
         }
 
-        $maternalStat->visit_date = $recordedAt;
-        $maternalStat->bmi = $bmi;
-        $maternalStat->blood_pressure = $bloodPressure;
-        $maternalStat->blood_sugar = $bloodSugar;
-        $maternalStat->weight = $weight;
-        $maternalStat->height = $height;
-        $maternalStat->fundal_height = $fundalHeight;
-        $maternalStat->health_status = $healthStatus;
-        $maternalStat->trimester = $prenacyStage;
-        $maternalStat->notes = $this->formatNotes($notes);
+        $recordStaffId = $record->staff_id;
 
-        $maternalStat->save();
+        $parentId = $record->parent_id;
 
-        return $maternalStat;
+        $maternalId = Maternal::query()->where('parent_id', '=', $parentId)->first()->id;
+
+
+        $height = Maternal::find($maternalId)->height;
+
+        $bmi = Calculator::calculateBMI($height, $weight);
+
+        $lmp = Pregnancy::query()->where('maternal_id', '=', $maternalId)->first()->lmp;
+
+
+        $gestationWeeks = Calculator::calculateGestationWeeks($lmp);
+
+        $trimester = Calculator::calculateTrimester($gestationWeeks);
+
+
+        $healthStatus = Calculator::calculateMaternalHealthStatus($hemoglobin, $glucose, $bloodPressure);
+
+
+        $record->staff_id = $staffId;
+        $record->visit_date = $visitDate;
+        $record->trimester = $trimester;
+        $record->health_status = $healthStatus;
+        $record->weight = $weight;
+        $record->blood_pressure = $bloodPressure;
+        $record->glucose = $glucose;
+        $record->hemoglobin = $hemoglobin;
+        $record->fetal_heart_rate = $fetalHeartRate;
+        $record->fundal_height = $fundalHeight;
+
+        $record->bmi = $bmi;
+
+
+        $record->save();
+
+        if ($recordStaffId !== $staffId) {
+            $this->notificationService->notify(
+                $staffId,
+                "Health record updated",
+                "The health record of maternal M-00 " . $maternalId . " has been updated.",
+                "maternal_record_updated",
+                $record->maternal_id . "" . $record->maternal_id
+
+            );
+        }
+
+        return null;
     }
+
+
 
     public function deleteMaternalStat($id)
     {
