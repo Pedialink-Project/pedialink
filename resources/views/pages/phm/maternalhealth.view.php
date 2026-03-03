@@ -36,19 +36,9 @@ Health Records View
 @section('content')
 
 
-<c-table.controls :columns='["Recorded at","BMI","Blood Pressure","Blood Sugar","Health Status"]'>
+    <c-table.controls action="{{route('phm.maternal.health',['id' => $id])}}" :filters="['health_status' => ['good', 'at_risk', 'critical']]">
 
-    <c-slot name="filter">
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Type
-        </c-button>
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Stage
-        </c-button>
-    </c-slot>
-
+   
     <c-slot name="extrabtn">
         <c-modal id="add-heath-record-modal" size="md" :initOpen="flash('add') ? true : false">
             <c-slot name="trigger">
@@ -281,7 +271,7 @@ Health Records View
 
                 @if(count($records) === 0)
                 <tr>
-                    <td colspan="6">
+                    <td colspan="8">
                         <c-emptytable
                             alt="No Health Records found"
                             title="No Health Records Available"
