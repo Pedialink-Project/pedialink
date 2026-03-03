@@ -538,8 +538,8 @@ Admin Dashboard
 
     // --- Data for the right chart (weekly) ---
     const days = ['Mon','Tue','Wed','Thu','Fri'];
-    const booked = [52,55,36,43,45];
-    const completedWeekly = [43,32,34,31,36];
+    const completedWeekly = <?php echo json_encode($weeklyAppointmentsData['completed']); ?>;
+    const cancelledWeekly = <?php echo json_encode($weeklyAppointmentsData['cancelled']); ?>;
 
     const ctxBar = document.getElementById('barChart').getContext('2d');
 
@@ -558,16 +558,16 @@ Admin Dashboard
         labels: days,
         datasets: [
             {
-            label: 'Booked',
-            data: booked,
+            label: 'Completed',
+            data: completedWeekly,
             backgroundColor: barGradA,
             borderRadius: 8,
             barPercentage: 0.48,
             categoryPercentage: 0.7
             },
             {
-            label: 'Completed',
-            data: completedWeekly,
+            label: 'Cancelled',
+            data: cancelledWeekly,
             backgroundColor: barGradB,
             borderRadius: 8,
             barPercentage: 0.48,

@@ -25,6 +25,7 @@ class DashboardController
         $vaccinationChartData = $this->dashboardService->getVaccinationChartData();
         $parentApprovalRequests = $this->dashboardService->getParentApprovalRequests();
         $eventsData = $this->dashboardService->getEventsData();
+        $weeklyAppointmentsData = $this->dashboardService->getWeeklyAppointmentsData();
 
         return view("admin/dashboard", [
             "childrenCount" => $childrenCount,
@@ -35,7 +36,8 @@ class DashboardController
             "doctorsCount" => $doctorsCount,
             "vaccinationChartData" => $vaccinationChartData,
             "parentApprovalRequests" => $parentApprovalRequests,
-            "eventsData" => $eventsData
+            "eventsData" => $eventsData,
+            "weeklyAppointmentsData" => $weeklyAppointmentsData
         ]);
     }
 }
