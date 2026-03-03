@@ -102,10 +102,10 @@ Health Records View
                     <c-table.th sortable="1">Recorded at</c-table.th>
                     <c-table.th sortable="1">BMI</c-table.th>
                     <c-table.th sortable="1">Blood Pressure</c-table.th>
-                    <c-table.th  sortable="1">Glucose</c-table.th>
-                    <c-table.th  sortable="1">Trimester</c-table.th>
-                    <c-table.th  sortable="1">Fetal Heart Rate</c-table.th>
-                    <c-table.th >Health Status</c-table.th>
+                    <c-table.th sortable="1">Glucose</c-table.th>
+                    <c-table.th sortable="1">Trimester</c-table.th>
+                    <c-table.th sortable="1">Fetal Heart Rate</c-table.th>
+                    <c-table.th>Health Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -147,7 +147,7 @@ Health Records View
                                         <c-dropdown.item>View Record</c-dropdown.item>
                                     </c-slot>
                                     <c-slot name="headerSuffix">
-                                         @if (strtolower($record['health_status']) === "good")
+                                        @if (strtolower($record['health_status']) === "good")
                                         <c-badge type="green">
                                             {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
                                         </c-badge>
@@ -175,25 +175,27 @@ Health Records View
                                             title="Record ID" info="REC-00{{ $record['id'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                             title="Recorded At" info="{{ $record['visit_date'] }}" />
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
                                             title="BMI" info="{{ $record['bmi'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
                                             title="Weight" info="{{ $record['weight'] }}kg" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
                                             title="Blood Pressure" info="{{ $record['blood_pressure'] }}mmHg" />
+                                             <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                            title="Hemoglobin" info="{{ $record['hemoglobin'] }}g/dL" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
                                             title="Glucose" info="{{ $record['glucose'] }}mg/dL" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}"
                                             title="Pregnancy Stage" info="{{ucwords($record['trimester']).' Trimester' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Fundal Height" info="{{ $record['fundal_height'] }}cm" />
-                                             <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Fetal Heart Rate" info="{{ $record['fetal_heart_rate'] }}bpm" />
-                                             <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
                                             title="Recoreded Staff" info="{{ $record['staff']['name'] }}" />
                                     </c-modal.viewcard>
 
-                                   <c-modal.viewlist title="Additional Information">
+                                    <c-modal.viewlist title="Additional Information">
                                         <c-slot name="list">
                                             <li>
                                                 @if($record['notes'])
@@ -209,11 +211,11 @@ Health Records View
                                     </c-slot>
 
                                 </c-modal>
-                                <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="false">
+
+                                <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="flash('edit') == $record['id'] ? true : false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>Edit Health Records</c-dropdown.item>
                                     </c-slot>
-
                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/profile.svg' )}}" />
                                     </c-slot>
@@ -222,24 +224,28 @@ Health Records View
                                         <div>Edit Health Records</div>
                                     </c-slot>
 
-                                    <form id="edit-health-record-form" class="maternal-health-form" action="">
-                                        <c-input type="text" label="Recorded at:" placeholder="{{ $item['Recorded at'] }}"
-                                            required />
-                                        <c-input type="text" label="BMI:" placeholder="{{ $item['BMI'] }}" required />
-                                        <c-input type="text" label="Blood Pressure:"
-                                            placeholder="{{ $item['Blood Pressure'] }}" required />
-                                        <c-input type="text" label="Blood Sugar:" placeholder="{{ $item['Blood Sugar'] }}"
-                                            required />
-                                        <c-select label="Blood :" multiple="1" Default="{{ $item['Health Status'] }}">
-                                            <option class="select-item" data-value="child">Good</option>
-                                            <option class="select-item" data-value="child">Bad</option>
-                                        </c-select>
-                                        <c-textarea label="Additional Notes:" placeholder="Nutrition Facts." rows="4"></c-textarea>
+                                    <form id="edit-health-record-form-{{$record['id']}}" class="maternal-health-form" action="{{route('phm.maternal.health.edit', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
+                                        <c-input type="date" name="e_visit_date" label="Visit Date" value="{{ flash('edit') == $record['id'] ? (old('e_visit_date') ?? '') : $record['visit_date'] }}"
+                                            error="{{ errors('e_visit_date') ?? '' }}" placeholder="Select the Visit Date" required />
+                                        <c-input type="text" name="e_weight" label="Weight (kg)" value="{{ flash('edit') == $record['id'] ? (old('e_weight') ?? '') : $record['weight'] }}"
+                                            error="{{ flash('edit') == $record['id'] ? (errors('e_weight') ?? '') : '' }}" placeholder="Enter Weight of the Maternal (in kg)" required/>
+                                        <c-input type="text" name="e_blood_pressure" label="Blood Pressure (mmHg)" value="{{ flash('edit') == $record['id'] ? (old('e_blood_pressure') ?? '') : $record['blood_pressure'] }}"
+                                            error="{{ flash('edit') == $record['id'] ? (errors('e_blood_pressure') ?? '') : '' }}" placeholder="Enter Blood Pressure of the Maternal (in mmHg)" required/>
+                                        <c-input type="text" name="e_glucose" label="Glucose (mg/dL)" value="{{ flash('edit') == $record['id'] ? (old('e_glucose') ?? '') : $record['glucose'] }}"
+                                            error="{{ flash('edit') == $record['id'] ? (errors('e_glucose') ?? '') : '' }}" placeholder="Enter Glucose of the Maternal (in mg/dL)" required />
+                                            <c-input type="text" name="e_hemoglobin" label="Hemoglobin (g/dL)" value="{{ flash('edit') == $record['id'] ? (old('e_hemoglobin') ?? '') : $record['hemoglobin'] }}"
+                                            error="{{ flash('edit') == $record['id'] ? (errors('e_hemoglobin') ?? '') : '' }}" placeholder="Enter Hemoglobin of the Maternal (in g/dL)" required />
+                                        <c-input type="text" name="e_fetal_heart_rate" label="Fetal Heart Rate (bpm)" value="{{ flash('edit') == $record['id'] ? (old('e_fetal_heart_rate') ?? '') : $record['fetal_heart_rate'] }}"
+                                            error="{{ flash('edit') == $record['id'] ? (errors('e_fetal_heart_rate') ?? '') : '' }}" placeholder="Enter Fetal Heart Rate of the Maternal (in bpm)" required />
+                                        <c-input type="text" name="e_fundal_height" label="Fundal Height (cm)" value="{{ flash('edit') == $record['id'] ? (old('e_fundal_height') ?? '') : $record['fundal_height'] }}"
+                                            error="{{ flash('edit') == $record['id'] ? (errors('e_fundal_height') ?? '') : '' }}" placeholder="Enter Fundal Height of the Maternal (in cm)" required />
                                     </form>
-                                    <c-slot name="close">Close</c-slot>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
                                     <c-slot name="footer">
-                                        <c-button type="submit" variant="primary" form="edit-health-record-form">Save
-                                            Changes</c-button>
+                                        <c-button type="submit" form="edit-health-record-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
                                     </c-slot>
                                 </c-modal>
                                 <c-modal id="mark-as-invalid-{{ $key }}" size="sm" :initOpen="false">
