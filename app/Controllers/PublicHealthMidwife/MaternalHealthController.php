@@ -80,7 +80,7 @@ class MaternalHealthController
             $notes
         );
 
-        return redirect(route("phm.child.health", ["id" => $id]))
+        return redirect(route("phm.maternal.health", ["id" => $id]))
             ->withMessage("Health record added successfully.", "Success", "success");
     }
 
@@ -156,7 +156,7 @@ class MaternalHealthController
                 ->withMessage($error, "Error", "error");
         }
 
-        return redirect(route("phm.child.health", ["id" => $id]))
+        return redirect(route("phm.maternal.health", ["id" => $id]))
             ->withMessage("Health record marked as invalid successfully.", "Success", "success");
     }
 
