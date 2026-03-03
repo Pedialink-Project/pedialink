@@ -214,14 +214,14 @@ Health Records View
 
                                 <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="flash('edit') == $record['id'] ? true : false">
                                     <c-slot name="trigger">
-                                        <c-dropdown.item>Edit Health Records</c-dropdown.item>
+                                        <c-dropdown.item>Edit Record</c-dropdown.item>
                                     </c-slot>
                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/profile.svg' )}}" />
                                     </c-slot>
 
                                     <c-slot name="header">
-                                        <div>Edit Health Records</div>
+                                        <div>Edit Health Record</div>
                                     </c-slot>
 
                                     <form id="edit-health-record-form-{{$record['id']}}" class="maternal-health-form" action="{{route('phm.maternal.health.edit', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
@@ -248,7 +248,8 @@ Health Records View
                                         <c-button type="submit" form="edit-health-record-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
                                     </c-slot>
                                 </c-modal>
-                                <c-modal id="mark-as-invalid-{{ $key }}" size="sm" :initOpen="false">
+                                
+                                 <c-modal id="mark-as-invalid-record-{{ $key }}" size="sm" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>Mark as Invalid</c-dropdown.item>
                                     </c-slot>
@@ -260,13 +261,16 @@ Health Records View
                                         <div>Mark as Invalid</div>
                                     </c-slot>
 
-                                    <p>Are you sure you want to mark this record as invalid?</p>
-
+                                    <form id="mark-as-invalid-record-form-{{$record['id']}}" class="child-health-form" action="{{route('phm.maternal.health.markinvalid', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
+                                        <p>This action will mark the health record as invalid and it will no longer be considered in the maternal's health assessments.</p>
+                                        <p>Are you sure you want to mark this record as invalid?</p>
+                                    </form>
                                     <c-slot name="close">
-                                        cancel
+                                        Cancel
                                     </c-slot>
+
                                     <c-slot name="footer">
-                                        <c-button type="button" variant="destructive">Mark</c-button>
+                                        <c-button size="sm" type="submit" form="mark-as-invalid-record-form-{{$record['id']}}" variant="destructive">Mark</c-button>
                                     </c-slot>
                                 </c-modal>
                             </c-slot>

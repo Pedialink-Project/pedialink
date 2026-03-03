@@ -38,6 +38,7 @@ return [
     ['POST', '/phm/maternal-profiles/{id}/start', [MaternalProfileController::class, 'startAntenatal'], 'phm.maternal.start', ['phm', 'verified']],
     ['POST', '/phm/maternal-profile/{id}/health-record/add', [MaternalHealthController::class, 'addHealthRecord'], 'phm.maternal.health.add', ['phm', 'verified']],
     ['POST', '/phm/maternal-profiles/{id}/health-records/{recordId}/edit', [MaternalHealthController::class, 'editHealthRecord'], 'phm.maternal.health.edit', ['phm', 'verified']],
+    ['POST', '/phm/maternal-profiles/{id}/health-records/{recordId}/mark-as-invalid', [MaternalHealthController::class, 'markAsInvalid'], 'phm.maternal.health.markinvalid', ['phm', 'verified']],
 
 
     //Maternal Health Record Routes
