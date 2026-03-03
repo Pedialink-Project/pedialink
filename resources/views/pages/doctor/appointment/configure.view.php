@@ -65,6 +65,7 @@
                         label="Select Weekday"
                         placeholder="Select a weekday"
                         error="{{ errors('weekday') ?? '' }}"
+                        value="{{ old('weekday')  ?? '' }}"
                         required
                     >
                         @foreach ($availableWeekdays as $weekday)
