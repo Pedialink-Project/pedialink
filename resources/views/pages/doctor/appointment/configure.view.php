@@ -14,7 +14,7 @@
 
 @section('content')
 
-    <c-table.controls :filters="['status' => ['active', 'inactive']]" action="{{ route('admin.appointment.configure')}}">
+    <c-table.controls :filters="['status' => ['active', 'inactive']]" action="{{ route('doctor.appointments.configure')}}">
         <c-slot name="filter">
             <c-button variant="outline">
                 <img src="{{ asset('assets/icons/filter.svg') }}" />
