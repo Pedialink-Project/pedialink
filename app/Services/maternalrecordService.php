@@ -50,8 +50,9 @@ class MaternalRecordService
         ?array $filters = null
     ): array {
 
+        $parentId = Maternal::find($maternalId)->parent_id;
         $recordsQuery = MaternalRecord::query()
-            ->where('maternal_id', '=', $maternalId);
+            ->where('parent_id', '=', $parentId);
 
         if ($search) {
             $recordsQuery->where('notes', 'ILIKE', "%{$search}%");

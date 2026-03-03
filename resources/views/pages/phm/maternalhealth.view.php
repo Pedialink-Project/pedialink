@@ -34,22 +34,7 @@ Health Records View
 @endsection
 
 @section('content')
-<?php
-$items = [
-    ['Recorded at' => '2024-01-15 at 09.00 AM', 'BMI' => '18.5', 'Blood Pressure' => '120/80 mmHg', 'Blood Sugar' => '90 mg/dL', 'Health Status' => 'Good'],
-    ['Recorded at' => '2024-01-16 at 09.15 AM', 'BMI' => '22.3', 'Blood Pressure' => '130/85 mmHg', 'Blood Sugar' => '110 mg/dL', 'Health Status' => 'Bad'],
-    ['Recorded at' => '2024-01-17 at 09.28 AM', 'BMI' => '19.4', 'Blood Pressure' => '115/75 mmHg', 'Blood Sugar' => '95 mg/dL', 'Health Status' => 'Good'],
-    ['Recorded at' => '2024-01-13 at 08.00 AM', 'BMI' => '24.6', 'Blood Pressure' => '140/90 mmHg', 'Blood Sugar' => '130 mg/dL', 'Health Status' => 'Bad'],
-    ['Recorded at' => '2024-01-22 at 08.30 AM', 'BMI' => '21.4', 'Blood Pressure' => '125/80 mmHg', 'Blood Sugar' => '100 mg/dL', 'Health Status' => 'Good'],
-    ['Recorded at' => '2024-01-18 at 09.45 AM', 'BMI' => '23.7', 'Blood Pressure' => '135/88 mmHg', 'Blood Sugar' => '120 mg/dL', 'Health Status' => 'Good'],
-    ['Recorded at' => '2024-01-25 at 09.10 AM', 'BMI' => '20.9', 'Blood Pressure' => '128/82 mmHg', 'Blood Sugar' => '105 mg/dL', 'Health Status' => 'Bad'],
-    ['Recorded at' => '2024-01-12 at 09.00 AM', 'BMI' => '22.5', 'Blood Pressure' => '132/86 mmHg', 'Blood Sugar' => '115 mg/dL', 'Health Status' => 'Bad'],
-    ['Recorded at' => '2024-01-21 at 09.24 AM', 'BMI' => '21.5', 'Blood Pressure' => '118/78 mmHg', 'Blood Sugar' => '98 mg/dL', 'Health Status' => 'Good'],
-    ['Recorded at' => '2024-01-14 at 09.00 AM', 'BMI' => '19.6', 'Blood Pressure' => '122/80 mmHg', 'Blood Sugar' => '92 mg/dL', 'Health Status' => 'Good'],
-    ['Recorded at' => '2024-01-16 at 09.00 AM', 'BMI' => '20.9', 'Blood Pressure' => '126/84 mmHg', 'Blood Sugar' => '108 mg/dL', 'Health Status' => 'Good'],
-    ['Recorded at' => '2024-01-22 at 09.00 AM', 'BMI' => '23.3', 'Blood Pressure' => '134/87 mmHg', 'Blood Sugar' => '118 mg/dL', 'Health Status' => 'Good'],
-];
-?>
+
 
 <c-table.controls :columns='["Recorded at","BMI","Blood Pressure","Blood Sugar","Health Status"]'>
 
@@ -117,19 +102,19 @@ $items = [
             </c-table.thead>
 
             <c-table.tbody>
-                @foreach ($items as $key=>$item)
+                @foreach ($records as $key=>$record)
                     <c-table.tr>
-                        <c-table.td col="Recorded at">{{ $item['Recorded at'] }}</c-table.td>
-                        <c-table.td col="BMI">{{ $item['BMI'] }}</c-table.td>
-                        <c-table.td col="Blood Pressure">{{ $item['Blood Pressure'] }}</c-table.td>
-                        <c-table.td col="Blood Sugar">{{ $item['Blood Sugar'] }}</c-table.td>
+                        <c-table.td col="Recorded at">{{ $record['visit_date'] }}</c-table.td>
+                        <c-table.td col="BMI">{{ $record['bmi'] }}</c-table.td>
+                        <c-table.td col="Blood Pressure">{{ $record['blood_pressure'] }}</c-table.td>
+                        <c-table.td col="Blood Sugar">{{ $record['blood_sugar'] }}</c-table.td>
                         <c-table.td col="Health Status">
-                            @if (strtolower($item['Health Status']) === "good")
-                                <c-badge type="green">{{ $item['Health Status'] }}</c-badge>                   
-                            @elseif (strtolower($item['Health Status']) === "critical")
-                                <c-badge type="purple">{{ $item['Health Status'] }}</c-badge>
-                            @elseif (strtolower($item['Health Status']) === "bad")
-                                <c-badge type="red">{{ $item['Health Status'] }}</c-badge>
+                            @if (strtolower($record['health_status']) === "good")
+                                <c-badge type="green">{{ $record['health_status'] }}</c-badge>                   
+                            @elseif (strtolower($record['health_status']) === "critical")
+                                <c-badge type="purple">{{ $record['health_status'] }}</c-badge>
+                            @elseif (strtolower($record['health_status']) === "bad")
+                                <c-badge type="red">{{ $record['health_status'] }}</c-badge>
                             @endif
                         </c-table.td>
                         <c-table.td class="table-actions" align="center">
@@ -247,7 +232,7 @@ $items = [
                     </c-table.tr>
                 @endforeach
 
-                @if(count($items) === 0)
+                @if(count($records) === 0)
                     <tr>
                         <td colspan="6">
                             <div class="table-empty">No items found</div>
