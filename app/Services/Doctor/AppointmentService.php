@@ -2,6 +2,7 @@
 
 namespace App\Services\Doctor;
 
+use App\Helpers\AppointmentConfigurationHelper;
 use App\Helpers\IntToDayName;
 use App\Helpers\Validator;
 use App\Models\Appointment;
@@ -69,16 +70,23 @@ class AppointmentService
         ];
     }
 
-    public function getAppointmentConfigurationData(string $search)
+    public function getAppointmentConfigurationData(string $search, array $filters)
     {
         $clinicWeeklyAvailability = DoctorWeeklyAvailability::query();
 
-        // if ($search) {
-        //     if (preg_match("/^\d+$/", $search)) {
-        //         $clinicWeeklyAvailability = $clinicWeeklyAvailability
-        //             ->where("weekday", "=", $search);
-        //     }
-        // }
+        if ($search !== "") {
+            $weekday = AppointmentConfigurationHelper::weekdaySearch($search);
+            if ($weekday !== -1) {
+                $clinicWeeklyAvailability = $clinicWeeklyAvailability
+                    ->where("weekday", "=", $weekday);
+            }
+        }
+
+        if (isset($filters['status'])) {
+            $value = AppointmentConfigurationHelper::statusFilter($filters['status']);
+            $clinicWeeklyAvailability = $clinicWeeklyAvailability
+                ->whereIn("active", $value);
+        }
 
         $clinicWeeklyAvailability = $clinicWeeklyAvailability
             ->where("doctor_id", "=", auth()->user()?->id)

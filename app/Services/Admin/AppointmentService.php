@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\AppointmentConfigurationHelper;
 use App\Helpers\IntToDayName;
 use App\Helpers\Validator;
 use App\Models\Appointment;
@@ -65,26 +66,20 @@ class AppointmentService
     {
         $clinicWeeklyAvailability = ClinicWeeklyAvailability::query();
 
-        // if ($search) {
-        //     if (preg_match("/^\d+$/", $search)) {
-        //         $clinicWeeklyAvailability = $clinicWeeklyAvailability
-        //             ->where("weekday", "=", $search);
-        //     }
-        // }
+        if ($search !== "") {
+            $weekday = AppointmentConfigurationHelper::weekdaySearch($search);
+            if ($weekday !== -1) {
+                $clinicWeeklyAvailability = $clinicWeeklyAvailability
+                    ->where("weekday", "=", $weekday);
+            }
+        }
 
         if (isset($filters['status'])) {
-            $filterStatus = [1, 0];
+            $value = AppointmentConfigurationHelper::statusFilter($filters['status']);
 
-            foreach ($filters as $filterKey => $filterValue) {
-                if ($filterKey === "status") {
-                    $filterStatus = array_map(function($status) {
-                        return $status === "active" ? 1 : 0;
-                    }, $filterValue);
-                }
-            }
 
             $clinicWeeklyAvailability = $clinicWeeklyAvailability
-                ->whereIn("active", $filterStatus);
+                ->whereIn("active", $value);
         }
 
         $clinicWeeklyAvailability = $clinicWeeklyAvailability
