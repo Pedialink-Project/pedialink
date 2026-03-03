@@ -55,6 +55,7 @@ class DashboardService
     public function getTotalLinkageRequestsCount()
     {
         $requests = ChildMisc::query()
+            ->join("parents as p", "p.nic", "=", "child_miscs.parent_nic")
             ->where("accepted", "=", 0)
             ->get();
 
@@ -165,6 +166,131 @@ class DashboardService
                 "count" => count($eventRegistration),
                 "location" => $event->event_location,
                 "status" => $this->eventService->getEventStatus($event->id)
+            ];
+        }
+
+        return $resource;
+    }
+
+    public function getWeeklyAppointmentsData()
+    {
+        // Get the current week's Monday and Friday
+        $today = new \DateTimeImmutable('today');
+        $dayOfWeek = (int)$today->format('N'); // 1 = Monday, 7 = Sunday
+        $monday = $today->modify('-' . ($dayOfWeek - 1) . ' days')->format('Y-m-d');
+        $friday = $today->modify('+' . (5 - $dayOfWeek) . ' days')->format('Y-m-d');
+
+        // SQL: join appointments with slots, group by day of week (1=Mon..5=Fri)
+        // Count attended as completed, no-show and cancelled as cancelled
+        $sql = "
+        SELECT
+            EXTRACT(DOW FROM s.slot_date)::int AS dow,
+            SUM(CASE WHEN a.status = 'attended' THEN 1 ELSE 0 END)::int AS completed,
+            SUM(CASE WHEN a.status IN ('no-show', 'cancelled') THEN 1 ELSE 0 END)::int AS cancelled,
+            COUNT(*)::int AS booked
+        FROM appointments a
+        JOIN appointment_slots s ON a.slot_id = s.id
+        WHERE s.slot_date >= :monday AND s.slot_date <= :friday
+        GROUP BY dow
+        ORDER BY dow
+        ";
+
+        $rows = QueryBuilder::rawGet($sql, [':monday' => $monday, ':friday' => $friday]);
+
+        // Initialize 5-day buckets (index 0 -> Monday, index 4 -> Friday)
+        $booked = array_fill(0, 5, 0);
+        $completed = array_fill(0, 5, 0);
+        $cancelled = array_fill(0, 5, 0);
+
+        if (!empty($rows) && is_array($rows)) {
+            foreach ($rows as $r) {
+                $dow = null;
+                $comp = 0;
+                $canc = 0;
+                $book = 0;
+
+                if (is_array($r)) {
+                    // PostgreSQL DOW: 0=Sunday, 1=Monday, ..., 5=Friday, 6=Saturday
+                    $dow = isset($r['dow']) ? (int)$r['dow'] : null;
+                    $comp = isset($r['completed']) ? (int)$r['completed'] : 0;
+                    $canc = isset($r['cancelled']) ? (int)$r['cancelled'] : 0;
+                    $book = isset($r['booked']) ? (int)$r['booked'] : 0;
+                }
+
+                // Map DOW 1-5 (Mon-Fri) to array index 0-4
+                if ($dow !== null && $dow >= 1 && $dow <= 5) {
+                    $idx = $dow - 1;
+                    $booked[$idx] = $book;
+                    $completed[$idx] = $comp;
+                    $cancelled[$idx] = $canc;
+                }
+            }
+        }
+
+        return [
+            'booked' => $booked,
+            'completed' => $completed,
+            'cancelled' => $cancelled,
+        ];
+    }
+
+    public function getTodaysAppointments()
+    {
+        $today = (new \DateTimeImmutable('today'))->format('Y-m-d');
+
+        // Get top 3 appointments for today with child, slot and doctor info
+        $sql = "
+        SELECT 
+            a.id,
+            a.reason,
+            a.status,
+            s.start_time,
+            s.end_time,
+            s.doctor_id,
+            c.name AS child_name,
+            u.name AS doctor_name
+        FROM appointments a
+        JOIN appointment_slots s ON a.slot_id = s.id
+        LEFT JOIN children c ON a.child_id = c.id
+        LEFT JOIN doctors d ON s.doctor_id = d.id
+        LEFT JOIN users u ON d.id = u.id
+        WHERE s.slot_date = :today
+        ORDER BY s.start_time ASC
+        LIMIT 3
+        ";
+
+        $rows = QueryBuilder::rawGet($sql, [':today' => $today]);
+
+        $resource = [];
+        foreach ($rows as $r) {
+            // Format time to 12-hour format (e.g., "10:00 AM")
+            $startTime = $r['start_time'] ?? null;
+            $formattedTime = 'N/A';
+            if ($startTime) {
+                $timeObj = \DateTime::createFromFormat('H:i:s', $startTime);
+                if ($timeObj) {
+                    $formattedTime = $timeObj->format('g:i A');
+                }
+            }
+
+            // Map status to display label
+            $statusMap = [
+                'confirmed' => 'Scheduled',
+                'pending' => 'Pending',
+                'attended' => 'Finished',
+                'cancelled' => 'Cancelled',
+                'no-show' => 'No Show',
+            ];
+            $status = $r['status'] ?? 'pending';
+            $displayStatus = $statusMap[$status] ?? ucfirst($status);
+
+            $resource[] = [
+                'id' => $r['id'],
+                'child_name' => $r['child_name'] ?? 'Unknown',
+                'reason' => $r['reason'] ?? 'Routine Checkup',
+                'doctor_name' => $r['doctor_name'] ?? 'N/A',
+                'time' => $formattedTime,
+                'status' => $displayStatus,
             ];
         }
 

@@ -26,7 +26,7 @@
         @foreach ($accessRequests as $key => $request)
             <c-card class="access-card">
                 <c-slot name="header">
-                    <h3>{{ $request["child"]['name'] }} &#8594; Child &middot; C-{{ $request["child"]['id'] }}</h3>
+                    <h3>{{ $request["staff"]['name'] }} &#8594; Child &middot; C-{{ $request["child"]['id'] }}</h3>
                 </c-slot>
                 <c-slot name="headerSuffix">
                     <span class="access-time">{{ time_ago($request['created_at']) }}</span>
