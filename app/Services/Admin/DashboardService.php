@@ -55,6 +55,7 @@ class DashboardService
     public function getTotalLinkageRequestsCount()
     {
         $requests = ChildMisc::query()
+            ->join("parents as p", "p.nic", "=", "child_miscs.parent_nic")
             ->where("accepted", "=", 0)
             ->get();
 
