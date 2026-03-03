@@ -54,6 +54,34 @@ register_shutdown_function(function() {
 
 logMsg('Lock acquired — starting run.');
 
+// Mark past appointments as no-show (only for pending/confirmed status)
+$now = new DateTimeImmutable('now');
+$currentDate = $now->format('Y-m-d');
+$currentTime = $now->format('H:i:s');
+
+// Update appointments where the slot date has passed, or slot date is today but end_time has passed
+$noShowUpdateSql = "
+    UPDATE appointments 
+    SET status = 'no-show'
+    WHERE status IN ('pending', 'confirmed')
+    AND slot_id IN (
+        SELECT s.id FROM appointment_slots s
+        WHERE s.slot_date < :current_date
+        OR (s.slot_date = :current_date2 AND s.end_time < :current_time)
+    )
+";
+
+try {
+    QueryBuilder::rawExec($noShowUpdateSql, [
+        ':current_date' => $currentDate,
+        ':current_date2' => $currentDate,
+        ':current_time' => $currentTime,
+    ]);
+    logMsg("Checked and updated past appointments to no-show status.");
+} catch (Throwable $e) {
+    logMsg("Error updating no-show appointments: " . $e->getMessage());
+}
+
 // Load clinic weekly availability (0 = Monday .. 6 = Sunday)
 $clinicAvailRows = QueryBuilder::rawGet(
     'SELECT weekday, active, start_time, end_time, slot_length_minutes 
