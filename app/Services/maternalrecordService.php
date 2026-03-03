@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Services;
+
+use App\Helpers\Calculator;
 use App\Models\MaternalStat;
 use App\Models\Maternal;
+use App\Models\ParentM;
 use App\Models\MaternalRecord;
+use App\Models\User;
 
 class MaternalRecordService
 {
@@ -38,29 +42,70 @@ class MaternalRecordService
 
 
 
-    public function getMaternalStatByMaternalId($id)
-    {
-        $maternalStats = MaternalStat::query()->where('maternal_id', '=', $id)->get();
+   
+
+     public function getMaternalRecordsByMaternalId(
+        int $maternalId,
+        ?string $search = null,
+        ?array $filters = null
+    ): array {
+
+        $recordsQuery = MaternalRecord::query()
+            ->where('maternal_id', '=', $maternalId);
+
+        if ($search) {
+            $recordsQuery->where('notes', 'ILIKE', "%{$search}%");
+        }
+        if (!empty($filters['health_status'])) {
+            $recordsQuery->whereIn('health_status', $filters['health_status']);
+        }
+
+
+        $results = $recordsQuery
+            ->orderBy('visit_date', 'DESC')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(7)
+            ->toArray();
+
         $resource = [];
-        foreach ($maternalStats as $stat) {
-            $resource[] = [
-                'id' => $stat->id,
-                'maternal_id' => $stat->maternal_id,
-                'visit_date' => $stat->visit_date,
-                'trimester' => $stat->trimester,
-                'bmi' => $stat->bmi,
-                'weight' => $stat->weight,
-                'height' => $stat->height,
-                'blood_sugar' => $stat->blood_sugar,
-                'blood_pressure' => $stat->blood_pressure,
-                'health_status' => $stat->health_status,
-                'fundal_height' => $stat->fundal_height,
-                'notes' => json_decode($stat->notes),
+
+        foreach ($results['items'] as $record) {
+
+            if ($record->mark_as_invalid) {
+                continue;
+            }
+
+           $resource[] = [
+                'id' => $record->id,
+                'maternal_id' => $record->maternal_id,
+                'parent_id' => $record->parent_id,
+                'age_recorded-at'=> Calculator::calculateAgeInMonths(ParentM::find($record->parent_id)->date_of_birth, $record->visit_date),
+                'staff_id' => $record->staff_id,
+                'staff' =>[
+                    'id'=> $record->staff_id,
+                    'name'=> User::find($record->staff_id)->name,
+                    'role'=> User::find($record->staff_id)->role,
+                ],
+                'visit_date' => $record->visit_date,
+                'trimester' => $record->trimester,
+                'bmi' => $record->bmi,
+                'weight' => $record->weight,
+                'height' => $record->height,
+                'blood_sugar' => $record->blood_sugar,
+                'blood_pressure' => $record->blood_pressure,
+                'health_status' => $record->health_status,
+                'fundal_height' => $record->fundal_height,
+                'notes' => json_decode($record->notes),
             ];
         }
 
-        return $resource;
+
+        $links = array_diff_key($results, ['items' => true]);
+
+
+        return [$resource, $links];
     }
+
 
     public function validateNumericStat($data, $attributeName)
     {
