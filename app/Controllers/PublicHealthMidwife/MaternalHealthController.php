@@ -7,7 +7,7 @@ use Library\Framework\Http\Request;
 
 class MaternalHealthController
 {
-private $maternalRecordService;
+    private $maternalRecordService;
 
     public function __construct()
     {
@@ -82,5 +82,66 @@ private $maternalRecordService;
 
         return redirect(route("phm.child.health", ["id" => $id]))
             ->withMessage("Health record added successfully.", "Success", "success");
+    }
+
+    public function editHealthRecord(Request $request, int $id, int $recordId)
+    {
+        // Edited values come from the edit form with `e_` prefixes
+        $visitDate = $request->input('e_visit_date');
+        $bloodPressure = $request->input('e_blood_pressure');
+        $weight = $request->input('e_weight');
+        $hemoglobin = $request->input('e_hemoglobin');
+        $glucose = $request->input('e_glucose');
+        $fetalHeartRate = $request->input('e_fetal_heart_rate');
+        $fundalHeight = $request->input('e_fundal_height');
+
+        $staffId = auth()->user()->id;
+
+
+        $errors = $this->maternalRecordService->validateMaternalHealthData(
+            $visitDate,
+            $bloodPressure,
+            $weight,
+            $hemoglobin,
+            $glucose,
+            $fetalHeartRate,
+            $fundalHeight,
+            true
+        );
+
+        if (count($errors) > 0) {
+            return redirect(route("phm.maternal.health", ["id" => $id]))
+                ->withInput([
+                    "e_weight" => $weight,
+                    "e_blood_pressure" => $bloodPressure,
+                    "e_hemoglobin" => $hemoglobin,
+                    "e_glucose" => $glucose,
+                    "e_fetal_heart_rate" => $fetalHeartRate,
+                    "e_fundal_height" => $fundalHeight,
+                    "e_visit_date" => $visitDate,
+                ])
+                ->withErrors($errors)
+                ->with("edit", $recordId);
+        }
+
+        $error =   $this->maternalRecordService->editHealthRecord(
+            $recordId,
+            $staffId,
+            $visitDate,
+            $bloodPressure,
+            $weight,
+            $hemoglobin,
+            $glucose,
+            $fetalHeartRate,
+            $fundalHeight,
+        );
+
+        if ($error) {
+            return redirect(route("phm.maternal.health", ["id" => $id]))
+                ->withMessage($error, "Error", "error");
+        }
+
+        return redirect(route("phm.maternal.health", ["id" => $id]))
+            ->withMessage("Health record updated successfully.", "Success", "success");
     }
 }
