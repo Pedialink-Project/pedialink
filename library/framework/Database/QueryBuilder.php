@@ -54,6 +54,8 @@ class QueryBuilder
     protected ?int $limit = null;
     protected ?int $offset = null;
     protected array $orderBys = [];
+    protected array $joins = [];
+    protected array $selects = [];
 
     public function __construct(?string $table = null, ?string $modelClass = null)
     {
@@ -80,6 +82,59 @@ class QueryBuilder
     }
 
     /**
+     * Add a JOIN clause
+     * @param string $table Table to join
+     * @param string $first First column (e.g., 'appointments.doctor_id')
+     * @param string $operator Comparison operator (=, <, >, etc.)
+     * @param string $second Second column (e.g., 'doctors.id')
+     * @param string $type Type of join (INNER, LEFT, RIGHT)
+     * @return $this
+     */
+    public function join(string $table, string $first, string $operator, string $second, string $type = 'INNER'): static
+    {
+        $allowed = ['=', '<', '>', '<=', '>=', '<>', '!='];
+        if (!in_array(strtoupper($operator), $allowed, true)) {
+            throw new PDOException("Invalid operator: {$operator}");
+        }
+        
+        $type = strtoupper($type);
+        if (!in_array($type, ['INNER', 'LEFT', 'RIGHT'], true)) {
+            $type = 'INNER';
+        }
+        
+        $this->joins[] = "{$type} JOIN {$table} ON {$first} {$operator} {$second}";
+        return $this;
+    }
+
+    /**
+     * Add a LEFT JOIN clause
+     * @param string $table
+     * @param string $first
+     * @param string $operator
+     * @param string $second
+     * @return $this
+     */
+    public function leftJoin(string $table, string $first, string $operator, string $second): static
+    {
+        return $this->join($table, $first, $operator, $second, 'LEFT');
+    }
+
+    /**
+     * Specify columns to select (useful with joins to avoid ambiguity)
+     * @param string|array $columns
+     * @return $this
+     */
+    public function select(string|array $columns): static
+    {
+        if (is_string($columns)) {
+            $this->selects[] = $columns;
+        } else {
+            $this->selects = array_merge($this->selects, $columns);
+        }
+        return $this;
+    }
+
+    /**
      * Shorthand method similar to `where` syntax in sql.
      * Can be chained in query builder instance.
      * @param string $column
@@ -98,8 +153,9 @@ class QueryBuilder
             throw new PDOException("Invalid operator: {$operator}");
         }
 
-        // Use placeholder
-        $placeholder = ':' . $column . count($this->bindings);
+        // Sanitize column name for placeholder (replace dots with underscores)
+        $placeholderName = str_replace('.', '_', $column);
+        $placeholder = ':' . $placeholderName . count($this->bindings);
         $this->wheres[] = "{$column} {$operator} {$placeholder}";
         $this->bindings[$placeholder] = $value;
 
@@ -120,9 +176,11 @@ class QueryBuilder
             return $this;
         }
 
+        // Sanitize column name for placeholder (replace dots with underscores)
+        $placeholderName = str_replace('.', '_', $column);
         $placeholders = [];
         foreach ($values as $index => $value) {
-            $key = ":{$column}_in{$index}";
+            $key = ":{$placeholderName}_in{$index}";
             $placeholders[] = $key;
             $this->bindings[$key] = $value;
         }
@@ -145,14 +203,38 @@ class QueryBuilder
             return $this;
         }
 
+        // Sanitize column name for placeholder (replace dots with underscores)
+        $placeholderName = str_replace('.', '_', $column);
         $placeholders = [];
         foreach ($values as $index => $value) {
-            $key = ":{$column}_notin{$index}";
+            $key = ":{$placeholderName}_notin{$index}";
             $placeholders[] = $key;
             $this->bindings[$key] = $value;
         }
 
         $this->wheres[] = "{$column} NOT IN (" . implode(',', $placeholders) . ")";
+        return $this;
+    }
+
+    /**
+     * Add a WHERE column IS NULL condition
+     * @param string $column
+     * @return QueryBuilder
+     */
+    public function whereNull(string $column): static
+    {
+        $this->wheres[] = "{$column} IS NULL";
+        return $this;
+    }
+
+    /**
+     * Add a WHERE column IS NOT NULL condition
+     * @param string $column
+     * @return QueryBuilder
+     */
+    public function whereNotNull(string $column): static
+    {
+        $this->wheres[] = "{$column} IS NOT NULL";
         return $this;
     }
 
@@ -165,7 +247,13 @@ class QueryBuilder
      */
     public function get(): array
     {
-        $sql = "SELECT * FROM {$this->table}";
+        $selectCols = $this->selects ? implode(', ', $this->selects) : "{$this->table}.*";
+        $sql = "SELECT {$selectCols} FROM {$this->table}";
+        
+        if ($this->joins) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
+        
         if ($this->wheres) {
             $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
         }
@@ -202,7 +290,12 @@ class QueryBuilder
      */
     public function first(): ?object
     {
-        $sql = "SELECT * FROM {$this->table}";
+        $selectCols = $this->selects ? implode(', ', $this->selects) : "{$this->table}.*";
+        $sql = "SELECT {$selectCols} FROM {$this->table}";
+
+        if ($this->joins) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
 
         if ($this->wheres) {
             $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
@@ -369,6 +462,9 @@ class QueryBuilder
 
         // 1) Count query
         $countSql = "SELECT COUNT(*) AS total FROM {$this->table}";
+        if ($this->joins) {
+            $countSql .= ' ' . implode(' ', $this->joins);
+        }
         if ($this->wheres) {
             $countSql .= ' WHERE ' . implode(' AND ', $this->wheres);
         }
@@ -384,7 +480,11 @@ class QueryBuilder
         }
 
         // 2) Select query with ordering + limit/offset (use separate binding array to avoid mutating internal bindings)
-        $sql = "SELECT * FROM {$this->table}";
+        $selectCols = $this->selects ? implode(', ', $this->selects) : "{$this->table}.*";
+        $sql = "SELECT {$selectCols} FROM {$this->table}";
+        if ($this->joins) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
         if ($this->wheres) {
             $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
         }
@@ -425,6 +525,9 @@ class QueryBuilder
     public function pluck(string $column): array
     {
         $sql = "SELECT {$column} FROM {$this->table}";
+        if ($this->joins) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
         if ($this->wheres) {
             $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
         }
@@ -434,7 +537,11 @@ class QueryBuilder
 
         $results = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $results[] = $row[$column];
+            // Handle aliased columns (e.g., "doctors.name AS doctor_name")
+            $colName = str_contains($column, ' AS ') 
+                ? trim(substr($column, strpos($column, ' AS ') + 4))
+                : (str_contains($column, '.') ? substr($column, strpos($column, '.') + 1) : $column);
+            $results[] = $row[$colName] ?? array_values($row)[0] ?? null;
         }
 
         return $results;
