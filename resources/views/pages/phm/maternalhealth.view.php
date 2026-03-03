@@ -50,7 +50,7 @@ Health Records View
     </c-slot>
 
     <c-slot name="extrabtn">
-        <c-modal id="add-heath-record-modal" size="md" :initOpen="false">
+        <c-modal id="add-heath-record-modal" size="md" :initOpen="flash('add') ? true : false">
             <c-slot name="trigger">
                 <c-button variant="primary">
                     Add Record
