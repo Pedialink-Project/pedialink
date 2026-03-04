@@ -31,6 +31,9 @@ Vaccination Details &middot; C-{{ $id }} &rarr; {{ $name }}
 @endsection
 
 @section('content')
+<c-table.controls action="{{ route('phm.child.vaccinations', ['id' => $id]) }}" :filters="['status' => ['complete', 'pending', 'overdue']]">
+
+</c-table.controls>
 <c-table.wrapper card="1">
     <div class="table-wrapper" data-responsive="true">
         <c-table.main sticky="1" size="comfortable">
