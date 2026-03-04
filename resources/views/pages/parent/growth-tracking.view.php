@@ -104,6 +104,7 @@ Parent - Growth Tracking
 
 
 <script>
+    const growthData = <?php echo json_encode($growthData); ?>;
 
     function createGradient(color, chart) {
         const gradient = chart.createLinearGradient(0, 0, 0, 400);
@@ -115,17 +116,12 @@ Parent - Growth Tracking
     const bmiCtx = document.getElementById("bmiChart").getContext("2d");
 
 
-    const bmiData = [
-        { name: "Sara", values: [0, 2, 1, 0, 0, 1, 10, 20, 15, 13, 11, 14], color: "rgba(168,85,247,1)" },
-        { name: "John", values: [10, 15, 28, 40, 33, 36, 42, 39, 45, 50, 48, 49], color: "rgba(239,68,68,1)" },
-        { name: "Alex", values: [0, 1, 0, 10, 15, 13, 12, 8, 4, 1, 0, 3], color: "rgba(6,182,212,1)" },
-    ];
 
-    const bmiDatasets = bmiData.map(item => ({
-        label: item.name,
-        data: item.values,
-        borderColor: item.color,
-        backgroundColor: createGradient(item.color, bmiCtx),
+    const bmiDatasets = growthData.map(child => ({
+        label: child.name,
+        data: child.bmi,
+        borderColor: "rgba(168,85,247,1)",
+        backgroundColor: createGradient("rgba(168,85,247,1)", bmiCtx),
         tension: 0.4,
         fill: true,
         pointRadius: 4,
@@ -135,7 +131,7 @@ Parent - Growth Tracking
     new Chart(bmiCtx, {
         type: "line",
         data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            labels: growthData[0]?.labels ?? [],
             datasets: bmiDatasets
         },
         options: {
@@ -144,17 +140,27 @@ Parent - Growth Tracking
                 legend: {
                     display: true,
                     position: "bottom",
-                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: "rectRounded",
+                        boxWidth: 12
+                    }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                    ticks: { stepSize: 10 },
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.05)"
+                    },
+                    ticks: {
+                        stepSize: 10
+                    },
                 },
                 x: {
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.05)"
+                    },
                 },
             },
         },
@@ -163,30 +169,14 @@ Parent - Growth Tracking
 
     const heightCtx = document.getElementById("heightChart").getContext("2d");
 
-    const heightData = [
-        {
-            name: "Sara",
-            values: [75, 76, 77, 78, 78.5, 79, 79.5, 80, 80.5, 81, 81.5, 82],
-            color: "rgba(59,130,246,1)",
-        },
-        {
-            name: "John",
-            values: [95, 95.5, 96, 96.5, 97, 97.5, 98, 98.5, 99, 99.5, 100, 100.5],
-            color: "rgba(236,72,153,1)",
-        },
-        {
-            name: "Alex",
-            values: [120, 120.5, 121, 121.5, 122, 122.5, 123, 123.5, 124, 124.5, 125, 125.5],
-            color: "rgba(34,197,94,1)",
-        }
-    ];
 
 
-    const heightDatasets = heightData.map(item => ({
-        label: item.name,
-        data: item.values,
-        borderColor: item.color,
-        backgroundColor: createGradient(item.color, heightCtx),
+
+    const heightDatasets = growthData.map(child => ({
+        label: child.name,
+        data: child.height,
+        borderColor: "rgba(59,130,246,1)",
+        backgroundColor: createGradient("rgba(59,130,246,1)", heightCtx),
         tension: 0.4,
         fill: true,
         pointRadius: 4,
@@ -196,7 +186,7 @@ Parent - Growth Tracking
     new Chart(heightCtx, {
         type: "line",
         data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            labels: growthData[0]?.labels ?? [],
             datasets: heightDatasets
         },
         options: {
@@ -205,17 +195,27 @@ Parent - Growth Tracking
                 legend: {
                     display: true,
                     position: "bottom",
-                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: "rectRounded",
+                        boxWidth: 12
+                    }
                 }
             },
             scales: {
                 y: {
-                    min: 70,
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                    ticks: { stepSize: 5 },
+                    beginAtZero: true,
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.05)"
+                    },
+                    ticks: {
+                        stepSize: 5
+                    },
                 },
                 x: {
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.05)"
+                    },
                 },
             },
         },
@@ -224,29 +224,12 @@ Parent - Growth Tracking
     const weightCtx = document.getElementById("weightChart").getContext("2d");
 
 
-    const weightData = [
-        {
-            name: "Child 1 (Age 1)",
-            values: [10, 10.2, 10.4, 10.6, 10.8, 11, 11.2, 11.4, 11.6, 11.8, 12, 12.2],
-            color: "rgba(59,130,246,1)",
-        },
-        {
-            name: "Child 2 (Age 3)",
-            values: [14, 14.2, 14.5, 14.8, 15, 15.3, 15.5, 15.8, 16, 16.2, 16.5, 16.7],
-            color: "rgba(236,72,153,1)",
-        },
-        {
-            name: "Child 3 (Age 7)",
-            values: [22, 22.3, 22.6, 23, 23.3, 23.6, 24, 24.3, 24.6, 25, 25.3, 25.6],
-            color: "rgba(34,197,94,1)",
-        }
-    ];
 
-    const weightDatasets = weightData.map(item => ({
-        label: item.name,
-        data: item.values,
-        borderColor: item.color,
-        backgroundColor: createGradient(item.color, weightCtx),
+    const weightDatasets = growthData.map(child => ({
+        label: child.name,
+        data: child.weight,
+        borderColor: "rgba(34,197,94,1)",
+        backgroundColor: createGradient("rgba(34,197,94,1)", weightCtx),
         tension: 0.4,
         fill: true,
         pointRadius: 4,
@@ -256,7 +239,7 @@ Parent - Growth Tracking
     new Chart(weightCtx, {
         type: "line",
         data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            labels: growthData[0]?.labels ?? [],
             datasets: weightDatasets
         },
         options: {
@@ -265,23 +248,31 @@ Parent - Growth Tracking
                 legend: {
                     display: true,
                     position: "bottom",
-                    labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: "rectRounded",
+                        boxWidth: 12
+                    }
                 }
             },
             scales: {
                 y: {
-                    min: 8,
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
-                    ticks: { stepSize: 10 },
+                    beginAtZero: true,
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.05)"
+                    },
+                    ticks: {
+                        stepSize: 10
+                    },
                 },
                 x: {
-                    grid: { color: "rgba(0, 0, 0, 0.05)" },
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.05)"
+                    },
                 },
             },
         },
     });
-
-
 </script>
 
 
