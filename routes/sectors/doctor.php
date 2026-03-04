@@ -22,6 +22,9 @@ return [
     ['POST', '/doctor/childprofile/request-access', [ChildProfileController::class, 'requestAccess'], 'doctor.childprofile.requestAccess', ['doctor']],
     ['POST', '/doctor/childprofile/{id}/cancel-request-access', [ChildProfileController::class, 'cancelAccessRequest'], 'doctor.childprofile.cancel.requestAccess', ['doctor']],
 
+    ['POST', '/doctor/maternalprofile/request-access', [MaternalProfileController::class, 'requestAccess'], 'doctor.maternalprofile.requestAccess', ['doctor']],
+    ['POST', '/doctor/maternalprofile/{id}/cancel-request-access', [MaternalProfileController::class, 'cancelAccessRequest'], 'doctor.maternalprofile.cancel.requestAccess', ['doctor']],
+
     ['GET', '/doctor/maternal-profiles/{id}/health-records', [maternalhealthrecordController::class, 'index'], 'doctor.maternal.health', ['doctor']],
     ['POST', '/doctor/maternal-profiles/{id}/health-records/add', [maternalhealthrecordController::class, 'createMaternalRecord'], 'doctor.maternal.health.add', ['doctor']],
     ['POST', '/doctor/maternal-profiles/{id}/health-records/{recordId}/edit', [maternalhealthrecordController::class, 'editMaternalRecord'], 'doctor.maternal.health.edit', ['doctor']],
