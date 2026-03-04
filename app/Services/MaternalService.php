@@ -52,6 +52,25 @@ class MaternalService
         return Maternal::find($id);
     }
 
+     public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
+    {
+        $errors = [];
+
+        if (!Validator::validateFieldExistence($childId)) {
+            $errors['maternal_id'] = "Maternal Profile field cannot be empty";
+        }
+
+        if (!Validator::validateFieldExistence($reasonTitle)) {
+            $errors['reason_title'] = "Reason Title field cannot be empty";
+        }
+
+        if (!Validator::validateFieldExistence($reasonDescription)) {
+            $errors['reason_description'] = "Reason Description field cannot be empty";
+        }
+
+        return $errors;
+    }
+
 
     public function requestMaternalAccess(
         int $staffId,
@@ -61,7 +80,6 @@ class MaternalService
     ): ?string {
 
         $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
-        // Prevent duplicate requests
         $existing = MaternalAccessRequest::query()
             ->where('staff_id', '=', $staffId)
             ->where('maternal_id', '=', $parentId)
@@ -266,6 +284,8 @@ class MaternalService
         return [$resource, $links];
     }
 
+
+   
     public function getMaternalByDoctorId(
         int $phmId,
         ?string $search = null,
@@ -274,6 +294,7 @@ class MaternalService
 
         $maternalQuery = Maternal::query();
 
+        //search implmeted yet 
 
         $results = $maternalQuery
             ->orderBy('id', 'ASC')
@@ -325,7 +346,15 @@ class MaternalService
 
 
 
-
+            $maternalData = [
+                'id' => $maternal->id,
+                'name' => User::find($maternal->parent_id)->name,
+                'age' => Calculator::calculateAge(ParentM::find($maternal->parent_id)->date_of_birth),
+                'height' => $maternal->height,
+                'blood_type' => $maternal->blood_type,
+                'type' => $maternal->type,
+                'access_status' => $accessStatus,
+            ];
 
             if ($hasFullAccess) {
 
@@ -343,14 +372,7 @@ class MaternalService
                         ->first();
                 }
 
-                $maternalData =  [
-                    'id' => $maternal->id,
-                    'name' => User::find($maternal->parent_id)->name,
-                    'age' => Calculator::calculateAge(ParentM::find($maternal->parent_id)->date_of_birth),
-                    'height' => $maternal->height,
-                    'blood_type' => $maternal->blood_type,
-                    'type' => $maternal->type,
-                    'access_status' => $accessStatus,
+                $maternalData = array_merge($maternalData, [
                     'lmp' => $latestPregnancy->lmp,
                     'edd' => $latestPregnancy->edd,
                     'gravida' => $latestPregnancy->gravida,
@@ -368,16 +390,17 @@ class MaternalService
                         'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
                         'health_status' => $latestRecord->health_status,
                     ] : null
-                ];
-                
-                $resource[] = $maternalData;
-                }
+                ]);
+            }
+
+            $resource[] = $maternalData;
         }
 
         $links = array_diff_key($results, ['items' => true]);
 
         return [$resource, $links];
     }
+   
 
     private function validateBloodType($bloodType)
     {
@@ -608,5 +631,39 @@ class MaternalService
         );
 
         return null;
+    }
+
+
+
+    public function getUnaccessedMaternalForStaff(int $staffId): array
+    {
+        $requestedMaternalIds = MaternalAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->pluck('maternal_id');
+
+        $maternalsQuery = Maternal::query();
+
+        if (!empty($requestedMaternalIds)) {
+            $maternalsQuery->whereNotIn('id', $requestedMaternalIds);
+        }
+
+        $maternals = $maternalsQuery->get();
+
+        $resource = [];
+        foreach ($maternals as $maternal) {
+            $parentId = Maternal::query()->where('id', '=', $maternal->id)->first()->parent_id;
+            if ($parentId) {
+                $resource[] = [
+                    'id' => $maternal->id,
+                    'name' => User::find($parentId)->name,
+                    'age' => Calculator::calculateAge(ParentM::find($parentId)->date_of_birth),
+                    'height' => $maternal->height,
+                    'blood_type' => $maternal->blood_type,
+                    'type' => $maternal->type,
+                ];
+            }
+        }
+
+        return $resource;
     }
 }
