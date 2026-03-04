@@ -65,7 +65,7 @@ Parent - Vaccination
             <c-table.thead>
                 <c-table.tr>
                     <c-table.th >Child Name</c-table.th>
-                    <c-table.th >Vaccine Name</c-table.th>
+                    <c-table.th >Vaccine Code</c-table.th>
                     <c-table.th >Scheduled Date</c-table.th>
                     <c-table.th >Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
@@ -75,7 +75,7 @@ Parent - Vaccination
                 @foreach ($vaccinations as $key => $vaccination)
                 <c-table.tr>
                     <c-table.td col="name">{{ $vaccination['child']['name'] }}</c-table.td>
-                    <c-table.td col="vaccine-name">{{ $vaccination['vaccine']['name'] }}</c-table.td>
+                    <c-table.td col="vaccine-name">{{ $vaccination['vaccine']['code'] }}</c-table.td>
                     <c-table.td col="date-time">{{ $vaccination['scheduled_date'] }}</c-table.td>
                     <c-table.td col="status">
                         {{
