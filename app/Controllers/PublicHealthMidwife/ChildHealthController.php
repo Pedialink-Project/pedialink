@@ -136,12 +136,4 @@ class ChildHealthController
         return redirect(route("phm.child.health", ["id" => $id]))
             ->withMessage("Health record marked as invalid successfully.", "Success", "success");
     }
-
-
-    public function vaccinationIndex(Request $request, int $id)
-    {
-        return view("phm/vaccinationrecord", [
-            "id" => $id,
-        ]);
-    }
 }

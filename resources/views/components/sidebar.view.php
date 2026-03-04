@@ -123,12 +123,6 @@ $menuItems = [
                 'icon' => asset('/assets/icons/chart-evaluation.svg'),
                
             ],
-            [
-                'name' => 'Vaccination',
-                'link' => route('phm.vaccination'),
-                'icon' => asset('/assets/icons/vaccine.svg'),
-               
-            ],
             // [
             //     'name' => 'Appointments',
             //     'link' => route('phm.appointments'),

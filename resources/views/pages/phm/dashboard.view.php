@@ -169,7 +169,6 @@ Parent Dashboard
                     <span class="card-title">Upcoming Vaccinations</span>
                     <span class="card-subtitle">Vaccines due for your children</span>
                 </div>
-                <c-link type="secondary"  href="{{ route('phm.vaccination')}}">View All</c-link>
             </div>
 
 
