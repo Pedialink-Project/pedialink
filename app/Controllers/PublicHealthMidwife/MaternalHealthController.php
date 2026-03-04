@@ -19,7 +19,7 @@ class MaternalHealthController
         $search = $request->input("search");
         $filters = $request->input("filters");
         [$records, $links] = $this->maternalRecordService->getMaternalRecordsByMaternalId($id, $search, $filters);
-        $name = 'gh';
+        $name = $this->maternalRecordService->getMaternalNameByMaternalId($id);
 
         return view("phm/maternalhealth", [
             "id" => $id,
