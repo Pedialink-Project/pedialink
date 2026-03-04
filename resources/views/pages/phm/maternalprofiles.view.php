@@ -193,21 +193,20 @@ Maternal Profiles - Overview
 
 
                                     <c-modal.viewlist title="Latest Medical Records">
-                                        @if($maternal['record'])
                                         <c-slot name="list">
-                                            <li>Fundal Height:{{ $maternal['record']['fundal_height'] }}cm</li>
-                                            <li>Weight: {{ $maternal['record']['weight'] }}kg</li>
-                                            <li>BMI Value: {{ $maternal['record']['bmi'] }}</li>
-                                            <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] }}bpm</li>
-                                            <li>Glucose: {{ $maternal['record']['glucose'] }}</li>
-                                            <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] }}</li>
-                                            <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] }}</li>
+                                            @if($maternal['record'] == NULL)
+                                                <li>No medical records found.</li>
+                                            @else
+                                                <li>Fundal Height: {{ $maternal['record']['fundal_height'] }}cm</li>
+                                                <li>Weight: {{ $maternal['record']['weight'] }}kg</li>
+                                                <li>BMI Value: {{ $maternal['record']['bmi'] }}</li>
+                                                <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] }}bpm</li>
+                                                <li>Glucose: {{ $maternal['record']['glucose'] }}</li>
+                                                <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] }}</li>
+                                                <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] }}</li>
+                                            @endif
                                         </c-slot>
-                                        @else
-                                        <c-slot name="list">
-                                            <li>No medical records found.</li>
-                                        </c-slot>
-                                        @endif
+                                       
                                     </c-modal.viewlist>
 
                                     <c-modal.viewlist title="Recent Vaccinations">
@@ -225,7 +224,7 @@ Maternal Profiles - Overview
                                     </c-slot>
                                 </c-modal>
                                 @if ($maternal['access_status'] === "accepted")
-                                <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$key,])}}">
+                                <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
                                 @if ($maternal['type'] === "antenatal")

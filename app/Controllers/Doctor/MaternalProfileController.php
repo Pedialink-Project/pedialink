@@ -5,51 +5,78 @@ namespace App\Controllers\Doctor;
 use Library\Framework\Http\Request;
 use App\Models\ParentM;
 use App\Models\User;
-use App\Services\maternalrecordService;
+use App\Services\MaternalService;
 
 class MaternalProfileController
 {
-    protected $maternalrecordService;
+    protected $maternalService;
 
     public function __construct()
     {
-        $this->maternalrecordService = new maternalrecordService();
+        $this->maternalService = new MaternalService();
     }
 
     public function index(Request $request)
     {
-        $parents = ParentM::all();
+        $search = $request->input("search");
+        $filters = $request->input("filters");
+        $doctorId = auth()->user()->id;
+        [$maternals, $links] = $this->maternalService->getMaternalByDoctorId($doctorId, $search, $filters);
+        $unaccesedMaternals = $this->maternalService->getUnaccessedMaternalForStaff($doctorId);
+        $accessReasons = config('data.accessReason');
 
-        $items = array_map(function ($parent) {
-            $user = User::find($parent->id);
-            $latestRecord = $this->maternalrecordService->getLatestMaternalRecord($parent->id);
-            $area = $parent->getArea();
+        return view("doctor/maternalprofile", ['maternals' => $maternals, 'links' => $links, 'unacessedMaternals' => $unaccesedMaternals, 'accessReasons' => $accessReasons]);
+    }
 
-            // Calculate age from date of birth
-            $age = '-';
-            // $dob = $parent->date_of_birth ?? $user->date_of_birth ?? null;
-            // if ($dob) {
-            //     try {
-            //         $age = calculateAge($dob);
-            //     } catch (\Exception $e) {
-            //         $age = '-';
-            //     }
-            // }
+    public function requestAccess(Request $request)
+    {
+        $staffId = auth()->user()->id;
+        $maternalId = $request->input("maternal_id");
+        $reasonTitle = $request->input('reason_title');
+        $reasonDescription = $request->input('reason_description');
 
-            return [
-                'id' => $parent->id,
-                'name' => $user->name ?? 'N/A',
-                'age' => $age,
-                'address' => $parent->address ?? '-',
-                'type' => $parent->type ?? '-',
-                'gs_devision' => $area->code ?? '-',
-                'nic' => $parent->nic ?? ($user->nic ?? '-'),
-                'latest_health_record' => $latestRecord,
-            ];
-        }, $parents ?? []);
+        $validateError = $this->maternalService->validateRequestAccess($maternalId, $reasonTitle, $reasonDescription);
+        if (count(value: $validateError) !== 0) {
+            return redirect(route("doctor.maternal.profiles"))
+                ->withInput([
+                    "maternal_id" => $maternalId,
+                    "reason_title" => $reasonTitle,
+                    "reason_description" => $reasonDescription,
 
-        return view("doctor/maternalprofile", [
-            'items' => $items,
-        ]);
+                ])
+                ->withErrors($validateError)
+                ->with("request", true);
+        }
+
+
+        $error = $this->maternalService->requestMaternalAccess(
+            $staffId,
+            $maternalId,
+            $reasonTitle,
+            $reasonDescription
+        );
+
+        if ($error) {
+            return redirect(route('doctor.maternal.profiles'))->withMessage($error, "Request Failed", "info");
+        }
+
+        return redirect(route('doctor.maternal.profiles'))->withMessage(
+            "Access request sent successfully",
+            "Request Sent",
+            "success"
+        );
+    }
+
+     public function cancelAccessRequest(Request $request,$id)
+    {
+        $staffId = auth()->id();
+
+        $error = $this->maternalService->cancelMaternalAccessRequest($staffId, $id);
+
+        if ($error) {
+            return redirect(route('doctor.maternal.profiles'))->withMessage('', $error, 'error');
+        }
+
+        return redirect(route('doctor.maternal.profiles'))->withMessage('Request Cancelled', 'Access request cancelled successfully','success');
     }
 }

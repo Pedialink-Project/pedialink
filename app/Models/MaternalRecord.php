@@ -7,7 +7,7 @@ use Library\Framework\Core\Model;
 class MaternalRecord extends Model
 {
     protected static string $table = "maternal_records";
-    protected array $fillable = ["parent_id","staff_id", "visit_date", "trimester", "weight", "bmi", "created_at","blood_pressure","glucose","hemoglobin","fetal_heart_rate","fundal_height","notes","health_status"];
+    protected array $fillable = ["parent_id","staff_id", "visit_date", "trimester", "weight", "bmi", "created_at","blood_pressure","glucose","hemoglobin","fetal_heart_rate","fundal_height","notes","health_status,'mark_as_invalid"];
 
    
     public function getParent(): object|null

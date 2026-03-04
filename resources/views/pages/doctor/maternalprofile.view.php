@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Doctor Maternal Profiles
+doctor Maternal Profiles
 @endsection
 
 @section('header')
@@ -31,18 +31,86 @@ Maternal Profiles - Overview
 @endsection
 
 @section('content')
-<c-table.controls :columns='["ID","Name","Age","Type","GS Devision"]'>
 
-    <c-slot name="filter">
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Type
-        </c-button>
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Stage
-        </c-button>
+
+<c-table.controls action="{{ route('doctor.maternal.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'type' => ['antenatal', 'postnatal']]">
+    <c-slot name="extrabtn">
+        <c-modal id="addChild" size="sm" :initOpen="flash('request') ? true : false">
+            <c-slot name="trigger">
+                <c-button class="child-request-access-btn" variant="primary">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_1044_31547)">
+                            <path d="M10.417 18.3337H5.49272C4.2049 18.3337 3.18058 17.707 2.26088 16.8308C0.378129 15.0371 3.46933 13.6037 4.6483 12.9016C6.39897 11.8592 8.44769 11.4769 10.417 11.7546C11.1316 11.8554 11.8275 12.0431 12.5003 12.3177" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M13.75 5.41699C13.75 7.48806 12.0711 9.16699 10 9.16699C7.92893 9.16699 6.25 7.48806 6.25 5.41699C6.25 3.34592 7.92893 1.66699 10 1.66699C12.0711 1.66699 13.75 3.34592 13.75 5.41699Z" stroke="#FAFAFA" stroke-width="1.5" />
+                            <path d="M15.4167 18.3333L15.4167 12.5M12.5 15.4167H18.3333" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" />
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_1044_31547">
+                                <rect width="20" height="20" fill="white" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+                    <span>Request Access</span>
+                </c-button>
+            </c-slot>
+            <c-slot name="headerPrefix">
+                <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
+            </c-slot>
+            <c-slot name="header">
+                <div>Request Maternal Profile Access</div>
+            </c-slot>
+
+            <form id="request-maternal-form" class="maternal-form" action="{{ route('doctor.maternalprofile.requestAccess') }}" method="POST">
+
+                <c-select
+                    label="Maternal Profile"
+                    name="maternal_id"
+                    searchable="1"
+                    placeholder="Select Maternal Profile"
+                    value="{{ old('maternal_id') ?? '' }}"
+                    error="{{ errors('maternal_id') ?? '' }}">
+
+                    @if(!empty($unacessedMaternals))
+                    @foreach ($unacessedMaternals as $maternal)
+                    <li class="select-item" data-value="{{ $maternal['id'] }}">
+                        {{ $maternal['name'] }} ({{ 'M-00'.$maternal['id'] }})
+                    </li>
+                    @endforeach
+                    @else
+                    <li class="select-item disabled">
+                        No maternal profiles available
+                    </li>
+                    @endif
+                </c-select>
+
+                <c-select
+                    label="Reason Category"
+                    name="reason_title"
+                    searchable="1"
+                    placeholder="Select Reason Category"
+                    value="{{ old('reason_title') ?? '' }}"
+                    error="{{ errors('reason_title') ?? '' }}">
+                    @foreach ($accessReasons as $reason)
+                    <li class="select-item" data-value="{{ $reason }}">
+                        {{ $reason }}
+                    </li>
+                    @endforeach
+                </c-select>
+
+                <c-textarea label="Reason " value="{{ old('reason_description') ?? '' }}"
+                    error="{{ errors('reason_description') ?? '' }}" name='reason_description' placeholder="Enter reason for request"></c-textarea>
+            </form>
+            <c-slot name="close">
+                Close
+            </c-slot>
+            <c-slot name="footer">
+                <c-button type="submit" form="request-maternal-form" variant="primary">Request Access</c-button>
+            </c-slot>
+        </c-modal>
     </c-slot>
+
+
+
 </c-table.controls>
 
 <c-table.wrapper card="1">
@@ -53,21 +121,31 @@ Maternal Profiles - Overview
                     <c-table.th sortable="1" width="160px">ID</c-table.th>
                     <c-table.th sortable="1" width="210px">Name</c-table.th>
                     <c-table.th sortable="1" width="200px">Age</c-table.th>
-                    <c-table.th align="left" sortable="1" width="220px">Type</c-table.th>
-                    <c-table.th align="left" sortable="1" width="220px">GS Devision</c-table.th>
+                    <c-table.th align="left" sortable="1" width="220px">Maternal Type</c-table.th>
+                    <c-table.th align="left" sortable="1">Access Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
             <c-table.tbody>
-                @foreach ($items as $key => $item)
+                @foreach ($maternals as $key => $maternal)
                 <c-table.tr>
-                    <c-table.td col="id">{{ $item['id'] }}</c-table.td>
-                    <c-table.td col="name">{{ $item['name'] }}</c-table.td>
-                    <c-table.td col="age">{{ $item['age'] ?? '-' }}</c-table.td>
-                    <c-table.td col="type">{{ $item['type'] ?? '-' }}</c-table.td>
-                    <c-table.td col="gs_devision">{{ $item['gs_devision'] ?? '-' }}</c-table.td>
+                    <c-table.td col="id">M-00{{ $maternal['id'] }}</c-table.td>
+                    <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
+                    <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
+                    <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
+                    <c-table.td col="access_status"> @if (strtolower($maternal['access_status']) === "accepted")
+                        <c-badge class="status-event" type="green">{{ ucfirst($maternal['access_status']) }}</c-badge>
+                        @elseif (strtolower($maternal['access_status']) === "pending")
+                        <c-badge class="status-event" type="yellow">{{ ucfirst($maternal['access_status']) }}</c-badge>
+                        @elseif (strtolower($maternal['access_status']) === "not_requested")
+                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
+                        @elseif (strtolower($maternal['access_status']) === "rejected")
+                        <c-badge class="status-event" type="red">{{ ucfirst($maternal['access_status'])}}</c-badge>
+                        @endif
+                    </c-table.td>
                     <c-table.td class="table-actions" align="center">
+                        @if($maternal['access_status'] == 'not_requested')
                         <c-dropdown.main>
                             <c-slot name="trigger">
                                 <c-button variant="ghost" class="dropdown-trigger">
@@ -75,26 +153,124 @@ Maternal Profiles - Overview
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-dropdown.item>Copy Mother ID</c-dropdown.item>
-                                <c-dropdown.sep />
+                                <c-modal id="addmaternal-{{ $maternal['id'] }}" size="sm" :initOpen="flash('request') ? true : false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Request Access</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
+                                    </c-slot>
+                                    <c-slot name="header">
+                                        <div>Request maternal Profile Access</div>
+                                    </c-slot>
+
+                                    <form id="request-maternal-form-{{ $maternal['id'] }}" class="maternal-form" action="{{ route('doctor.maternalprofile.requestAccess') }}" method="POST">
+
+                                        <input type="hidden" name="maternal_id" value="{{ $maternal['id'] }}">
+
+                                        <c-select
+                                            label="Maternal Profile"
+                                            name="maternal_id_display"
+                                            searchable="0"
+                                            value="{{ $maternal['name'] }} ({{ 'C-00'.$maternal['id'] }})"
+                                            disabled="0">
+                                        </c-select>
+
+                                        <c-select
+                                            label="Reason Category"
+                                            name="reason_title"
+                                            searchable="1"
+                                            placeholder="Select Reason Category"
+                                            value="{{ old('reason_title') ?? '' }}"
+                                            error="{{ errors('reason_title') ?? '' }}">
+                                            @foreach ($accessReasons as $reason)
+                                            <li class="select-item" data-value="{{ $reason }}">
+                                                {{ $reason }}
+                                            </li>
+                                            @endforeach
+                                        </c-select>
+
+                                        <c-textarea label="Reason " value="{{ old('reason_description') ?? '' }}"
+                                            error="{{ errors('reason_description') ?? '' }}" name='reason_description' placeholder="Enter reason for request"></c-textarea>
+                                    </form>
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="request-maternal-form-{{ $maternal['id'] }}" variant="primary">Request Access</c-button>
+                                    </c-slot>
+                                </c-modal>
+
+
+                            </c-slot>
+                        </c-dropdown.main>
+                        @elseif($maternal['access_status'] === 'pending')
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
+                                <c-modal id="cancel-request-{{$maternal['id']}}" size="sm" :initOpen="flash('request') ? true : false">
+
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/cancel-circle.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Cancel Request</c-dropdown.item>
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Cancel Maternal Access Request</div>
+                                    </c-slot>
+
+                                    <form id="cancel-request-maternal-form-{{$maternal['id']}}" class="maternal-form" action="{{ route('doctor.maternalprofile.cancel.requestAccess',['id' => $maternal['id']]) }}" method="POST">
+                                        <p>
+                                            Do you want to cancel <span class="delete-event-highlight">maternal ID C-00{{
+                                            $maternal['id'] }} access request</span>?
+                                        </p>
+
+                                    </form>
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="cancel-request-maternal-form-{{$maternal['id']}}" variant="destructive">Cancel Request</c-button>
+                                    </c-slot>
+                                </c-modal> </c-slot>
+                        </c-dropdown.main>
+                        @elseif($maternal['access_status'] === 'accepted')
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
                                 <c-modal id="view-maternal-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>View Maternal Profile</c-dropdown.item>
                                     </c-slot>
 
                                     <c-slot name="headerSuffix">
-                                        @if($item['latest_health_record'])
-                                            @if (strtolower($item['latest_health_record']['health_status']) === 'good')
-                                                <c-badge type="green">{{ $item['latest_health_record']['health_status'] }}</c-badge>
-                                            @elseif (strtolower($item['latest_health_record']['health_status']) === 'critical')
-                                                <c-badge type="purple">{{ $item['latest_health_record']['health_status'] }}</c-badge>
-                                            @elseif (strtolower($item['latest_health_record']['health_status']) === 'bad')
-                                                <c-badge type="red">{{ $item['latest_health_record']['health_status'] }}</c-badge>
-                                            @else
-                                                <c-badge type="gray">No Record</c-badge>
-                                            @endif
-                                        @else
-                                            <c-badge type="gray">No Record</c-badge>
+                                        @if($maternal['access_status'] === 'accepted')
+                                        @if( $maternal['record'])
+                                        @if (strtolower($maternal['record']['health_status']) === "good")
+                                        <c-badge type="green">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($maternal['record']['health_status']) === "at_risk")
+                                        <c-badge type="yellow">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($maternal['record']['health_status']) === "critical")
+                                        <c-badge type="red">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @endif
+                                        @endif
                                         @endif
                                     </c-slot>
 
@@ -107,74 +283,80 @@ Maternal Profiles - Overview
                                     </c-slot>
 
                                     <c-modal.viewcard>
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
-                                            info="{{ $item['name'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
-                                            title="Age" info="{{ $item['age'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="Address" info="{{ $item['address'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="GS Devision" info="{{ $item['gs_devision'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="NIC Number" info="{{ $item['nic'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}" title="Type"
-                                            info="{{ $item['type'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Stage" info="{{ $item['stage'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Duration" info="10 weeks" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="Maternal ID"
+                                            info="C-00{{ $maternal['id'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
+                                            info="{{ $maternal['name'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
+                                            title="Age" info="{{ $maternal['age'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}"
+                                            title="Maternal Type" info="{{ ucfirst($maternal['type'] )}}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
+                                            title="Height" info="{{ $maternal['height'] }} cm" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                            title="Blood Type" info="{{ $maternal['blood_type'] }}" />
+                                        @if($maternal['access_status'] === 'accepted')
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}" title="LMP"
+                                            info="{{ $maternal['lmp'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
+                                            title="EDD" info="{{ $maternal['edd'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                            title="Gravida" info="{{ $maternal['gravida'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                            title="Para" info="{{ $maternal['para'] }}" />
+                                        @endif
                                     </c-modal.viewcard>
+                                    @if ($maternal['access_status'] === "accepted")
 
-                                    <c-modal.viewlist title="Medical Records">
+
+                                    <c-modal.viewlist title="Latest Medical Records">
                                         <c-slot name="list">
-                                            @if($item['latest_health_record'])
-                                                <li>Weight: {{ $item['latest_health_record']['weight'] ?? '-' }} kg</li>
-                                                <li>BMI: {{ $item['latest_health_record']['bmi'] ?? '-' }}</li>
-                                                <li>Blood Sugar: {{ $item['latest_health_record']['blood_sugar'] ?? '-' }} mg/dL</li>
-                                                <li>Blood Pressure: {{ $item['latest_health_record']['blood_pressure'] ?? '-' }} mmHg</li>
-                                                <li>Trimester: {{ $item['latest_health_record']['trimester'] ?? '-' }}</li>
-                                                <li>Last Visit Date: {{ $item['latest_health_record']['visit_date'] ?? '-' }}</li>
+                                            @if($maternal['record'] == NULL)
+                                                <li>No medical records found.</li>
                                             @else
-                                                <li>No health records found</li>
+                                                <li>Fundal Height: {{ $maternal['record']['fundal_height'] }}cm</li>
+                                                <li>Weight: {{ $maternal['record']['weight'] }}kg</li>
+                                                <li>BMI Value: {{ $maternal['record']['bmi'] }}</li>
+                                                <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] }}bpm</li>
+                                                <li>Glucose: {{ $maternal['record']['glucose'] }}</li>
+                                                <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] }}</li>
+                                                <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] }}</li>
                                             @endif
                                         </c-slot>
                                     </c-modal.viewlist>
 
-                                    <c-modal.viewlist title="Additional Information">
+                                    <c-modal.viewlist title="Recent Vaccinations">
                                         <c-slot name="list">
-                                            @if($item['latest_health_record'])
-                                                <li>Health Status: 
-                                                    @if (strtolower($item['latest_health_record']['health_status']) === 'good')
-                                                        <strong style="color: green;">{{ $item['latest_health_record']['health_status'] }}</strong>
-                                                    @elseif (strtolower($item['latest_health_record']['health_status']) === 'critical')
-                                                        <strong style="color: purple;">{{ $item['latest_health_record']['health_status'] }}</strong>
-                                                    @elseif (strtolower($item['latest_health_record']['health_status']) === 'bad')
-                                                        <strong style="color: red;">{{ $item['latest_health_record']['health_status'] }}</strong>
-                                                    @endif
-                                                </li>
-                                                <li>Notes: {{ $item['latest_health_record']['notes'] ?? '-' }}</li>
-                                            @else
-                                                <li>No additional information available</li>
-                                            @endif
+                                            <li>BCG - Dose 1 at 13th of July 2023</li>
+                                            <li>BCG - Dose 2 at 28th of September 2023</li>
                                         </c-slot>
                                     </c-modal.viewlist>
+
+
+                                    @endif
 
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
                                 </c-modal>
-                                <c-dropdown.item href="{{ route('doctor.maternal.health',['id'=>$item['id'],])}}">
+                                <c-dropdown.item href="{{ route('doctor.maternal.health', ['id' => $maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
+
                             </c-slot>
                         </c-dropdown.main>
+                        @endif
+
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
-                @if(count($items) === 0)
+                @if(count($maternals) === 0)
                 <tr>
                     <td colspan="6">
-                        <div class="table-empty">No items found</div>
+                        <c-emptytable
+                            alt="No Maternals found"
+                            title="No Maternal Profiles Available"
+                            description="No maternal profiles match your current search or filters. Try adjusting them to see more results." />
                     </td>
                 </tr>
                 @endif
@@ -183,5 +365,5 @@ Maternal Profiles - Overview
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection

@@ -337,10 +337,10 @@ PHM Child Profiles
                                         @endif
                                     </c-slot>
                                     <c-slot name="header">
-                                        <div>Delete Child Profile</div>
+                                        <div>Mark As Invalid Profile</div>
                                     </c-slot>
 
-                                    <p>Do you want to delete this child profile?</p>
+                                    <p>Do you want to mark as invalid this child profile?</p>
                                     <form id="delete-profile-{{ $child['id'] }}" class="hidden"
                                         action="{{ route('phm.child.delete',['id'=>$child['id']]) }}" method="POST">
                                     </form>
@@ -350,7 +350,7 @@ PHM Child Profiles
                                     <c-slot name="footer">
                                         <c-button type="submit" form="delete-profile-{{ $child['id'] }}"
                                             variant="destructive">
-                                            Delete
+                                            Mark as Invalid
                                         </c-button>
                                     </c-slot>
                                 </c-modal>

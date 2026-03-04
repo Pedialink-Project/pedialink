@@ -363,12 +363,7 @@ Child Profiles
                                         Close
                                     </c-slot>
 
-                                    <c-slot name="footer">
-                                        <c-button variant="primary">
-                                            <img src="{{ asset('assets/icons/download-04.svg')}}" />
-                                            Download documents
-                                        </c-button>
-                                    </c-slot>
+                                    
                                 </c-modal>
                                 <c-dropdown.item href="{{ route('doctor.child.health', ['id' => $child['id']])}}">
                                     View Health Records
