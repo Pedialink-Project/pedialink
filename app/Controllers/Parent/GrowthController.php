@@ -2,11 +2,27 @@
 
 namespace App\Controllers\Parent;
 
+use App\Services\Parent\GrowthService;
+
 class GrowthController
 {
+   private $growthService;
+
+    public function __construct()
+    {
+        $this->growthService = new GrowthService();
+    }
+
     public function index()
     {
-        return view("parent/growth-tracking");
+        $parentId = auth()->user()->id;
+
+        $growthData = $this->growthService->getGrowthData($parentId);
+        var_dump($growthData);
+
+        return view("parent/growth-tracking", [
+            "growthData" => $growthData
+        ]);
     }
    
  
