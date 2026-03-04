@@ -6,12 +6,13 @@ use App\Helpers\Calculator;
 use App\Models\Appointment;
 use App\Models\Maternal;
 use App\Models\ParentChild;
+use App\Rules\TextRule;
 
 class AppointmentService
 {
+    use TextRule;
 
-
-    public function getChildAppointmentByParentId($parentId, string $search, array $filters = [] )
+    public function getChildAppointmentByParentId($parentId, string $search, array $filters = [])
     {
 
         $childIds = ParentChild::query()->where("parent_id", '=', $parentId)->pluck("child_id");
@@ -117,6 +118,34 @@ class AppointmentService
             $links
         ];
     }
-    
 
+
+    public function validateAppointmentCancel($reason)
+    {
+        $errors = [];
+
+        $reasonError = $this->validateText($reason, "Cancel Reason");
+        if ($reasonError) {
+            $errors['reason'] = $reasonError;
+        }
+
+        return $errors;
+    }
+
+
+    public function cancelAppointment($appointmentId, $reason)
+    {
+
+        $appointment = Appointment::find($appointmentId);
+        if (!$appointment) {
+            return "Appointment not found";
+        }
+
+        $appointment->status = "cancelled";
+        $appointment->reason = $reason;
+        $appointment->save();
+
+
+        return null;
+    }
 }
