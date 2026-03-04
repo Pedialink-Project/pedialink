@@ -11,7 +11,7 @@ class AppointmentService
 {
 
 
-    public function getChildAppointmentByParentId(string $search, array $filters = [], $parentId)
+    public function getChildAppointmentByParentId($parentId, string $search, array $filters = [] )
     {
 
         $childIds = ParentChild::query()->where("parent_id", '=', $parentId)->pluck("child_id");
@@ -65,7 +65,7 @@ class AppointmentService
         ];
     }
 
-    public function getParentAppointmentByParentId(string $search, array $filters = [], $parentId)
+    public function getParentAppointmentByParentId($parentId, string $search, array $filters = [])
     {
         $maternalIds = Maternal::query()->where("parent_id", '=', $parentId)->pluck("id");
         $appointments = Appointment::query()->whereIn('maternal_id', $maternalIds);
