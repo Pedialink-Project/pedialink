@@ -86,7 +86,6 @@ class MaternalHealthController
 
     public function editHealthRecord(Request $request, int $id, int $recordId)
     {
-        // Edited values come from the edit form with `e_` prefixes
         $visitDate = $request->input('e_visit_date');
         $bloodPressure = $request->input('e_blood_pressure');
         $weight = $request->input('e_weight');
