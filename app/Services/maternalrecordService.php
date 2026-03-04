@@ -347,4 +347,13 @@ class MaternalRecordService
 
         return null;
     }
+
+     public function getMaternalNameByMaternalId($id)
+    {
+
+        $maternal = Maternal::find($id);
+        $parentId = $maternal->parent_id;
+        return User::find($parentId)->name;
+
+    }
 }
