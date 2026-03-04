@@ -34,7 +34,7 @@ Maternal Profiles - Overview
 
 
 <c-table.controls action="{{ route('doctor.maternal.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'type' => ['antenatal', 'postnatal']]">
- <c-slot name="extrabtn">
+    <c-slot name="extrabtn">
         <c-modal id="addChild" size="sm" :initOpen="flash('request') ? true : false">
             <c-slot name="trigger">
                 <c-button class="child-request-access-btn" variant="primary">
@@ -109,7 +109,7 @@ Maternal Profiles - Overview
         </c-modal>
     </c-slot>
 
-    
+
 
 </c-table.controls>
 
@@ -169,7 +169,7 @@ Maternal Profiles - Overview
                                         <input type="hidden" name="maternal_id" value="{{ $maternal['id'] }}">
 
                                         <c-select
-                                            label="maternal Profile"
+                                            label="Maternal Profile"
                                             name="maternal_id_display"
                                             searchable="0"
                                             value="{{ $maternal['name'] }} ({{ 'C-00'.$maternal['id'] }})"
@@ -223,7 +223,7 @@ Maternal Profiles - Overview
                                     </c-slot>
 
                                     <c-slot name="header">
-                                        <div>Cancel maternal Access Request</div>
+                                        <div>Cancel Maternal Access Request</div>
                                     </c-slot>
 
                                     <form id="cancel-request-maternal-form-{{$maternal['id']}}" class="maternal-form" action="{{ route('doctor.maternalprofile.cancel.requestAccess',['id' => $maternal['id']]) }}" method="POST">
@@ -249,7 +249,7 @@ Maternal Profiles - Overview
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                               <c-modal id="view-maternal-{{ $key }}" size="md" :initOpen="false">
+                                <c-modal id="view-maternal-{{ $key }}" size="md" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>View Maternal Profile</c-dropdown.item>
                                     </c-slot>
@@ -310,21 +310,19 @@ Maternal Profiles - Overview
 
 
                                     <c-modal.viewlist title="Latest Medical Records">
-                                        @if($maternal['record'])
                                         <c-slot name="list">
-                                            <li>Fundal Height:{{ $maternal['record']['fundal_height'] }}cm</li>
-                                            <li>Weight: {{ $maternal['record']['weight'] }}kg</li>
-                                            <li>BMI Value: {{ $maternal['record']['bmi'] }}</li>
-                                            <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] }}bpm</li>
-                                            <li>Glucose: {{ $maternal['record']['glucose'] }}</li>
-                                            <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] }}</li>
-                                            <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] }}</li>
+                                            @if($maternal['record'] == NULL)
+                                                <li>No medical records found.</li>
+                                            @else
+                                                <li>Fundal Height: {{ $maternal['record']['fundal_height'] }}cm</li>
+                                                <li>Weight: {{ $maternal['record']['weight'] }}kg</li>
+                                                <li>BMI Value: {{ $maternal['record']['bmi'] }}</li>
+                                                <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] }}bpm</li>
+                                                <li>Glucose: {{ $maternal['record']['glucose'] }}</li>
+                                                <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] }}</li>
+                                                <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] }}</li>
+                                            @endif
                                         </c-slot>
-                                        @else
-                                        <c-slot name="list">
-                                            <li>No medical records found.</li>
-                                        </c-slot>
-                                        @endif
                                     </c-modal.viewlist>
 
                                     <c-modal.viewlist title="Recent Vaccinations">
@@ -344,13 +342,11 @@ Maternal Profiles - Overview
                                 <c-dropdown.item href="{{ route('doctor.maternal.health', ['id' => $maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
-                                <c-dropdown.item href="{{ route('doctor.maternal.vaccination', ['id' => $maternal['id']]) }}">
-                                    View Vaccination Records
-                                </c-dropdown.item>
+
                             </c-slot>
                         </c-dropdown.main>
                         @endif
-                        
+
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
