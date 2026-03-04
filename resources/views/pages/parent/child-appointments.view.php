@@ -21,7 +21,7 @@ Parent - Appointments
         <path d="M9.16663 10L14.1666 10" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
         <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
     </svg>
-    <span>Appointments</span>
+    <span>Children Appointments</span>
 </div>
 
 @endsection
@@ -31,16 +31,7 @@ Parent - Appointments
 
 
 <c-table.controls action="{{ route('parent.appointments.child') }}" :filters="['status' => ['attended', 'pending', 'confirmed', 'cancelled','no-show']]">
-    <c-slot name="filter">
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Name
-        </c-button>
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Staff
-        </c-button>
-    </c-slot>
+
 
 
 </c-table.controls>
@@ -126,16 +117,15 @@ Parent - Appointments
 
 
                                     <c-modal.viewcard>
-                                        
+
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
                                             title="Appointment For" info="{{ $appointment['child']['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
                                             title="Date" info="{{ $appointment['slot_date'] }} " />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Start Time"
                                             info="{{ $appointment['start_time'] }}" />
-                                                <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="End Time"
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="End Time"
                                             info="{{ $appointment['end_time'] }}" />
-                                        
                                         <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="Doctor"
                                             info="{{ $appointment['doctor']['name'] }}" />
                                     </c-modal.viewcard>
@@ -154,9 +144,7 @@ Parent - Appointments
                                     @if($appointment['notes'])
                                     <c-modal.viewlist title="Notes">
                                         <c-slot name="list">
-                                            @foreach($appointment['notes'] as $note)
-                                            <li>{{ $note }}</li>
-                                            @endforeach
+                                            <li>{{ $appointment['notes'] }}</li>
 
                                         </c-slot>
                                     </c-modal.viewlist>
@@ -166,10 +154,10 @@ Parent - Appointments
                                         Close
                                     </c-slot>
 
-                                      
+
                                 </c-modal>
-                               
-                               
+
+
 
 
                             </c-slot>
@@ -180,7 +168,10 @@ Parent - Appointments
                 @if(count($appointments) === 0)
                 <tr>
                     <td colspan="6">
-                        <div class="table-empty">No items found</div>
+                        <c-emptytable
+                            alt="No Appointments found"
+                            title="No Appointments Available"
+                            description="No appointments match your current search or filters. Try adjusting them to see more results." />
                     </td>
                 </tr>
                 @endif
@@ -189,5 +180,5 @@ Parent - Appointments
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection
