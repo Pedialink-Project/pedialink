@@ -24,7 +24,7 @@ class DashboardService
         $this->eventService = new EventService();
     }
 
-    public function getTotalChildrenCount()
+    public function getChildrenCount()
     {
         $children = ParentChild::query()->where("parent_id",'=', auth()->user()->id)->get();
 
@@ -97,7 +97,6 @@ class DashboardService
         $child = $appointment->getChild();
 
         $resource[] = [
-            "id" => $appointment->id,
             "slot_date" => $slot->slot_date,
             "start_time" => Calculator::formatTimeToAmPm($slot->start_time),
             "end_time" => Calculator::formatTimeToAmPm($slot->end_time),
@@ -110,6 +109,53 @@ class DashboardService
             "child" => $child ? [
                 "id" => $child->id,
                 "name" => $child->name
+            ] : null,
+
+            
+            "status" => $appointment->status
+        ];
+    }
+
+    return $resource;
+}
+
+ public function getLatestMaternalAppointmentsByParentId()
+{
+    $parentId = auth()->user()->id;
+    $maternalId = Maternal::query()
+        ->where("parent_id", "=", $parentId)
+        ->pluck("id");
+
+    
+
+       $appointments = Appointment::query()->whereIn('maternal_id', $maternalId)
+       ->join("appointment_slots as s", "s.id", "=", "appointments.slot_id")
+        ->orderBy("s.slot_date", "DESC")
+        ->orderBy("s.start_time", "DESC")
+        ->limit(3)
+        ->get();
+
+    $resource = [];
+
+    foreach ($appointments as $appointment) {
+
+        $slot = $appointment->getSlot();
+        $doctor = $slot->getDoctor();
+        $maternal = $appointment->getMaternal();
+
+        $resource[] = [
+            "slot_date" => $slot->slot_date,
+            "start_time" => Calculator::formatTimeToAmPm($slot->start_time),
+            "end_time" => Calculator::formatTimeToAmPm($slot->end_time),
+
+            "doctor" => $doctor ? [
+                "id" => $doctor->id,
+                "name" => $doctor->getUser()->name
+            ] : null,
+
+            "maternal" => $maternal ? [
+                "id" => $maternal->id,
+                "name" => $maternal->name
             ] : null,
 
             
