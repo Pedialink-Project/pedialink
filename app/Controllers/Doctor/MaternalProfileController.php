@@ -66,4 +66,17 @@ class MaternalProfileController
             "success"
         );
     }
+
+     public function cancelAccessRequest(Request $request,$id)
+    {
+        $staffId = auth()->id();
+
+        $error = $this->maternalService->cancelMaternalAccessRequest($staffId, $id);
+
+        if ($error) {
+            return redirect(route('doctor.maternal.profiles'))->withMessage('', $error, 'error');
+        }
+
+        return redirect(route('doctor.maternal.profiles'))->withMessage('Request Cancelled', 'Access request cancelled successfully','success');
+    }
 }
