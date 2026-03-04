@@ -157,7 +157,7 @@ Parent - Appointments
 
 
                                 </c-modal>
-
+@if($appointment['status'] == 'confirmed' || $appointment['status'] == 'pending')
                                 <c-modal id="cancel-appointment-{{$key}}" size="md" :initOpen="flash('cancelAppointment') == $appointment['id'] ? true : false">
                                         <c-slot name="trigger">
                                             <c-dropdown.item>Cancel Appointment</c-dropdown.item>
@@ -218,7 +218,7 @@ Parent - Appointments
                                         </c-slot>
                                 </c-modal>
 
-
+@endif
                             </c-slot>
                         </c-dropdown.main>
                     </c-table.td>
