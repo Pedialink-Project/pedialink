@@ -22,21 +22,21 @@ Parent Dashboard
     <section class="pill-container">
         <c-pill>
             <c-slot name="title">Linked Childern</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $linkedChildrenCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/baby-01.svg')}}">
             </c-slot>
         </c-pill>
         <c-pill>
             <c-slot name="title">Appoinments</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $appointmentsCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/profile.svg')}}">
             </c-slot>
         </c-pill>
         <c-pill>
             <c-slot name="title">Vaccinations</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{ $upcomingVaccinationsCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/vaccine.svg')}}">
             </c-slot>
