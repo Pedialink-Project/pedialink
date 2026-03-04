@@ -21,7 +21,7 @@ class AppointmentController
         $parentId = auth()->user()->id;
 
 
-        [$appointments, $links] = $this->appointmentService->getParentAppointmentByParentId($search, $filters, $parentId);
+        [$appointments, $links] = $this->appointmentService->getParentAppointmentByParentId($parentId,$search, $filters);
         return view("parent/my-appointments", [
             "appointments" => $appointments,
             "links" => $links
@@ -35,7 +35,7 @@ class AppointmentController
         $parentId = auth()->user()->id;
 
 
-        [$appointments, $links] = $this->appointmentService->getChildAppointmentByParentId($search, $filters, $parentId);
+        [$appointments, $links] = $this->appointmentService->getChildAppointmentByParentId($parentId, $search, $filters);
         return view("parent/child-appointments", [
             "appointments" => $appointments,
             "links" => $links
