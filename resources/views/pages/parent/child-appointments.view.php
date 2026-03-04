@@ -41,9 +41,10 @@ Parent - Appointments
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">Name</c-table.th>
-                    <c-table.th sortable="1">Date</c-table.th>
-                    <c-table.th sortable="1">Start Time</c-table.th>
+                    <c-table.th >Name</c-table.th>
+                    <c-table.th >Date</c-table.th>
+                    <c-table.th >Start Time</c-table.th>
+                    <c-table.th >End Time</c-table.th>
                     <c-table.th>Doctor</c-table.th>
                     <c-table.th>Status</c-table.th>
 
