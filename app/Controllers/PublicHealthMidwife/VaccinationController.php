@@ -15,11 +15,6 @@ class VaccinationController
         $this->vaccinationService = new VaccinationService();
     }
 
-    public function index(Request $request)
-    {
-        return view("phm/vaccination");
-    }
-
     public function childVaccinationRecords(Request $request, int $id)
     {
         $search = $request->query("search", "");
