@@ -27,4 +27,43 @@ class MaternalProfileController
 
         return view("doctor/maternalprofile", ['maternals' => $maternals, 'links' => $links, 'unacessedMaternals' => $unaccesedMaternals, 'accessReasons' => $accessReasons]);
     }
+
+    public function requestAccess(Request $request)
+    {
+        $staffId = auth()->user()->id;
+        $maternalId = $request->input("maternal_id");
+        $reasonTitle = $request->input('reason_title');
+        $reasonDescription = $request->input('reason_description');
+
+        $validateError = $this->maternalService->validateRequestAccess($maternalId, $reasonTitle, $reasonDescription);
+        if (count(value: $validateError) !== 0) {
+            return redirect(route("doctor.maternal.profiles"))
+                ->withInput([
+                    "maternal_id" => $maternalId,
+                    "reason_title" => $reasonTitle,
+                    "reason_description" => $reasonDescription,
+
+                ])
+                ->withErrors($validateError)
+                ->with("request", true);
+        }
+
+
+        $error = $this->maternalService->requestMaternalAccess(
+            $staffId,
+            $maternalId,
+            $reasonTitle,
+            $reasonDescription
+        );
+
+        if ($error) {
+            return redirect(route('doctor.maternal.profiles'))->withMessage($error, "Request Failed", "info");
+        }
+
+        return redirect(route('doctor.maternal.profiles'))->withMessage(
+            "Access request sent successfully",
+            "Request Sent",
+            "success"
+        );
+    }
 }
