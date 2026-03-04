@@ -21,14 +21,14 @@ Parent Dashboard
     </section>
     <section class="pill-container">
         <c-pill>
-            <c-slot name="title">Linked Childern</c-slot>
+            <c-slot name="title">Linked Children</c-slot>
             <c-slot name="number">{{ $linkedChildrenCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/baby-01.svg')}}">
             </c-slot>
         </c-pill>
         <c-pill>
-            <c-slot name="title">Appoinments</c-slot>
+            <c-slot name="title">Appointments</c-slot>
             <c-slot name="number">{{ $appointmentsCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/profile.svg')}}">
@@ -66,7 +66,7 @@ Parent Dashboard
         <c-card class="card appoinment-card">
         <div class="header">
             <div class="title-section">
-                <span class="card-title">Upcoming Appoinments</span>
+                <span class="card-title">Upcoming Appointments</span>
                 <span class="card-subtitle">Your scheduled visits to the clinic</span>
             </div>
             <c-link type="secondary"  href="{{ route('phm.appointments')}}">View Schedule</c-link>
