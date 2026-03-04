@@ -52,7 +52,7 @@ class MaternalService
         return Maternal::find($id);
     }
 
-     public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
+    public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
     {
         $errors = [];
 
@@ -129,7 +129,7 @@ class MaternalService
         $staff = User::find($staffId);
         $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
         $maternal = User::find($parentId);
-        
+
         $this->notificationService->notifyAdmins(
             "Maternal Access Request Cancelled",
             "{$staff->name} requested access to maternal profile {$maternal->name} has been cancelled.",
@@ -283,6 +283,7 @@ class MaternalService
                 if ($latestPregnancy) {
                     $latestRecord = MaternalRecord::query()
                         ->where('parent_id', '=', $maternal->parent_id)
+                        ->where('mark_as_invalid', '=', 'false')
                         ->orderBy('visit_date', 'DESC')
                         ->first();
                 }
@@ -317,7 +318,7 @@ class MaternalService
     }
 
 
-   
+
     public function getMaternalByDoctorId(
         int $phmId,
         ?string $search = null,
@@ -400,6 +401,7 @@ class MaternalService
                 if ($latestPregnancy) {
                     $latestRecord = MaternalRecord::query()
                         ->where('parent_id', '=', $maternal->parent_id)
+                        ->where('mark_as_invalid', '=', 'false')
                         ->orderBy('visit_date', 'DESC')
                         ->first();
                 }
@@ -432,7 +434,7 @@ class MaternalService
 
         return [$resource, $links];
     }
-   
+
 
     private function validateBloodType($bloodType)
     {
