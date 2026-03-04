@@ -35,9 +35,9 @@ class DashboardService
     {
         $childIds = ParentChild::query()->where("parent_id", '=', auth()->user()->id)->pluck("child_id");
         $childAppointments = Appointment::query()->whereIn('child_id', $childIds)->get();
-        $maternalId  = Maternal::query()->where("parent_id", "=", auth()->user()->id)->get();
+        $maternalId  = Maternal::query()->where("parent_id", "=", auth()->user()->id)->pluck("id");
         $maternalappointments = Appointment::query()
-            ->where("maternal_id", "=", $maternalId)
+            ->whereIn("maternal_id", $maternalId)
             ->get();
 
         return count($childAppointments) + count($maternalappointments);
@@ -71,8 +71,9 @@ class DashboardService
         return $resource;
     }
 
-    public function getLatestChildAppointmentsByParentId($parentId)
+    public function getLatestChildAppointmentsByParentId()
 {
+    $parentId = auth()->user()->id;
     $childIds = ParentChild::query()
         ->where("parent_id", "=", $parentId)
         ->pluck("child_id");
@@ -119,66 +120,4 @@ class DashboardService
     return $resource;
 }
    
-    public function getTodaysAppointments()
-    {
-        $today = (new \DateTimeImmutable('today'))->format('Y-m-d');
-
-        // Get top 3 appointments for today with child, slot and doctor info
-        $sql = "
-        SELECT 
-            a.id,
-            a.reason,
-            a.status,
-            s.start_time,
-            s.end_time,
-            s.doctor_id,
-            c.name AS child_name,
-            u.name AS doctor_name
-        FROM appointments a
-        JOIN appointment_slots s ON a.slot_id = s.id
-        LEFT JOIN children c ON a.child_id = c.id
-        LEFT JOIN doctors d ON s.doctor_id = d.id
-        LEFT JOIN users u ON d.id = u.id
-        WHERE s.slot_date = :today
-        ORDER BY s.start_time ASC
-        LIMIT 3
-        ";
-
-        $rows = QueryBuilder::rawGet($sql, [':today' => $today]);
-
-        $resource = [];
-        foreach ($rows as $r) {
-            // Format time to 12-hour format (e.g., "10:00 AM")
-            $startTime = $r['start_time'] ?? null;
-            $formattedTime = 'N/A';
-            if ($startTime) {
-                $timeObj = \DateTime::createFromFormat('H:i:s', $startTime);
-                if ($timeObj) {
-                    $formattedTime = $timeObj->format('g:i A');
-                }
-            }
-
-            // Map status to display label
-            $statusMap = [
-                'confirmed' => 'Scheduled',
-                'pending' => 'Pending',
-                'attended' => 'Finished',
-                'cancelled' => 'Cancelled',
-                'no-show' => 'No Show',
-            ];
-            $status = $r['status'] ?? 'pending';
-            $displayStatus = $statusMap[$status] ?? ucfirst($status);
-
-            $resource[] = [
-                'id' => $r['id'],
-                'child_name' => $r['child_name'] ?? 'Unknown',
-                'reason' => $r['reason'] ?? 'Routine Checkup',
-                'doctor_name' => $r['doctor_name'] ?? 'N/A',
-                'time' => $formattedTime,
-                'status' => $displayStatus,
-            ];
-        }
-
-        return $resource;
-    }
 }
