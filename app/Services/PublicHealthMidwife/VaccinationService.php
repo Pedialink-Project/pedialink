@@ -58,6 +58,7 @@ class VaccinationService
                 "scheduled_date" => $remainder->scheduled_date,
                 "administered_at" => $vaccination ?
                     (new \DateTime($vaccination->administered_at))
+                        ->setTimezone(new \DateTimeZone('Asia/Colombo'))
                         ->format('H:i')
                     : null,
                 "recorded_at" => $vaccination ? $vaccination->recorded_at : null,
