@@ -22,7 +22,7 @@ Parent Dashboard
     <section class="pill-container">
         <c-pill>
             <c-slot name="title">Linked Childern</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{$childCount}}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/baby-01.svg')}}">
             </c-slot>
@@ -142,15 +142,20 @@ Parent Dashboard
         <c-card class="card appoinment-card">
             <div class="header">
                 <div class="title-section">
-                    <span class="card-title">Upcoming Appoinments</span>
+                    <span class="card-title">Upcoming Children Appoinments</span>
                     <span class="card-subtitle">Your scheduled visits to the clinic</span>
                 </div>
                 <c-link type="secondary" size="sm" href="{{route('parent.appointments.my')}}">View All</c-link>
             </div>
             <hr class="divider">
             <div class="card-body">
+                @if(count($appointments) === 0)
+                <div class="no-data" style="text-align: center; padding: 40px 0;">
+                    <p>No upcoming children appointments found.</p>
+                </div>
+                @else
 
-            @foreach ($appointments as $key => $appointment)
+                @foreach ($appointments as $key => $appointment)
 
                 <!-- Single appointment row  -->
                 <div class="row appoinment">
@@ -177,7 +182,9 @@ Parent Dashboard
                 </div>
 
                 @endforeach
-               
+
+                @endif
+
             </div>
         </c-card>
 
@@ -219,7 +226,11 @@ Parent Dashboard
             <hr class="divider">
 
             <div class="card-body">
-                <!-- Event Item -->
+                @if(count($appointments) === 0)
+                <div class="no-data" style="text-align: center; padding: 40px 0;">
+                    <p>No upcoming events found.</p>
+                </div>
+                @else
                 @foreach ($events as $key => $event)
 
                 <div class="row event">
@@ -294,6 +305,8 @@ Parent Dashboard
 
                 </div>
                 @endforeach
+
+                @endif
 
             </div>
         </c-card>
