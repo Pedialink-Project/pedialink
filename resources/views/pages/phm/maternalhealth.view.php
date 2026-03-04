@@ -30,7 +30,7 @@ PHM Maternal Health
         </clipPath>
     </defs>
 </svg>
-Health Records View
+Health Records  of {{ $name .' (M-00'.$id.')' }}
 @endsection
 
 @section('content')
