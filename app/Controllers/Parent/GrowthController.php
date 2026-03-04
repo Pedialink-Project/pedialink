@@ -2,11 +2,11 @@
 
 namespace App\Controllers\Parent;
 
-class NutritionController
+class GrowthController
 {
     public function index()
     {
-        return view("parent/nutrition-tracking");
+        return view("parent/growth-tracking");
     }
    
  
