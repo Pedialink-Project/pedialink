@@ -196,4 +196,15 @@ public static function calculateTrimester(?int $gestationWeeks): ?string
         default => 'post_term',
     };
 }
+
+public static function formatTimeToAmPm(?string $time): ?string
+{
+    if (!$time) {
+        return null;
+    }
+
+    $dateTime = new \DateTime($time);
+
+    return $dateTime->format('g:i A');
+}
 }
