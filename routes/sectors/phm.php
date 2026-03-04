@@ -40,10 +40,12 @@ return [
     ['POST', '/phm/maternal-profiles/{id}/health-records/{recordId}/edit', [MaternalHealthController::class, 'editHealthRecord'], 'phm.maternal.health.edit', ['phm', 'verified']],
     ['POST', '/phm/maternal-profiles/{id}/health-records/{recordId}/mark-as-invalid', [MaternalHealthController::class, 'markAsInvalid'], 'phm.maternal.health.markinvalid', ['phm', 'verified']],
 
+    // Vaccinations
+    ['GET', '/phm/child-vaccinations/{id}/records', [VaccinationController::class, 'childVaccinationRecords'], 'phm.child.vaccinations', ['phm','verified']],
+    ['POST', '/phm/child-vaccinations/{id}/records/{recordId}/completed', [VaccinationController::class, 'markAsCompleted'], 'phm.child.vaccination.record.completed', ['phm','verified']],
 
     //Maternal Health Record Routes
     ['GET', '/phm/maternal-profiles/{id}/health-records', [MaternalHealthController::class, 'index'], 'phm.maternal.health', ['phm','verified']],
-    ['GET', '/phm/child-vaccinations/{id}/records', [VaccinationController::class, 'childVaccinationRecords'], 'phm.child.vaccinations', ['phm','verified']],
     ['GET', '/phm/growth-monitoring', [GrowthMonitorController::class, 'index'], 'phm.growth.monitoring', ['phm','verified']],
     ['GET', '/phm/growth-monitoring/{id}', [GrowthMonitorController::class, 'childGrowthIndex'], 'phm.growth.monitoring.child', ['phm','verified']],
     ['GET', '/phm/nutrition-tracking', [TestController::class, 'nutritionTracking'], 'phm.nutrition.tracking', ['phm','verified']],
