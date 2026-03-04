@@ -39,7 +39,7 @@ return [
     
     //Maternal Health Record Routes
     ['GET', '/phm/maternal-profiles/{id}/health-records', [MaternalHealthController::class, 'index'], 'phm.maternal.health', ['phm','verified']],
-    ['GET', '/phm/child-vaccinations/{id}/records', [ChildHealthController::class, 'vaccinationIndex'], 'phm.child.vaccinations', ['phm','verified']],
+    ['GET', '/phm/child-vaccinations/{id}/records', [VaccinationController::class, 'childVaccinationRecords'], 'phm.child.vaccinations', ['phm','verified']],
     ['GET', '/phm/growth-monitoring', [GrowthMonitorController::class, 'index'], 'phm.growth.monitoring', ['phm','verified']],
     ['GET', '/phm/growth-monitoring/{id}', [GrowthMonitorController::class, 'childGrowthIndex'], 'phm.growth.monitoring.child', ['phm','verified']],
     ['GET', '/phm/vaccination', [VaccinationController::class, 'index'], 'phm.vaccination', ['phm','verified']],
