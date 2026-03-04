@@ -109,6 +109,38 @@ class MaternalService
         return null;
     }
 
+    public function cancelMaternalAccessRequest(int $staffId, int $maternalId): ?string
+    {
+        $request = MaternalAccessRequest::query()
+            ->where('staff_id', '=', $staffId)
+            ->where('maternal_id', '=', $maternalId)
+            ->first();
+
+        if (!$request) {
+            return "Access request not found";
+        }
+
+        if ($request->accepted === true) {
+            return "Cannot cancel an already accepted request";
+        }
+
+        $request->delete();
+
+        $staff = User::find($staffId);
+        $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
+        $maternal = User::find($parentId);
+        
+        $this->notificationService->notifyAdmins(
+            "Maternal Access Request Cancelled",
+            "{$staff->name} requested access to maternal profile {$maternal->name} has been cancelled.",
+            "maternal_access_request_cancelled",
+            $request->id
+        );
+
+
+        return null;
+    }
+
     public function getDoctorMaternalDetails()
     {
 
