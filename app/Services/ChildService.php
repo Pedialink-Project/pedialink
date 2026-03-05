@@ -16,6 +16,7 @@ use App\Rules\DivisionRule;
 use App\Rules\DateRule;
 use App\Helpers\BirthCertificateValidator;
 use App\Helpers\NicValidator;
+use App\Models\VaccinationReminder;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 
@@ -123,7 +124,7 @@ class ChildService
             }
 
             $childAppointments = Appointment::query()->where('child_id','=', $child->id)->where('status', '=', 'confirmed')->get();
-
+            $childVaccinations = VaccinationReminder::query()->where('child_id','=',$child->id)->get();
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,
@@ -134,7 +135,8 @@ class ChildService
                 'blood_type' => $child->blood_type,
                 'notes' => $child->notes,
                 'phm' => $phmResource,
-                'appointment_count' => count($childAppointments)
+                'appointment_count' => count($childAppointments),
+                'vaccination_count'=> count($childVaccinations)
             ];
         }
 
@@ -525,6 +527,8 @@ class ChildService
 
         return $resource;
     }
+
+    
 
 
 
