@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\ChildMisc;
 use App\Models\ParentChild;
+use App\Models\ParentM;
 
 class ChildLinkageService
 {
@@ -59,15 +60,15 @@ class ChildLinkageService
             $childMisc->accepted = 1;
             $childMisc->save();
 
+
             $parentChild = new ParentChild();
-            $parentChild->parent_id = $childMisc->parent_id;
-            $parentChild->child_id = $childMisc->child_id;
+            $parentChild->parent_id = $childMisc->getParent()->id;
+            $parentChild->child_id = $childMisc->children_id;
             $parentChild->save();
             return true;
         }
         return false;
     }
-
     public function denyLinkage(int $id)
     {
         $childMisc = ChildMisc::find($id);

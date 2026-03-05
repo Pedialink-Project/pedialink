@@ -207,6 +207,13 @@ body {
     color: var(--text-primary);
 }
 
+.no-data-message{
+    text-align:center;
+    padding:10rem;
+    color:#6b7280;
+    font-weight:500;
+}
+
 /* Responsive Design */
 
 @media (max-width: 900px) {

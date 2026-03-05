@@ -5,7 +5,7 @@ use App\Controllers\Parent\AppointmentController;
 use App\Controllers\Parent\DashboardController;
 use App\Controllers\Parent\EventController;
 use App\Controllers\Parent\MyChildrenController;
-use App\Controllers\Parent\NutritionController;
+use App\Controllers\Parent\GrowthController;
 use App\Controllers\Parent\VaccinationController;
 use App\Controllers\SettingController;
 
@@ -21,7 +21,7 @@ return [
     ['GET', '/parent/vaccination', [VaccinationController::class, 'index'], 'parent.vaccination', ['parent']],
 
     //Growth tracking routes
-    ['GET', '/parent/nutrition-tracking', [NutritionController::class, 'index'], 'parent.nutrition.tracking', ['parent']],
+    ['GET', '/parent/growth-tracking', [GrowthController::class, 'index'], 'parent.growth.tracking', ['parent']],
 
     //Appointment routes
     ['GET', '/parent/appointments/my-appointments', [AppointmentController::class, 'myAppointments'], 'parent.appointments.my', ['parent']],

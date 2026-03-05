@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
 use App\Models\ChildAccessRequest;
+use App\Models\Appointment;
 use App\Models\ParentChild;
 use App\Rules\NameRule;
 use App\Rules\DivisionRule;
@@ -17,7 +18,6 @@ use App\Helpers\BirthCertificateValidator;
 use App\Helpers\NicValidator;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
-use DateTime;
 
 class ChildService
 {
@@ -110,18 +110,6 @@ class ChildService
         $resource = [];
         foreach ($childrenParent as $childParent) {
 
-            $parent = $childParent->getParent();
-
-            $parentResource = NULL;
-            if ($parent) {
-                $parentResource = [
-                    'id' => $parent->id,
-                    'name' => User::find($parent->id)->name,
-                    'email' => User::find($parent->id)->email,
-                    'type' => $parent->type,
-                ];
-            }
-
             $child = $childParent->getChild();
 
             $phm = PublicHealthMidwife::find($child->phm_id);
@@ -134,6 +122,7 @@ class ChildService
                 ];
             }
 
+            $childAppointments = Appointment::query()->where('child_id','=', $child->id)->where('status', '=', 'confirmed')->get();
 
             $resource[] = [
                 'id' => $child->id,
@@ -144,8 +133,8 @@ class ChildService
                 'health_status' => $child->health_status,
                 'blood_type' => $child->blood_type,
                 'notes' => $child->notes,
-                'parent' => $parentResource,
                 'phm' => $phmResource,
+                'appointment_count' => count($childAppointments)
             ];
         }
 
@@ -397,6 +386,86 @@ class ChildService
 
         return [$resource, $links];
     }
+
+     public function getChildAppointmentByChildId($childId)
+    {
+
+        $appointments = Appointment::query()->where('child_id', '=', $childId);
+
+      
+        $appointments = $appointments
+            ->join("appointment_slots as s", "s.id", "=", "appointments.slot_id")
+            ->limit(3)
+            ->get();
+
+        $resource = [];
+        foreach ($appointments as $appointment) {
+            $slot = $appointment->getSlot();
+            $doctor = $slot->getDoctor();
+            $child = $appointment->getChild();
+            $resource[] = [
+                "id" => $appointment->id,
+                "slot_date" => $slot->slot_date,
+                "start_time" => Calculator::formatTimeToAmPm($slot->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($slot->end_time),
+                "doctor" => $doctor ? [
+                    "id" => $doctor->id,
+                    "name" => $doctor->getUser()->name
+                ] : null,
+                "child" => $child ? [
+                    "id" => $child->id,
+                    "name" => $child->name,
+                ] : null,   
+                "reason" => $appointment->reason,
+                "status" => $appointment->status
+            ];
+        }
+
+
+       return $resource;
+    }
+
+    public function getChildGrowthData(int $childId)
+{
+    $sql = "
+    SELECT 
+        c.id AS child_id,
+        c.name AS child_name,
+        h.visit_date,
+        h.height,
+        h.weight,
+        h.bmi
+    FROM children c
+    JOIN child_records h ON h.child_id = c.id
+    WHERE c.id = :childId
+    ORDER BY h.visit_date
+    ";
+
+    $rows = QueryBuilder::rawGet($sql, [
+        ':childId' => $childId
+    ]);
+
+    $child = [
+        'id' => $childId,
+        'name' => '',
+        'bmi' => [],
+        'height' => [],
+        'weight' => [],
+        'labels' => []
+    ];
+
+    foreach ($rows as $row) {
+
+        $child['name'] = $row['child_name'];
+
+        $child['labels'][] = date("M", strtotime($row['visit_date']));
+        $child['bmi'][] = (float)$row['bmi'];
+        $child['height'][] = (float)$row['height'];
+        $child['weight'][] = (float)$row['weight'];
+    }
+
+    return $child;
+}
 
 
     public function getChildernById(int $id)
