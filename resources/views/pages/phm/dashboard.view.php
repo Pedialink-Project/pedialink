@@ -250,12 +250,12 @@ Parent Dashboard
 
     // ---------- Doughnut (Monthly Vaccinations Completed) ----------
     const vaccCtx = document.getElementById('vaccChart').getContext('2d');
+    const monthlyVaccinationData = <?php echo json_encode($monthlyVaccinationData); ?>;
 
-    // Values chosen to total 254 (so the center text matches)
     const vaccData = {
-        labels: ['Completed', 'Pending', 'Upcoming'],
+        labels: ['Completed', 'Pending', 'Overdue'],
         datasets: [{
-            data: [150, 80, 24], // sums to 254
+            data: [monthlyVaccinationData.complete, monthlyVaccinationData.pending, monthlyVaccinationData.overdue],
             backgroundColor: ['#0EA5A4', '#FBC88D', '#F08B77'],
             hoverOffset: 8
         }]
@@ -276,12 +276,12 @@ Parent Dashboard
             ctx.fillStyle = '#111827';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('254', centerX, centerY - 8);
+            ctx.fillText(monthlyVaccinationData.total.toString(), centerX, centerY - 8);
 
             // label (lighter)
             ctx.font = '400 13px Inter, Arial';
             ctx.fillStyle = '#6b7280';
-            ctx.fillText('Children', centerX, centerY + 20);
+            ctx.fillText('Vaccinations', centerX, centerY + 20);
             ctx.restore();
         }
     };
