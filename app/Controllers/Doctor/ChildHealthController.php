@@ -2,6 +2,8 @@
 
 namespace App\Controllers\Doctor;
 
+use App\Models\Child;
+use App\Services\VaccinationService;
 use Library\Framework\Http\Request;
 use App\Services\ChildRecordService;
 
@@ -9,10 +11,12 @@ class ChildHealthController
 {
 
     private $childRecordService;
+    private VaccinationService $vaccinationService;
 
     public function __construct()
     {
         $this->childRecordService = new ChildRecordService();
+        $this->vaccinationService = new VaccinationService();
     }
     public function index(Request $request, int $id)
     {
@@ -141,8 +145,20 @@ class ChildHealthController
 
     public function vaccinationIndex(Request $request, int $id)
     {
+        $search = $request->query("search", "");
+        $filters = $request->query("filters", []);
+        [$vaccinations, $links] = $this->vaccinationService->fetchVaccinationRecordsByChildId(
+            $id,
+            $search,
+            $filters
+        );
+
+        $child = Child::find($id);
         return view("doctor/vaccinationrecord", [
             "id" => $id,
+            "name" => $child->name,
+            "vaccinations" => $vaccinations,
+            "links" => $links,
         ]);
     }
 }

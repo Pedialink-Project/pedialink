@@ -31,6 +31,9 @@ Vaccination Details &middot; C-{{ $id }} &rarr; {{ $name }}
 @endsection
 
 @section('content')
+<c-table.controls action="{{ route('phm.child.vaccinations', ['id' => $id]) }}" :filters="['status' => ['complete', 'pending', 'overdue']]">
+
+</c-table.controls>
 <c-table.wrapper card="1">
     <div class="table-wrapper" data-responsive="true">
         <c-table.main sticky="1" size="comfortable">
@@ -116,15 +119,15 @@ Vaccination Details &middot; C-{{ $id }} &rarr; {{ $name }}
                                             <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                                 title="Dose Numbers" info="{{ $item['schedule_vaccine']['dose_number'] ?? 'N/A' }}" />
                                             @if (strtolower($item['status']) === "complete")
-                                                <c-modal.viewitem icon="{{ asset('assets/icons/check.svg') }}"
+                                                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                                     title="Administered date" info="{{ $item['scheduled_date'] }}" />
-                                                <c-modal.viewitem icon="{{ asset('assets/icons/clipboard-text.svg') }}"
+                                                <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}"
                                                     title="Administered Time" info="{{ $item['administered_at'] ?? 'N/A' }}" />
                                             @elseif (strtolower($item['status']) === "pending")
                                                 <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                                     title="Upcoming Date" info="{{ $item['scheduled_date'] }}" />
                                             @elseif (strtolower($item['status']) === "overdue")
-                                                <c-modal.viewitem icon="{{ asset('assets/icons/close.svg') }}"
+                                                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                                     title="Overdue date" info="{{ $item['scheduled_date'] }}" />
                                             @endif
                                         </c-modal.viewcard>
@@ -139,6 +142,32 @@ Vaccination Details &middot; C-{{ $id }} &rarr; {{ $name }}
                                             Close
                                         </c-slot>
                                     </c-modal>
+                                    @if (strtolower($item['status']) === "pending")
+                                        <c-modal id="accept-vaccination-{{ $key }}" size="md" :initOpen="false">
+                                            <c-slot name="trigger">
+                                                <c-dropdown.item>Mark as completed</c-dropdown.item>
+                                            </c-slot>
+                                            <c-slot name="headerPrefix">
+                                                <img src="{{ asset('assets/icons/edit-01.svg' )}}" />
+                                            </c-slot>
+                                            <c-slot name="header">
+                                                <div>Mark as Completed</div>
+                                            </c-slot>
+
+                                            <p>Mark this vaccination as completed? This action cannot be undone.</p>
+
+                                            <form id="accept-vaccination-form-{{ $key }}" action="{{ route('phm.child.vaccination.record.completed', ['id' => $id, 'recordId' => $item['id']]) }}" method="POST" class="hidden">
+                                            </form>
+                                            <c-slot name="close">
+                                                Close
+                                            </c-slot>
+                                            <c-slot name="footer">
+                                                <c-button type="submit" form="accept-vaccination-form-{{ $key }}" variant="primary">
+                                                    Save Changes
+                                                </c-button>
+                                            </c-slot>
+                                        </c-modal>
+                                    @endif
                                 </c-slot>
                             </c-dropdown.main>
                         </c-table.td>
