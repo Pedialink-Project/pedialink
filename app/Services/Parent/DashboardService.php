@@ -88,6 +88,24 @@ class DashboardService
     }
 
 
+    public function getLinkedChildrenListByParentId()
+    {
+        $parentId = auth()->user()->id;
+        $childrenParent = ParentChild::query()->where('parent_id', '=', $parentId)->get();
+
+        $resource = [];
+        foreach ($childrenParent as $childParent) {
+            $child = $childParent->getChild();
+            $resource[] = [
+                'id' => $child->id,
+                'name' => $child->name,
+            ];
+        }
+
+        return $resource;
+    }
+
+
 
 
     public function getEventsData()
