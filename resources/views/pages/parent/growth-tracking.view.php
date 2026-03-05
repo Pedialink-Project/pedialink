@@ -35,8 +35,7 @@ Parent - Growth Tracking
 <c-emptytable
     alt="No Growth Data"
     title="No Growth Records Yet"
-    description="No growth tracking data available. Start recording your child's height, weight, and BMI measurements to view their growth progress here."
-/>
+    description="No growth tracking data available. Start recording your child's height, weight, and BMI measurements to view their growth progress here." />
 @else
 <main class="container">
 
@@ -45,132 +44,134 @@ Parent - Growth Tracking
 
     <!-- BMI Chart -->
 
-        <div class="left-col">
+    <div class="left-col">
 
-    <c-card class="card bmi-card">
-        <div class="header">
-            <div class="title-section">
-                <span class="card-title">Child BMI Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
+        <c-card class="card bmi-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child BMI Tracking</span>
+                    <span id="bmiSubtitle" class="card-subtitle">
+                        Track All Children's BMI over time
+                    </span>
+                </div>
+
+
+                <c-select class="child-select-bmi" placeholder="Select Child">
+
+                    @if(!empty($childrenList))
+                    @foreach ($childrenList as $child)
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }}
+                    </li>
+                    @endforeach
+                    <li class="select-item" data-value="all-children">
+                        All Children
+                    </li>
+                    @else
+                    <li class="select-item disabled">
+                        No children available
+                    </li>
+                    @endif
+                </c-select>
             </div>
+            <hr class="divider">
+            <div class="card-body">
+                <canvas id="bmiChart">
 
+                </canvas>
+                <div class="no-data-message bmi-no-data" style="display:none;">
+                    No BMI records available for this child
+                </div>
 
-            <c-select class="child-select-bmi" placeholder="Select Child">
-
-                @if(!empty($childrenList))
-                @foreach ($childrenList as $child)
-                <li class="select-item" data-value="{{ $child['id'] }}">
-                    {{ $child['name'] }}
-                </li>
-                @endforeach
-                <li class="select-item" data-value="all-children">
-                    All Children
-                </li>
-                @else
-                <li class="select-item disabled">
-                    No children available
-                </li>
-                @endif
-            </c-select>
-        </div>
-        <hr class="divider">
-        <div class="card-body">
-            <canvas id="bmiChart">
-
-            </canvas>
-            <div class="no-data-message bmi-no-data" style="display:none;">
-                No BMI records available for this child
             </div>
+        </c-card>
 
-        </div>
-    </c-card>
+        <!-- Height Chart -->
+        <c-card class="card height-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child Height Tracking</span>
+                    <span class="card-subtitle" id="heightSubtitle">Track All Children Height over time</span>
+                </div>
+                <c-select class="child-select-height" placeholder="Select Child">
 
-    <!-- Height Chart -->
-    <c-card class="card height-card">
-        <div class="header">
-            <div class="title-section">
-                <span class="card-title">Child Height Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's Height over time</span>
+                    @if(!empty($childrenList))
+                    @foreach ($childrenList as $child)
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }}
+                    </li>
+                    @endforeach
+                    <li class="select-item" data-value="all-children">
+                        All Children
+                    </li>
+                    @else
+                    <li class="select-item disabled">
+                        No children available
+                    </li>
+                    @endif
+                </c-select>
             </div>
-            <c-select class="child-select-height" placeholder="Select Child">
-
-                @if(!empty($childrenList))
-                @foreach ($childrenList as $child)
-                <li class="select-item" data-value="{{ $child['id'] }}">
-                    {{ $child['name'] }}
-                </li>
-                @endforeach
-                <li class="select-item" data-value="all-children">
-                    All Children
-                </li>
-                @else
-                <li class="select-item disabled">
-                    No children available
-                </li>
-                @endif
-            </c-select>
-        </div>
-        <hr class="divider">
-        <div class="card-body">
-            <canvas id="heightChart">
+            <hr class="divider">
+            <div class="card-body">
+                <canvas id="heightChart">
 
 
-            </canvas>
-            <div class="no-data-message height-no-data" style="display:none;">
-                No height records available for this child
+                </canvas>
+                <div class="no-data-message height-no-data" style="display:none;">
+                    No height records available for this child
+                </div>
+
             </div>
-
-        </div>
-    </c-card>
+        </c-card>
 
     </div>
 
-        <div class="right-col">
+    <div class="right-col">
 
 
-    <!-- Weight Chart -->
-    <c-card class="card weight-card">
-        <div class="header">
-            <div class="title-section">
-                <span class="card-title">Child Weight Tracking</span>
-                <span class="card-subtitle">Track Baby Sarah's Weight over time</span>
+        <!-- Weight Chart -->
+        <c-card class="card weight-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child Weight Tracking</span>
+                    <span class="card-subtitle" id="weightSubtitle">Track All Children Weight over time</span>
+                </div>
+                <c-select
+                    class="child-select-weight"
+                    placeholder="Select Child">
+
+                    @if(!empty($childrenList))
+                    @foreach ($childrenList as $child)
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }}
+                    </li>
+
+                    @endforeach
+                    <li class="select-item" data-value="all-children">
+                        All Children
+                    </li>
+                    @else
+                    <li class="select-item disabled">
+                        No children available
+                    </li>
+                    @endif
+                </c-select>
             </div>
-            <c-select
-                class="child-select-weight"
-                placeholder="Select Child">
+            <hr class="divider">
+            <div class="card-body">
+                <canvas id="weightChart">
 
-                @if(!empty($childrenList))
-                @foreach ($childrenList as $child)
-                <li class="select-item" data-value="{{ $child['id'] }}">
-                    {{ $child['name'] }}
-                </li>
-
-                @endforeach
-                <li class="select-item" data-value="all-children">
-                    All Children
-                </li>
-                @else
-                <li class="select-item disabled">
-                    No children available
-                </li>
-                @endif
-            </c-select>
-        </div>
-        <hr class="divider">
-        <div class="card-body">
-            <canvas id="weightChart">
-
-            </canvas>
-            <div class="no-data-message weight-no-data" style="display:none;">
-                No weight records available for this child
+                </canvas>
+                <div class="no-data-message weight-no-data" style="display:none;">
+                    No weight records available for this child
+                </div>
             </div>
-        </div>
-    </c-card>
+        </c-card>
     </div>
 
-   
+
 </main>
- @endif
+@endif
 
 <script>
     const growthData = <?php echo json_encode($growthData); ?>;
@@ -281,115 +282,157 @@ Parent - Growth Tracking
         heightChart.update();
         weightChart.update();
     }
-document.querySelectorAll(".child-select-bmi .select-item").forEach(item => {
-
-    item.addEventListener("click", function () {
-
-        const childId = this.dataset.value;
-
-        let filtered = childId === "all-children"
-            ? growthData
-            : growthData.filter(child => child.id == childId);
-
-        const noData = !filtered.length || !filtered[0].bmi.length;
-
-        const canvas = document.getElementById("bmiChart");
-        const msg = document.querySelector(".bmi-no-data");
-
-        if (noData) {
-            canvas.style.display = "none";
-            msg.style.display = "block";
-            return;
-        }
-
-        canvas.style.display = "block";
-        msg.style.display = "none";
-
-        bmiChart.data.labels = filtered[0].labels ?? [];
-        bmiChart.data.datasets = buildDatasets(
-            filtered,
-            "bmi",
-            bmiCtx,
-            "rgba(168,85,247,1)"
-        );
-
-        bmiChart.update();
-    });
-
-});
-
     document.querySelectorAll(".child-select-height .select-item").forEach(item => {
 
-    item.addEventListener("click", function () {
+        item.addEventListener("click", function() {
 
-        const childId = this.dataset.value;
+            const childId = this.dataset.value;
+            const subtitle = document.getElementById("heightSubtitle");
 
-        let filtered = childId === "all-children"
-            ? growthData
-            : growthData.filter(child => child.id == childId);
+            const child = growthData.find(c => c.id == childId);
 
-        const noData = !filtered.length || !filtered[0].height.length;
+            let filtered = childId === "all-children" ?
+                growthData :
+                (child ? [child] : []);
 
-        const canvas = document.getElementById("heightChart");
-        const msg = document.querySelector(".height-no-data");
+            if (childId === "all-children") {
+                subtitle.textContent = "Track All Children's Height over time";
+            } else {
+                subtitle.textContent = `Track ${child?.name ?? 'Child'}'s Height over time`;
+            }
 
-        if (noData) {
-            canvas.style.display = "none";
-            msg.style.display = "block";
-            return;
-        }
+            const noData = childId !== "all-children" && (!child || !child.height || child.height.length === 0);
 
-        canvas.style.display = "block";
-        msg.style.display = "none";
+            const canvas = document.getElementById("heightChart");
+            const msg = document.querySelector(".height-no-data");
 
-        heightChart.data.labels = filtered[0].labels ?? [];
-        heightChart.data.datasets = buildDatasets(
-            filtered,
-            "height",
-            heightCtx,
-            "rgba(59,130,246,1)"
-        );
+            if (noData) {
 
-        heightChart.update();
+                heightChart.data.labels = [];
+                heightChart.data.datasets = [];
+                heightChart.update();
+
+                canvas.style.display = "none";
+                msg.style.display = "block";
+                return;
+            }
+
+            canvas.style.display = "block";
+            msg.style.display = "none";
+
+            heightChart.data.labels = filtered[0]?.labels ?? [];
+            heightChart.data.datasets = buildDatasets(
+                filtered,
+                "height",
+                heightCtx,
+                "rgba(59,130,246,1)"
+            );
+
+            heightChart.update();
+        });
+
     });
 
-});
-   document.querySelectorAll(".child-select-weight .select-item").forEach(item => {
+    document.querySelectorAll(".child-select-bmi .select-item").forEach(item => {
 
-    item.addEventListener("click", function () {
+        item.addEventListener("click", function() {
 
-        const childId = this.dataset.value;
+            const childId = this.dataset.value;
+            const subtitle = document.getElementById("bmiSubtitle");
 
-        let filtered = childId === "all-children"
-            ? growthData
-            : growthData.filter(child => child.id == childId);
+            const child = growthData.find(c => c.id == childId);
 
-        const noData = !filtered.length || !filtered[0].weight.length;
+            let filtered = childId === "all-children" ?
+                growthData :
+                (child ? [child] : []);
 
-        const canvas = document.getElementById("weightChart");
-        const msg = document.querySelector(".weight-no-data");
+            if (childId === "all-children") {
+                subtitle.textContent = "Track All Children's BMI over time";
+            } else {
+                subtitle.textContent = `Track ${child?.name ?? 'Child'}'s BMI over time`;
+            }
 
-        if (noData) {
-            canvas.style.display = "none";
-            msg.style.display = "block";
-            return;
-        }
+            const noData = childId !== "all-children" && (!child || !child.bmi || child.bmi.length === 0);
 
-        canvas.style.display = "block";
-        msg.style.display = "none";
+            const canvas = document.getElementById("bmiChart");
+            const msg = document.querySelector(".bmi-no-data");
 
-        weightChart.data.labels = filtered[0].labels ?? [];
-        weightChart.data.datasets = buildDatasets(
-            filtered,
-            "weight",
-            weightCtx,
-            "rgba(34,197,94,1)"
-        );
+            if (noData) {
 
-        weightChart.update();
+                bmiChart.data.labels = [];
+                bmiChart.data.datasets = [];
+                bmiChart.update();
+
+                canvas.style.display = "none";
+                msg.style.display = "block";
+                return;
+            }
+
+            canvas.style.display = "block";
+            msg.style.display = "none";
+
+            bmiChart.data.labels = filtered[0]?.labels ?? [];
+            bmiChart.data.datasets = buildDatasets(
+                filtered,
+                "bmi",
+                bmiCtx,
+                "rgba(168,85,247,1)"
+            );
+
+            bmiChart.update();
+        });
+
     });
+    document.querySelectorAll(".child-select-weight .select-item").forEach(item => {
 
-});
+        item.addEventListener("click", function() {
+
+            const childId = this.dataset.value;
+            const subtitle = document.getElementById("weightSubtitle");
+
+            const child = growthData.find(c => c.id == childId);
+
+            let filtered = childId === "all-children" ?
+                growthData :
+                (child ? [child] : []);
+
+            if (childId === "all-children") {
+                subtitle.textContent = "Track All Children's Weight over time";
+            } else {
+                subtitle.textContent = `Track ${child?.name ?? 'Child'}'s Weight over time`;
+            }
+
+            const noData = childId !== "all-children" && (!child || !child.weight || child.weight.length === 0);
+
+            const canvas = document.getElementById("weightChart");
+            const msg = document.querySelector(".weight-no-data");
+
+            if (noData) {
+
+                weightChart.data.labels = [];
+                weightChart.data.datasets = [];
+                weightChart.update();
+
+                canvas.style.display = "none";
+                msg.style.display = "block";
+                return;
+            }
+
+            canvas.style.display = "block";
+            msg.style.display = "none";
+
+            weightChart.data.labels = filtered[0]?.labels ?? [];
+            weightChart.data.datasets = buildDatasets(
+                filtered,
+                "weight",
+                weightCtx,
+                "rgba(34,197,94,1)"
+            );
+
+            weightChart.update();
+        });
+
+    });
 </script>
 
 
