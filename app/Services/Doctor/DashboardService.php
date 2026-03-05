@@ -5,9 +5,11 @@ namespace App\Services\Doctor;
 use App\Models\Appointment;
 use App\Models\Child;
 use App\Models\ChildAccessRequest;
+use App\Models\ChildRecord;
 use App\Models\Doctor;
 use App\Models\Maternal;
 use App\Models\MaternalAccessRequest;
+use App\Models\MaternalRecord;
 use Library\Framework\Database\QueryBuilder;
 
 class DashboardService
@@ -179,5 +181,60 @@ class DashboardService
             'completed' => $completed,
             'cancelled' => $cancelled,
         ];
+    }
+
+    public function getLatestHealthRecords()
+    {
+        $maternalRecord = MaternalRecord::query()
+            ->orderBy("created_at", "DESC")
+            ->limit(2)
+            ->get();
+
+        $maternalHealthRecord = [];
+        foreach ($maternalRecord as $record) {
+            $parent = $record->getParent();
+            $user = $parent ? $parent->getUser() : null;
+            $maternal = Maternal::query()
+                ->where("parent_id", "=", $record->parent_id)
+                ->first();
+            $maternalHealthRecord[] = [
+                "id" => $record->id,
+                "patient" => [
+                    "id" => $maternal ? $maternal->id : null,
+                    "name" => $user ? $user->name : null,
+                ],
+                "staff" => [
+                    "id" => $record->staff_id,
+                    "name" => $record->getStaff() ? $record->getStaff()->getUser()->name : null,
+                ],
+                "type" => "Mother",
+                "health_status" => $record->health_status,
+            ];
+        }
+
+        $childRecord = ChildRecord::query()
+            ->orderBy("created_at", "DESC")
+            ->limit(2)
+            ->get();
+
+        $childHealthRecord = [];
+        foreach ($childRecord as $record) {
+            $child = $record->getChild();
+            $childHealthRecord[] = [
+                "id" => $record->id,
+                "patient" => [
+                    "id" => $child ? $child->id : null,
+                    "name" => $child ? $child->name : null,
+                ],
+                "staff" => [
+                    "id" => $record->staff_id,
+                    "name" => $record->getStaff() ? $record->getStaff()->getUser()->name : null,
+                ],
+                "type" => "Child",
+                "health_status" => $record->health_status,
+            ];
+        }
+
+        return array_merge($maternalHealthRecord, $childHealthRecord);
     }
 }
