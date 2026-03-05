@@ -43,7 +43,7 @@ Parent - Growth Tracking
             </div>
 
 
-          <c-select class="child-select-bmi" placeholder="Select Child">
+            <c-select class="child-select-bmi" placeholder="Select Child">
 
                 @if(!empty($childrenList))
                 @foreach ($childrenList as $child)
@@ -66,6 +66,10 @@ Parent - Growth Tracking
             <canvas id="bmiChart">
 
             </canvas>
+            <div class="no-data-message bmi-no-data" style="display:none;">
+                No BMI records available for this child
+            </div>
+
         </div>
     </c-card>
 
@@ -98,7 +102,12 @@ Parent - Growth Tracking
         <div class="card-body">
             <canvas id="heightChart">
 
+
             </canvas>
+            <div class="no-data-message height-no-data" style="display:none;">
+                No height records available for this child
+            </div>
+
         </div>
     </c-card>
 
@@ -109,9 +118,9 @@ Parent - Growth Tracking
                 <span class="card-title">Child Weight Tracking</span>
                 <span class="card-subtitle">Track Baby Sarah's Weight over time</span>
             </div>
-                <c-select
-                    class="child-select-weight"
-                    placeholder="Select Child">
+            <c-select
+                class="child-select-weight"
+                placeholder="Select Child">
 
                 @if(!empty($childrenList))
                 @foreach ($childrenList as $child)
@@ -135,6 +144,9 @@ Parent - Growth Tracking
             <canvas id="weightChart">
 
             </canvas>
+            <div class="no-data-message weight-no-data" style="display:none;">
+                No weight records available for this child
+            </div>
         </div>
     </c-card>
 
@@ -249,77 +261,115 @@ Parent - Growth Tracking
         heightChart.update();
         weightChart.update();
     }
+document.querySelectorAll(".child-select-bmi .select-item").forEach(item => {
 
-    document.querySelectorAll(".child-select-bmi .select-item").forEach(item => {
+    item.addEventListener("click", function () {
 
-        item.addEventListener("click", function() {
+        const childId = this.dataset.value;
 
-            const childId = this.dataset.value;
+        let filtered = childId === "all-children"
+            ? growthData
+            : growthData.filter(child => child.id == childId);
 
-            let filtered = growthData.filter(child => child.id == childId);
+        const noData = !filtered.length || !filtered[0].bmi.length;
 
-            if (childId === "all-children") filtered = growthData;
+        const canvas = document.getElementById("bmiChart");
+        const msg = document.querySelector(".bmi-no-data");
 
-            bmiChart.data.labels = filtered[0]?.labels ?? [];
+        if (noData) {
+            canvas.style.display = "none";
+            msg.style.display = "block";
+            return;
+        }
 
-            bmiChart.data.datasets = buildDatasets(
-                filtered,
-                "bmi",
-                bmiCtx,
-                "rgba(168,85,247,1)"
-            );
+        canvas.style.display = "block";
+        msg.style.display = "none";
 
-            bmiChart.update();
-        });
+        bmiChart.data.labels = filtered[0].labels ?? [];
+        bmiChart.data.datasets = buildDatasets(
+            filtered,
+            "bmi",
+            bmiCtx,
+            "rgba(168,85,247,1)"
+        );
 
+        bmiChart.update();
     });
+
+});
 
     document.querySelectorAll(".child-select-height .select-item").forEach(item => {
 
-        item.addEventListener("click", function() {
+    item.addEventListener("click", function () {
 
-            const childId = this.dataset.value;
+        const childId = this.dataset.value;
 
-            let filtered = growthData.filter(child => child.id == childId);
+        let filtered = childId === "all-children"
+            ? growthData
+            : growthData.filter(child => child.id == childId);
 
-            if (childId === "all-children") filtered = growthData;
+        const noData = !filtered.length || !filtered[0].height.length;
 
-            heightChart.data.labels = filtered[0]?.labels ?? [];
+        const canvas = document.getElementById("heightChart");
+        const msg = document.querySelector(".height-no-data");
 
-            heightChart.data.datasets = buildDatasets(
-                filtered,
-                "height",
-                heightCtx,
-                "rgba(59,130,246,1)"
-            );
+        if (noData) {
+            canvas.style.display = "none";
+            msg.style.display = "block";
+            return;
+        }
 
-            heightChart.update();
-        });
+        canvas.style.display = "block";
+        msg.style.display = "none";
 
+        heightChart.data.labels = filtered[0].labels ?? [];
+        heightChart.data.datasets = buildDatasets(
+            filtered,
+            "height",
+            heightCtx,
+            "rgba(59,130,246,1)"
+        );
+
+        heightChart.update();
     });
-    document.querySelectorAll(".child-select-weight .select-item").forEach(item => {
 
-        item.addEventListener("click", function() {
+});
+   document.querySelectorAll(".child-select-weight .select-item").forEach(item => {
 
-            const childId = this.dataset.value;
+    item.addEventListener("click", function () {
 
-            let filtered = growthData.filter(child => child.id == childId);
+        const childId = this.dataset.value;
 
-            if (childId === "all-children") filtered = growthData;
+        let filtered = childId === "all-children"
+            ? growthData
+            : growthData.filter(child => child.id == childId);
 
-            weightChart.data.labels = filtered[0]?.labels ?? [];
+        const noData = !filtered.length || !filtered[0].weight.length;
 
-            weightChart.data.datasets = buildDatasets(
-                filtered,
-                "weight",
-                weightCtx,
-                "rgba(34,197,94,1)"
-            );
+        const canvas = document.getElementById("weightChart");
+        const msg = document.querySelector(".weight-no-data");
 
-            weightChart.update();
-        });
+        if (noData) {
+            canvas.style.display = "none";
+            msg.style.display = "block";
+            return;
+        }
 
+        canvas.style.display = "block";
+        msg.style.display = "none";
+
+        weightChart.data.labels = filtered[0].labels ?? [];
+        weightChart.data.datasets = buildDatasets(
+            filtered,
+            "weight",
+            weightCtx,
+            "rgba(34,197,94,1)"
+        );
+
+        weightChart.update();
     });
+
+});
 </script>
 
 
