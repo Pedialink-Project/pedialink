@@ -57,8 +57,7 @@ Parent - Appointments
                     <c-table.td col="slot-date" width="200px">{{$appointment['slot_date']}} </c-table.td>
                     <c-table.td col="start-time" width="200px">{{$appointment['start_time']}}</c-table.td>
                     <c-table.td col="end-time" width="200px">{{$appointment['end_time']}}</c-table.td>
-
-                    <c-table.td col="doctor">{{$appointment['doctor']['name']}}</c-table.td>
+                    <c-table.td col="doctor">{{'Dr. '.$appointment['doctor']['name']}}</c-table.td>
                     <c-table.td col="status">
                         {{
                         $badgeType = '';
@@ -128,14 +127,18 @@ Parent - Appointments
                                         <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="End Time"
                                             info="{{ $appointment['end_time'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="Doctor"
-                                            info="{{ $appointment['doctor']['name'] }}" />
+                                            info="{{'Dr. '.$appointment['doctor']['name']}}" />
                                     </c-modal.viewcard>
 
-
-
-
-                                    @if($appointment['reason'])
-                                    <c-modal.viewlist title="Reason for Appointment">
+                                    
+                                    @if( $appointment['status'] != 'cancelled')
+                                    <c-modal.viewlist title="Purpose of Visit">
+                                        <c-slot name="list">
+                                            <li>{{ $appointment['reason'] }}</li>
+                                        </c-slot>
+                                    </c-modal.viewlist>
+                                    @else
+                                    <c-modal.viewlist title="Reason for Cancellation">
                                         <c-slot name="list">
                                             <li>{{ $appointment['reason'] }}</li>
                                         </c-slot>
