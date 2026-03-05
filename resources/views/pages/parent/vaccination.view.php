@@ -46,16 +46,7 @@ Parent - Vaccination
 
 
 <c-table.controls action="{{ route('parent.vaccination') }}" :filters="['status' => ['complete', 'pending', 'overdue']]">
-    <c-slot name="filter">
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Name
-        </c-button>
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Vaccine
-        </c-button>
-    </c-slot>
+    
 </c-table.controls>
 
 
@@ -168,6 +159,16 @@ Parent - Vaccination
 
                 </c-table.tr>
                 @endforeach
+                 @if(count($vaccinations) === 0)
+                <tr>
+                    <td colspan="5">
+                        <c-emptytable
+                            alt="No Vaccinations found"
+                            title="No Vaccinations Available"
+                            description="No vaccinations match your current search or filters. Try adjusting them to see more results." />
+                    </td>
+                </tr>
+                @endif
             </c-table.tbody>
 
 
