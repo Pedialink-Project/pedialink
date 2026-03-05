@@ -44,8 +44,9 @@ class DashboardService
         return count($childAppointments) + count($maternalappointments);
     }
 
-     public function getChildVaccinationByParentId($parentId)
+     public function getChildVaccinationByParentId()
     {
+        $parentId = auth()->user()->id;
         $childIds = ParentChild::query()->where("parent_id", '=', $parentId)->pluck("child_id");
         $remainders = VaccinationReminder::query()->whereIn('child_id', $childIds)->limit(3)->get();
         $resource = [];
