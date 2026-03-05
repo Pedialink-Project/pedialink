@@ -41,12 +41,25 @@ Parent - Growth Tracking
                 <span class="card-title">Child BMI Tracking</span>
                 <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
             </div>
-            <!-- Child Selector -->
-            <c-select name='child' class="child-select" placeholder="Select Child">
-                <li class="select-item" data-value="all-children">All Children</li>
-                <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                <li class="select-item" data-value="baby-john">Baby John</li>
-            </c-select>
+             
+
+                  <c-select
+                    class="child-select"
+                    placeholder="Select Child"
+                    >
+
+                    @if(!empty($childrenList))
+                    @foreach ($childrenList as $child)
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }} 
+                    </li>
+                    @endforeach
+                    @else
+                    <li class="select-item disabled">
+                        No children available
+                    </li>
+                    @endif
+                </c-select>
         </div>
         <hr class="divider">
         <div class="card-body">
@@ -63,12 +76,23 @@ Parent - Growth Tracking
                 <span class="card-title">Child Height Tracking</span>
                 <span class="card-subtitle">Track Baby Sarah's Height over time</span>
             </div>
-            <!-- Child Selector -->
-            <c-select name='child' class="child-select" placeholder="Select Child">
-                <li class="select-item" data-value="all-children">All Children</li>
-                <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                <li class="select-item" data-value="baby-john">Baby John</li>
-            </c-select>
+           <c-select
+                    class="child-select"
+                    placeholder="Select Child"
+                    >
+
+                    @if(!empty($childrenList))
+                    @foreach ($childrenList as $child)
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }} 
+                    </li>
+                    @endforeach
+                    @else
+                    <li class="select-item disabled">
+                        No children available
+                    </li>
+                    @endif
+                </c-select>
         </div>
         <hr class="divider">
         <div class="card-body">
@@ -85,12 +109,23 @@ Parent - Growth Tracking
                 <span class="card-title">Child Weight Tracking</span>
                 <span class="card-subtitle">Track Baby Sarah's Weight over time</span>
             </div>
-            <!-- Child Selector -->
-            <c-select name='child' class="child-select" placeholder="Select Child">
-                <li class="select-item" data-value="all-children">All Children</li>
-                <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                <li class="select-item" data-value="baby-john">Baby John</li>
-            </c-select>
+            <c-select
+                    class="child-select"
+                    placeholder="Select Child"
+                    >
+
+                    @if(!empty($childrenList))
+                    @foreach ($childrenList as $child)
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }} 
+                    </li>
+                    @endforeach
+                    @else
+                    <li class="select-item disabled">
+                        No children available
+                    </li>
+                    @endif
+                </c-select>
         </div>
         <hr class="divider">
         <div class="card-body">
