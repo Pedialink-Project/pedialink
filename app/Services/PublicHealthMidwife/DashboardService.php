@@ -219,4 +219,55 @@ class DashboardService
 
         return $data;
     }
+
+    public function monthlyVaccinationData(): array
+    {
+        $currentUser = auth()->user();
+        if (!$currentUser) {
+            return [
+                'complete' => 0,
+                'pending' => 0,
+                'overdue' => 0,
+                'total' => 0,
+            ];
+        }
+
+        // Get the latest status for each unique (child_id, schedule_vaccine_id) combination
+        // to avoid counting duplicate entries for overdue cases
+        $sql = "
+            SELECT latest.status, COUNT(*) as count
+            FROM (
+                SELECT DISTINCT ON (vr.child_id, vr.schedule_vaccine_id)
+                    vr.child_id,
+                    vr.schedule_vaccine_id,
+                    vr.status
+                FROM vaccination_reminders vr
+                JOIN children c ON vr.child_id = c.id
+                WHERE c.phm_id = :phm_id
+                ORDER BY vr.child_id, vr.schedule_vaccine_id, vr.scheduled_date DESC
+            ) AS latest
+            GROUP BY latest.status
+        ";
+
+        $results = QueryBuilder::rawGet($sql, ['phm_id' => $currentUser->id]);
+
+        $data = [
+            'complete' => 0,
+            'pending' => 0,
+            'overdue' => 0,
+            'total' => 0,
+        ];
+
+        foreach ($results as $row) {
+            $status = $row['status'];
+            $count = (int) $row['count'];
+            if (isset($data[$status])) {
+                $data[$status] = $count;
+            }
+        }
+
+        $data['total'] = $data['complete'] + $data['pending'] + $data['overdue'];
+
+        return $data;
+    }
 }
