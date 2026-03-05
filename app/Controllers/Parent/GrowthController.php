@@ -6,7 +6,7 @@ use App\Services\Parent\GrowthService;
 
 class GrowthController
 {
-   private $growthService;
+    private $growthService;
 
     public function __construct()
     {
@@ -19,14 +19,11 @@ class GrowthController
 
         $growthData = $this->growthService->getGrowthData($parentId);
         $childrenList = $this->growthService->getLinkedChildrenListByParentId($parentId);
-        var_dump($growthData);
-        var_dump($childrenList);
+
 
         return view("parent/growth-tracking", [
             "growthData" => $growthData,
             "childrenList" => $childrenList
         ]);
     }
-   
- 
 }

@@ -31,10 +31,6 @@ Parent - Growth Tracking
 @endsection
 
 @section('content')
-
-<main class="container">
-
-
 @if(empty($growthData))
 <c-emptytable
     alt="No Growth Data"
@@ -42,8 +38,15 @@ Parent - Growth Tracking
     description="No growth tracking data available. Start recording your child's height, weight, and BMI measurements to view their growth progress here."
 />
 @else
+<main class="container">
+
+
+
 
     <!-- BMI Chart -->
+
+        <div class="left-col">
+
     <c-card class="card bmi-card">
         <div class="header">
             <div class="title-section">
@@ -120,6 +123,11 @@ Parent - Growth Tracking
         </div>
     </c-card>
 
+    </div>
+
+        <div class="right-col">
+
+
     <!-- Weight Chart -->
     <c-card class="card weight-card">
         <div class="header">
@@ -158,10 +166,11 @@ Parent - Growth Tracking
             </div>
         </div>
     </c-card>
+    </div>
 
-    @endif
+   
 </main>
-
+ @endif
 
 <script>
     const growthData = <?php echo json_encode($growthData); ?>;
