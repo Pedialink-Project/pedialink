@@ -225,19 +225,19 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                     title="Requested On"
-                                    info="{{ $request['created'] }}"
+                                    info="{{ $request['created_at'] }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                     title="Staff Role"
-                                    info="{{ ucfirst($request['role']) }}"
+                                    info="{{ ucfirst($request['staff']['role']) }}"
                                 />
                             </c-modal.viewcard>
 
                             <c-modal.viewlist title="Staff Details">
                                 <c-slot name="list">
                                     <li>NIC: {{ $request['staff']['nic'] }}</li>
-                                    <li>Type: {{ ucfirst($request["role"] ) }}</li>
+                                    <li>Type: {{ ucfirst($request['staff']['role']) }}</li>
                                 </c-slot>
                             </c-modal.viewlist>
 
