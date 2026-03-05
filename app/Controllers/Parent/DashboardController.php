@@ -1,21 +1,24 @@
 <?php
 
 namespace App\Controllers\Parent;
-use App\Services\EventService;
-
+use App\Services\Parent\DashboardService;
 class DashboardController
 {
 
- private $eventService;
+ private $dashboardService;
 
     public function __construct()
     {
-        $this->eventService = new EventService();
+        $this->dashboardService = new DashboardService();
     }
     public function index()
     {
 
-        $events = $this->eventService->getDashboardEvents(3);
-        return view("parent/dashboard", ['events' => $events]);
+        $events = $this->dashboardService->getEventsData();
+        $appointmentCount = $this->dashboardService->getAppointmentCount();
+        $childAppointments = $this->dashboardService->getLatestChildAppointmentsByParentId();
+        $maternalAppointments = $this->dashboardService->getLatestMaternalAppointmentsByParentId();
+        $childCount = $this->dashboardService->getChildrenCount();
+        return view("parent/dashboard", ['events' => $events, 'appointmentCount' => $appointmentCount,'childAppointments' => $childAppointments, 'maternalAppointments' => $maternalAppointments, 'childCount' => $childCount ]);
     }
 }

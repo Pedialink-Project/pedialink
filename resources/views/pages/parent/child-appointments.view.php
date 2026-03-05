@@ -21,92 +21,17 @@ Parent - Appointments
         <path d="M9.16663 10L14.1666 10" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
         <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" />
     </svg>
-    <span>Appointments</span>
+    <span>Children Appointments</span>
 </div>
 
 @endsection
 
 @section('content')
 
-<?php
-
-$appointments = [
-    [
-        'id' => 'APP-001',
-        'patient_name' => 'Sara Johnsan',
-        'date' => '2025-10-21',
-        'time' => '09:00',
-        'datetime' => '2025-10-21 09:00',
-        'location' => 'City Hospital, Colombo',
-        'staff_name' => 'Dr. Sarah Fernando',
-        'status' => 'Upcoming',
-        'purpose' => 'Routine Checkup',
-        'notes' => ['Bring previous medical reports', 'Fasting required']
-    ],
-    [
-        'id' => 'APP-002',
-        'patient_name' => 'Sara Johnson',
-        'date' => '2025-10-22',
-        'time' => '11:00',
-        'datetime' => '2025-10-22 11:00',
-        'location' => 'Green Valley Clinic, Kandy',
-        'staff_name' => 'Dr. Michael Silva',
-        'status' => 'Pending',
-        'purpose' => 'Vaccination',
-        'notes' => ['Child should not have fever', 'Bring vaccination card']
-    ],
-    [
-        'id' => 'APP-003',
-        'patient_name' => 'Liam Johnson',
-        'date' => '2025-10-19',
-        'time' => '10:00',
-        'datetime' => '2025-10-19 10:00',
-        'location' => 'City Hospital, Colombo',
-        'staff_name' => 'Dr. Priya Kumar',
-        'status' => 'Completed',
-        'purpose' => 'Follow-up Consultation',
-        'notes' => ['Follow-up in 2 weeks if needed']
-    ],
-    [
-        'id' => 'APP-004',
-        'patient_name' => 'Sara Johnson',
-        'date' => '2025-10-25',
-        'time' => '12:00',
-        'datetime' => '2025-10-25 12:00',
-        'location' => 'Sunrise Clinic, Galle',
-        'staff_name' => 'Dr. Anura Perera',
-        'status' => 'Cancelled',
-        'purpose' => 'Dental Checkup',
-        'notes' => ['Patient unavailable on original date']
-    ],
-    [
-        'id' => 'APP-005',
-        'patient_name' => 'Liam Johnson',
-        'date' => '2025-10-23',
-        'time' => '09:00',
-        'datetime' => '2025-10-23 09:00',
-        'location' => 'City Hospital, Colombo',
-        'staff_name' => 'Dr. Sarah Fernando',
-        'status' => 'Upcoming',
-        'purpose' => 'Pediatric Consultation',
-        'notes' => ['Bring growth chart']
-    ],
-];
-
-?>
 
 
-<c-table.controls action="{{ route('parent.appointments.child') }}" :filters="['status' => ['upcoming', 'pending', 'completed', 'cancelled']]">
-    <c-slot name="filter">
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Name
-        </c-button>
-        <c-button variant="outline">
-            <img src="{{ asset('assets/icons/filter.svg') }}" />
-            Staff
-        </c-button>
-    </c-slot>
+<c-table.controls action="{{ route('parent.appointments.child') }}" :filters="['status' => ['attended', 'pending', 'confirmed', 'cancelled','no-show']]">
+
 
 
 </c-table.controls>
@@ -116,9 +41,10 @@ $appointments = [
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">Name</c-table.th>
-                    <c-table.th sortable="1">Date & Time</c-table.th>
-                    <c-table.th sortable="1">Location</c-table.th>
+                    <c-table.th>Name</c-table.th>
+                    <c-table.th>Date</c-table.th>
+                    <c-table.th>Start Time</c-table.th>
+                    <c-table.th>End Time</c-table.th>
                     <c-table.th>Doctor</c-table.th>
                     <c-table.th>Status</c-table.th>
 
@@ -129,11 +55,10 @@ $appointments = [
             <c-table.tbody>
                 @foreach ($appointments as $key => $appointment)
                 <c-table.tr>
-                    <c-table.td col="name">{{$appointment['patient_name']}}</c-table.td>
-                    <c-table.td col="date-time" width="200px">{{$appointment['date']}} at
-                        {{$appointment['time']}}</c-table.td>
-                    <c-table.td col="location" width="200px">{{$appointment['location']}}</c-table.td>
-                    <c-table.td col="doctor">{{$appointment['staff_name']}}</c-table.td>
+                    <c-table.td col="name">{{$appointment['child']['name']}}</c-table.td>
+                    <c-table.td col="slot-date" width="200px">{{$appointment['slot_date']}} </c-table.td>
+                    <c-table.td col="start-time" width="200px">{{$appointment['start_time']}}</c-table.td>
+                    <c-table.td col="doctor">{{$appointment['doctor']['name']}}</c-table.td>
                     <c-table.td col="status">
                         {{
                         $badgeType = '';
@@ -142,17 +67,17 @@ $appointments = [
                         case 'pending':
                         $badgeType = 'yellow';
                         break;
-                        case 'completed':
+                        case 'attended':
                         $badgeType = 'green';
                         break;
                         case 'cancelled':
                         $badgeType = 'red';
                         break;
-                        case 'upcoming':
+                        case 'confirmed':
                         $badgeType = 'purple';
                         break;
                         default:
-                        $badgeType = 'primary';
+                        $badgeType = 'blue';
                         }
                         $badgeText = ucwords(str_replace('_', ' ', $appointment['status']));
 
@@ -193,27 +118,26 @@ $appointments = [
 
 
                                     <c-modal.viewcard>
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Appointment ID" info="{{ $appointment['id'] }}" />
+
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
-                                            title="Requester Name" info="{{ $appointment['patient_name'] }}" />
+                                            title="Appointment For" info="{{ $appointment['child']['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
-                                            title="Date" info="{{ $appointment['date'] }} " />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                                            info="{{ $appointment['time'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="Location" info="{{ $appointment['location'] }}" />
+                                            title="Date" info="{{ $appointment['slot_date'] }} " />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Start Time"
+                                            info="{{ $appointment['start_time'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="End Time"
+                                            info="{{ $appointment['end_time'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}" title="Doctor"
-                                            info="{{ $appointment['staff_name'] }}" />
+                                            info="{{ $appointment['doctor']['name'] }}" />
                                     </c-modal.viewcard>
 
 
 
 
-                                    @if($appointment['purpose'])
-                                    <c-modal.viewlist title="Purpose">
+                                    @if($appointment['reason'])
+                                    <c-modal.viewlist title="Reason for Appointment">
                                         <c-slot name="list">
-                                            <li>{{ $appointment['purpose'] }}</li>
+                                            <li>{{ $appointment['reason'] }}</li>
                                         </c-slot>
                                     </c-modal.viewlist>
                                     @endif
@@ -221,9 +145,7 @@ $appointments = [
                                     @if($appointment['notes'])
                                     <c-modal.viewlist title="Notes">
                                         <c-slot name="list">
-                                            @foreach($appointment['notes'] as $note)
-                                            <li>{{ $note }}</li>
-                                            @endforeach
+                                            <li>{{ $appointment['notes'] }}</li>
 
                                         </c-slot>
                                     </c-modal.viewlist>
@@ -233,12 +155,70 @@ $appointments = [
                                         Close
                                     </c-slot>
 
-                                      
+
                                 </c-modal>
-                               
-                               
+@if($appointment['status'] == 'confirmed' || $appointment['status'] == 'pending')
+                                <c-modal id="cancel-appointment-{{$key}}" size="md" :initOpen="flash('cancelAppointment') == $appointment['id'] ? true : false">
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>Cancel Appointment</c-dropdown.item>
+                                        </c-slot>
+
+                                        <c-slot name="headerPrefix">
+                                            <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
+                                                    stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
+                                                <path
+                                                    d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
+                                                    stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
+                                                <path
+                                                    d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
+                                                    stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                                <path
+                                                    d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
+                                                    stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                                <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </c-slot>
+
+                                        <c-slot name="header">
+                                            <span class="cancel">Cancel Appointment</span>
+
+                                        </c-slot>
 
 
+
+                                        <div class="msg">
+                                            Are you sure you want to cancel the appointment for <strong>{{ $appointment['child']['name'] }}</strong>? This action cannot be undone.
+                                        </div>
+
+
+
+                                        <form id="cancel-appointment-form-{{ $key }}" action="{{route('parent.appointment.child.cancel', ['id' => $appointment['id']])}}" method="POST" novalidate>
+                                            <c-input type="text" name="reason" label="Reason for Cancellation" placeholder="Enter your reason" value="{{ old('reason') ?? '' }}"
+                                                error="{{ errors('reason') ?? '' }}"
+                                                required />
+                                        </form>
+
+                                        <c-slot name="close">
+                                            Close
+                                        </c-slot>
+
+                                        <c-slot name="footer">
+                                            <c-button variant="destructive" type="submit" form="cancel-appointment-form-{{$key}}">
+                                                Cancel Appointment
+                                            </c-button>
+
+
+                                        </c-slot>
+                                </c-modal>
+
+@endif
                             </c-slot>
                         </c-dropdown.main>
                     </c-table.td>
@@ -247,7 +227,10 @@ $appointments = [
                 @if(count($appointments) === 0)
                 <tr>
                     <td colspan="6">
-                        <div class="table-empty">No items found</div>
+                        <c-emptytable
+                            alt="No Appointments found"
+                            title="No Appointments Available"
+                            description="No appointments match your current search or filters. Try adjusting them to see more results." />
                     </td>
                 </tr>
                 @endif
@@ -256,5 +239,5 @@ $appointments = [
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<c-table.pagination :links="$links" />
 @endsection
