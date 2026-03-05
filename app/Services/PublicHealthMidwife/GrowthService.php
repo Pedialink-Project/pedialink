@@ -9,7 +9,7 @@ use App\Models\Child;
 
 class GrowthService
 {
-    public function getGrowthData($phmId)
+    public function getAllChildrenGrowthData($phmId)
     {
         $sql = "
 SELECT 
@@ -57,6 +57,50 @@ ORDER BY h.visit_date
         return array_values($children);
     }
 
+     public function getChildGrowthDataByChildId(int $childId)
+{
+    $sql = "
+    SELECT 
+        c.id AS child_id,
+        c.name AS child_name,
+        h.visit_date,
+        h.height,
+        h.weight,
+        h.bmi
+    FROM children c
+    JOIN child_records h ON h.child_id = c.id
+    WHERE c.id = :childId
+    ORDER BY h.visit_date
+    ";
+
+    $rows = QueryBuilder::rawGet($sql, [
+        ':childId' => $childId
+    ]);
+
+    $child = [
+        'id' => $childId,
+        'name' => '',
+        'bmi' => [],
+        'height' => [],
+        'weight' => [],
+        'labels' => []
+    ];
+
+    foreach ($rows as $row) {
+
+        $child['name'] = $row['child_name'];
+
+        $child['labels'][] = date("M", strtotime($row['visit_date']));
+        $child['bmi'][] = (float)$row['bmi'];
+        $child['height'][] = (float)$row['height'];
+        $child['weight'][] = (float)$row['weight'];
+    }
+
+    return $child;
+}
+
+
+
     public function getChildrenByPhmId(int $phmId,)
     {
 
@@ -74,6 +118,17 @@ ORDER BY h.visit_date
                 'name' => $childData->name,
             ];
         }
+        return $resource;
+    }
+
+    public function getChildById(int $childId)
+    {
+        $child = Child::find($childId);
+
+         $resource = [
+            'id' => $child->id,
+            'name' => $child->name,
+        ];
         return $resource;
     }
 }
