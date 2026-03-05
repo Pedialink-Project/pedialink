@@ -36,7 +36,7 @@ Parent Dashboard
         </c-pill>
         <c-pill>
             <c-slot name="title">Vaccinations</c-slot>
-            <c-slot name="number">03</c-slot>
+            <c-slot name="number">{{$vaccinationCount}}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/vaccine.svg')}}">
             </c-slot>

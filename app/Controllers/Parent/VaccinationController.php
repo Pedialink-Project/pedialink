@@ -22,7 +22,6 @@ class VaccinationController
         $parentId = auth()->user()->id;
 
         [$vaccinations, $links] = $this->vaccinationService->getChildVaccinationByParentId($parentId, $search, $filters);
-        var_dump($vaccinations);
 
 
         return view("parent/vaccination", [
