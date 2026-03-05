@@ -56,15 +56,16 @@ Doctor Dashboard
                     <span class="card-subtitle">Risk rates of assigned patients</span>
                 </div>
                 <!-- Child Selector -->
-                <c-select name='child' class="select-type" placeholder="Select Type">
-                    <li class="select-item" data-value="children">Children</li>
-                    <li class="select-item" data-value="mothers">Mothers</li>
+                <c-select name='child' class="select-type" placeholder="Select Type" value="children">
+                    <li id="select-children-chart" class="select-item" data-value="children">Children</li>
+                    <li id="select-mother-chart" class="select-item" data-value="mothers">Mothers</li>
                 </c-select>
             </div>
             <hr class="divider">
             <div class="card-body growth-card">
                 <canvas id="riskChart">
-
+                </canvas>
+                <canvas id="riskChartMother">
                 </canvas>
             </div>
         </c-card>
@@ -185,29 +186,31 @@ Doctor Dashboard
 
 <script>
     
-   // ---------- Stacked Bar (Antenatal Risk Cases) ----------
-    const riskCtx = document.getElementById('riskChart').getContext('2d');
+   // ---------- Stacked Bar (Patient Risk Cases) ----------
+    const patientRiskData = <?php echo json_encode($patientRiskData); ?>;
 
-    const riskData = {
-        labels: ['18 - 25', '25 - 30', '30 - 40', '40 - 50', '50+'],
+    // Children Risk Chart
+    const riskCtx = document.getElementById('riskChart').getContext('2d');
+    const childrenRiskData = {
+        labels: patientRiskData.children.labels,
         datasets: [
             {
                 label: 'Normal',
-                data: [7, 11, 13, 2, 3],
+                data: patientRiskData.children.good,
                 backgroundColor: '#10B981', // green
                 borderRadius: 6,
                 barThickness: 28
             },
             {
                 label: 'Moderate',
-                data: [5, 11, 16, 3, 4],
+                data: patientRiskData.children.at_risk,
                 backgroundColor: '#F59E0B', // amber
                 borderRadius: 6,
                 barThickness: 28
             },
             {
                 label: 'High',
-                data: [1, 12, 6, 7, 4],
+                data: patientRiskData.children.critical,
                 backgroundColor: '#EF4444', // red
                 borderRadius: 6,
                 barThickness: 28
@@ -217,7 +220,7 @@ Doctor Dashboard
 
     const riskConfig = {
         type: 'bar',
-        data: riskData,
+        data: childrenRiskData,
         options: {
             maintainAspectRatio: true,
             plugins: {
@@ -252,6 +255,92 @@ Doctor Dashboard
     };
 
     new Chart(riskCtx, riskConfig);
+
+    // Mother Risk Chart
+    const riskCtxMother = document.getElementById('riskChartMother').getContext('2d');
+    const motherRiskData = {
+        labels: patientRiskData.maternal.labels,
+        datasets: [
+            {
+                label: 'Normal',
+                data: patientRiskData.maternal.good,
+                backgroundColor: '#10B981', // green
+                borderRadius: 6,
+                barThickness: 28
+            },
+            {
+                label: 'Moderate',
+                data: patientRiskData.maternal.at_risk,
+                backgroundColor: '#F59E0B', // amber
+                borderRadius: 6,
+                barThickness: 28
+            },
+            {
+                label: 'High',
+                data: patientRiskData.maternal.critical,
+                backgroundColor: '#EF4444', // red
+                borderRadius: 6,
+                barThickness: 28
+            }
+        ]
+    };
+
+    const riskConfigMother = {
+        type: 'bar',
+        data: motherRiskData,
+        options: {
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: { boxWidth: 12, boxHeight: 12, padding: 12 }
+                },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    grid: { display: false },
+                    ticks: { color: '#374151', font: { size: 12 } }
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    max: 50,
+                    ticks: {
+                        stepSize: 10,
+                        color: '#6b7280',
+                        font: { size: 12 }
+                    },
+                    grid: {
+                        borderDash: [4, 4],
+                        color: 'rgba(15, 23, 42, 0.06)'
+                    }
+                }
+            }
+        }
+    };
+
+    new Chart(riskCtxMother, riskConfigMother);
+
+    // Toggle between charts
+    const riskChartCanvas = document.getElementById('riskChart');
+    const riskChartMotherCanvas = document.getElementById('riskChartMother');
+    const selectChildrenChart = document.getElementById('select-children-chart');
+    const selectMotherChart = document.getElementById('select-mother-chart');
+
+    // Default: show children chart, hide mother chart
+    riskChartMotherCanvas.style.display = 'none';
+
+    selectChildrenChart.addEventListener('click', function() {
+        riskChartCanvas.style.display = 'block';
+        riskChartMotherCanvas.style.display = 'none';
+    });
+
+    selectMotherChart.addEventListener('click', function() {
+        riskChartCanvas.style.display = 'none';
+        riskChartMotherCanvas.style.display = 'block';
+    });
 
     // --- Data for the right chart (weekly) ---
     const weeklyData = <?php echo json_encode($weeklyAppointmentData); ?>;
