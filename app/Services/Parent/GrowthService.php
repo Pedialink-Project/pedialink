@@ -38,6 +38,7 @@ class GrowthService
             if (!isset($children[$childId])) {
                 $children[$childId] = [
                     'name' => $row['child_name'],
+                    'id' => $childId,
                     'bmi' => [],
                     'height' => [],
                     'weight' => [],
