@@ -16,7 +16,7 @@ Doctor Dashboard
 <div class="top-section">
 
     <section class="greet">
-        <h1>Good Moring <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}}</span>
+        <h1>Good Morning <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}}</span>
         </h1>
     </section>
     <section class="pill-container">
