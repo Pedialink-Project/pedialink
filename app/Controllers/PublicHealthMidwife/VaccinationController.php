@@ -5,7 +5,7 @@ namespace App\Controllers\PublicHealthMidwife;
 use App\Models\Child;
 use App\Models\Vaccination;
 use App\Models\VaccinationReminder;
-use App\Services\PublicHealthMidwife\VaccinationService;
+use App\Services\VaccinationService;
 use Library\Framework\Http\Request;
 
 class VaccinationController
