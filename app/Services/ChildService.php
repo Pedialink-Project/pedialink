@@ -389,6 +389,45 @@ class ChildService
         return [$resource, $links];
     }
 
+     public function fetchVaccinationRecordsByChildId(int $childId): array
+    {
+        $vaccinationRemainder = VaccinationReminder::query()
+            ->where("child_id", "=", $childId)->limit(5)->get();
+
+      
+        $resource = [];
+        foreach ($vaccinationRemainder as $remainder) {
+            $scheduleVaccine = $remainder->getScheduleVaccine();
+            $schedule = $scheduleVaccine ? $scheduleVaccine->getSchedule() : null;
+            $vaccine = $scheduleVaccine ? $scheduleVaccine->getVaccine() : null;
+
+            $recorded_age = calculateAge($remainder->getChild()->date_of_birth, new \DateTimeImmutable($remainder->scheduled_date));
+            $resource[] = [
+                "id" => $remainder->id,
+                "vaccine" => $vaccine ? [
+                    "id" => $vaccine->id,
+                    "name" => $vaccine->name,
+                    "code" => $vaccine->code,
+                ] : null,
+                "schedule_vaccine" => [
+                    "dose_number" => $scheduleVaccine ? $scheduleVaccine->dose_number : null,
+                    "additional_information" => $scheduleVaccine ? $scheduleVaccine->additional_information : null,
+                ],
+                "schedule" => $schedule ? [
+                    "id" => $schedule->id,
+                    "name" => $schedule->name,
+                ] : null,
+                "status" => $remainder->status,
+                "recorded_age" => $recorded_age,
+                "scheduled_date" => $remainder->scheduled_date,
+                
+            ];
+        }
+
+        return $resource;
+        
+    }
+
      public function getChildAppointmentByChildId($childId)
     {
 
