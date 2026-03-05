@@ -93,7 +93,7 @@ Parent - Vaccination
 
                         }}
                         <c-badge type="{{ $badgeType }}">
-                            {{$vaccination['status']}}
+                            {{ucfirst($vaccination['status'])}}
                         </c-badge>
                     </c-table.td>
                     <c-table.td class="table-actions">
@@ -196,6 +196,7 @@ Parent - Vaccination
     </div>
 </c-table.wrapper>
 
+<c-table.pagination :links="$links" />
 
 
 @endsection
