@@ -12,6 +12,7 @@ use App\Models\ParentChild;
 use App\Models\ParentM;
 use App\Models\PublicHealthMidwife;
 use App\Services\EventService;
+use App\Models\VaccinationReminder;
 use App\Helpers\Calculator;
 use Library\Framework\Database\QueryBuilder;
 
@@ -41,6 +42,48 @@ class DashboardService
             ->get();
 
         return count($childAppointments) + count($maternalappointments);
+    }
+
+     public function getChildVaccinationByParentId($parentId)
+    {
+        $childIds = ParentChild::query()->where("parent_id", '=', $parentId)->pluck("child_id");
+        $remainders = VaccinationReminder::query()->whereIn('child_id', $childIds)->limit(3)->get();
+        $resource = [];
+        foreach ($remainders as $remainder) {
+            $sheduledVaccine = $remainder->getScheduleVaccine();
+            $schedule = $sheduledVaccine ? $sheduledVaccine->getSchedule() : null;
+            $vaccine =  $sheduledVaccine->getVaccine();
+            $vaccination = $remainder->getLinkedVaccination();
+            $child = $remainder->getChild();
+            $resource[] = [
+                "id" => $remainder->id,
+                "scheduled_date" => $remainder->scheduled_date,
+                "child" => $child ? [
+                    "id" => $child->id,
+                    "name" => $child->name,
+                ] : null,
+                "sheduled_vaccine" => $sheduledVaccine ? [
+                    "dose_number" => $sheduledVaccine->dose_number,
+                    "additional_information" => $sheduledVaccine->additional_information,
+                ] : null,
+                "schedule" => $schedule ? [
+                    "id" => $schedule->id,
+                    "name" => $schedule->name,
+                ] : null,
+                "vaccine" => $vaccine ? [
+                    "id" => $vaccine->id,
+                    "name" => $vaccine->name,
+                    "code" => $vaccine->code,
+                ] : null,
+                "status" => $remainder->status,
+                "administered_at" => $vaccination ? $vaccination->administered_at : null,
+                "recorded_at" => $vaccination ? $vaccination->recorded_at : null,
+
+
+            ];
+        }
+
+        return $resource;
     }
 
 
