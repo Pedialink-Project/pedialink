@@ -387,6 +387,44 @@ class ChildService
         return [$resource, $links];
     }
 
+     public function getChildAppointmentByChildId($childId)
+    {
+
+        $appointments = Appointment::query()->where('child_id', '=', $childId);
+
+      
+        $appointments = $appointments
+            ->join("appointment_slots as s", "s.id", "=", "appointments.slot_id")
+            ->limit(3)
+            ->get();
+
+        $resource = [];
+        foreach ($appointments as $appointment) {
+            $slot = $appointment->getSlot();
+            $doctor = $slot->getDoctor();
+            $child = $appointment->getChild();
+            $resource[] = [
+                "id" => $appointment->id,
+                "slot_date" => $slot->slot_date,
+                "start_time" => Calculator::formatTimeToAmPm($slot->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($slot->end_time),
+                "doctor" => $doctor ? [
+                    "id" => $doctor->id,
+                    "name" => $doctor->getUser()->name
+                ] : null,
+                "child" => $child ? [
+                    "id" => $child->id,
+                    "name" => $child->name,
+                ] : null,   
+                "reason" => $appointment->reason,
+                "status" => $appointment->status
+            ];
+        }
+
+
+       return $resource;
+    }
+
 
     public function getChildernById(int $id)
     {
