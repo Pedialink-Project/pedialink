@@ -27,7 +27,7 @@ Doctor Vaccination
     </defs>
 </svg>
 
-Vaccination Details &middot; C-{{ $id }} &rarr; {{ $name }}
+Vaccination Details of {{ $name .' (M-00'.$id.')' }}
 @endsection
 
 @section('content')
