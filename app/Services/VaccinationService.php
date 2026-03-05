@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\PublicHealthMidwife;
+namespace App\Services;
 
 use App\Models\Vaccination;
 use App\Models\VaccinationReminder;
