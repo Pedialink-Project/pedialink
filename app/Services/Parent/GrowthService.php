@@ -4,6 +4,7 @@ namespace App\Services\Parent;
 
 
 use Library\Framework\Database\QueryBuilder;
+use App\Models\ParentChild;
 
 class GrowthService
 {
@@ -51,6 +52,22 @@ class GrowthService
         }
 
         return array_values($children);
+    }
+
+      public function getLinkedChildrenListByParentId(int $parentId)
+    {
+        $childrenParent = ParentChild::query()->where('parent_id', '=', $parentId)->get();
+
+        $resource = [];
+        foreach ($childrenParent as $childParent) {
+            $child = $childParent->getChild();
+            $resource[] = [
+                'id' => $child->id,
+                'name' => $child->name,           
+            ];
+        }
+
+        return $resource;
     }
 
 
