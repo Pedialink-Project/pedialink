@@ -17,7 +17,8 @@ private $growthService;
     public function index(Request $request)
     {
         $children = $this->growthService->getChildrenByPhmId(auth()->id());
-        return view("phm/growthmonitoring",['children' => $children]);
+        $growthData = $this->growthService->getGrowthData(auth()->id());
+        return view("phm/growthmonitoring",['childrenList' => $children, 'growthData' => $growthData]);
 
     }
 
