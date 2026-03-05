@@ -34,6 +34,15 @@ Parent - Growth Tracking
 
 <main class="container">
 
+
+@if(empty($growthData))
+<c-emptytable
+    alt="No Growth Data"
+    title="No Growth Records Yet"
+    description="No growth tracking data available. Start recording your child's height, weight, and BMI measurements to view their growth progress here."
+/>
+@else
+
     <!-- BMI Chart -->
     <c-card class="card bmi-card">
         <div class="header">
@@ -150,11 +159,15 @@ Parent - Growth Tracking
         </div>
     </c-card>
 
+    @endif
 </main>
 
 
 <script>
     const growthData = <?php echo json_encode($growthData); ?>;
+
+
+
 
     function createGradient(color, ctx) {
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -184,7 +197,6 @@ Parent - Growth Tracking
         return children[0]?.labels ?? [];
     }
 
-    /* ------------------- Initial Charts ------------------- */
 
     let bmiChart = new Chart(bmiCtx, {
         type: "line",
@@ -234,7 +246,6 @@ Parent - Growth Tracking
         }
     });
 
-    /* ------------------- Update Charts ------------------- */
 
     function updateCharts(childId) {
 
