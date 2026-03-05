@@ -40,8 +40,8 @@ class VaccinationService
                     "id" => $child->id,
                     "name" => $child->name,
                 ] : null,
-                "sheduledVaccine" => $sheduledVaccine ? [
-                    "dose_number" => $sheduledVaccine->name,
+                "sheduled_vaccine" => $sheduledVaccine ? [
+                    "dose_number" => $sheduledVaccine->dose_number,
                     "additional_information" => $sheduledVaccine->additional_information,
                 ] : null,
                 "schedule" => $schedule ? [
@@ -55,7 +55,7 @@ class VaccinationService
                 ] : null,
                 "status" => $remainder->status,
                 "administered_at" => $vaccination ? $vaccination->administered_at : null,
-                 "recorded_at" => $vaccination ? $vaccination->recorded_at : null,
+                "recorded_at" => $vaccination ? $vaccination->recorded_at : null,
 
 
             ];
