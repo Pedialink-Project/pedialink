@@ -237,4 +237,109 @@ class DashboardService
 
         return array_merge($maternalHealthRecord, $childHealthRecord);
     }
+
+    public function getPatientRiskOverviewData(): array
+    {
+        $userId = auth()->user()->id;
+
+        // Children risk data: Get latest child_record per child grouped by age
+        $childSql = "
+            SELECT
+                CASE
+                    WHEN EXTRACT(YEAR FROM AGE(c.date_of_birth)) >= 0 AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 1 THEN '0 - 1'
+                    WHEN EXTRACT(YEAR FROM AGE(c.date_of_birth)) >= 1 AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 2 THEN '1 - 2'
+                    WHEN EXTRACT(YEAR FROM AGE(c.date_of_birth)) >= 2 AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 3 THEN '2 - 3'
+                    WHEN EXTRACT(YEAR FROM AGE(c.date_of_birth)) >= 3 AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 4 THEN '3 - 4'
+                    ELSE '4+'
+                END as age_group,
+                latest.health_status,
+                COUNT(*) as count
+            FROM (
+                SELECT DISTINCT ON (cr.child_id) cr.child_id, cr.health_status
+                FROM child_records cr
+                JOIN children_access_requests car ON car.child_id = cr.child_id
+                WHERE car.accepted = true
+                AND car.staff_id = :staff_id
+                ORDER BY cr.child_id, cr.created_at DESC
+            ) AS latest
+            JOIN children c ON c.id = latest.child_id
+            GROUP BY age_group, latest.health_status
+            ORDER BY age_group, latest.health_status
+        ";
+
+        $childResults = QueryBuilder::rawGet($childSql, ['staff_id' => $userId]);
+
+        // Initialize children data structure
+        $childLabels = ['0 - 1', '1 - 2', '2 - 3', '3 - 4', '4+'];
+        $childData = [
+            'labels' => $childLabels,
+            'good' => array_fill(0, 5, 0),
+            'at_risk' => array_fill(0, 5, 0),
+            'critical' => array_fill(0, 5, 0),
+        ];
+
+        $childAgeGroupIndex = array_flip($childLabels);
+
+        foreach ($childResults as $row) {
+            $ageGroup = $row['age_group'];
+            $healthStatus = $row['health_status'];
+            $count = (int) $row['count'];
+
+            if (isset($childAgeGroupIndex[$ageGroup]) && isset($childData[$healthStatus])) {
+                $index = $childAgeGroupIndex[$ageGroup];
+                $childData[$healthStatus][$index] = $count;
+            }
+        }
+
+        // Maternal risk data: Similar to PHM dashboard
+        $maternalSql = "
+            SELECT
+                CASE
+                    WHEN EXTRACT(YEAR FROM AGE(p.date_of_birth)) >= 18 AND EXTRACT(YEAR FROM AGE(p.date_of_birth)) < 25 THEN '18 - 25'
+                    WHEN EXTRACT(YEAR FROM AGE(p.date_of_birth)) >= 25 AND EXTRACT(YEAR FROM AGE(p.date_of_birth)) < 30 THEN '25 - 30'
+                    WHEN EXTRACT(YEAR FROM AGE(p.date_of_birth)) >= 30 AND EXTRACT(YEAR FROM AGE(p.date_of_birth)) < 40 THEN '30 - 40'
+                    WHEN EXTRACT(YEAR FROM AGE(p.date_of_birth)) >= 40 AND EXTRACT(YEAR FROM AGE(p.date_of_birth)) < 50 THEN '40 - 50'
+                    ELSE '50+'
+                END as age_group,
+                mr.health_status,
+                COUNT(*) as count
+            FROM maternal_records mr
+            JOIN parents p ON mr.parent_id = p.id
+            JOIN maternal m ON m.parent_id = p.id
+            JOIN maternal_access_requests mar ON mar.maternal_id = p.id
+            WHERE mar.staff_id = :staff_id
+            AND m.type = 'antenatal'
+            GROUP BY age_group, mr.health_status
+            ORDER BY age_group, mr.health_status
+        ";
+
+        $maternalResults = QueryBuilder::rawGet($maternalSql, ['staff_id' => $userId]);
+
+        // Initialize maternal data structure
+        $maternalLabels = ['18 - 25', '25 - 30', '30 - 40', '40 - 50', '50+'];
+        $maternalData = [
+            'labels' => $maternalLabels,
+            'good' => array_fill(0, 5, 0),
+            'at_risk' => array_fill(0, 5, 0),
+            'critical' => array_fill(0, 5, 0),
+        ];
+
+        $maternalAgeGroupIndex = array_flip($maternalLabels);
+
+        foreach ($maternalResults as $row) {
+            $ageGroup = $row['age_group'];
+            $healthStatus = $row['health_status'];
+            $count = (int) $row['count'];
+
+            if (isset($maternalAgeGroupIndex[$ageGroup]) && isset($maternalData[$healthStatus])) {
+                $index = $maternalAgeGroupIndex[$ageGroup];
+                $maternalData[$healthStatus][$index] = $count;
+            }
+        }
+
+        return [
+            'children' => $childData,
+            'maternal' => $maternalData,
+        ];
+    }
 }
