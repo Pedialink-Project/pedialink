@@ -9,25 +9,26 @@ use App\Models\Child;
 
 class GrowthService
 {
-    public function getGrowthData($parentId)
+    public function getGrowthData($phmId)
     {
         $sql = "
-        SELECT 
-            c.id AS child_id,
-            c.name AS child_name,
-            h.visit_date,
-            h.height,
-            h.weight,
-            h.bmi
-        FROM children c
-        JOIN parent_children pc ON pc.child_id = c.id
-        JOIN child_records h ON h.child_id = c.id
-        WHERE pc.parent_id = :parentId
-        ORDER BY h.visit_date
-        ";
+SELECT 
+    c.id AS child_id,
+    c.name AS child_name,
+    h.visit_date,
+    h.height,
+    h.weight,
+    h.bmi
+FROM children c
+JOIN children_access_requests car ON car.child_id = c.id
+JOIN child_records h ON h.child_id = c.id
+WHERE car.staff_id = :phmId
+AND car.accepted = true
+ORDER BY h.visit_date
+";
 
         $rows = QueryBuilder::rawGet($sql, [
-            ':parentId' => $parentId
+            ':phmId' => $phmId
         ]);
 
         $children = [];
@@ -56,7 +57,8 @@ class GrowthService
         return array_values($children);
     }
 
-    public function getChildrenByPhmId( int $phmId,) {
+    public function getChildrenByPhmId(int $phmId,)
+    {
 
         $requests = ChildAccessRequest::query()
             ->where('staff_id', '=', $phmId)
