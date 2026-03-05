@@ -84,82 +84,49 @@
             </div>
             <hr class="divider">
             <div class="card-body">
-                <!-- Single vaccine row  -->
+                @if(count($vaccinations) === 0)
+                <div class="no-data-message">
+                    <p>No upcoming vaccinations found.</p>
+                </div>
+                @endif
+                                @foreach($vaccinations as $key => $vaccination)
+
                 <div class="row vaccine">
                     <div class="primary-details">
-                        <div class="name">Hepatitis B</div>
+                        <div class="name">{{$vaccination['vaccine']['name']}}</div>
                         <div class="sub-details">
-                            <div class="sub-name">At Birth</div>
+                            <div class="sub-name">{{$vaccination['schedule_vaccine']['additional_information']}}</div>
                         </div>
                     </div>
 
-                    <c-badge type="green">Completed</c-badge>
+                    {{
+                        $badgeType = '';
+                        if(strtolower($vaccination['status']) == 'complete') {
+                        $badgeType = 'green';
+                        } elseif (strtolower($vaccination['status']) == 'overdue') {
+                        $badgeType = 'red';
+                        } elseif (strtolower($vaccination['status']) == 'pending') {
+                        $badgeType = 'yellow';
+                        }
+                        else {
+                        $badgeType = 'purple';
+                        }
+
+                        }}
+                        <c-badge type="{{ $badgeType }}">
+                            {{ucfirst($vaccination['status'])}}
+                        </c-badge>
 
                     <div class="secondary-details">
-                        <div class="date">2023-10-22</div>
+                        <div class="date">{{$vaccination['scheduled_date']}}</div>
                     </div>
 
                 </div>
-                <!-- Repeatable rows for other vaccines -->
-                <div class="row vaccine">
-                    <div class="primary-details">
-                        <div class="name">MMR</div>
-                        <div class="sub-details">
-                            <div class="sub-name">At Birth</div>
-                        </div>
-                    </div>
+                @endforeach
 
-                    <c-badge type="green">Completed</c-badge>
-
-                    <div class="secondary-details">
-                        <div class="date">2023-10-22</div>
-                    </div>
-
-                </div>
-                <div class="row vaccine">
-                    <div class="primary-details">
-                        <div class="name">BCG</div>
-                        <div class="sub-details">
-                            <div class="sub-name">At Birth</div>
-                        </div>
-                    </div>
-
-                    <c-badge type="red">Overdue</c-badge>
-
-                    <div class="secondary-details">
-                        <div class="date">2023-10-22</div>
-                    </div>
-                </div>
-                <div class="row vaccine">
-                    <div class="primary-details">
-                        <div class="name">OPV 0</div>
-                        <div class="sub-details">
-                            <div class="sub-name">At 06 Months</div>
-                        </div>
-                    </div>
-
-                    <c-badge type="purple">Upcoming</c-badge>
-
-                    <div class="secondary-details">
-                        <div class="date">2023-10-22</div>
-                    </div>
-                </div>
             </div>
 
-            <div class="row vaccine">
-                <div class="primary-details">
-                    <div class="name">OPV 1</div>
-                    <div class="sub-details">
-                        <div class="sub-name">At 09 Months</div>
-                    </div>
-                </div>
 
-                <c-badge type="purple">Upcoming</c-badge>
-
-                <div class="secondary-details">
-                    <div class="date">2023-10-22</div>
-                </div>
-            </div>
 
 
 
@@ -180,7 +147,7 @@
                 <canvas id="heightChart">
 
                 </canvas>
-                 <div class="no-data-message height-no-data" style="display:none;">
+                <div class="no-data-message height-no-data" style="display:none;">
                     No Height records available for this child
                 </div>
             </div>
@@ -281,7 +248,7 @@
                 <canvas id="bmiChart">
 
                 </canvas>
-                 <div class="no-data-message bmi-no-data" style="display:none;">
+                <div class="no-data-message bmi-no-data" style="display:none;">
                     No BMI records available for this child
                 </div>
             </div>
@@ -301,7 +268,7 @@
                 <canvas id="weightChart">
 
                 </canvas>
-                 <div class="no-data-message weight-no-data" style="display:none;">
+                <div class="no-data-message weight-no-data" style="display:none;">
                     No Weight records available for this child
                 </div>
             </div>
@@ -314,121 +281,143 @@
 </main>
 
 <script>
-
-const growthData = <?php echo json_encode($growthData); ?>;
-
-
-
-function createGradient(ctx,color){
-    const gradient = ctx.createLinearGradient(0,0,0,400);
-    gradient.addColorStop(0,color.replace("1)","0.1)"));
-    gradient.addColorStop(1,color.replace("1)","0)"));
-    return gradient;
-}
+    const growthData = <?php echo json_encode($growthData); ?>;
 
 
 
-function handleNoData(chartId,messageClass,data){
+    function createGradient(ctx, color) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, color.replace("1)", "0.1)"));
+        gradient.addColorStop(1, color.replace("1)", "0)"));
+        return gradient;
+    }
 
-    if(!data || data.length === 0){
 
-        document.getElementById(chartId).style.display="none";
-        document.querySelector(messageClass).style.display="block";
-        return true;
+
+    function handleNoData(chartId, messageClass, data) {
+
+        if (!data || data.length === 0) {
+
+            document.getElementById(chartId).style.display = "none";
+            document.querySelector(messageClass).style.display = "block";
+            return true;
+
+        }
+
+        return false;
 
     }
 
-    return false;
-
-}
 
 
+    if (!handleNoData("bmiChart", ".bmi-no-data", growthData.bmi)) {
 
-if(!handleNoData("bmiChart",".bmi-no-data",growthData.bmi)){
+        const ctx = document.getElementById("bmiChart").getContext("2d");
 
-    const ctx = document.getElementById("bmiChart").getContext("2d");
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: growthData.labels,
+                datasets: [{
+                    label: "BMI",
+                    data: growthData.bmi,
+                    borderColor: "rgba(168,85,247,1)",
+                    backgroundColor: createGradient(ctx, "rgba(168,85,247,1)"),
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
-    new Chart(ctx,{
-        type:"line",
-        data:{
-            labels:growthData.labels,
-            datasets:[{
-                label:"BMI",
-                data:growthData.bmi,
-                borderColor:"rgba(168,85,247,1)",
-                backgroundColor:createGradient(ctx,"rgba(168,85,247,1)"),
-                tension:0.4,
-                fill:true,
-                pointRadius:4
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{legend:{display:false}},
-            scales:{y:{beginAtZero:true}}
-        }
-    });
-
-}
-
-
-
-if(!handleNoData("heightChart",".height-no-data",growthData.height)){
-
-    const ctx = document.getElementById("heightChart").getContext("2d");
-
-    new Chart(ctx,{
-        type:"line",
-        data:{
-            labels:growthData.labels,
-            datasets:[{
-                label:"Height",
-                data:growthData.height,
-                borderColor:"rgba(59,130,246,1)",
-                backgroundColor:createGradient(ctx,"rgba(59,130,246,1)"),
-                tension:0.4,
-                fill:true,
-                pointRadius:4
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{legend:{display:false}},
-            scales:{y:{beginAtZero:true}}
-        }
-    });
-
-}
+    }
 
 
 
-if(!handleNoData("weightChart",".weight-no-data",growthData.weight)){
+    if (!handleNoData("heightChart", ".height-no-data", growthData.height)) {
 
-    const ctx = document.getElementById("weightChart").getContext("2d");
+        const ctx = document.getElementById("heightChart").getContext("2d");
 
-    new Chart(ctx,{
-        type:"line",
-        data:{
-            labels:growthData.labels,
-            datasets:[{
-                label:"Weight",
-                data:growthData.weight,
-                borderColor:"rgba(34,197,94,1)",
-                backgroundColor:createGradient(ctx,"rgba(34,197,94,1)"),
-                tension:0.4,
-                fill:true,
-                pointRadius:4
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{legend:{display:false}},
-            scales:{y:{beginAtZero:true}}
-        }
-    });
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: growthData.labels,
+                datasets: [{
+                    label: "Height",
+                    data: growthData.height,
+                    borderColor: "rgba(59,130,246,1)",
+                    backgroundColor: createGradient(ctx, "rgba(59,130,246,1)"),
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
-}
+    }
 
+
+
+    if (!handleNoData("weightChart", ".weight-no-data", growthData.weight)) {
+
+        const ctx = document.getElementById("weightChart").getContext("2d");
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: growthData.labels,
+                datasets: [{
+                    label: "Weight",
+                    data: growthData.weight,
+                    borderColor: "rgba(34,197,94,1)",
+                    backgroundColor: createGradient(ctx, "rgba(34,197,94,1)"),
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    }
 </script>
 
 @endsection

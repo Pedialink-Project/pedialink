@@ -16,6 +16,7 @@ use App\Rules\DivisionRule;
 use App\Rules\DateRule;
 use App\Helpers\BirthCertificateValidator;
 use App\Helpers\NicValidator;
+use App\Models\VaccinationReminder;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 
@@ -123,7 +124,7 @@ class ChildService
             }
 
             $childAppointments = Appointment::query()->where('child_id','=', $child->id)->where('status', '=', 'confirmed')->get();
-
+            $childVaccinations = VaccinationReminder::query()->where('child_id','=',$child->id)->get();
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,
@@ -134,7 +135,8 @@ class ChildService
                 'blood_type' => $child->blood_type,
                 'notes' => $child->notes,
                 'phm' => $phmResource,
-                'appointment_count' => count($childAppointments)
+                'appointment_count' => count($childAppointments),
+                'vaccination_count'=> count($childVaccinations)
             ];
         }
 
@@ -387,6 +389,45 @@ class ChildService
         return [$resource, $links];
     }
 
+     public function fetchVaccinationRecordsByChildId(int $childId): array
+    {
+        $vaccinationRemainder = VaccinationReminder::query()
+            ->where("child_id", "=", $childId)->limit(5)->get();
+
+      
+        $resource = [];
+        foreach ($vaccinationRemainder as $remainder) {
+            $scheduleVaccine = $remainder->getScheduleVaccine();
+            $schedule = $scheduleVaccine ? $scheduleVaccine->getSchedule() : null;
+            $vaccine = $scheduleVaccine ? $scheduleVaccine->getVaccine() : null;
+
+            $recorded_age = calculateAge($remainder->getChild()->date_of_birth, new \DateTimeImmutable($remainder->scheduled_date));
+            $resource[] = [
+                "id" => $remainder->id,
+                "vaccine" => $vaccine ? [
+                    "id" => $vaccine->id,
+                    "name" => $vaccine->name,
+                    "code" => $vaccine->code,
+                ] : null,
+                "schedule_vaccine" => [
+                    "dose_number" => $scheduleVaccine ? $scheduleVaccine->dose_number : null,
+                    "additional_information" => $scheduleVaccine ? $scheduleVaccine->additional_information : null,
+                ],
+                "schedule" => $schedule ? [
+                    "id" => $schedule->id,
+                    "name" => $schedule->name,
+                ] : null,
+                "status" => $remainder->status,
+                "recorded_age" => $recorded_age,
+                "scheduled_date" => $remainder->scheduled_date,
+                
+            ];
+        }
+
+        return $resource;
+        
+    }
+
      public function getChildAppointmentByChildId($childId)
     {
 
@@ -525,6 +566,8 @@ class ChildService
 
         return $resource;
     }
+
+    
 
 
 

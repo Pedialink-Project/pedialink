@@ -148,7 +148,7 @@ Parent - My Childern
                      </clipPath>
                   </defs>
                </svg>
-               <span class="value">05 UpComing</span>
+               <span class="value">{{$child['vaccination_count']}} UpComing</span>
 
 
             </div>

@@ -26,7 +26,7 @@ Parent - Growth Tracking
             stroke="#18181B" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
 
-    <span>Growth Tracking</span>
+Growth of {{ $name .' (C-00'.$id.')' }}
 </div>
 @endsection
 

@@ -21,6 +21,7 @@ class DashboardController
         $bmiData = $this->dashboardService->getChildrenBmiData();
         $childList = $this->dashboardService->getLinkedChildrenListByParentId();
         $childCount = $this->dashboardService->getChildrenCount();
-        return view("parent/dashboard", ['events' => $events, 'appointmentCount' => $appointmentCount,'childAppointments' => $childAppointments, 'maternalAppointments' => $maternalAppointments, 'childCount' => $childCount, 'bmiData' => $bmiData, 'childrenList' => $childList]);
+        $vaccinations = $this->dashboardService->getChildVaccinationByParentId();
+        return view("parent/dashboard", ['events' => $events, 'appointmentCount' => $appointmentCount,'childAppointments' => $childAppointments, 'maternalAppointments' => $maternalAppointments, 'childCount' => $childCount, 'bmiData' => $bmiData, 'childrenList' => $childList,'vaccinations'=>$vaccinations]);
     }
 }
