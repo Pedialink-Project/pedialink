@@ -76,3 +76,10 @@ body {
 .divider {
     border: 0.8px solid var(--border);
 }
+
+.no-data-message{
+    text-align:center;
+    padding:10rem;
+    color:#6b7280;
+    font-weight:500;
+}
