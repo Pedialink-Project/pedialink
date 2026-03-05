@@ -345,7 +345,7 @@ class MaternalService
             $request = null;
 
             foreach ($requests as $req) {
-                if ($req->maternal_id == $maternal->id) {
+                if ($req->maternal_id == $maternal->parent_id) {
                     $request = $req;
                     break;
                 }
