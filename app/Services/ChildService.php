@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
 use App\Models\ChildAccessRequest;
+use App\Models\Appointment;
 use App\Models\ParentChild;
 use App\Rules\NameRule;
 use App\Rules\DivisionRule;
@@ -17,7 +18,6 @@ use App\Helpers\BirthCertificateValidator;
 use App\Helpers\NicValidator;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
-use DateTime;
 
 class ChildService
 {
@@ -110,18 +110,6 @@ class ChildService
         $resource = [];
         foreach ($childrenParent as $childParent) {
 
-            $parent = $childParent->getParent();
-
-            $parentResource = NULL;
-            if ($parent) {
-                $parentResource = [
-                    'id' => $parent->id,
-                    'name' => User::find($parent->id)->name,
-                    'email' => User::find($parent->id)->email,
-                    'type' => $parent->type,
-                ];
-            }
-
             $child = $childParent->getChild();
 
             $phm = PublicHealthMidwife::find($child->phm_id);
@@ -134,6 +122,7 @@ class ChildService
                 ];
             }
 
+            $childAppointments = Appointment::query()->where('child_id','=', $child->id)->where('status', '=', 'confirmed')->get();
 
             $resource[] = [
                 'id' => $child->id,
@@ -144,8 +133,8 @@ class ChildService
                 'health_status' => $child->health_status,
                 'blood_type' => $child->blood_type,
                 'notes' => $child->notes,
-                'parent' => $parentResource,
                 'phm' => $phmResource,
+                'appointment_count' => count($childAppointments)
             ];
         }
 
