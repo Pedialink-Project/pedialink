@@ -425,6 +425,48 @@ class ChildService
        return $resource;
     }
 
+    public function getChildGrowthData(int $childId)
+{
+    $sql = "
+    SELECT 
+        c.id AS child_id,
+        c.name AS child_name,
+        h.visit_date,
+        h.height,
+        h.weight,
+        h.bmi
+    FROM children c
+    JOIN child_records h ON h.child_id = c.id
+    WHERE c.id = :childId
+    ORDER BY h.visit_date
+    ";
+
+    $rows = QueryBuilder::rawGet($sql, [
+        ':childId' => $childId
+    ]);
+
+    $child = [
+        'id' => $childId,
+        'name' => '',
+        'bmi' => [],
+        'height' => [],
+        'weight' => [],
+        'labels' => []
+    ];
+
+    foreach ($rows as $row) {
+
+        $child['name'] = $row['child_name'];
+
+        $child['labels'][] = date("M", strtotime($row['visit_date']));
+        $child['bmi'][] = (float)$row['bmi'];
+        $child['height'][] = (float)$row['height'];
+        $child['weight'][] = (float)$row['weight'];
+    }
+
+    return $child;
+}
+
 
     public function getChildernById(int $id)
     {
