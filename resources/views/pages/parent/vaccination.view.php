@@ -64,10 +64,10 @@ Parent - Vaccination
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th >Child Name</c-table.th>
-                    <c-table.th >Vaccine Code</c-table.th>
-                    <c-table.th >Scheduled Date</c-table.th>
-                    <c-table.th >Status</c-table.th>
+                    <c-table.th>Child Name</c-table.th>
+                    <c-table.th>Vaccine Code</c-table.th>
+                    <c-table.th>Scheduled Date</c-table.th>
+                    <c-table.th>Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -75,7 +75,9 @@ Parent - Vaccination
                 @foreach ($vaccinations as $key => $vaccination)
                 <c-table.tr>
                     <c-table.td col="name">{{ $vaccination['child']['name'] }}</c-table.td>
-                    <c-table.td col="vaccine-name">{{ $vaccination['vaccine']['code'] }}</c-table.td>
+                    <c-table.td col="vaccine-name"><c-badge type="purple">
+                            {{ $vaccination['vaccine']['code'] }}
+                        </c-badge></c-table.td>
                     <c-table.td col="date-time">{{ $vaccination['scheduled_date'] }}</c-table.td>
                     <c-table.td col="status">
                         {{
@@ -129,49 +131,28 @@ Parent - Vaccination
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Vaccination ID" info="{{ $vaccination['id'] }}" />
+                                            title="Vaccination Code" info="{{ $vaccination['vaccine']['code'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Vaccine Name" info="{{ $vaccination['vaccine_name'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Name"
-                                            info="{{ $vaccination['name'] }}" />
+                                            title="Vaccine Name" info="{{ $vaccination['vaccine']['name']  }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Child Name"
+                                            info="{{ $vaccination['child']['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
-                                            title="Date" info="{{ $vaccination['date'] }} " />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                                            info="{{ $vaccination['time'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
-                                            title="Location" info="{{ $vaccination['location'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
-                                            title="Administered By" info="{{ $vaccination['administered_by'] }}" />
+                                            title="Sheduled Date" info="{{ $vaccination['scheduled_date'] }} " />
+                                       
                                     </c-modal.viewcard>
 
 
 
 
 
-                                    <c-modal.viewlist title="Details">
+                                    <c-modal.viewlist title="Vaccination Details">
                                         <c-slot name="list">
-                                            <li>{{ $vaccination['details'] }}</li>
-                                        </c-slot>
-                                    </c-modal.viewlist>
-                                    @if(!empty($vaccination['notes']))
-                                    <c-modal.viewlist title="Notes">
-                                        <c-slot name="list">
+                                            <li>Info: {{ $vaccination['sheduled_vaccine']['additional_information'] }}</li>
+                                            <li>Dose No:{{ $vaccination['sheduled_vaccine']['dose_number'] }}</li>
 
-                                            @foreach ($vaccination['notes'] as $note)
-                                            <li>{{ $note }}</li>
-                                            @endforeach
                                         </c-slot>
                                     </c-modal.viewlist>
-                                    @else
-                                    <c-modal.viewlist title="Records">
-                                        <c-slot name="list">
-
-                                            @foreach ($vaccination['records'] as $record)
-                                            <li>{{ $record }}</li>
-                                            @endforeach
-                                        </c-slot>
-                                    </c-modal.viewlist>
-                                    @endif
+                                   
 
                                     <c-slot name="close">
                                         Close
