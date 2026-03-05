@@ -18,10 +18,13 @@ class GrowthController
         $parentId = auth()->user()->id;
 
         $growthData = $this->growthService->getGrowthData($parentId);
+        $childrenList = $this->growthService->getLinkedChildrenListByParentId($parentId);
         var_dump($growthData);
+        var_dump($childrenList);
 
         return view("parent/growth-tracking", [
-            "growthData" => $growthData
+            "growthData" => $growthData,
+            "childrenList" => $childrenList
         ]);
     }
    
