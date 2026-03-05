@@ -7,7 +7,7 @@ use App\Services\PublicHealthMidwife\GrowthService;
 
 class GrowthMonitorController
 {
-private $growthService;
+    private $growthService;
 
     public function __construct()
     {
@@ -17,15 +17,19 @@ private $growthService;
     public function index(Request $request)
     {
         $children = $this->growthService->getChildrenByPhmId(auth()->id());
-        $growthData = $this->growthService->getGrowthData(auth()->id());
-        return view("phm/growthmonitoring",['childrenList' => $children, 'growthData' => $growthData]);
-
+        $growthData = $this->growthService->getAllChildrenGrowthData(auth()->id());
+        return view("phm/growthmonitoring", ['childrenList' => $children, 'growthData' => $growthData]);
     }
 
     public function childGrowthIndex(Request $request, int $id)
     {
-        return view("phm/growthmonitoring", [
-            "id" => $id,
+
+        $growthData = $this->growthService->getChildGrowthDataByChildId($id);
+
+        $child = $this->growthService->getChildById($id);
+        return view("phm/onechildgrowthmonitoring", [
+            "child" => $child,
+            "growthData" => $growthData
         ]);
     }
 }
