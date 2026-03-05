@@ -21,13 +21,14 @@ class DashboardController
         $urgentCasesCount = $this->dashboardService->getUrgentCasesCount();
         $upcomingAppointments = $this->dashboardService->upcomingAppointments();
         $weeklyAppointmentData = $this->dashboardService->getWeeklyAppointmentData();
-        
+        $latestHealthRecords = $this->dashboardService->getLatestHealthRecords();
         return view("doctor/dashboard", [
             "patientsCount" => $patientsCount,
             "appointmentsCount" => $appointmentsCount,
             "urgentCasesCount" => $urgentCasesCount,
             "upcomingAppointments" => $upcomingAppointments,
-            "weeklyAppointmentData" => $weeklyAppointmentData
+            "weeklyAppointmentData" => $weeklyAppointmentData,
+            "latestHealthRecords" => $latestHealthRecords
         ]);
     }
 }
