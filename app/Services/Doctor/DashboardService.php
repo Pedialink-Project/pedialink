@@ -115,4 +115,69 @@ class DashboardService
             return $resource;
         }
     }
+
+    public function getWeeklyAppointmentData()
+    {
+        $userId = auth()->user()->id;
+
+        // Get the current week's Monday and Friday
+        $today = new \DateTimeImmutable('today');
+        $dayOfWeek = (int)$today->format('N'); // 1 = Monday, 7 = Sunday
+        $monday = $today->modify('-' . ($dayOfWeek - 1) . ' days')->format('Y-m-d');
+        $friday = $today->modify('+' . (5 - $dayOfWeek) . ' days')->format('Y-m-d');
+
+        // SQL: join appointments with slots, filter by doctor_id, group by day of week (1=Mon..5=Fri)
+        // Count attended as completed, no-show and cancelled as cancelled
+        $sql = "
+        SELECT
+            EXTRACT(DOW FROM s.slot_date)::int AS dow,
+            SUM(CASE WHEN a.status = 'attended' THEN 1 ELSE 0 END)::int AS completed,
+            SUM(CASE WHEN a.status IN ('no-show', 'cancelled') THEN 1 ELSE 0 END)::int AS cancelled,
+            COUNT(*)::int AS booked
+        FROM appointments a
+        JOIN appointment_slots s ON a.slot_id = s.id
+        WHERE s.slot_date >= :monday AND s.slot_date <= :friday
+        AND s.doctor_id = :doctor_id
+        GROUP BY dow
+        ORDER BY dow
+        ";
+
+        $rows = QueryBuilder::rawGet($sql, ['monday' => $monday, 'friday' => $friday, 'doctor_id' => $userId]);
+
+        // Initialize 5-day buckets (index 0 -> Monday, index 4 -> Friday)
+        $booked = array_fill(0, 5, 0);
+        $completed = array_fill(0, 5, 0);
+        $cancelled = array_fill(0, 5, 0);
+
+        if (!empty($rows) && is_array($rows)) {
+            foreach ($rows as $r) {
+                $dow = null;
+                $comp = 0;
+                $canc = 0;
+                $book = 0;
+
+                if (is_array($r)) {
+                    // PostgreSQL DOW: 0=Sunday, 1=Monday, ..., 5=Friday, 6=Saturday
+                    $dow = isset($r['dow']) ? (int)$r['dow'] : null;
+                    $comp = isset($r['completed']) ? (int)$r['completed'] : 0;
+                    $canc = isset($r['cancelled']) ? (int)$r['cancelled'] : 0;
+                    $book = isset($r['booked']) ? (int)$r['booked'] : 0;
+                }
+
+                // Map DOW 1-5 (Mon-Fri) to array index 0-4
+                if ($dow !== null && $dow >= 1 && $dow <= 5) {
+                    $idx = $dow - 1;
+                    $booked[$idx] = $book;
+                    $completed[$idx] = $comp;
+                    $cancelled[$idx] = $canc;
+                }
+            }
+        }
+
+        return [
+            'booked' => $booked,
+            'completed' => $completed,
+            'cancelled' => $cancelled,
+        ];
+    }
 }
