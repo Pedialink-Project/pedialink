@@ -33,7 +33,7 @@ Parent - Vaccination
         </defs>
     </svg>
 
-    <span>Vaccinations</span>
+    <span>Children Vaccinations</span>
 </div>
 
 @endsection
@@ -45,7 +45,7 @@ Parent - Vaccination
 
 
 
-<c-table.controls :columns='["Name","Vaccine Name","Date & Time ","Location","Administerd By","Status"]'>
+<c-table.controls action="{{ route('parent.vaccination') }}" :filters="['status' => ['complete', 'pending', 'overdue']]">
     <c-slot name="filter">
         <c-button variant="outline">
             <img src="{{ asset('assets/icons/filter.svg') }}" />
