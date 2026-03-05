@@ -47,19 +47,23 @@ Growth Monitorinng
                 <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
             </div>
             <!-- Child Selector -->
-            @if (isset($id))
-                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child" value="baby-sara" disabled>
-                    <li class="select-item" data-value="all-children">All Children</li>
-                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
+           <c-select class="child-select-bmi" placeholder="Select Child">
+
+                    @if(!empty($children))
+                    @foreach ($children as $child)
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }}
+                    </li>
+                    @endforeach
+                    <li class="select-item" data-value="all-children">
+                        All Children
+                    </li>
+                    @else
+                    <li class="select-item disabled">
+                        No children available
+                    </li>
+                    @endif
                 </c-select>
-            @else 
-                <c-select name='child' class="child-select" searchable="1" placeholder="Select Child">
-                    <li class="select-item" data-value="all-children">All Children</li>
-                    <li class="select-item " data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
-                </c-select>
-            @endif
             
         </div>
         <hr class="divider">
