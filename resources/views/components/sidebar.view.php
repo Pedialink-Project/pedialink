@@ -170,7 +170,7 @@ $menuItems = [
             ],
             [
                 'name' => 'Growth Tracking',
-                'link' => route('parent.nutrition.tracking'),
+                'link' => route('parent.growth.tracking'),
                 'icon' => asset('/assets/icons/chart-evaluation.svg'),
                
             ],

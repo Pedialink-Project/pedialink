@@ -27,6 +27,8 @@ class MyChildrenController
     public function viewChildDetails(Request $request, $id)
     {
         $child = $this->childService->getChildernById($id);
+        $appointmnts = $this->childService->getChildAppointmentByChildId($id);
+        $growthData = $this->childService->getChildGrowthData($id);
 
         if (empty($child)) {
             return redirect('/parent/my-children')->withMessage(
@@ -35,7 +37,7 @@ class MyChildrenController
                 "error",
             );
         }
-        return view("parent/my-child-details", data: ['child' => $child]);
+        return view("parent/my-child-details", data: ['child' => $child, 'appointments' => $appointmnts, 'growthData' => $growthData]);
 
     }
 }

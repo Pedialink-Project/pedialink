@@ -120,7 +120,7 @@ Parent - My Childern
                      stroke-linecap="round" />
                </svg>
 
-               <span class="value">01 Scheduled</span>
+               <span class="value">{{ $child['appointment_count'] }} Scheduled</span>
             </div>
          </div>
          <div class="detail-row">

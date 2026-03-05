@@ -188,7 +188,7 @@ Parent Dashboard
             </div>
         </c-card>
 
-         <c-card class="card appoinment-card">
+        <c-card class="card appoinment-card">
             <div class="header">
                 <div class="title-section">
                     <span class="card-title">Upcoming My Appoinments</span>
@@ -245,19 +245,36 @@ Parent Dashboard
             <div class="header">
                 <div class="title-section">
                     <span class="card-title">Child Growth Chart</span>
-                    <span class="card-subtitle">Track Baby Sarah's BMI over time</span>
+                    <span class="card-subtitle">Track All Children's BMI over time</span>
                 </div>
-                <!-- Child Selector -->
                 <c-select name='child' class="child-select" placeholder="Select Child">
-                    <li class="select-item" data-value="baby-sara">Baby Sara</li>
-                    <li class="select-item" data-value="baby-john">Baby John</li>
+
+                    @if(!empty($childrenList))
+                    @foreach ($childrenList as $child)
+
+                    <li class="select-item" data-value="{{ $child['id'] }}">
+                        {{ $child['name'] }}
+                    </li>
+
+                    @endforeach
+
+                    <li class="select-item" data-value="all-children">
+                        All Children
+                    </li>
+
+                    @endif
+
                 </c-select>
             </div>
             <hr class="divider">
             <div class="card-body growth-card">
-                <canvas id="bmiChart">
 
-                </canvas>
+                <canvas id="bmiChart"></canvas>
+
+                <div class="no-data-message bmi-no-data" style="display:none;">
+                    No BMI records available for this child
+                </div>
+
             </div>
         </c-card>
 
@@ -363,68 +380,111 @@ Parent Dashboard
 
 </main>
 
-<!-- <script src="{{asset('js/pages/parent/dashboard.css')}}" defer></script> -->
 <script>
-    const ctx = document.getElementById('bmiChart').getContext('2d');
 
+const bmiData = <?php echo json_encode($bmiData); ?>;
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, 'rgba(156, 39, 176, 0.3)');
-    gradient.addColorStop(1, 'rgba(156, 39, 176, 0)');
+const ctx = document.getElementById('bmiChart').getContext('2d');
+const canvas = document.getElementById("bmiChart");
+const noDataMsg = document.querySelector(".bmi-no-data");
+const subtitle = document.querySelector(".growth-card .card-subtitle");
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                label: 'BMI',
-                data: [70, 80, 65, 75, 90, 85, 30, 20, 95, 100, 60, 90],
-                borderColor: 'rgba(156, 39, 176, 1)',
-                backgroundColor: gradient,
-                fill: true,
-                tension: 0.3,
-                pointBackgroundColor: '#fff',
-                pointBorderColor: 'rgba(156, 39, 176, 1)',
-                pointRadius: 4,
-                pointHoverRadius: 5,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0,0,0,0.05)'
-                    },
-                    ticks: {
-                        stepSize: 20
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(255,255,255)',
-                    titleColor: '#000',
-                    bodyColor: '#000',
-                    borderColor: 'rgba(0, 0, 0, 0.3)',
-                    borderWidth: 1,
-                    cornerRadius: 6,
-                    padding: 8
-                }
+function createGradient(ctx){
+    const gradient = ctx.createLinearGradient(0,0,0,300);
+    gradient.addColorStop(0,'rgba(156,39,176,0.3)');
+    gradient.addColorStop(1,'rgba(156,39,176,0)');
+    return gradient;
+}
+
+function buildDatasets(children){
+    return children.map(child => ({
+        label: child.name,
+        data: child.bmi,
+        borderColor: 'rgba(156,39,176,1)',
+        backgroundColor: createGradient(ctx),
+        fill: true,
+        tension: 0.3,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: 'rgba(156,39,176,1)',
+        pointRadius: 4,
+        pointHoverRadius: 5,
+    }));
+}
+
+function getLabels(children){
+    return children[0]?.labels ?? [];
+}
+
+let bmiChart = new Chart(ctx,{
+    type:'line',
+    data:{
+        labels:getLabels(bmiData),
+        datasets:buildDatasets(bmiData)
+    },
+    options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{
+            x:{grid:{display:false}},
+            y:{
+                beginAtZero:true,
+                grid:{color:'rgba(0,0,0,0.05)'}
             }
+        },
+        plugins:{
+            legend:{display:false}
         }
+    }
+});
+
+
+document.querySelectorAll(".child-select .select-item").forEach(item=>{
+
+    item.addEventListener("click",function(){
+
+        const childId = this.dataset.value;
+
+        let filtered;
+
+        if(childId === "all-children"){
+            filtered = bmiData;
+            subtitle.textContent = "Track All Children's BMI over time";
+        } else {
+
+            const child = bmiData.find(c => c.id == childId);
+
+            subtitle.textContent = child
+                ? `Track ${child.name}'s BMI over time`
+                : "Track Child BMI over time";
+
+            filtered = bmiData.filter(child => child.id == childId);
+        }
+
+        const noData = !filtered.length || !filtered[0].bmi.length;
+
+        if(noData){
+
+            bmiChart.data.labels = [];
+            bmiChart.data.datasets = [];
+            bmiChart.update();
+
+            canvas.style.display = "none";
+            noDataMsg.style.display = "block";
+
+            return;
+        }
+
+        canvas.style.display = "block";
+        noDataMsg.style.display = "none";
+
+        bmiChart.data.labels = getLabels(filtered);
+        bmiChart.data.datasets = buildDatasets(filtered);
+
+        bmiChart.update();
+
     });
+
+});
+
 </script>
-
-
 @endsection
