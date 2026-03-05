@@ -181,27 +181,28 @@ Parent Dashboard
 <script>
     // ---------- Stacked Bar (Antenatal Risk Cases) ----------
     const riskCtx = document.getElementById('riskChart').getContext('2d');
+    const maternalRiskData = <?php echo json_encode($maternalRiskData); ?>;
 
     const riskData = {
-        labels: ['18 - 25', '25 - 30', '30 - 40', '40 - 50', '50+'],
+        labels: maternalRiskData.labels,
         datasets: [
             {
                 label: 'Normal',
-                data: [7, 11, 13, 2, 3],
+                data: maternalRiskData.good,
                 backgroundColor: '#10B981', // green
                 borderRadius: 6,
                 barThickness: 28
             },
             {
                 label: 'Moderate',
-                data: [5, 11, 16, 3, 4],
+                data: maternalRiskData.at_risk,
                 backgroundColor: '#F59E0B', // amber
                 borderRadius: 6,
                 barThickness: 28
             },
             {
                 label: 'High',
-                data: [1, 12, 6, 7, 4],
+                data: maternalRiskData.critical,
                 backgroundColor: '#EF4444', // red
                 borderRadius: 6,
                 barThickness: 28

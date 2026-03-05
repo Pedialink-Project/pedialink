@@ -21,12 +21,14 @@ class DashboardController
         $upcomingVaccinationsCount = $this->dashboardService->getUpcomingVaccinationsCount();
         $appointments = $this->dashboardService->upcomingAppointments();
         $vaccinations = $this->dashboardService->upcomingVaccinations();
+        $maternalRiskData = $this->dashboardService->maternalRiskData();
         return view("phm/dashboard", [
             "linkedChildrenCount" => $linkedChildrenCount,
             "appointmentsCount" => $appointmentsCount,
             "upcomingVaccinationsCount" => $upcomingVaccinationsCount,
             "appointments" => $appointments,
-            "vaccinations" => $vaccinations
+            "vaccinations" => $vaccinations,
+            "maternalRiskData" => $maternalRiskData
         ]);
     }
 }
