@@ -63,7 +63,14 @@ class GrowthMonitorController
             $recordsByChildId[$record->child_id][] = $record;
         }
 
-        $allDates = [];
+        $currentYear = (int) date('Y');
+        $currentMonth = (int) date('n');
+
+        $monthKeys = range(1, $currentMonth);
+        $dateLabels = array_map(function ($monthNumber) {
+            return date('M', mktime(0, 0, 0, $monthNumber, 1));
+        }, $monthKeys);
+
         $bmiDatasets = [];
         $heightDatasets = [];
         $weightDatasets = [];
@@ -84,9 +91,9 @@ class GrowthMonitorController
 
             $childRecords = $recordsByChildId[$childId] ?? [];
 
-            $bmiByDate = [];
-            $heightByDate = [];
-            $weightByDate = [];
+            $bmiByMonth = [];
+            $heightByMonth = [];
+            $weightByMonth = [];
 
             foreach ($childRecords as $record) {
                 // Use visit_date as the key for individual records
@@ -100,9 +107,13 @@ class GrowthMonitorController
                     continue;
                 }
 
-                // Use the full date as key (not aggregated by month)
-                $dateKey = date('Y-m-d', $timestamp);
-                $allDates[$dateKey] = true;
+                $recordYear = (int) date('Y', $timestamp);
+                $recordMonth = (int) date('n', $timestamp);
+
+                // Only include records in the current year up to the current month.
+                if ($recordYear !== $currentYear || $recordMonth > $currentMonth) {
+                    continue;
+                }
 
                 $heightValue = $record->height !== null ? (float) $record->height : null;
                 $weightValue = $record->weight !== null ? (float) $record->weight : null;
@@ -112,37 +123,32 @@ class GrowthMonitorController
                     $bmiValue = $childRecordService->calculateBMI($weightValue, $heightValue);
                 }
 
-                // Store the last value for this date (if multiple records on same date)
-                $bmiByDate[$dateKey] = $bmiValue;
-                $heightByDate[$dateKey] = $heightValue;
-                $weightByDate[$dateKey] = $weightValue;
+                // Store the last value for this month (if multiple records in same month)
+                $bmiByMonth[$recordMonth] = $bmiValue;
+                $heightByMonth[$recordMonth] = $heightValue;
+                $weightByMonth[$recordMonth] = $weightValue;
             }
 
             $bmiDatasets[] = [
                 'childId' => $childId,
                 'label' => $childName,
-                'dataByDate' => $bmiByDate,
+                'dataByMonth' => $bmiByMonth,
             ];
             $heightDatasets[] = [
                 'childId' => $childId,
                 'label' => $childName,
-                'dataByDate' => $heightByDate,
+                'dataByMonth' => $heightByMonth,
             ];
             $weightDatasets[] = [
                 'childId' => $childId,
                 'label' => $childName,
-                'dataByDate' => $weightByDate,
+                'dataByMonth' => $weightByMonth,
             ];
         }
 
-        $dateLabels = array_keys($allDates);
-        usort($dateLabels, function ($a, $b) {
-            return strtotime($a) <=> strtotime($b);
-        });
-
-        $bmiChartDatasets = $this->buildChartDatasets($bmiDatasets, $dateLabels);
-        $heightChartDatasets = $this->buildChartDatasets($heightDatasets, $dateLabels);
-        $weightChartDatasets = $this->buildChartDatasets($weightDatasets, $dateLabels);
+        $bmiChartDatasets = $this->buildChartDatasets($bmiDatasets, $monthKeys);
+        $heightChartDatasets = $this->buildChartDatasets($heightDatasets, $monthKeys);
+        $weightChartDatasets = $this->buildChartDatasets($weightDatasets, $monthKeys);
 
         // Debug output
         error_log("=== GROWTH MONITOR DEBUG ===");
@@ -166,7 +172,7 @@ class GrowthMonitorController
         ]);
     }
 
-    private function buildChartDatasets(array $datasets, array $dateLabels): array
+    private function buildChartDatasets(array $datasets, array $monthKeys): array
     {
         $colors = [
             'rgba(59,130,246,1)',
@@ -183,8 +189,8 @@ class GrowthMonitorController
 
         foreach ($datasets as $dataset) {
             $data = [];
-            foreach ($dateLabels as $dateLabel) {
-                $data[] = $dataset['dataByDate'][$dateLabel] ?? null;
+            foreach ($monthKeys as $monthKey) {
+                $data[] = $dataset['dataByMonth'][$monthKey] ?? null;
             }
 
             $chartDatasets[] = [

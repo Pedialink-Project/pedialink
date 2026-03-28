@@ -46,20 +46,22 @@ PHM Growth Monitoring
             </div>
         </c-card>
     @else
-        <!-- BMI Chart -->
-        <c-card class="card bmi-card">
+        <c-card class="card">
             <div class="header">
                 <div class="title-section">
-                    <span class="card-title">Child BMI Tracking</span>
-                    <span class="card-subtitle">Track BMI growth over time</span>
+                    <span class="card-title">Select Child</span>
+                    <span class="card-subtitle">Choose once to update all growth charts</span>
                 </div>
-                <c-select name="bmi-child-filter" class="child-select bmi-filter" searchable="1" placeholder="Select Child" >
+                <c-select name="child-filter" class="child-select combined-filter" searchable="1" placeholder="Select Child" >
                     @foreach ($children ?? [] as $child)
                         <li class="select-item" data-value="<?php echo $child['id']; ?>">{{ $child['name'] }}</li>
                     @endforeach
                 </c-select>
             </div>
-            <hr class="divider">
+        </c-card>
+
+        <!-- BMI Chart -->
+        <c-card class="card bmi-card">
             <div class="card-body">
                 <canvas id="bmiChart" height="260"></canvas>
             </div>
@@ -67,18 +69,6 @@ PHM Growth Monitoring
 
         <!-- Height Chart -->
         <c-card class="card height-card">
-            <div class="header">
-                <div class="title-section">
-                    <span class="card-title">Child Height Tracking</span>
-                    <span class="card-subtitle">Track height growth over time</span>
-                </div>
-                <c-select name="height-child-filter" class="child-select height-filter" searchable="1" placeholder="Select Child" >
-                    @foreach ($children ?? [] as $child)
-                        <li class="select-item" data-value="<?php echo $child['id']; ?>">{{ $child['name'] }}</li>
-                    @endforeach
-                </c-select>
-            </div>
-            <hr class="divider">
             <div class="card-body">
                 <canvas id="heightChart" height="260"></canvas>
             </div>
@@ -86,18 +76,6 @@ PHM Growth Monitoring
 
         <!-- Weight Chart -->
         <c-card class="card weight-card">
-            <div class="header">
-                <div class="title-section">
-                    <span class="card-title">Child Weight Tracking</span>
-                    <span class="card-subtitle">Track weight growth over time</span>
-                </div>
-                <c-select name="weight-child-filter" class="child-select weight-filter" searchable="1" placeholder="Select Child" >
-                    @foreach ($children ?? [] as $child)
-                        <li class="select-item" data-value="<?php echo $child['id']; ?>">{{ $child['name'] }}</li>
-                    @endforeach
-                </c-select>
-            </div>
-            <hr class="divider">
             <div class="card-body">
                 <canvas id="weightChart" height="260"></canvas>
             </div>
@@ -138,7 +116,7 @@ PHM Growth Monitoring
         const heightCtx = heightCanvas.getContext("2d");
         const weightCtx = weightCanvas.getContext("2d");
 
-        function buildDatasets(source, chartCtx, filterValue) {
+        function buildDatasets(source, chartCtx, filterValue, chartColor = null) {
             // If no filter value or empty, return empty array (show nothing)
             if (!filterValue || filterValue === '') {
                 return [];
@@ -150,8 +128,8 @@ PHM Growth Monitoring
             return filtered.map(item => ({
                 label: item.label,
                 data: item.data || [],
-                borderColor: item.color,
-                backgroundColor: createGradient(item.color, chartCtx),
+                borderColor: chartColor || item.color,
+                backgroundColor: createGradient(chartColor || item.color, chartCtx),
                 tension: 0.4,
                 fill: true,
                 pointRadius: 4,
@@ -184,9 +162,17 @@ PHM Growth Monitoring
                         beginAtZero: true,
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
                         ticks: { stepSize: 5 },
+                        title: {
+                            display: true,
+                            text: 'BMI Value (kg/m2)'
+                        }
                     },
                     x: {
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
                     },
                 },
             },
@@ -213,9 +199,17 @@ PHM Growth Monitoring
                     y: {
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
                         ticks: { stepSize: 5 },
+                        title: {
+                            display: true,
+                            text: 'Height (cm)'
+                        }
                     },
                     x: {
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
                     },
                 },
             },
@@ -242,9 +236,17 @@ PHM Growth Monitoring
                     y: {
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
                         ticks: { stepSize: 5 },
+                        title: {
+                            display: true,
+                            text: 'Weight (kg)'
+                        }
                     },
                     x: {
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
                     },
                 },
             },
@@ -252,73 +254,44 @@ PHM Growth Monitoring
 
         // Wait for DOM to be ready and set up filters
         setTimeout(() => {
-            const bmiFilter = document.querySelector('.bmi-filter');
-            const heightFilter = document.querySelector('.height-filter');
-            const weightFilter = document.querySelector('.weight-filter');
+            const combinedFilter = document.querySelector('.combined-filter');
 
-            console.log('Filters found:', { bmiFilter, heightFilter, weightFilter });
+            console.log('Combined filter found:', combinedFilter);
 
-            // Function to update charts based on filter value
-            const updateBmiChart = (filterValue) => {
-                console.log('Updating BMI Chart with filterValue:', filterValue, 'Type:', typeof filterValue);
-                if (filterValue !== '' && filterValue !== null && filterValue !== undefined) {
-                    const newDatasets = buildDatasets(bmiSource, bmiCtx, filterValue);
-                    console.log('New BMI Datasets count:', newDatasets.length, 'Datasets:', newDatasets);
-                    bmiChart.data.datasets = newDatasets;
+            const updateAllCharts = (filterValue) => {
+                console.log('Updating all charts with filterValue:', filterValue);
+
+                if (filterValue === '' || filterValue === null || filterValue === undefined) {
+                    bmiChart.data.datasets = [];
+                    heightChart.data.datasets = [];
+                    weightChart.data.datasets = [];
                     bmiChart.update();
-                } else {
-                    console.log('Skipping BMI update - no filter value');
-                }
-            };
-
-            const updateHeightChart = (filterValue) => {
-                console.log('Updating Height Chart with filterValue:', filterValue);
-                if (filterValue !== '' && filterValue !== null && filterValue !== undefined) {
-                    const newDatasets = buildDatasets(heightSource, heightCtx, filterValue);
-                    console.log('New Height Datasets count:', newDatasets.length);
-                    heightChart.data.datasets = newDatasets;
                     heightChart.update();
-                }
-            };
-
-            const updateWeightChart = (filterValue) => {
-                console.log('Updating Weight Chart with filterValue:', filterValue);
-                if (filterValue !== '' && filterValue !== null && filterValue !== undefined) {
-                    const newDatasets = buildDatasets(weightSource, weightCtx, filterValue);
-                    console.log('New Weight Datasets count:', newDatasets.length);
-                    weightChart.data.datasets = newDatasets;
                     weightChart.update();
+                    return;
                 }
+
+                const bmiColor = 'rgba(59,130,246,1)';
+                const heightColor = 'rgba(34,197,94,1)';
+                const weightColor = 'rgba(236,72,153,1)';
+
+                bmiChart.data.datasets = buildDatasets(bmiSource, bmiCtx, filterValue, bmiColor);
+                heightChart.data.datasets = buildDatasets(heightSource, heightCtx, filterValue, heightColor);
+                weightChart.data.datasets = buildDatasets(weightSource, weightCtx, filterValue, weightColor);
+
+                bmiChart.update();
+                heightChart.update();
+                weightChart.update();
             };
 
-            // Listen for clicks on select items with proper event handling
-            if (bmiFilter) {
-                bmiFilter.addEventListener('click', (e) => {
+            // Listen once and update all charts from a single child selection
+            if (combinedFilter) {
+                combinedFilter.addEventListener('click', (e) => {
                     const selectItem = e.target.closest('.select-item');
                     if (!selectItem) return;
                     const dataValue = selectItem.getAttribute('data-value');
-                    console.log('BMI Select item clicked:', dataValue);
-                    updateBmiChart(dataValue);
-                });
-            }
-
-            if (heightFilter) {
-                heightFilter.addEventListener('click', (e) => {
-                    const selectItem = e.target.closest('.select-item');
-                    if (!selectItem) return;
-                    const dataValue = selectItem.getAttribute('data-value');
-                    console.log('Height Select item clicked:', dataValue);
-                    updateHeightChart(dataValue);
-                });
-            }
-
-            if (weightFilter) {
-                weightFilter.addEventListener('click', (e) => {
-                    const selectItem = e.target.closest('.select-item');
-                    if (!selectItem) return;
-                    const dataValue = selectItem.getAttribute('data-value');
-                    console.log('Weight Select item clicked:', dataValue);
-                    updateWeightChart(dataValue);
+                    console.log('Combined child select clicked:', dataValue);
+                    updateAllCharts(dataValue);
                 });
             }
 
