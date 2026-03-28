@@ -32,9 +32,7 @@ PHM Child Profiles
         </clipPath>
     </defs>
 </svg>
-<span>Child Profiles - Overview
-</span>
-
+<span>Active Child Profiles</span>
 @endsection
 
 @section('content')
@@ -151,7 +149,7 @@ PHM Child Profiles
                                         <c-dropdown.item>View Child Profile</c-dropdown.item>
                                     </c-slot>
 
-                                    <c-slot name="headerSuffix">
+                                    <!-- <c-slot name="headerSuffix">
                                         @if($child['latest_health_record'])
                                             @if (strtolower($child['latest_health_record']['health_status']) === 'good')
                                                 <c-badge type="green">{{ ucfirst($child['latest_health_record']['health_status']) }}</c-badge>
@@ -165,6 +163,9 @@ PHM Child Profiles
                                         @else
                                             <c-badge type="gray">No Record</c-badge>
                                         @endif
+                                    </c-slot> -->
+                                    <c-slot name="headerSuffix">
+                                            <c-badge type="yellow">Active</c-badge>
                                     </c-slot>
 
                                     <c-slot name="header">
@@ -185,7 +186,7 @@ PHM Child Profiles
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
                                             title="Birth Certificate No" info="{{ $child['birth_certificate'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
-                                            info="{{ date('d M Y', strtotime($child['date_of_birth'])) }}" />    
+                                           title="Date of Birth" info="{{ date('d M Y', strtotime($child['date_of_birth'])) }}" />    
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Gender"
                                             info="{{ strtolower($child['gender']) === 'm' ? 'Male' : 'Female' }}"
                                             />

@@ -17,6 +17,16 @@ class ChildHealthController
     }
     public function index(Request $request, int $id)
     {
+        $child = Child::find($id);
+        if (!$child) {
+            return redirect(route('phm.child.profiles'))
+                ->withMessage(
+                    "Child not found",
+                    "Error",
+                    "error"
+                );
+        }
+
         $records = ChildRecord::query()
             ->where('child_id', '=', $id)
             ->orderBy('visit_date', 'DESC')
@@ -44,6 +54,7 @@ class ChildHealthController
 
         return view("phm/childhealth", [
             "id" => $id,
+            "is_archived" => $child->archived_at !== null,
             "items" => $items,
         ]);
     }
@@ -55,6 +66,15 @@ class ChildHealthController
         if (!$child) {
             return redirect(route('phm.child.profiles'))
                 ->withErrors(['error' => 'Child not found']);
+        }
+
+        if ($child->archived_at !== null) {
+            return redirect(route('phm.child.health.records', ['id' => $id]))
+                ->withMessage(
+                    "Cannot add health records to an archived child profile. Restore the profile to add new records.",
+                    "Error",
+                    "error"
+                );
         }
 
         $visitDate = $request->input('visit_date');
