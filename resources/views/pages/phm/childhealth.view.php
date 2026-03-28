@@ -67,6 +67,7 @@
         </c-slot>
 
         <c-slot name="extrabtn">
+        @if (!($is_archived ?? false))
         <c-modal id="add-heath-record-modal" size="sm" :initOpen="false">
             <c-slot name="trigger">
                 <c-button variant="primary">
@@ -124,6 +125,8 @@
                 <button type="submit" form="add-health-record-form" class="btn btn-primary">Confirm</button>
             </c-slot>
         </c-modal>
+        
+        @endif
     </c-slot>
     </c-table.controls>
 

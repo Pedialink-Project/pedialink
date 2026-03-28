@@ -13,13 +13,24 @@ use Library\Framework\Database\QueryBuilder;
 
 class ChildService
 {
+    private function autoArchiveAdults(): void
+    {
+        QueryBuilder::rawExec(
+            "UPDATE children
+             SET archived_at = NOW()
+             WHERE archived_at IS NULL
+               AND date_of_birth IS NOT NULL
+               AND date_of_birth <= CURRENT_DATE - INTERVAL '18 years'"
+        );
+    }
+
     private function calculateAge($dob): string
     {
         $dobDt = $dob instanceof DateTime ? clone $dob : new DateTime($dob);
         $now = new DateTime();
 
         if ($dobDt > $now) {
-            return "0 months"; // simple handling for future dates
+            return "Date of birth is in the future"; // simple handling for future dates
         }
 
         $diff = $now->diff($dobDt);
@@ -42,6 +53,8 @@ class ChildService
 
     public function getAllChildren()
     {
+        $this->autoArchiveAdults();
+
         // Get only non-archived children using raw query for proper NULL checking
         $children = QueryBuilder::rawGet(
             "SELECT * FROM children WHERE archived_at IS NULL ORDER BY id DESC"
@@ -93,6 +106,8 @@ class ChildService
 
     public function getChildernByParentId(int $parentId)
     {
+        $this->autoArchiveAdults();
+
         // Get only non-archived children for this parent using raw query
         $children = QueryBuilder::rawGet(
             "SELECT * FROM children WHERE parent_id = :parent_id AND archived_at IS NULL ORDER BY id DESC",
@@ -153,6 +168,8 @@ class ChildService
 
     public function getChildernById(int $id)
     {
+        $this->autoArchiveAdults();
+
         $child = Child::find($id);
 
         $childRecord = ChildRecord::query()->where('child_id', '=', $id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
@@ -277,6 +294,44 @@ class ChildService
         return $error;
     }
 
+    private function validateDateOfBirth(string $dob)
+    {
+        $error = null;
+        
+        if (!Validator::validateFieldExistence($dob)) {
+            $error = "Date of Birth field cannot be empty";
+            return $error;
+        }
+        
+        try {
+            $dobDt = new DateTime($dob);
+            $now = new DateTime();
+            
+            if ($dobDt > $now) {
+                $error = "Date of Birth cannot be in the future";
+                return $error;
+            }
+        } catch (\Exception $e) {
+            $error = "Invalid Date of Birth format";
+            return $error;
+        }
+        
+        return $error;
+    }
+
+    private function hasReachedEighteen(string $dob): bool
+    {
+        try {
+            $dobDt = new DateTime($dob);
+            $today = new DateTime('today');
+            $eighteenthBirthday = (clone $dobDt)->modify('+18 years');
+
+            return $eighteenthBirthday <= $today;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     public function validateChildProfile(string $name, int $areaId, string $dob, string $gender, string $birthCertificate, bool $edit = false)
     {
         $errors = [];
@@ -292,7 +347,7 @@ class ChildService
             $errors["{$suffix}area"] = $areaError;
         }
 
-        $dobError = $this->validateCommonFields($dob, "Date of Birth");
+        $dobError = $this->validateDateOfBirth($dob);
         if ($dobError) {
             $errors["{$suffix}date_of_birth"] = $dobError;
         }
@@ -341,6 +396,11 @@ class ChildService
 
         if ($child->archived_at === null) {
             $error = "This child profile is not archived";
+            return $error;
+        }
+
+        if ($child->date_of_birth && $this->hasReachedEighteen($child->date_of_birth)) {
+            $error = "This child profile cannot be restored because the child is 18 years or older";
         }
 
         return $error;
@@ -409,6 +469,8 @@ class ChildService
 
     public function getArchivedChildren()
     {
+        $this->autoArchiveAdults();
+
         // Get only archived children using raw query
         $children = QueryBuilder::rawGet(
             "SELECT * FROM children WHERE archived_at IS NOT NULL ORDER BY archived_at DESC"

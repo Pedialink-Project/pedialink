@@ -74,9 +74,9 @@ Archived Child Profiles
                         <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
                         <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
                         <c-table.td col="Status">
-                            <c-badge class="status-vaccination" type="gray">
+                            <!-- <c-badge class="status-vaccination" type="gray"> -->
                                 Archived
-                            </c-badge>
+                            <!-- </c-badge> -->
                         </c-table.td>
                         <c-table.td col="archived_at">{{ $child['archived_at'] ? date('Y-m-d', strtotime($child['archived_at'])) : 'N/A' }}</c-table.td>
                         <c-table.td class="table-actions" align="center">
