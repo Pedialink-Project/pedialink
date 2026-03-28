@@ -47,7 +47,20 @@ class ChildHealthRecordController
         $trimester = $request->input('trimester');
         $additionalNotes = $request->input('notes');
 
-        $errors = $this->ChildRecordService->validateChildRecordData($visitdate, $height, '', '', $weight, '', '', $additionalNotes, false);
+        $ageInMonths = $this->ChildRecordService->calculateAgeInMonths($child->date_of_birth);
+
+        $errors = $this->ChildRecordService->validateChildRecordData(
+            $visitdate,
+            $height,
+            $headCircumference,
+            '',
+            $weight,
+            '',
+            '',
+            $additionalNotes,
+            false,
+            $ageInMonths
+        );
         
         if (count($errors) !== 0) {
             return redirect(route("phm.child.health.records", ["id" => $id]))
@@ -61,9 +74,6 @@ class ChildHealthRecordController
                 ->withErrors($errors)
                 ->with("create", true);
         }
-        
-        // Calculate child's age in months
-        $ageInMonths = $this->ChildRecordService->calculateAgeInMonths($child->date_of_birth);
         
         // Auto-determine health status based on vital signs
         $healthStatus = 'Good';
