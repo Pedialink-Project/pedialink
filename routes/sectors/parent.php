@@ -2,6 +2,7 @@
 
 use App\Controllers\NotificationController;
 use App\Controllers\Parent\AppointmentController;
+use App\Controllers\Parent\CalendarController;
 use App\Controllers\Parent\DashboardController;
 use App\Controllers\Parent\EventController;
 use App\Controllers\Parent\MyChildrenController;
@@ -35,6 +36,7 @@ return [
     ['POST', '/parent/events-campaigns/{id}/cancel', [EventController::class, 'cancelEventBooking'], 'parent.events.campaigns.cancel', ['parent','verified']],
 
     //Other routes
+    ['GET', '/parent/calendar', [CalendarController::class, 'index'], 'parent.calendar', ['parent','verified']],
     ['GET', '/parent/notification', [NotificationController::class, 'index'], 'parent.notification', ['parent','verified']],
     ['GET', '/parent/settings', [SettingController::class, 'index'], 'parent.settings', ['parent','verified']],
 ];
