@@ -68,7 +68,7 @@
 
         <c-slot name="extrabtn">
         @if (!($is_archived ?? false))
-        <c-modal id="add-heath-record-modal" size="sm" :initOpen="false">
+        <c-modal id="add-heath-record-modal" size="sm" :initOpen="flash('create') ? true : false">
             <c-slot name="trigger">
                 <c-button variant="primary">
                     Add Record

@@ -264,10 +264,85 @@ class ChildRecordService
     return $error;
 }
 
+    private function getMeasurementRangesByAge(int $ageInMonths): array
+    { 
+        if ($ageInMonths <= 1) {
+            return [
+                'weight' => ['min' => 2.5, 'max' => 6],
+                'height' => ['min' => 51, 'max' => 59],
+                'head_circumference' => ['min' => 0, 'max' => 0],
+            ];
+        }
+        if ($ageInMonths <= 6) {
+            return [
+                'weight' => ['min' => 2.5, 'max' => 8],
+                'height' => ['min' => 45, 'max' => 70],
+                'head_circumference' => ['min' => 32, 'max' => 42],
+            ];
+        }
+        if ($ageInMonths <= 12) {
+            return [
+                'weight' => ['min' => 4, 'max' => 10],
+                'height' => ['min' => 55, 'max' => 80],
+                'head_circumference' => ['min' => 34, 'max' => 46],
+            ];
+        }
+        if ($ageInMonths <= 24) {
+            return [
+                'weight' => ['min' => 2.5, 'max' => 18],
+                'height' => ['min' => 45, 'max' => 100],
+                'head_circumference' => ['min' => 32, 'max' => 52],
+            ];
+        }
+
+        if ($ageInMonths <= 60) {
+            return [
+                'weight' => ['min' => 8, 'max' => 28],
+                'height' => ['min' => 70, 'max' => 125],
+                'head_circumference' => ['min' => 42, 'max' => 56],
+            ];
+        }
+
+        return [
+            'weight' => ['min' => 12, 'max' => 50],
+            'height' => ['min' => 90, 'max' => 180],
+            'head_circumference' => ['min' => 46, 'max' => 60],
+        ];
+    }
+
+    private function validateAgeBasedMeasurements($height, $weight, $headCircumference, int $ageInMonths, string $errorSuffix = ''): array
+    {
+        $errors = [];
+        $ranges = $this->getMeasurementRangesByAge($ageInMonths);
+
+        if (is_numeric($weight)) {
+            $weightValue = (float) $weight;
+            if ($weightValue < $ranges['weight']['min'] || $weightValue > $ranges['weight']['max']) {
+                $errors["{$errorSuffix}weight"] = "Weight is not valid";
+            }
+        }
+
+        if (is_numeric($height)) {
+            $heightValue = (float) $height;
+            if ($heightValue < $ranges['height']['min'] || $heightValue > $ranges['height']['max']) {
+                $errors["{$errorSuffix}height"] = "Height is not valid";
+            }
+        }
+
+        if (is_numeric($headCircumference)) {
+            $headValue = (float) $headCircumference;
+            if ($headValue < $ranges['head_circumference']['min'] || $headValue > $ranges['head_circumference']['max']) {
+                $errors["{$errorSuffix}head_circumference"] = "Head circumference is not valid";
+            }
+        }
+
+        return $errors;
+    }
 
 
 
-    public function validateChildRecordData($visitdate, $height, $head_circumference, $bloodSugar,$weight,$trimester, $healthStatus,$additionalNotes, $edit = false)
+
+    public function validateChildRecordData($visitdate, $height, $head_circumference, $bloodSugar,$weight,$trimester, $healthStatus,$additionalNotes, $edit = false, $ageInMonths = null)
     {
         $errorSuffix = '';
         if ($edit) {
@@ -285,7 +360,7 @@ class ChildRecordService
             $errors["{$errorSuffix}height"] = $heightError;
         }
 
-        $headCircumferenceError = $this->validateCommonFields($head_circumference, "Head Circumference");
+        $headCircumferenceError = $this->validateNumericStat($head_circumference, "Head Circumference");
         if ($headCircumferenceError) {
             $errors["{$errorSuffix}head_circumference"] = $headCircumferenceError;
         }
@@ -298,6 +373,18 @@ class ChildRecordService
         $weightError = $this->validateNumericStat($weight, "Weight");
         if ($weightError) {
             $errors["{$errorSuffix}weight"] = $weightError;
+        }
+
+        if ($ageInMonths !== null && is_numeric($ageInMonths)) {
+            $ageBasedErrors = $this->validateAgeBasedMeasurements(
+                $height,
+                $weight,
+                $head_circumference,
+                (int) $ageInMonths,
+                $errorSuffix
+            );
+
+            $errors = array_merge($errors, $ageBasedErrors);
         }
 
         // $trimesterError = $this->validateCommonFields($trimester, "Trimester");

@@ -96,7 +96,8 @@ class ChildHealthController
             null, // trimester - not used for children
             null, // healthStatus - auto-calculated
             $notes,
-            false
+            false,
+            $ageInMonths
         );
 
         if (count($errors) > 0) {
@@ -108,7 +109,8 @@ class ChildHealthController
                     'weight' => $weight,
                     'head_circumference' => $headCircumference,
                     'notes' => $notes,
-                ]);
+                ])
+                ->with('create', true);
         }
 
         // Create the record using ChildRecordService (which auto-calculates health status)
