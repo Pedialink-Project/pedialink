@@ -99,9 +99,9 @@ Health Records &#8594; M-000{{$parentId}}
                 <c-input type="text" name="blood_sugar" label="Blood Sugar:"
                     placeholder="Enter Blood Sugar of the Mother (in mg/dL )" error="{{ errors('blood_sugar') ?? '' }}"
                     value="{{ old('blood_sugar')??'' }}" />    
-                <c-input type="text" name="trimester" label="Trimester:"
+                <!-- <c-input type="text" name="trimester" label="Trimester:"
                     placeholder="Enter Trimester" error="{{ errors('trimester') ?? '' }}"
-                    value="{{ old('trimester')??'' }}" />        
+                    value="{{ old('trimester')??'' }}" />         -->
                 <c-textarea name="notes" label="Additional Notes:"
                     placeholder="Enter any additional notes" error="{{ errors('notes') ?? '' }}"
                     value="{{ old('notes')??'' }}" />
@@ -209,8 +209,8 @@ Health Records &#8594; M-000{{$parentId}}
                                                 title="Weight(kg)" info="{{ $item['weight'] }}" />
                                             <c-modal.viewitem icon="{{asset('assets/icons/ruler.svg')}}"
                                                 title="Height(cm)" info="{{ $item['height'] }} " />    
-                                            <c-modal.viewitem icon="{{ asset('assets/icons/bubble-chat.svg') }}"
-                                                title="Trimester" info="{{ $item['trimester'] }} " />
+                                            <!-- <c-modal.viewitem icon="{{ asset('assets/icons/bubble-chat.svg') }}"
+                                                title="Trimester" info="{{ $item['trimester'] }} " /> -->
                                             <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}"
                                                 title="Health Status" info="{{ $item['health_status'] }} " />
                                              </c-modal.viewcard>

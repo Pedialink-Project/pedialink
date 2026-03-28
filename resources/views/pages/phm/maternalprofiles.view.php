@@ -118,8 +118,8 @@ Maternal Profiles - Overview
                                             title="NIC Number" info="{{ $item['nic'] ?? '-' }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}" title="Type"
                                             info="{{ $item['type'] ?? '-' }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
-                                            title="Pregnancy Stage" info="{{ $item['stage'] ?? '-' }}" />
+                                        <!-- <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
+                                            title="Pregnancy Stage" info="{{ $item['stage'] ?? '-' }}" /> -->
                                         <!-- <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}"
                                             title="Pregnancy Duration" info="5 weeks and 2 days" /> -->
                                         <!-- <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}" title="Latest Health Status"
@@ -134,7 +134,7 @@ Maternal Profiles - Overview
                                                 <li>BMI: {{ $item['latest_health_record']['bmi'] ?? '-' }} kg/m2</li>
                                                 <li>Blood Sugar: {{ $item['latest_health_record']['blood_sugar'] ?? '-' }} mg/dL</li>
                                                 <li>Blood Pressure: {{ $item['latest_health_record']['blood_pressure'] ?? '-' }} mmHg</li>
-                                                <li>Trimester: {{ $item['latest_health_record']['trimester'] ?? '-' }}</li>
+                                                <!-- <li>Trimester: {{ $item['latest_health_record']['trimester'] ?? '-' }}</li> -->
                                                 <li>Last Update Date: {{ $item['latest_health_record']['visit_date'] ?? '-' }}</li>
                                             @else
                                                 <li>No health records found</li>
