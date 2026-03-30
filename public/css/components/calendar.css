@@ -163,6 +163,52 @@
 /* low opacity for dates with no events */
 .calendar-cell--empty { opacity: .98; }
 
+.event-group {
+  margin-bottom: 16px;
+}
+
+.event-group-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+}
+
+.event-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.event-card {
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+/* type colors */
+.event-card.vaccination {
+  border-left: 4px solid #22c55e;
+}
+
+.event-card.appointment {
+  border-left: 4px solid #3b82f6;
+}
+
+.event-card.campaign {
+  border-left: 4px solid #f59e0b;
+}
+
+.event-header {
+  margin-bottom: 6px;
+}
+
+.event-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
 /* responsive: compact view reduces sizes */
 @media (max-width: 640px) {
   :root { --cal-day-size: 3.25rem; }
