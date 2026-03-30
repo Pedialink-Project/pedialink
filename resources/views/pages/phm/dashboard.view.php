@@ -223,7 +223,14 @@ PHM Dashboard
                 x: {
                     stacked: true,
                     grid: { display: false },
-                    ticks: { color: '#374151', font: { size: 12 } }
+                    ticks: { color: '#374151', font: { size: 12 }},
+                    title: {
+                            display: true,
+                            text: 'Age Group',
+                            font: {
+                                weight: 'bold'
+                            }
+                }
                 },
                 y: {
                     stacked: true,
@@ -234,6 +241,13 @@ PHM Dashboard
                         color: '#6b7280',
                         font: { size: 12 }
                     },
+                    title: {
+                            display: true,
+                            text: 'Number of Maternals',
+                            font: {
+                                weight: 'bold'
+                            }
+                    },     
                     grid: {
                         borderDash: [4, 4],
                         color: 'rgba(15, 23, 42, 0.06)'
