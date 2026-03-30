@@ -3,6 +3,7 @@
 namespace App\Services;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
+use DateTime;
 
 class ChildRecordService
 {   
@@ -29,6 +30,35 @@ class ChildRecordService
 
         return $resource;
     }
+
+
+    private function calculateAge($dob): string
+    {
+        $dobDt = $dob instanceof DateTime ? clone $dob : new DateTime($dob);
+        $now = new DateTime();
+
+        if ($dobDt > $now) {
+            return "Date of birth is in the future"; // simple handling for future dates
+        }
+
+        $diff = $now->diff($dobDt);
+
+        if ($diff->y >= 1) {
+            $y = $diff->y;
+            return $y . ' year' . ($y === 1 ? '' : 's');
+        }
+
+        if ($diff->m >= 1) {
+            $m = $diff->m;
+            return $m . ' month' . ($m === 1 ? '' : 's');
+        }
+
+        $d = $diff->d;
+        return $d . ' day' . ($d === 1 ? '' : 's');
+
+
+    }
+
 
 
 
@@ -73,8 +103,8 @@ class ChildRecordService
     public function calculateAgeInMonths($dateOfBirth)
     {
         // Calculate age in months from date of birth
-        $now = new \DateTime();
-        $dob = new \DateTime($dateOfBirth);
+        $now = new DateTime();
+        $dob = new DateTime($dateOfBirth);
         $interval = $now->diff($dob);
         
         // Calculate total months: years * 12 + months

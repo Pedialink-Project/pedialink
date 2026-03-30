@@ -31,7 +31,7 @@
         </clipPath>
     </defs>
 </svg>
-    Health Records &#8594; C-000{{ $id +1 }}
+    C-000{{ $id +1 }} &#8594; Health Records 
 @endsection
 
 @section('content')
@@ -199,6 +199,8 @@
                                             </c-slot>
 
                                             <c-modal.viewcard>
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                                title="Age" info="{{ $child_age ?? 'Unknown' }}" />    
                                             <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
                                                 title="Recorded At" info="{{ $item['visit_date'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
@@ -214,7 +216,7 @@
                                             <c-modal.viewitem icon="{{asset('assets/icons/ruler.svg')}}"
                                                 title="Height(cm)" info="{{ $item['height'] }} " />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
-                                                title="BMI(kg/m2)" info="{{ $item['bmi'] }}" />    
+                                                title="BMI(kg/m2)" info="{{ $item['bmi'] }}" />
                                             <!-- <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
                                                 title="Head Circumference(cm)" info="{{ $item['head_circumference'] }} " />   -->
                                             <!-- <c-modal.viewitem icon="{{ asset('assets/icons/bubble-chat.svg') }}"

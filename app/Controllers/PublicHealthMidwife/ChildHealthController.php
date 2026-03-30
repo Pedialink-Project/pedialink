@@ -29,7 +29,7 @@ class ChildHealthController
 
         $records = ChildRecord::query()
             ->where('child_id', '=', $id)
-            ->orderBy('visit_date', 'DESC')
+            ->orderBy('visit_date', 'AESC')
             ->orderBy('created_at', 'DESC')
             ->get();
 
@@ -52,8 +52,18 @@ class ChildHealthController
             ];
         }
 
+        $ageInMonths = $this->childRecordService->calculateAgeInMonths($child->date_of_birth);
+        $childAge = 'Unknown';
+        if (is_numeric($ageInMonths)) {
+            $ageInMonths = (int) $ageInMonths;
+            $years = intdiv($ageInMonths, 12);
+            $months = $ageInMonths % 12;
+            $childAge = $years . ' years ' . $months . ' months';
+        }
+
         return view("phm/childhealth", [
             "id" => $id,
+            "child_age" => $childAge,
             "is_archived" => $child->archived_at !== null,
             "items" => $items,
         ]);
