@@ -276,6 +276,26 @@ $jsonMap = htmlspecialchars(json_encode($eventsMap, JSON_UNESCAPED_UNICODE | JSO
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
+    function renderItem(it) {
+      let html = `<div class="event-row">`;
+
+      // show main label
+      const main = it.child || it.maternal || it.location || '—';
+      html += `<span class="event-main">${escapeHtml(main)}</span>`;
+
+      // show other fields dynamically
+      Object.keys(it).forEach(key => {
+        if (key === 'child' || key === 'maternal' || key === 'location') return;
+
+        if (it[key]) {
+          html += `<span class="event-meta">${escapeHtml(it[key])}</span>`;
+        }
+      });
+
+      html += `</div>`;
+      return html;
+    }
+
     // Open modal (if modalId provided) or dispatch event
     function onDateClicked(isoDate) {
       const events = eventsForDate(isoDate);
@@ -299,6 +319,22 @@ $jsonMap = htmlspecialchars(json_encode($eventsMap, JSON_UNESCAPED_UNICODE | JSO
         // If we found modalInner, write content into its modal-body (preserve header/footer)
         if (modalInner) {
           const body = modalInner.querySelector('.modal-body');
+
+          const headerTitle = modalInner.querySelector('.calendar-modal-title');
+
+          if (headerTitle) {
+            if (events.length === 0) {
+              headerTitle.textContent = "No Events";
+            } else {
+              const types = [...new Set(events.map(e => e.type || 'event'))];
+
+              if (types.length === 1) {
+                headerTitle.textContent = capitalize(types[0]);
+              } else {
+                headerTitle.textContent = `${events.length} Events`;
+              }
+            }
+          }
           if (body) {
             // build simple markup (you can customize)
             let html = `<div class="calendar-modal-date">
@@ -306,7 +342,22 @@ $jsonMap = htmlspecialchars(json_encode($eventsMap, JSON_UNESCAPED_UNICODE | JSO
 `;
 
             if (events.length === 0) {
-              html += `<p>No items scheduled for this date.</p>`;
+              html += `
+  <div class="calendar-empty">
+  <svg class="empty-icon" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18 2V4M6 2V4" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.9955 13H12.0045M11.9955 17H12.0045M15.991 13H16M8 13H8.00897M8 17H8.00897" stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.5 8H20.5" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.5 12.2432C2.5 7.88594 2.5 5.70728 3.75212 4.35364C5.00424 3 7.01949 3 11.05 3H12.95C16.9805 3 18.9958 3 20.2479 4.35364C21.5 5.70728 21.5 7.88594 21.5 12.2432V12.7568C21.5 17.1141 21.5 19.2927 20.2479 20.6464C18.9958 22 16.9805 22 12.95 22H11.05C7.01949 22 5.00424 22 3.75212 20.6464C2.5 19.2927 2.5 17.1141 2.5 12.7568V12.2432Z" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 8H21" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+    <div class="empty-title">No events for this day</div>
+    <div class="empty-subtitle">
+      You're all clear. No appointments, vaccinations, or campaigns scheduled.
+    </div>
+  </div>
+`;
             } else {
 
               const grouped = groupByType(events);
@@ -335,13 +386,7 @@ $jsonMap = htmlspecialchars(json_encode($eventsMap, JSON_UNESCAPED_UNICODE | JSO
 
                   if (Array.isArray(ev.items) && ev.items.length) {
                     ev.items.forEach(it => {
-                      html += `
-            <div class="event-row">
-              <span>${escapeHtml(it.child || '')}</span>
-              ${it.time ? `<span>${escapeHtml(it.time)}</span>` : ''}
-              ${it.vaccine ? `<span>${escapeHtml(it.vaccine)}</span>` : ''}
-            </div>
-          `;
+                      html += renderItem(it);
                     });
                   }
 
