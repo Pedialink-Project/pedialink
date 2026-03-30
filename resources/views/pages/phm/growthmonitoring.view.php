@@ -62,6 +62,13 @@ PHM Growth Monitoring
 
         <!-- BMI Chart -->
         <c-card class="card bmi-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child BMI Tracking</span>
+                    <span class="card-subtitle">Track BMI growth over time</span>
+                </div>
+            </div>
+            <hr class="divider">
             <div class="card-body">
                 <canvas id="bmiChart" height="260"></canvas>
             </div>
@@ -69,6 +76,13 @@ PHM Growth Monitoring
 
         <!-- Height Chart -->
         <c-card class="card height-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child Height Tracking</span>
+                    <span class="card-subtitle">Track height growth over time</span>
+                </div>
+            </div>
+            <hr class="divider">
             <div class="card-body">
                 <canvas id="heightChart" height="260"></canvas>
             </div>
@@ -76,6 +90,13 @@ PHM Growth Monitoring
 
         <!-- Weight Chart -->
         <c-card class="card weight-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Child Weight Tracking</span>
+                    <span class="card-subtitle">Track weight growth over time</span>
+                </div>
+            </div>
+            <hr class="divider">
             <div class="card-body">
                 <canvas id="weightChart" height="260"></canvas>
             </div>
@@ -152,7 +173,7 @@ PHM Growth Monitoring
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: true,
+                        display: false,
                         position: "bottom",
                         labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
                     }
@@ -164,14 +185,20 @@ PHM Growth Monitoring
                         ticks: { stepSize: 5 },
                         title: {
                             display: true,
-                            text: 'BMI Value (kg/m2)'
+                            text: 'BMI Value (kg/m2)',
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     },
                     x: {
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
                         title: {
                             display: true,
-                            text: 'Month'
+                            text: 'Month',
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     },
                 },
@@ -190,7 +217,7 @@ PHM Growth Monitoring
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: true,
+                        display: false,
                         position: "bottom",
                         labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
                     }
@@ -201,14 +228,21 @@ PHM Growth Monitoring
                         ticks: { stepSize: 5 },
                         title: {
                             display: true,
-                            text: 'Height (cm)'
+                            text: 'Height (cm)',
+                            font: {
+                                weight: 'bold'
+                            }
+                            
                         }
                     },
                     x: {
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
                         title: {
                             display: true,
-                            text: 'Month'
+                            text: 'Month',
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     },
                 },
@@ -227,7 +261,7 @@ PHM Growth Monitoring
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: true,
+                        display: false,
                         position: "bottom",
                         labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 12 }
                     }
@@ -238,14 +272,20 @@ PHM Growth Monitoring
                         ticks: { stepSize: 5 },
                         title: {
                             display: true,
-                            text: 'Weight (kg)'
+                            text: 'Weight (kg)',
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     },
                     x: {
                         grid: { color: "rgba(0, 0, 0, 0.05)" },
                         title: {
                             display: true,
-                            text: 'Month'
+                            text: 'Month',
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     },
                 },
