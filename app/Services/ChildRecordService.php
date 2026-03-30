@@ -88,124 +88,282 @@ class ChildRecordService
     {
         /**
          * Determine child health status based on BMI, age, height, weight, and head circumference
-         * For children, BMI interpretation varies by age
+         * Based on WHO growth patterns and developmental stages:
+         * - Infants (0-12 months): Rapid growth, weight triples
+         * - Toddlers (12-36 months): Growth tapers, gain 2-3 kg/year
+         * - Preschoolers (36-60 months): Consistent growth, gain ~2 kg/year
+         * - School-aged (60-144 months): Steady growth, gain 2.5-3.5 kg/year
+         * - Adolescents (144-216 months): Variable growth with puberty spurts
          * 
-         * Returns: 'critical', 'bad', or 'good'
+         * Returns: 'Critical', 'Bad', or 'Good'
          */
         $criticalCount = 0;
         $badCount = 0;
 
         $age = !empty($ageInMonths) ? (int)$ageInMonths : null;
 
-        // BMI checks (age-based)
-        if (!empty($bmi) && $age !== null) {
-            $bmiValue = (float)$bmi;
+        if ($age === null || $age < 0) {
+            return null;
+        }
 
-            if ($age <= 24) {
+        // BMI checks (age-based)
+        if (!empty($bmi)) {
+            $bmiValue = (float)$bmi;
+            if ($bmiValue <= 0) {
+                return null;
+            }
+
+            // Infants (0-12 months): BMI ranges 12-20
+            if ($age <= 12) {
+                if ($bmiValue < 10 || $bmiValue > 20) {
+                    $criticalCount++;
+                } elseif ($bmiValue < 12 || $bmiValue > 18) {
+                    $badCount++;
+                }
+            }
+            // Toddlers (12-36 months): BMI ranges 12-20
+            elseif ($age <= 36) {
                 if ($bmiValue < 12 || $bmiValue > 20) {
                     $criticalCount++;
                 } elseif ($bmiValue < 13 || $bmiValue > 18) {
                     $badCount++;
                 }
-            } elseif ($age <= 60) {
-                if ($bmiValue < 13 || $bmiValue > 19) {
+            }
+            // Preschoolers (36-60 months): BMI ranges 12.5-20
+            elseif ($age <= 60) {
+                if ($bmiValue < 12.5 || $bmiValue > 20) {
                     $criticalCount++;
-                } elseif ($bmiValue < 14 || $bmiValue > 17.5) {
+                } elseif ($bmiValue < 13.5 || $bmiValue > 19) {
                     $badCount++;
                 }
-            } else {
+            }
+            // School-aged (60-144 months): BMI ranges 13-22
+            elseif ($age <= 144) {
+                if ($bmiValue < 13 || $bmiValue > 22) {
+                    $criticalCount++;
+                } elseif ($bmiValue < 14 || $bmiValue > 20.5) {
+                    $badCount++;
+                }
+            }
+            // Adolescents (144+ months): BMI ranges 14-25
+            else {
                 if ($bmiValue < 14 || $bmiValue > 25) {
                     $criticalCount++;
-                } elseif ($bmiValue < 15.5 || $bmiValue > 23) {
+                } elseif ($bmiValue < 15.5 || $bmiValue > 23.5) {
                     $badCount++;
                 }
             }
         }
 
-        // Weight checks (kg)
-        if (!empty($weight) && $age !== null) {
+        // Weight checks (kg) - based on growth patterns
+        if (!empty($weight)) {
             $w = (float)$weight;
-
-            if ($age <= 24) {
-                if ($w < 2.5 || $w > 18) {
+            if ($w <= 0) {
+                // Invalid weight value, skip checks
+            }
+            // Infants (0-12 months): Birth ~3.5kg, Triple by 12 months ~10.5kg
+            elseif ($age <= 12) {
+                if ($w < 2.5 || $w > 11) {
                     $criticalCount++;
-                } elseif ($w < 3 || $w > 16) {
+                } elseif ($w < 3 || $w > 10) {
                     $badCount++;
                 }
-            } elseif ($age <= 60) {
-                if ($w < 8 || $w > 28) {
+            }
+            // Toddlers (12-36 months): 10.5kg → 16.5kg (gain 2-3kg/year)
+            elseif ($age <= 24) {
+                if ($w < 8 || $w > 15) {
                     $criticalCount++;
-                } elseif ($w < 9 || $w > 25) {
+                } elseif ($w < 9 || $w > 14) {
                     $badCount++;
                 }
-            } else {
-                if ($w < 12 || $w > 50) {
+            }
+            elseif ($age <= 36) {
+                if ($w < 11 || $w > 18) {
                     $criticalCount++;
-                } elseif ($w < 14 || $w > 45) {
+                } elseif ($w < 12 || $w > 17) {
+                    $badCount++;
+                }
+            }
+            // Preschoolers (36-60 months): 16.5kg → 21kg (gain ~2kg/year)
+            elseif ($age <= 48) {
+                if ($w < 13 || $w > 20) {
+                    $criticalCount++;
+                } elseif ($w < 14 || $w > 19) {
+                    $badCount++;
+                }
+            }
+            elseif ($age <= 60) {
+                if ($w < 15 || $w > 23) {
+                    $criticalCount++;
+                } elseif ($w < 16 || $w > 22) {
+                    $badCount++;
+                }
+            }
+            // School-aged (60-144 months): 21kg → 42kg (gain 2.5-3.5kg/year)
+            elseif ($age <= 84) {
+                if ($w < 18 || $w > 30) {
+                    $criticalCount++;
+                } elseif ($w < 19 || $w > 28) {
+                    $badCount++;
+                }
+            }
+            elseif ($age <= 108) {
+                if ($w < 25 || $w > 38) {
+                    $criticalCount++;
+                } elseif ($w < 26 || $w > 36) {
+                    $badCount++;
+                }
+            }
+            elseif ($age <= 144) {
+                if ($w < 32 || $w > 48) {
+                    $criticalCount++;
+                } elseif ($w < 34 || $w > 46) {
+                    $badCount++;
+                }
+            }
+            // Adolescents (144+ months): Variable growth, significant range
+            else {
+                if ($w < 40 || $w > 85) {
+                    $criticalCount++;
+                } elseif ($w < 45 || $w > 80) {
                     $badCount++;
                 }
             }
         }
 
-        // Height checks (cm)
-        if (!empty($height) && $age !== null) {
+        // Height checks (cm) - based on growth patterns
+        if (!empty($height)) {
             $h = (float)$height;
-
-            if ($age <= 24) {
-                if ($h < 45 || $h > 100) {
+            if ($h <= 0) {
+                // Invalid height value, skip checks
+            }
+            // Infants (0-12 months): 50cm → 75cm (gain ~25cm)
+            elseif ($age <= 12) {
+                if ($h < 48 || $h > 77) {
                     $criticalCount++;
-                } elseif ($h < 50 || $h > 95) {
+                } elseif ($h < 52 || $h > 75) {
                     $badCount++;
                 }
-            } elseif ($age <= 60) {
-                if ($h < 70 || $h > 125) {
+            }
+            // Toddlers (12-36 months): 75cm → 99cm (gain ~12cm/year)
+            elseif ($age <= 24) {
+                if ($h < 70 || $h > 90) {
                     $criticalCount++;
-                } elseif ($h < 75 || $h > 120) {
+                } elseif ($h < 73 || $h > 87) {
                     $badCount++;
                 }
-            } else {
-                if ($h < 90 || $h > 180) {
+            }
+            elseif ($age <= 36) {
+                if ($h < 80 || $h > 102) {
                     $criticalCount++;
-                } elseif ($h < 100 || $h > 170) {
+                } elseif ($h < 85 || $h > 99) {
+                    $badCount++;
+                }
+            }
+            // Preschoolers (36-60 months): 99cm → 113cm (gain 6-8cm/year)
+            elseif ($age <= 48) {
+                if ($h < 95 || $h > 109) {
+                    $criticalCount++;
+                } elseif ($h < 98 || $h > 106) {
+                    $badCount++;
+                }
+            }
+            elseif ($age <= 60) {
+                if ($h < 102 || $h > 117) {
+                    $criticalCount++;
+                } elseif ($h < 106 || $h > 114) {
+                    $badCount++;
+                }
+            }
+            // School-aged (60-144 months): 113cm → 148cm (gain 5-6cm/year)
+            elseif ($age <= 84) {
+                if ($h < 110 || $h > 135) {
+                    $criticalCount++;
+                } elseif ($h < 113 || $h > 132) {
+                    $badCount++;
+                }
+            }
+            elseif ($age <= 108) {
+                if ($h < 125 || $h > 150) {
+                    $criticalCount++;
+                } elseif ($h < 128 || $h > 147) {
+                    $badCount++;
+                }
+            }
+            elseif ($age <= 144) {
+                if ($h < 135 || $h > 165) {
+                    $criticalCount++;
+                } elseif ($h < 138 || $h > 162) {
+                    $badCount++;
+                }
+            }
+            // Adolescents (144+ months): 148cm → 175cm+ (variable growth with puberty)
+            else {
+                if ($h < 145 || $h > 190) {
+                    $criticalCount++;
+                } elseif ($h < 150 || $h > 185) {
                     $badCount++;
                 }
             }
         }
 
         // Head circumference checks (cm)
-        if (!empty($headCircumference) && $age !== null) {
+        if (!empty($headCircumference)) {
             $hc = (float)$headCircumference;
-
-            if ($age <= 24) {
-                if ($hc < 32 || $hc > 52) {
+            if ($hc <= 0) {
+                // Invalid head circumference value, skip checks
+            }
+            // Infants (0-12 months): 35cm → 47cm
+            elseif ($age <= 12) {
+                if ($hc < 32 || $hc > 50) {
                     $criticalCount++;
-                } elseif ($hc < 34 || $hc > 50) {
+                } elseif ($hc < 34 || $hc > 48) {
                     $badCount++;
                 }
-            } elseif ($age <= 60) {
-                if ($hc < 42 || $hc > 56) {
+            }
+            // Toddlers (12-36 months): 47cm → 50cm (slow growth)
+            elseif ($age <= 36) {
+                if ($hc < 44 || $hc > 53) {
                     $criticalCount++;
-                } elseif ($hc < 44 || $hc > 54) {
+                } elseif ($hc < 46 || $hc > 51) {
                     $badCount++;
                 }
-            } else {
-                if ($hc < 46 || $hc > 60) {
+            }
+            // Preschoolers (36-60 months): 50cm → 52cm
+            elseif ($age <= 60) {
+                if ($hc < 48 || $hc > 55) {
                     $criticalCount++;
-                } elseif ($hc < 48 || $hc > 58) {
+                } elseif ($hc < 50 || $hc > 53) {
+                    $badCount++;
+                }
+            }
+            // School-aged (60-144 months): 52cm → 57cm
+            elseif ($age <= 144) {
+                if ($hc < 50 || $hc > 58) {
+                    $criticalCount++;
+                } elseif ($hc < 52 || $hc > 56) {
+                    $badCount++;
+                }
+            }
+            // Adolescents (144+ months): 57cm → 60cm
+            else {
+                if ($hc < 54 || $hc > 62) {
+                    $criticalCount++;
+                } elseif ($hc < 56 || $hc > 60) {
                     $badCount++;
                 }
             }
         }
 
         if ($criticalCount > 0) {
-            return 'critical';
+            return 'Critical';
         }
 
         if ($badCount > 0) {
-            return 'bad';
+            return 'Bad';
         }
 
-        return 'good';
+        return 'Good';
     }
 
     public function validateNumericStat($data, $attributeName)
@@ -266,13 +424,13 @@ class ChildRecordService
 
     private function getMeasurementRangesByAge(int $ageInMonths): array
     { 
-        if ($ageInMonths <= 1) {
-            return [
-                'weight' => ['min' => 2.5, 'max' => 6],
-                'height' => ['min' => 51, 'max' => 59],
-                'head_circumference' => ['min' => 0, 'max' => 0],
-            ];
-        }
+        // if ($ageInMonths <= 1) {
+        //     return [
+        //         'weight' => ['min' => 2.5, 'max' => 5],
+        //         'height' => ['min' => 51, 'max' => 65],
+        //         'head_circumference' => ['min' => 32, 'max' => 52],
+        //     ];
+        // }
         if ($ageInMonths <= 6) {
             return [
                 'weight' => ['min' => 2.5, 'max' => 8],
@@ -282,14 +440,14 @@ class ChildRecordService
         }
         if ($ageInMonths <= 12) {
             return [
-                'weight' => ['min' => 4, 'max' => 10],
+                'weight' => ['min' => 10, 'max' => 28],
                 'height' => ['min' => 55, 'max' => 80],
                 'head_circumference' => ['min' => 34, 'max' => 46],
             ];
         }
         if ($ageInMonths <= 24) {
             return [
-                'weight' => ['min' => 2.5, 'max' => 18],
+                'weight' => ['min' => 10, 'max' => 50],
                 'height' => ['min' => 45, 'max' => 100],
                 'head_circumference' => ['min' => 32, 'max' => 52],
             ];
@@ -297,7 +455,7 @@ class ChildRecordService
 
         if ($ageInMonths <= 60) {
             return [
-                'weight' => ['min' => 8, 'max' => 28],
+                'weight' => ['min' => 10, 'max' => 50],
                 'height' => ['min' => 70, 'max' => 125],
                 'head_circumference' => ['min' => 42, 'max' => 56],
             ];
