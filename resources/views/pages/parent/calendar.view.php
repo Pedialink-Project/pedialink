@@ -20,7 +20,7 @@ Calendar
 <?php
 $events = [
     [
-        'date' => '2026-03-30',
+        'date' => '2026-03-31',
         'type' => 'vaccination',
         'title' => 'MMR Dose 1',
         'color' => 'linear-gradient(90deg,#10b981,#06b6d4)',
@@ -33,16 +33,25 @@ $events = [
         'title' => 'Child Checkup',
         'items' => [['child' => 'Nimal', 'time' => '10:30']]
     ],
+     [
+        'date' => '2026-03-30',
+        'type' => 'campaign',
+        'color' => 'linear-gradient(90deg,#f5a623,#f97316)',
+        'title' => 'Maternal Health Camp',
+        'items' => [['location' => 'Main Hall','organizer' => 'Local Health Department', 'time' => '10:30']]
+    ],
 ];
 ?>
 
 <c-calendar :events='json_encode($events) ' modalId="myVaccModal" />
 
 <c-modal id="myVaccModal">
-    <c-slot name="header">Vaccine</c-slot>
-    <c-slot name="footer">
-        <c-button variant="primary">Ok</c-button>
+    <c-slot name="header">
+        <span class="calendar-modal-title">Events</span>
+    </c-slot>
+     <c-slot name="close">
+        Close
     </c-slot>
 </c-modal>
 
-@endsectionX
+@endsection
