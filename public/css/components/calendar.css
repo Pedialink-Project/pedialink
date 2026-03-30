@@ -99,7 +99,6 @@
   background: transparent;
   border: 0.5px solid var(--border)
 }
-.calendar-cell:focus { outline: none; box-shadow: 0 0 0 4px rgba(99,102,241,0.06); border-radius:8px; }
 .calendar-cell:hover { background: color-mix(in srgb, var(--cal-primary) 8%, var(--cal-bg) 92%); }
 
 /* cell header (date number + markers) */
@@ -207,6 +206,44 @@
   display: flex;
   justify-content: space-between;
   font-size: 13px;
+}
+
+.event-main {
+  font-weight: 600;
+  color: #111827;
+}
+
+.event-meta {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.calendar-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.empty-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.empty-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  max-width: 260px;
 }
 
 /* responsive: compact view reduces sizes */
