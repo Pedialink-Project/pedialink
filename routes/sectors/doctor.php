@@ -4,6 +4,7 @@ use App\Controllers\Doctor\ChildHealthController;
 use App\Controllers\Doctor\DashboardController;
 use App\Controllers\Doctor\ChildProfileController;
 use App\Controllers\Doctor\MaternalProfileController;
+use App\Controllers\Doctor\CalendarController;
 use App\Controllers\Doctor\MaternalHealthController;
 use App\Controllers\Doctor\AppointmentController;
 use App\Controllers\NotificationController;
@@ -41,4 +42,5 @@ return [
     //Others
     ['GET', '/doctor/notification', [NotificationController::class, 'index'], 'doctor.notification', ['doctor', 'verified']],
     ['GET', '/doctor/settings', [SettingController::class, 'index'], 'doctor.settings', ['doctor', 'verified']],
+    ['GET', '/doctor/calendar', [CalendarController::class, 'index'], 'doctor.calendar', ['doctor', 'verified']],
 ];

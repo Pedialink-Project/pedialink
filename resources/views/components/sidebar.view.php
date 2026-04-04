@@ -123,6 +123,11 @@ $menuItems = [
                 'icon' => asset('/assets/icons/chart-evaluation.svg'),
                
             ],
+            [
+                'name' => 'Calendar',
+                'link' => route('phm.calendar'),
+                'icon' => asset('/assets/icons/calendar-01.svg')
+            ],
             // [
             //     'name' => 'Appointments',
             //     'link' => route('phm.appointments'),
@@ -238,6 +243,11 @@ $menuItems = [
                     ['name' => 'Overview', 'link' => route('doctor.appointments.overview')],
                     ['name' => 'Configure', 'link' => route('doctor.appointments.configure')],
                 ]
+            ],
+            [
+                'name' => 'Calendar',
+                'link' => route('doctor.calendar'),
+                'icon' => asset('/assets/icons/calendar-01.svg')
             ],
            
              
