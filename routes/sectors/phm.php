@@ -2,6 +2,7 @@
 
 
 use App\Controllers\NotificationController;
+use App\Controllers\PublicHealthMidwife\CalendarController;
 use App\Controllers\PublicHealthMidwife\ChildProfileController;
 use App\Controllers\PublicHealthMidwife\DashboardController;
 use App\Controllers\PublicHealthMidwife\MaternalProfileController;
@@ -49,6 +50,9 @@ return [
     ['GET', '/phm/growth-monitoring', [GrowthMonitorController::class, 'index'], 'phm.growth.monitoring', ['phm','verified']],
     ['GET', '/phm/growth-monitoring/{id}', [GrowthMonitorController::class, 'childGrowthIndex'], 'phm.growth.monitoring.child', ['phm','verified']],
     ['GET', '/phm/nutrition-tracking', [TestController::class, 'nutritionTracking'], 'phm.nutrition.tracking', ['phm','verified']],
+    
+    // Calendar Routes
+    ['GET', '/phm/calendar', [CalendarController::class, 'index'], 'phm.calendar', ['phm', 'verified']],
 
     // Notification and Settings Routes
     ['GET', '/phm/notification', [NotificationController::class, 'index'], 'phm.notification', ['phm', 'verified']],
