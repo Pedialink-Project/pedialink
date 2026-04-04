@@ -239,6 +239,11 @@ $menuItems = [
                     ['name' => 'Configure', 'link' => route('doctor.appointments.configure')],
                 ]
             ],
+            [
+                'name' => 'Calendar',
+                'link' => route('doctor.calendar'),
+                'icon' => asset('/assets/icons/calendar-01.svg')
+            ],
            
              
         ],
