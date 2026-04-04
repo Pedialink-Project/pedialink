@@ -123,6 +123,11 @@ $menuItems = [
                 'icon' => asset('/assets/icons/chart-evaluation.svg'),
                
             ],
+            [
+                'name' => 'Calendar',
+                'link' => route('phm.calendar'),
+                'icon' => asset('/assets/icons/calendar-01.svg')
+            ],
             // [
             //     'name' => 'Appointments',
             //     'link' => route('phm.appointments'),
