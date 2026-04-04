@@ -26,13 +26,6 @@ class CalendarService
         $events = array_merge($events, $this->getVaccinationEvents($areaId));
         $events = array_merge($events, $this->getCampaignEvents());
 
-        usort($events, function ($a, $b) {
-            if ($a['date'] === $b['date']) {
-                return strcmp($a['title'], $b['title']);
-            }
-
-            return strcmp($a['date'], $b['date']);
-        });
 
         return $events;
     }
