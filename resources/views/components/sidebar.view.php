@@ -183,6 +183,11 @@ $menuItems = [
                     ['name' => 'Child Appointment', 'link' => route('parent.appointments.child')],
                 ]
             ],
+             [
+                'name' => 'Calendar',
+                'link' => route('parent.calendar'),
+                'icon' => asset('/assets/icons/calendar-01.svg')
+            ],
             [
                 'name' => 'Events & Campaigns',
                 'link' => route('parent.events.campaigns'),

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * calendar.view.php
  *
@@ -65,299 +66,416 @@ $jsonMap = htmlspecialchars(json_encode($eventsMap, JSON_UNESCAPED_UNICODE | JSO
 </div>
 
 <script>
-(() => {
-  // modern, modular calendar. No external libs.
-  const root = document.getElementById('calendar_<?= $month ?>_<?= $year ?>');
-  if (!root) return;
+  (() => {
+    // modern, modular calendar. No external libs.
+    const root = document.getElementById('calendar_<?= $month ?>_<?= $year ?>');
+    if (!root) return;
 
-  const monthInit = parseInt(root.dataset.calendarMonth, 10);
-  const yearInit = parseInt(root.dataset.calendarYear, 10);
-  const startWeekOn = parseInt(root.dataset.calendarStartWeek || '0', 10);
-  const locale = root.dataset.calendarLocale || navigator.language || 'en-US';
-  const modalId = root.dataset.calendarModal || '';
-  const eventsMap = (() => {
-    try { return JSON.parse(root.dataset.calendarMap || '{}'); } catch(e) { return {}; }
-  })();
-
-  // utilities
-  const pad = (n) => n.toString().padStart(2, '0');
-  const toISO = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
-
-  // nodes
-  const titleNode = root.querySelector(`#calendarTitle_${monthInit}_${yearInit}`);
-  const weekdaysNode = root.querySelector(`#calendarWeekdays_${monthInit}_${yearInit}`);
-  const grid = root.querySelector(`#calendarGrid_${monthInit}_${yearInit}`);
-
-  // internal state
-  let viewYear = yearInit;
-  let viewMonth = monthInit; // 1-12
-
-  // build weekday labels based on startWeekOn
-  function renderWeekdays() {
-    const base = new Date(2020, 0, 5); // Sunday
-    const labels = [];
-    for (let i = 0; i < 7; i++) {
-      const idx = (startWeekOn + i) % 7;
-      const d = new Date(base);
-      d.setDate(base.getDate() + idx);
-      labels.push(d.toLocaleDateString(locale, { weekday: 'short' }));
-    }
-    weekdaysNode.innerHTML = '';
-    labels.forEach(l => {
-      const el = document.createElement('div');
-      el.className = 'calendar-weekday';
-      el.textContent = l;
-      weekdaysNode.appendChild(el);
-    });
-  }
-
-  // compute first day index and number of days in month
-  function daysInMonth(y, m) {
-    return new Date(y, m, 0).getDate(); // m is 1-12, month param as next month zero day trick: new Date(y, m, 0)
-  }
-
-  function firstDayOfMonthIndex(y, m) {
-    // returns 0-6 (0=Sunday)
-    return new Date(y, m - 1, 1).getDay();
-  }
-
-  // render header
-  function renderTitle() {
-    const d = new Date(viewYear, viewMonth - 1, 1);
-    titleNode.textContent = d.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
-  }
-
-  // flatten eventsMap keys to a Set for quick lookup
-  function eventsForDate(isoDate) {
-    return Array.isArray(eventsMap[isoDate]) ? eventsMap[isoDate] : [];
-  }
-
-  function renderGrid() {
-    grid.innerHTML = '';
-    grid.setAttribute('role','grid');
-
-    const daysInView = daysInMonth(viewYear, viewMonth);
-    const firstIndex = firstDayOfMonthIndex(viewYear, viewMonth);
-
-    // compute offset based on startWeekOn
-    // If startWeekOn=1 (Monday), shift index: monday=0 => convert sunday-based index
-    const offset = (firstIndex - startWeekOn + 7) % 7;
-
-    // previous month filler
-    const prevMonth = viewMonth === 1 ? 12 : viewMonth - 1;
-    const prevYear = viewMonth === 1 ? viewYear - 1 : viewYear;
-    const prevDays = daysInMonth(prevYear, prevMonth);
-
-    // total cells to render (6 rows of 7 = 42 to keep consistent)
-    const totalCells = 42;
-
-    for (let cell = 0; cell < totalCells; cell++) {
-      const el = document.createElement('div');
-      el.className = 'calendar-cell';
-      el.setAttribute('role','gridcell');
-      el.tabIndex = 0;
-
-      // compute date for this cell
-      const dayIndex = cell - offset; // 0-based index into current month
-      let cellYear = viewYear;
-      let cellMonth = viewMonth;
-      let cellDay = 1;
-
-      if (dayIndex < 0) {
-        // previous month
-        cellMonth = prevMonth;
-        cellYear = prevYear;
-        cellDay = prevDays + dayIndex + 1;
-        el.classList.add('calendar-cell--muted');
-      } else if (dayIndex >= daysInView) {
-        // next month
-        const nextMonth = viewMonth === 12 ? 1 : viewMonth + 1;
-        const nextYear = viewMonth === 12 ? viewYear + 1 : viewYear;
-        cellMonth = nextMonth;
-        cellYear = nextYear;
-        cellDay = dayIndex - daysInView + 1;
-        el.classList.add('calendar-cell--muted');
-      } else {
-        cellDay = dayIndex + 1;
-      }
-
-      const iso = toISO(cellYear, cellMonth, cellDay);
-      el.dataset.date = iso;
-
-      // head with date number
-      const head = document.createElement('div');
-      head.className = 'calendar-cell-head';
-      const num = document.createElement('div');
-      num.className = 'calendar-day-num';
-      num.textContent = cellDay;
-      head.appendChild(num);
-
-      // markers container
-      const markers = document.createElement('div');
-      markers.className = 'calendar-markers';
-
-      const evs = eventsForDate(iso);
-
-      if (evs.length === 0) {
-        el.classList.add('calendar-cell--empty');
-      } else {
-        // show up to two label markers; if more, show dots
-        const maxShow = 2;
-        const toShow = evs.slice(0, maxShow);
-        toShow.forEach((e) => {
-          const m = document.createElement('span');
-          // choose marker style depending on e.color or default
-          m.className = 'cal-marker';
-          if (e.color) {
-            m.style.background = e.color;
-            m.style.color = '#fff';
-          }
-          m.textContent = e.title || (e.items && e.items.length ? `${e.items.length} item${e.items.length>1?'s':''}` : '•');
-          markers.appendChild(m);
-        });
-        if (evs.length > maxShow) {
-          // small dot indicator for overflow
-          const more = document.createElement('span');
-          more.className = 'cal-dot';
-          more.style.background = 'var(--cal-accent)';
-          markers.appendChild(more);
-        }
-      }
-
-      el.appendChild(head);
-      el.appendChild(markers);
-
-      // highlight today
-      const today = new Date();
-      const todayIso = toISO(today.getFullYear(), today.getMonth() + 1, today.getDate());
-      if (iso === todayIso) el.classList.add('calendar-cell--today');
-
-      // click handler: open modal or dispatch event
-      el.addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        onDateClicked(iso);
-      });
-
-      // keyboard: Enter/Space to activate
-      el.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter' || ev.key === ' ') {
-          ev.preventDefault();
-          onDateClicked(el.dataset.date);
-        }
-      });
-
-      grid.appendChild(el);
-    }
-
-    renderTitle();
-  }
-
-  // Open modal (if modalId provided) or dispatch event
-  function onDateClicked(isoDate) {
-    const events = eventsForDate(isoDate);
-    const detail = { date: isoDate, events };
-
-    // If modalId provided and ModalControls exists, attempt to populate modal and open
-    if (modalId && window.ModalControls && typeof window.ModalControls[modalId] !== 'undefined') {
-      // find modal source container (where .modal exists before portal)
-      const modalWrapper = document.querySelector(`[data-modal-id="${modalId}"]`);
-      let modalInner = null;
-      if (modalWrapper) {
-        modalInner = modalWrapper.querySelector('.modal') || modalWrapper.querySelector('.modal-src .modal') || modalWrapper.querySelector('.modal-src-hidden .modal');
-      }
-
-      // fallback: attempt to find any element with id = modalId (if user used id attr)
-      if (!modalInner) modalInner = document.getElementById(modalId);
-
-      // If we found modalInner, write content into its modal-body (preserve header/footer)
-      if (modalInner) {
-        const body = modalInner.querySelector('.modal-body');
-        if (body) {
-          // build simple markup (you can customize)
-          let html = `<div class="calendar-modal-date"><h3>${isoDate}</h3>`;
-          if (events.length === 0) {
-            html += `<p>No items scheduled for this date.</p>`;
-          } else {
-            html += `<ul class="calendar-modal-list">`;
-            events.forEach(ev => {
-              html += `<li class="calendar-modal-item"><strong>${escapeHtml(ev.title || '')}</strong>`;
-              if (Array.isArray(ev.items) && ev.items.length) {
-                html += '<ul>';
-                ev.items.forEach(it => {
-                  html += `<li>${escapeHtml(it.child || it.name || '')} ${it.time ? (' — ' + escapeHtml(it.time)) : ''} ${it.vaccine ? (' — ' + escapeHtml(it.vaccine)) : ''}</li>`;
-                });
-                html += '</ul>';
-              } else if (ev.description) {
-                html += `<div>${escapeHtml(ev.description)}</div>`;
-              }
-              html += `</li>`;
-            });
-            html += `</ul>`;
-          }
-          html += `</div>`;
-          body.innerHTML = html;
-        }
-      }
-
-      // open modal programmatically
+    const monthInit = parseInt(root.dataset.calendarMonth, 10);
+    const yearInit = parseInt(root.dataset.calendarYear, 10);
+    const startWeekOn = parseInt(root.dataset.calendarStartWeek || '0', 10);
+    const locale = root.dataset.calendarLocale || navigator.language || 'en-US';
+    const modalId = root.dataset.calendarModal || '';
+    const eventsMap = (() => {
       try {
-        window.ModalControls[modalId].open();
-      } catch (err) {
-        // fallback dispatch if can't open
-        document.dispatchEvent(new CustomEvent('calendar:date-click', { detail }));
+        return JSON.parse(root.dataset.calendarMap || '{}');
+      } catch (e) {
+        return {};
       }
-    } else {
-      // no modalId: emit event for consumer to handle
-      document.dispatchEvent(new CustomEvent('calendar:date-click', { detail }));
+    })();
+
+    // utilities
+    const pad = (n) => n.toString().padStart(2, '0');
+    const toISO = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
+
+    // nodes
+    const titleNode = root.querySelector(`#calendarTitle_${monthInit}_${yearInit}`);
+    const weekdaysNode = root.querySelector(`#calendarWeekdays_${monthInit}_${yearInit}`);
+    const grid = root.querySelector(`#calendarGrid_${monthInit}_${yearInit}`);
+
+    // internal state
+    let viewYear = yearInit;
+    let viewMonth = monthInit; // 1-12
+
+    // build weekday labels based on startWeekOn
+    function renderWeekdays() {
+      const base = new Date(2020, 0, 5); // Sunday
+      const labels = [];
+      for (let i = 0; i < 7; i++) {
+        const idx = (startWeekOn + i) % 7;
+        const d = new Date(base);
+        d.setDate(base.getDate() + idx);
+        labels.push(d.toLocaleDateString(locale, {
+          weekday: 'short'
+        }));
+      }
+      weekdaysNode.innerHTML = '';
+      labels.forEach(l => {
+        const el = document.createElement('div');
+        el.className = 'calendar-weekday';
+        el.textContent = l;
+        weekdaysNode.appendChild(el);
+      });
     }
-  }
 
-  // helper to escape text
-  function escapeHtml(s) {
-    if (s === null || s === undefined) return '';
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+    // compute first day index and number of days in month
+    function daysInMonth(y, m) {
+      return new Date(y, m, 0).getDate(); // m is 1-12, month param as next month zero day trick: new Date(y, m, 0)
+    }
 
-  // controls
-  function gotoPrev() {
-    viewMonth -= 1;
-    if (viewMonth < 1) { viewMonth = 12; viewYear -= 1; }
-    renderGrid();
-  }
-  function gotoNext() {
-    viewMonth += 1;
-    if (viewMonth > 12) { viewMonth = 1; viewYear += 1; }
-    renderGrid();
-  }
-  function gotoToday() {
-    const t = new Date();
-    viewMonth = t.getMonth() + 1;
-    viewYear = t.getFullYear();
-    renderGrid();
-  }
+    function firstDayOfMonthIndex(y, m) {
+      // returns 0-6 (0=Sunday)
+      return new Date(y, m - 1, 1).getDay();
+    }
 
-  // wire buttons
-  root.querySelector('.calendar-prev').addEventListener('click', gotoPrev);
-  root.querySelector('.calendar-next').addEventListener('click', gotoNext);
-  root.querySelector('.calendar-today').addEventListener('click', gotoToday);
+    // render header
+    function renderTitle() {
+      const d = new Date(viewYear, viewMonth - 1, 1);
+      titleNode.textContent = d.toLocaleDateString(locale, {
+        month: 'long',
+        year: 'numeric'
+      });
+    }
 
-  // initial render
-  renderWeekdays();
-  renderGrid();
+    // flatten eventsMap keys to a Set for quick lookup
+    function eventsForDate(isoDate) {
+      return Array.isArray(eventsMap[isoDate]) ? eventsMap[isoDate] : [];
+    }
 
-  // expose small API if desired
-  window.CalendarControls = window.CalendarControls || {};
-  window.CalendarControls[`cal_${Math.random().toString(36).slice(2,8)}`] = {
-    goto(month, year) {
-      viewMonth = month;
-      viewYear = year;
-      renderGrid();
-    },
-    refresh(newMap) {
-      // accept object map { 'YYYY-MM-DD': [ ... ] }
-      Object.assign(eventsMap, newMap || {});
+    function renderGrid() {
+      grid.innerHTML = '';
+      grid.setAttribute('role', 'grid');
+
+      const daysInView = daysInMonth(viewYear, viewMonth);
+      const firstIndex = firstDayOfMonthIndex(viewYear, viewMonth);
+
+      // compute offset based on startWeekOn
+      // If startWeekOn=1 (Monday), shift index: monday=0 => convert sunday-based index
+      const offset = (firstIndex - startWeekOn + 7) % 7;
+
+      // previous month filler
+      const prevMonth = viewMonth === 1 ? 12 : viewMonth - 1;
+      const prevYear = viewMonth === 1 ? viewYear - 1 : viewYear;
+      const prevDays = daysInMonth(prevYear, prevMonth);
+
+      // total cells to render (6 rows of 7 = 42 to keep consistent)
+      const totalCells = 42;
+
+      for (let cell = 0; cell < totalCells; cell++) {
+        const el = document.createElement('div');
+        el.className = 'calendar-cell';
+        el.setAttribute('role', 'gridcell');
+        el.tabIndex = 0;
+
+        // compute date for this cell
+        const dayIndex = cell - offset; // 0-based index into current month
+        let cellYear = viewYear;
+        let cellMonth = viewMonth;
+        let cellDay = 1;
+
+        if (dayIndex < 0) {
+          // previous month
+          cellMonth = prevMonth;
+          cellYear = prevYear;
+          cellDay = prevDays + dayIndex + 1;
+          el.classList.add('calendar-cell--muted');
+        } else if (dayIndex >= daysInView) {
+          // next month
+          const nextMonth = viewMonth === 12 ? 1 : viewMonth + 1;
+          const nextYear = viewMonth === 12 ? viewYear + 1 : viewYear;
+          cellMonth = nextMonth;
+          cellYear = nextYear;
+          cellDay = dayIndex - daysInView + 1;
+          el.classList.add('calendar-cell--muted');
+        } else {
+          cellDay = dayIndex + 1;
+        }
+
+        const iso = toISO(cellYear, cellMonth, cellDay);
+        el.dataset.date = iso;
+
+        // head with date number
+        const head = document.createElement('div');
+        head.className = 'calendar-cell-head';
+        const num = document.createElement('div');
+        num.className = 'calendar-day-num';
+        num.textContent = cellDay;
+        head.appendChild(num);
+
+        // markers container
+        const markers = document.createElement('div');
+        markers.className = 'calendar-markers';
+
+        const evs = eventsForDate(iso);
+
+        if (evs.length === 0) {
+          el.classList.add('calendar-cell--empty');
+        } else {
+          // show up to two label markers; if more, show dots
+          const maxShow = 2;
+          const toShow = evs.slice(0, maxShow);
+          toShow.forEach((e) => {
+            const m = document.createElement('span');
+            // choose marker style depending on e.color or default
+            m.className = 'cal-marker';
+            if (e.color) {
+              m.style.background = e.color;
+              m.style.color = '#fff';
+            }
+            m.textContent = e.title || (e.items && e.items.length ? `${e.items.length} item${e.items.length>1?'s':''}` : '•');
+            markers.appendChild(m);
+          });
+          if (evs.length > maxShow) {
+            // small dot indicator for overflow
+            const more = document.createElement('span');
+            more.className = 'cal-dot';
+            more.style.background = 'var(--cal-accent)';
+            markers.appendChild(more);
+          }
+        }
+
+        el.appendChild(head);
+        el.appendChild(markers);
+
+        // highlight today
+        const today = new Date();
+        const todayIso = toISO(today.getFullYear(), today.getMonth() + 1, today.getDate());
+        if (iso === todayIso) el.classList.add('calendar-cell--today');
+
+        // click handler: open modal or dispatch event
+        el.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          onDateClicked(iso);
+        });
+
+        // keyboard: Enter/Space to activate
+        el.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            onDateClicked(el.dataset.date);
+          }
+        });
+
+        grid.appendChild(el);
+      }
+
+      renderTitle();
+    }
+    // helper to group events by type (if needed for modal display)
+    function groupByType(events) {
+      const map = {};
+      events.forEach(e => {
+        const type = e.type || 'other';
+        if (!map[type]) map[type] = [];
+        map[type].push(e);
+      });
+      return map;
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function renderItem(it) {
+      let html = `<div class="event-row">`;
+
+      // show main label
+      const main = it.child || it.maternal || it.location || '—';
+      html += `<span class="event-main">${escapeHtml(main)}</span>`;
+
+      // show other fields dynamically
+      Object.keys(it).forEach(key => {
+        if (key === 'child' || key === 'maternal' || key === 'location') return;
+
+        if (it[key]) {
+          html += `<span class="event-meta">${escapeHtml(it[key])}</span>`;
+        }
+      });
+
+      html += `</div>`;
+      return html;
+    }
+
+    // Open modal (if modalId provided) or dispatch event
+    function onDateClicked(isoDate) {
+      const events = eventsForDate(isoDate);
+      const detail = {
+        date: isoDate,
+        events
+      };
+
+      // If modalId provided and ModalControls exists, attempt to populate modal and open
+      if (modalId && window.ModalControls && typeof window.ModalControls[modalId] !== 'undefined') {
+        // find modal source container (where .modal exists before portal)
+        const modalWrapper = document.querySelector(`[data-modal-id="${modalId}"]`);
+        let modalInner = null;
+        if (modalWrapper) {
+          modalInner = modalWrapper.querySelector('.modal') || modalWrapper.querySelector('.modal-src .modal') || modalWrapper.querySelector('.modal-src-hidden .modal');
+        }
+
+        // fallback: attempt to find any element with id = modalId (if user used id attr)
+        if (!modalInner) modalInner = document.getElementById(modalId);
+
+        // If we found modalInner, write content into its modal-body (preserve header/footer)
+        if (modalInner) {
+          const body = modalInner.querySelector('.modal-body');
+
+          const headerTitle = modalInner.querySelector('.calendar-modal-title');
+
+          if (headerTitle) {
+            if (events.length === 0) {
+              headerTitle.textContent = "No Events";
+            } else {
+              const types = [...new Set(events.map(e => e.type || 'event'))];
+
+              if (types.length === 1) {
+                headerTitle.textContent = capitalize(types[0]);
+              } else {
+                headerTitle.textContent = `${events.length} Events`;
+              }
+            }
+          }
+          if (body) {
+            // build simple markup (you can customize)
+            let html = `<div class="calendar-modal-date">
+  <h3>${isoDate}</h3>
+`;
+
+            if (events.length === 0) {
+              html += `
+  <div class="calendar-empty">
+  <svg class="empty-icon" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18 2V4M6 2V4" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.9955 13H12.0045M11.9955 17H12.0045M15.991 13H16M8 13H8.00897M8 17H8.00897" stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.5 8H20.5" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.5 12.2432C2.5 7.88594 2.5 5.70728 3.75212 4.35364C5.00424 3 7.01949 3 11.05 3H12.95C16.9805 3 18.9958 3 20.2479 4.35364C21.5 5.70728 21.5 7.88594 21.5 12.2432V12.7568C21.5 17.1141 21.5 19.2927 20.2479 20.6464C18.9958 22 16.9805 22 12.95 22H11.05C7.01949 22 5.00424 22 3.75212 20.6464C2.5 19.2927 2.5 17.1141 2.5 12.7568V12.2432Z" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 8H21" stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+    <div class="empty-title">No events for this day</div>
+    <div class="empty-subtitle">
+      You're all clear. No appointments, vaccinations, or campaigns scheduled.
+    </div>
+  </div>
+`;
+            } else {
+
+              const grouped = groupByType(events);
+
+              Object.keys(grouped).forEach(type => {
+                const list = grouped[type];
+
+                html += `
+      <div class="event-group">
+        <h4 class="event-group-title">
+          ${capitalize(type)} (${list.length})
+        </h4>
+
+        <div class="event-cards">
+    `;
+
+                list.forEach(ev => {
+                  html += `
+        <div class="event-card ${type}">
+          <div class="event-header">
+            <strong>${escapeHtml(ev.title || '')}</strong>
+          </div>
+
+          <div class="event-body">
+      `;
+
+                  if (Array.isArray(ev.items) && ev.items.length) {
+                    ev.items.forEach(it => {
+                      html += renderItem(it);
+                    });
+                  }
+
+                  html += `
+          </div>
+        </div>
+      `;
+                });
+
+                html += `</div></div>`;
+              });
+            }
+
+            html += `</div>`;
+            body.innerHTML = html;
+          }
+        }
+
+        // open modal programmatically
+        try {
+          window.ModalControls[modalId].open();
+        } catch (err) {
+          // fallback dispatch if can't open
+          document.dispatchEvent(new CustomEvent('calendar:date-click', {
+            detail
+          }));
+        }
+      } else {
+        // no modalId: emit event for consumer to handle
+        document.dispatchEvent(new CustomEvent('calendar:date-click', {
+          detail
+        }));
+      }
+    }
+
+    // helper to escape text
+    function escapeHtml(s) {
+      if (s === null || s === undefined) return '';
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // controls
+    function gotoPrev() {
+      viewMonth -= 1;
+      if (viewMonth < 1) {
+        viewMonth = 12;
+        viewYear -= 1;
+      }
       renderGrid();
     }
-  };
-})();
+
+    function gotoNext() {
+      viewMonth += 1;
+      if (viewMonth > 12) {
+        viewMonth = 1;
+        viewYear += 1;
+      }
+      renderGrid();
+    }
+
+    function gotoToday() {
+      const t = new Date();
+      viewMonth = t.getMonth() + 1;
+      viewYear = t.getFullYear();
+      renderGrid();
+    }
+
+    // wire buttons
+    root.querySelector('.calendar-prev').addEventListener('click', gotoPrev);
+    root.querySelector('.calendar-next').addEventListener('click', gotoNext);
+    root.querySelector('.calendar-today').addEventListener('click', gotoToday);
+
+    // initial render
+    renderWeekdays();
+    renderGrid();
+
+    // expose small API if desired
+    window.CalendarControls = window.CalendarControls || {};
+    window.CalendarControls[`cal_${Math.random().toString(36).slice(2,8)}`] = {
+      goto(month, year) {
+        viewMonth = month;
+        viewYear = year;
+        renderGrid();
+      },
+      refresh(newMap) {
+        // accept object map { 'YYYY-MM-DD': [ ... ] }
+        Object.assign(eventsMap, newMap || {});
+        renderGrid();
+      }
+    };
+  })();
 </script>

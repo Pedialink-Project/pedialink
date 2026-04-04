@@ -17,7 +17,7 @@
 /* container */
 .calendar {
   width: 100%;
-  max-width: 920px;
+  /* max-width: 920px; */
   background: var(--cal-bg);
   border: 1px solid var(--cal-border);
   border-radius: var(--cal-radius);
@@ -31,7 +31,7 @@
   align-items:center;
   gap: .75rem;
   justify-content: space-between;
-  margin-bottom: .5rem;
+  margin: .75rem .5rem;
 }
 .calendar-title {
   font-weight: 700;
@@ -44,33 +44,50 @@
   align-items:center;
 }
 
+.icon-btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:32px;
+  padding: 0 8px 0;
+  background-color: color-mix(in srgb, var(--cal-primary) 4%, var(--cal-bg) 92%);
+  border-radius: .5rem;
+  border:1px solid transparent;
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease;
+}
+.icon-btn:hover { background-color: color-mix(in srgb, var(--cal-primary) 12%, var(--cal-bg) 88%); }
+
+
 /* week day labels */
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: .25rem;
-  margin-bottom: .25rem;
+  margin-top: 1rem 0 1rem;
   user-select: none;
 }
 .calendar-weekday {
-  font-size: .78rem;
+  font-size: .875rem;
   color: var(--cal-muted);
   text-align: center;
-  padding: .25rem 0;
+  padding: 1rem 0;
+  border: 0.5px solid var(--border);
+
 }
 
 /* grid of days */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: .375rem;
+  /* gap: .375rem; */
 }
 
 /* each day cell */
 .calendar-cell {
   min-height: var(--cal-day-size);
   height: auto;
-  border-radius: 8px;
+  min-height: 100px;
   padding: .375rem;
   box-sizing: border-box;
   display:flex;
@@ -80,8 +97,9 @@
   position: relative;
   cursor: pointer;
   background: transparent;
+  border: 0.5px solid var(--border)
 }
-.calendar-cell:focus { outline: none; box-shadow: 0 0 0 4px rgba(99,102,241,0.06); border-radius:8px; }
+.calendar-cell:hover { background: color-mix(in srgb, var(--cal-primary) 8%, var(--cal-bg) 92%); }
 
 /* cell header (date number + markers) */
 .calendar-cell-head {
@@ -103,7 +121,7 @@
 
 /* today highlight */
 .calendar-cell--today {
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cal-primary) 18%, transparent 82%);
+  background-color: color-mix(in srgb, var(--cal-primary) 6%, var(--cal-bg) 94%);
 }
 
 /* selected / active */
@@ -143,6 +161,90 @@
 
 /* low opacity for dates with no events */
 .calendar-cell--empty { opacity: .98; }
+
+.event-group {
+  margin-bottom: 16px;
+}
+
+.event-group-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+}
+
+.event-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.event-card {
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+/* type colors */
+.event-card.vaccination {
+  border-left: 4px solid #22c55e;
+}
+
+.event-card.appointment {
+  border-left: 4px solid #3b82f6;
+}
+
+.event-card.campaign {
+  border-left: 4px solid #f59e0b;
+}
+
+.event-header {
+  margin-bottom: 6px;
+}
+
+.event-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.event-main {
+  font-weight: 600;
+  color: #111827;
+}
+
+.event-meta {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.calendar-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.empty-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.empty-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  max-width: 260px;
+}
 
 /* responsive: compact view reduces sizes */
 @media (max-width: 640px) {
