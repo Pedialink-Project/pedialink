@@ -17,33 +17,7 @@ Calendar
 @endsection
 
 @section('content')
-<?php
-$events = [
-    [
-        'date' => '2026-03-31',
-        'type' => 'vaccination',
-        'title' => 'MMR Dose 1',
-        'color' => 'linear-gradient(90deg,#10b981,#06b6d4)',
-        'items' => [['child' => 'Kumara', 'time' => '09:00', 'vaccine' => 'MMR']]
-    ],
-    [
-        'date' => '2026-03-31',
-        'type' => 'appointment',
-        'color' => 'linear-gradient(90deg,#28bdf8,#3b82f6)',
-        'title' => 'Child Checkup',
-        'items' => [['child' => 'Nimal', 'time' => '10:30']]
-    ],
-     [
-        'date' => '2026-03-30',
-        'type' => 'campaign',
-        'color' => 'linear-gradient(90deg,#f5a623,#f97316)',
-        'title' => 'Maternal Health Camp',
-        'items' => [['location' => 'Main Hall','organizer' => 'Local Health Department', 'time' => '10:30']]
-    ],
-];
-?>
-
-<c-calendar :events='json_encode($events) ' modalId="myVaccModal" />
+<c-calendar :events='json_encode($events)' modalId="myVaccModal" />
 
 <c-modal id="myVaccModal">
     <c-slot name="header">
