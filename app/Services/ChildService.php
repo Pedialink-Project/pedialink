@@ -8,7 +8,6 @@ use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
-use App\Models\ChildAccessRequest;
 use App\Models\Appointment;
 use App\Models\ParentChild;
 use App\Rules\NameRule;
@@ -172,9 +171,18 @@ class ChildService
                 continue;
             }
 
-            //For now only one parent details get but it modifeid to get both parent deatils and return that
-            $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
-            $parent = $parentChild ? $parentChild->getParent() : null;
+            $parentLinks = ParentChild::query()->where('child_id', '=', $child->id)->get();
+            $parents = [];
+            foreach ($parentLinks as $parentLink) {
+                $parent = $parentLink->getParent();
+                if ($parent) {
+                    $parents[] = [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ];
+                }
+            }
             $phm    = PublicHealthMidwife::find($child->phm_id);
             $latestRecord = $this->childRecordService->getLatestHeathRecord($child->id);
 
@@ -191,11 +199,7 @@ class ChildService
                     'name' => User::find($phm->id)->name,
                 ] : null,
                 'record' => $latestRecord,
-                'parent' => $parent ? [
-                    'id' => $parent->id,
-                    'type' => $parent->type,
-                    'name' => User::find($parent->id)->name,
-                ] : null,
+                'parents' => $parents,
 
 
             ];
@@ -227,47 +231,23 @@ class ChildService
 
         $resource = [];
 
-        $requests = ChildAccessRequest::query()
-            ->where('staff_id', '=', $phmId)
-            ->get();
-
         foreach ($results['items'] as $child) {
 
-            $request = null;
-
-            foreach ($requests as $req) {
-                if ($req->child_id == $child->id) {
-                    $request = $req;
-                    break;
-                }
-            }
-
-            $accessStatus = 'not_requested';
-            $hasFullAccess = false;
-
-            if ($request) {
-                if ($request->accepted === true) {
-                    $accessStatus = 'accepted';
-                    $hasFullAccess = true;
-                } elseif ($request->accepted === false) {
-                    $accessStatus = 'pending';
-                } else {
-                    $accessStatus = 'rejected';
-                }
-            }
-
-            if (!empty($filters['access_status'])) {
-                if (!in_array($accessStatus, $filters['access_status'])) {
-                    continue;
-                }
-            }
-
             $linkedStatus = 'unlinked';
-            //For now only one parent details get but it modifeid to get both parent deatils and return that
-            $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
-            $parent = $parentChild ? $parentChild->getParent() : null;
+            $parentLinks = ParentChild::query()->where('child_id', '=', $child->id)->get();
+            $parents = [];
+            foreach ($parentLinks as $parentLink) {
+                $parent = $parentLink->getParent();
+                if ($parent) {
+                    $parents[] = [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ];
+                }
+            }
 
-            if ($parent) {
+            if (!empty($parents)) {
                 $linkedStatus = 'linked';
             } else {
                 $linkedStatus = 'unlinked';
@@ -295,7 +275,6 @@ class ChildService
                 'age' => Calculator::calculateAge($child->date_of_birth),
                 'gender' => $child->gender,
                 'area' => $child->getArea()->code,
-                'access_status' => $accessStatus,
                 'linked_status' => $linkedStatus,
                 'is_created' => $isPhmCreated,
 
@@ -309,37 +288,27 @@ class ChildService
                     'birth_certificate' => $child->birth_certificate,
                     'date_of_birth' => $child->date_of_birth,
                     'parent_nic' => $childMisc->parent_nic,
-                    'parent' => $parent ? [
-                        'id' => $parent->id,
-                        'type' => $parent->type,
-                        'name' => User::find($parent->id)->name,
-                    ] : null,
+                    'parents' => $parents,
                 ]);
             }
 
-            if ($hasFullAccess) {
-                $childData = array_merge($childData, [
-                    'blood_type' => $child->blood_type,
-                    'birth_certificate' => $child->birth_certificate,
-                    'phm' => $phm ? [
-                        'id' => $phm->id,
-                        'name' => User::find($phm->id)->name,
-                    ] : null,
-                    'record' => $latestRecord ? [
-                        'id' => $latestRecord->id,
-                        'height' => $latestRecord->height,
-                        'weight' => $latestRecord->weight,
-                        'bmi' => $latestRecord->bmi,
-                        'head_circumference' => $latestRecord->head_circumference,
-                        'health_status' => $latestRecord->health_status,
-                    ] : null,
-                    'parent' => $parent ? [
-                        'id' => $parent->id,
-                        'type' => $parent->type,
-                        'name' => User::find($parent->id)->name,
-                    ] : null,
-                ]);
-            }
+            $childData = array_merge($childData, [
+                'blood_type' => $child->blood_type,
+                'birth_certificate' => $child->birth_certificate,
+                'phm' => $phm ? [
+                    'id' => $phm->id,
+                    'name' => User::find($phm->id)->name,
+                ] : null,
+                'record' => $latestRecord ? [
+                    'id' => $latestRecord->id,
+                    'height' => $latestRecord->height,
+                    'weight' => $latestRecord->weight,
+                    'bmi' => $latestRecord->bmi,
+                    'head_circumference' => $latestRecord->head_circumference,
+                    'health_status' => $latestRecord->health_status,
+                ] : null,
+                'parents' => $parents,
+            ]);
 
             $resource[] = $childData;
         }
@@ -657,7 +626,7 @@ class ChildService
         $childMiscFather->children_id = $child->id;
         $childMiscFather->save();
 
-        $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
+        // $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
     }
 
     public function editChildProfile(int $childId, string $name, string $dob, string $gender, string $bloodType)
@@ -677,116 +646,116 @@ class ChildService
         return null;
     }
 
-    public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
-    {
-        $errors = [];
+    // public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
+    // {
+    //     $errors = [];
 
-        if (!Validator::validateFieldExistence($childId)) {
-            $errors['child_id'] = "Child Profile field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($childId)) {
+    //         $errors['child_id'] = "Child Profile field cannot be empty";
+    //     }
 
-        if (!Validator::validateFieldExistence($reasonTitle)) {
-            $errors['reason_title'] = "Reason Title field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($reasonTitle)) {
+    //         $errors['reason_title'] = "Reason Title field cannot be empty";
+    //     }
 
-        if (!Validator::validateFieldExistence($reasonDescription)) {
-            $errors['reason_description'] = "Reason Description field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($reasonDescription)) {
+    //         $errors['reason_description'] = "Reason Description field cannot be empty";
+    //     }
 
-        return $errors;
-    }
+    //     return $errors;
+    // }
 
-    public function requestChildAccess(
-        int $staffId,
-        int $childId,
-        string $reasonTitle,
-        string $reasonDescription
-    ): ?string {
-        // Prevent duplicate requests
-        $existing = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->where('child_id', '=', $childId)
-            ->first();
+    // public function requestChildAccess(
+    //     int $staffId,
+    //     int $childId,
+    //     string $reasonTitle,
+    //     string $reasonDescription
+    // ): ?string {
+    //     // Prevent duplicate requests
+    //     $existing = ChildAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->where('child_id', '=', $childId)
+    //         ->first();
 
-        if ($existing) {
-            return "Access request already exists";
-        }
+    //     if ($existing) {
+    //         return "Access request already exists";
+    //     }
 
-        $request = new ChildAccessRequest();
-        $request->staff_id = $staffId;
-        $request->child_id = $childId;
-        $request->reason_title = $reasonTitle;
-        $request->reason_description = $reasonDescription;
-        $request->save();
+    //     $request = new ChildAccessRequest();
+    //     $request->staff_id = $staffId;
+    //     $request->child_id = $childId;
+    //     $request->reason_title = $reasonTitle;
+    //     $request->reason_description = $reasonDescription;
+    //     $request->save();
 
-        $staff = User::find($staffId);
-        $child = Child::find($childId);
+    //     $staff = User::find($staffId);
+    //     $child = Child::find($childId);
 
-        $this->notificationService->notifyAdmins(
-            "Child Access Request",
-            "{$staff->name} requested access to child profile {$child->name}. Reason: {$reasonTitle}",
-            "child_access_request",
-            $request->id
-        );
+    //     $this->notificationService->notifyAdmins(
+    //         "Child Access Request",
+    //         "{$staff->name} requested access to child profile {$child->name}. Reason: {$reasonTitle}",
+    //         "child_access_request",
+    //         $request->id
+    //     );
 
-        return null;
-    }
+    //     return null;
+    // }
 
-    public function getUnaccessedChildrenForStaff(int $staffId): array
-    {
-        $requestedChildIds = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->pluck('child_id');
+    // public function getUnaccessedChildrenForStaff(int $staffId): array
+    // {
+    //     $requestedChildIds = ChildAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->pluck('child_id');
 
-        $childrenQuery = Child::query();
+    //     $childrenQuery = Child::query();
 
-        if (!empty($requestedChildIds)) {
-            $childrenQuery->whereNotIn('id', $requestedChildIds);
-        }
+    //     if (!empty($requestedChildIds)) {
+    //         $childrenQuery->whereNotIn('id', $requestedChildIds);
+    //     }
 
-        $children = $childrenQuery->get();
+    //     $children = $childrenQuery->get();
 
-        $resource = [];
-        foreach ($children as $child) {
-            $resource[] = [
-                'id'   => $child->id,
-                'name' => $child->name,
-            ];
-        }
+    //     $resource = [];
+    //     foreach ($children as $child) {
+    //         $resource[] = [
+    //             'id'   => $child->id,
+    //             'name' => $child->name,
+    //         ];
+    //     }
 
-        return $resource;
-    }
+    //     return $resource;
+    // }
 
-    public function cancelChildAccessRequest(int $staffId, int $childId): ?string
-    {
-        $request = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->where('child_id', '=', $childId)
-            ->first();
+    // public function cancelChildAccessRequest(int $staffId, int $childId): ?string
+    // {
+    //     $request = ChildAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->where('child_id', '=', $childId)
+    //         ->first();
 
-        if (!$request) {
-            return "Access request not found";
-        }
+    //     if (!$request) {
+    //         return "Access request not found";
+    //     }
 
-        if ($request->accepted === true) {
-            return "Cannot cancel an already accepted request";
-        }
+    //     if ($request->accepted === true) {
+    //         return "Cannot cancel an already accepted request";
+    //     }
 
-        $request->delete();
+    //     $request->delete();
 
-        $staff = User::find($staffId);
-        $child = Child::find($childId);
+    //     $staff = User::find($staffId);
+    //     $child = Child::find($childId);
 
-        $this->notificationService->notifyAdmins(
-            "Child Access Request Cancelled",
-            "{$staff->name} requested access to child profile {$child->name} has been cancelled.",
-            "child_access_request_canclled",
-            $request->id
-        );
+    //     $this->notificationService->notifyAdmins(
+    //         "Child Access Request Cancelled",
+    //         "{$staff->name} requested access to child profile {$child->name} has been cancelled.",
+    //         "child_access_request_canclled",
+    //         $request->id
+    //     );
 
 
-        return null;
-    }
+    //     return null;
+    // }
 
 
 

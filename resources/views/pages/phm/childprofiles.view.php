@@ -39,7 +39,7 @@ PHM Child Profiles
 
 @section('content')
 
-<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'linked_status' => ['linked', 'not_linked']]">
+<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['linked_status' => ['linked', 'not_linked']]">
 
     <c-slot name="filter">
         <c-button variant="outline">
@@ -109,7 +109,6 @@ PHM Child Profiles
                     <c-table.th>Age</c-table.th>
                     <c-table.th>Gender</c-table.th>
                     <c-table.th>Parent Link Status</c-table.th>
-                    <c-table.th>Access</c-table.th>
                     <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -148,16 +147,6 @@ PHM Child Profiles
                         @elseif (strtolower($child['linked_status']) === "unlinked")
                         <c-badge class="status-event" type="red">{{ ucfirst($child['linked_status']) }}</c-badge>
                         @endif
-                    </c-table.td>
-                    <c-table.td col="access_status"> @if (strtolower($child['access_status']) === "accepted")
-                        <c-badge class="status-event" type="green">{{ ucfirst($child['access_status']) }}</c-badge>
-                        @elseif (strtolower($child['access_status']) === "pending")
-                        <c-badge class="status-event" type="yellow">{{ ucfirst($child['access_status']) }}</c-badge>
-                        @elseif (strtolower($child['access_status']) === "not_requested")
-                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
-                        @elseif (strtolower($child['access_status']) === "rejected")
-                        <c-badge class="status-event" type="red">{{ ucfirst($child['access_status'])}}
-                            @endif
                     </c-table.td>
 
                     <c-table.td class="table-actions" align="center">
@@ -207,15 +196,17 @@ PHM Child Profiles
 
                                     @if ($child['linked_status'] === "linked")
                                     <div class=" parent-link-group">
+                                        @foreach ($child['parents'] as $parent)
                                         <div class="parent-link-card">
                                             <div class="name-group">
-                                                <span class="parent-title">{{ $child['parent']['name'] }}</span>
-                                                <span class="parent-type">{{ ucfirst($child['parent']['type']) }}</span>
+                                                <span class="parent-title">{{ $parent['name'] }}</span>
+                                                <span class="parent-type">{{ ucfirst($parent['type']) }}</span>
                                             </div>
                                             <c-badge type="green">
                                                 Linked
                                             </c-badge>
                                         </div>
+                                        @endforeach
                                     </div>
                                     @else
                                     <div class="parent-link-group">
@@ -230,33 +221,20 @@ PHM Child Profiles
                                     </div>
                                     @endif
 
-                                    @if ($child['access_status'] === "accepted")
-
-
                                     <c-modal.viewlist title="Latest Medical Records">
-                                        @if($child['record'])
                                         <c-slot name="list">
-                                            <li>Height:{{ $child['record']['height'] }}cm</li>
-                                            <li>Weight: {{ $child['record']['weight'] }}kg</li>
-                                            <li>BMI Value: {{ $child['record']['bmi'] }}</li>
-                                            <li>Head circumference: {{ $child['record']['head_circumference'] }}cm</li>
-                                        </c-slot>
-                                        @else
-                                        <c-slot name="list">
-                                            <li>No medical records found.</li>
-                                        </c-slot>
-                                        @endif
-                                    </c-modal.viewlist>
-
-                                    <c-modal.viewlist title="Recent Vaccinations">
-                                        <c-slot name="list">
-                                            <li>BCG - Dose 1 at 13th of July 2023</li>
-                                            <li>BCG - Dose 2 at 28th of September 2023</li>
+                                            @if($child['record'])
+                                                <li>Height: {{ $child['record']['height'] ?? '' }} cm</li>
+                                                <li>Weight: {{ $child['record']['weight'] ?? '' }} kg</li>
+                                                <li>BMI Value: {{ $child['record']['bmi'] ?? '' }}</li>
+                                                <li>Head circumference: {{ $child['record']['head_circumference'] ?? '' }} cm</li>
+                                            @else
+                                                <li>No medical records found.</li>
+                                            @endif
                                         </c-slot>
                                     </c-modal.viewlist>
 
-
-                                    @endif
+                                    
 
                                     <c-slot name="close">
                                         Close
@@ -314,7 +292,6 @@ PHM Child Profiles
                                 </c-modal>
                                 @endif
                                 <c-dropdown.sep />
-                                @if ($child['access_status'] === "accepted")
                                 <c-dropdown.item href="{{ route('phm.growth.monitoring.child',['id'=>$child['id']])}}">
                                     View Growth Records
                                 </c-dropdown.item>
@@ -324,12 +301,11 @@ PHM Child Profiles
                                 <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$child['id']])}}">
                                     View Vaccination Records
                                 </c-dropdown.item>
-                                @endif
                                 <c-dropdown-sep />
                                 @if ($child['is_created'])
                                 <c-modal>
                                     <c-slot name="trigger">
-                                        @if ($child['parent'])
+                                        @if (!empty($child['parents']))
                                         <c-dropdown.item class="disabled-delete-btn" disabled>Delete Child
                                             Profile</c-dropdown.item>
                                         @else
@@ -362,7 +338,7 @@ PHM Child Profiles
                 @endforeach
                 @if(count($children) === 0)
                 <tr>
-                    <td colspan="8">
+                    <td colspan="7">
                         <c-emptytable
                             alt="No children found"
                             title="No Child Profiles Available"

@@ -4,15 +4,12 @@ namespace App\Services;
 
 use App\Models\Maternal;
 use App\Models\ParentM;
-use App\Models\MaternalAccessRequest;
 use App\Models\Pregnancy;
 use App\Models\MaternalRecord;
 use App\Helpers\Calculator;
 use App\Helpers\Validator;
 use App\Rules\DateRule;
-use App\Models\Area;
 use App\Models\PublicHealthMidwife;
-use Library\Framework\Database\QueryBuilder;
 
 use App\Models\User;
 
@@ -52,94 +49,94 @@ class MaternalService
         return Maternal::find($id);
     }
 
-    public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
-    {
-        $errors = [];
+    // public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
+    // {
+    //     $errors = [];
 
-        if (!Validator::validateFieldExistence($childId)) {
-            $errors['maternal_id'] = "Maternal Profile field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($childId)) {
+    //         $errors['maternal_id'] = "Maternal Profile field cannot be empty";
+    //     }
 
-        if (!Validator::validateFieldExistence($reasonTitle)) {
-            $errors['reason_title'] = "Reason Title field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($reasonTitle)) {
+    //         $errors['reason_title'] = "Reason Title field cannot be empty";
+    //     }
 
-        if (!Validator::validateFieldExistence($reasonDescription)) {
-            $errors['reason_description'] = "Reason Description field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($reasonDescription)) {
+    //         $errors['reason_description'] = "Reason Description field cannot be empty";
+    //     }
 
-        return $errors;
-    }
-
-
-    public function requestMaternalAccess(
-        int $staffId,
-        int $maternalId,
-        string $reasonTitle,
-        string $reasonDescription
-    ): ?string {
-
-        $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
-        $existing = MaternalAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->where('maternal_id', '=', $parentId)
-            ->first();
-
-        if ($existing) {
-            return "Access request already exists";
-        }
-
-        $request = new MaternalAccessRequest();
-        $request->staff_id = $staffId;
-        $request->maternal_id = $parentId;
-        $request->reason_title = $reasonTitle;
-        $request->reason_description = $reasonDescription;
-        $request->save();
-
-        $staff = User::find($staffId);
-        $maternal = User::find($parentId);
-
-        $this->notificationService->notifyAdmins(
-            "Maternal Access Request",
-            "{$staff->name} requested access to maternal profile {$maternal->name}. Reason: {$reasonTitle}",
-            "maternal_access_request",
-            $request->id
-        );
-
-        return null;
-    }
-
-    public function cancelMaternalAccessRequest(int $staffId, int $maternalId): ?string
-    {
-        $request = MaternalAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->where('maternal_id', '=', $maternalId)
-            ->first();
-
-        if (!$request) {
-            return "Access request not found";
-        }
-
-        if ($request->accepted === true) {
-            return "Cannot cancel an already accepted request";
-        }
-
-        $request->delete();
-
-        $staff = User::find($staffId);
-        $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
-        $maternal = User::find($parentId);
-
-        $this->notificationService->notifyAdmins(
-            "Maternal Access Request Cancelled",
-            "{$staff->name} requested access to maternal profile {$maternal->name} has been cancelled.",
-            "maternal_access_request_cancelled",
-            $request->id
-        );
+    //     return $errors;
+    // }
 
 
-        return null;
-    }
+    // public function requestMaternalAccess(
+    //     int $staffId,
+    //     int $maternalId,
+    //     string $reasonTitle,
+    //     string $reasonDescription
+    // ): ?string {
+
+    //     $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
+    //     $existing = MaternalAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->where('maternal_id', '=', $parentId)
+    //         ->first();
+
+    //     if ($existing) {
+    //         return "Access request already exists";
+    //     }
+
+    //     $request = new MaternalAccessRequest();
+    //     $request->staff_id = $staffId;
+    //     $request->maternal_id = $parentId;
+    //     $request->reason_title = $reasonTitle;
+    //     $request->reason_description = $reasonDescription;
+    //     $request->save();
+
+    //     $staff = User::find($staffId);
+    //     $maternal = User::find($parentId);
+
+    //     $this->notificationService->notifyAdmins(
+    //         "Maternal Access Request",
+    //         "{$staff->name} requested access to maternal profile {$maternal->name}. Reason: {$reasonTitle}",
+    //         "maternal_access_request",
+    //         $request->id
+    //     );
+
+    //     return null;
+    // }
+
+    // public function cancelMaternalAccessRequest(int $staffId, int $maternalId): ?string
+    // {
+    //     $request = MaternalAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->where('maternal_id', '=', $maternalId)
+    //         ->first();
+
+    //     if (!$request) {
+    //         return "Access request not found";
+    //     }
+
+    //     if ($request->accepted === true) {
+    //         return "Cannot cancel an already accepted request";
+    //     }
+
+    //     $request->delete();
+
+    //     $staff = User::find($staffId);
+    //     $parentId = Maternal::query()->where('id', '=', $maternalId)->first()->parent_id;
+    //     $maternal = User::find($parentId);
+
+    //     $this->notificationService->notifyAdmins(
+    //         "Maternal Access Request Cancelled",
+    //         "{$staff->name} requested access to maternal profile {$maternal->name} has been cancelled.",
+    //         "maternal_access_request_cancelled",
+    //         $request->id
+    //     );
+
+
+    //     return null;
+    // }
 
     public function getDoctorMaternalDetails()
     {
@@ -218,40 +215,7 @@ class MaternalService
 
         $resource = [];
 
-        $requests = MaternalAccessRequest::query()
-            ->where('staff_id', '=', $phmId)
-            ->get();
-
         foreach ($results['items'] as $maternal) {
-
-            $request = null;
-
-            foreach ($requests as $req) {
-                if ($req->maternal_id == $maternal->parent_id) {
-                    $request = $req;
-                    break;
-                }
-            }
-
-            $accessStatus = 'not_requested';
-            $hasFullAccess = false;
-
-            if ($request) {
-                if ($request->accepted === true) {
-                    $accessStatus = 'accepted';
-                    $hasFullAccess = true;
-                } elseif ($request->accepted === false) {
-                    $accessStatus = 'pending';
-                } else {
-                    $accessStatus = 'rejected';
-                }
-            }
-
-            if (!empty($filters['access_status'])) {
-                if (!in_array($accessStatus, $filters['access_status'])) {
-                    continue;
-                }
-            }
             if (!empty($filters['type'])) {
                 if (!in_array($maternal->type, $filters['type'])) {
                     continue;
@@ -268,46 +232,42 @@ class MaternalService
                 'height' => $maternal->height,
                 'blood_type' => $maternal->blood_type,
                 'type' => $maternal->type,
-                'access_status' => $accessStatus,
             ];
 
-            if ($hasFullAccess) {
+            $latestPregnancy = Pregnancy::query()
+                ->where('maternal_id', '=', $maternal->id)
+                ->orderBy('id', 'DESC')
+                ->first();
 
-                $latestPregnancy = Pregnancy::query()
-                    ->where('maternal_id', '=', $maternal->id)
-                    ->orderBy('id', 'DESC')
+            $latestRecord = null;
+
+            if ($latestPregnancy) {
+                $latestRecord = MaternalRecord::query()
+                    ->where('parent_id', '=', $maternal->parent_id)
+                    ->where('mark_as_invalid', '=', 'false')
+                    ->orderBy('visit_date', 'DESC')
                     ->first();
-
-                $latestRecord = null;
-
-                if ($latestPregnancy) {
-                    $latestRecord = MaternalRecord::query()
-                        ->where('parent_id', '=', $maternal->parent_id)
-                        ->where('mark_as_invalid', '=', 'false')
-                        ->orderBy('visit_date', 'DESC')
-                        ->first();
-                }
-
-                $maternalData = array_merge($maternalData, [
-                    'lmp' => $latestPregnancy->lmp,
-                    'edd' => $latestPregnancy->edd,
-                    'gravida' => $latestPregnancy->gravida,
-                    'para' => $latestPregnancy->para,
-                    'delivery_outcome' => $latestPregnancy->delivery_outcome,
-                    'record' => $latestRecord ? [
-                        'visit_date' => $latestRecord->visit_date,
-                        'trimester' => $latestRecord->trimester,
-                        'weight' => $latestRecord->weight,
-                        'blood_pressure' => $latestRecord->blood_pressure,
-                        'bmi' => $latestRecord->bmi,
-                        'glucose' => $latestRecord->glucose,
-                        'hemoglobin' => $latestRecord->hemoglobin,
-                        'fundal_height' => $latestRecord->fundal_height,
-                        'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
-                        'health_status' => $latestRecord->health_status,
-                    ] : null
-                ]);
             }
+
+            $maternalData = array_merge($maternalData, [
+                'lmp' => $latestPregnancy->lmp,
+                'edd' => $latestPregnancy->edd,
+                'gravida' => $latestPregnancy->gravida,
+                'para' => $latestPregnancy->para,
+                'delivery_outcome' => $latestPregnancy->delivery_outcome,
+                'record' => $latestRecord ? [
+                    'visit_date' => $latestRecord->visit_date,
+                    'trimester' => $latestRecord->trimester,
+                    'weight' => $latestRecord->weight,
+                    'blood_pressure' => $latestRecord->blood_pressure,
+                    'bmi' => $latestRecord->bmi,
+                    'glucose' => $latestRecord->glucose,
+                    'hemoglobin' => $latestRecord->hemoglobin,
+                    'fundal_height' => $latestRecord->fundal_height,
+                    'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
+                    'health_status' => $latestRecord->health_status,
+                ] : null
+            ]);
 
             $resource[] = $maternalData;
         }
@@ -543,7 +503,7 @@ class MaternalService
         $pregnancy->para = 0;
         $pregnancy->save();
 
-        $this->requestMaternalAccess($phmId, $maternal->id, "New Maternal Profile Created", "A new maternal profile named {$maternal->name} has been created and is awaiting your approval.");
+        // $this->requestMaternalAccess($phmId, $maternal->id, "New Maternal Profile Created", "A new maternal profile named {$maternal->name} has been created and is awaiting your approval.");
 
         $this->notificationService->notify(
             $parentId,
@@ -641,35 +601,35 @@ class MaternalService
 
 
 
-    public function getUnaccessedMaternalForStaff(int $staffId): array
-    {
-        $requestedMaternalIds = MaternalAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->pluck('maternal_id');
+    // public function getUnaccessedMaternalForStaff(int $staffId): array
+    // {
+    //     $requestedMaternalIds = MaternalAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->pluck('maternal_id');
 
-        $maternalsQuery = Maternal::query();
+    //     $maternalsQuery = Maternal::query();
 
-        if (!empty($requestedMaternalIds)) {
-            $maternalsQuery->whereNotIn('id', $requestedMaternalIds);
-        }
+    //     if (!empty($requestedMaternalIds)) {
+    //         $maternalsQuery->whereNotIn('id', $requestedMaternalIds);
+    //     }
 
-        $maternals = $maternalsQuery->get();
+    //     $maternals = $maternalsQuery->get();
 
-        $resource = [];
-        foreach ($maternals as $maternal) {
-            $parentId = Maternal::query()->where('id', '=', $maternal->id)->first()->parent_id;
-            if ($parentId) {
-                $resource[] = [
-                    'id' => $maternal->id,
-                    'name' => User::find($parentId)->name,
-                    'age' => Calculator::calculateAge(ParentM::find($parentId)->date_of_birth),
-                    'height' => $maternal->height,
-                    'blood_type' => $maternal->blood_type,
-                    'type' => $maternal->type,
-                ];
-            }
-        }
+    //     $resource = [];
+    //     foreach ($maternals as $maternal) {
+    //         $parentId = Maternal::query()->where('id', '=', $maternal->id)->first()->parent_id;
+    //         if ($parentId) {
+    //             $resource[] = [
+    //                 'id' => $maternal->id,
+    //                 'name' => User::find($parentId)->name,
+    //                 'age' => Calculator::calculateAge(ParentM::find($parentId)->date_of_birth),
+    //                 'height' => $maternal->height,
+    //                 'blood_type' => $maternal->blood_type,
+    //                 'type' => $maternal->type,
+    //             ];
+    //         }
+    //     }
 
-        return $resource;
-    }
+    //     return $resource;
+    // }
 }

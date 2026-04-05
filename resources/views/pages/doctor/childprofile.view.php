@@ -135,16 +135,18 @@ Child Profiles
                                             info="{{ $child['phm']['name'] }}" />
                                     </c-modal.viewcard>
 
-                                    @if($child['parent'])
+                                    @if(!empty($child['parents']))
 
                                     <div class="parent-link-group">
+                                        @foreach($child['parents'] as $parent)
                                         <div class="parent-link-card">
                                             <div class="name-group">
-                                                <span class="parent-title">{{$child['parent']['name']}}</span>
-                                                <span class="parent-type">{{ucfirst($child['parent']['type'])}}</span>
+                                                <span class="parent-title">{{$parent['name']}}</span>
+                                                <span class="parent-type">{{ucfirst($parent['type'])}}</span>
                                             </div>
 
                                         </div>
+                                        @endforeach
                                     </div>
                                     @else
                                     <div class="parent-link-group">
@@ -161,23 +163,17 @@ Child Profiles
                                         </c-slot>
                                         @else
                                         <c-slot name="list">
-                                            <li>Height:{{ $child['record']['height'] }} cm</li>
-                                            <li>Weight: {{ $child['record']['weight'] }}  kg</li>
-                                            <li>BMI Value: {{ $child['record']['bmi'] }}</li>
-                                            <li>Head circumference: {{ $child['record']['head_circumference'] }} cm</li>
+                                                <li>Height: {{ $child['record']['height'] ?? '' }} cm</li>
+                                                <li>Weight: {{ $child['record']['weight'] ?? '' }} kg</li>
+                                                <li>BMI Value: {{ $child['record']['bmi'] ?? '' }}</li>
+                                                <li>Head circumference: {{ $child['record']['head_circumference'] ?? '' }} cm</li>
                                         </c-slot>
                                         
                                         
                                         @endif
                                     </c-modal.viewlist>
 
-                                    <c-modal.viewlist title="Recent Vaccinations">
-                                        <c-slot name="list">
-                                            <li>BCG - Dose 1 at 13th of July 2023</li>
-                                            <li>BCG - Dose 2 at 28th of September 2023</li>
-                                        </c-slot>
-                                    </c-modal.viewlist>
-
+                                 
 
                                     <c-slot name="close">
                                         Close
