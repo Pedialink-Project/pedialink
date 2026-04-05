@@ -196,15 +196,17 @@ PHM Child Profiles
 
                                     @if ($child['linked_status'] === "linked")
                                     <div class=" parent-link-group">
+                                        @foreach ($child['parents'] as $parent)
                                         <div class="parent-link-card">
                                             <div class="name-group">
-                                                <span class="parent-title">{{ $child['parent']['name'] }}</span>
-                                                <span class="parent-type">{{ ucfirst($child['parent']['type']) }}</span>
+                                                <span class="parent-title">{{ $parent['name'] }}</span>
+                                                <span class="parent-type">{{ ucfirst($parent['type']) }}</span>
                                             </div>
                                             <c-badge type="green">
                                                 Linked
                                             </c-badge>
                                         </div>
+                                        @endforeach
                                     </div>
                                     @else
                                     <div class="parent-link-group">
@@ -305,7 +307,7 @@ PHM Child Profiles
                                 @if ($child['is_created'])
                                 <c-modal>
                                     <c-slot name="trigger">
-                                        @if ($child['parent'])
+                                        @if (!empty($child['parents']))
                                         <c-dropdown.item class="disabled-delete-btn" disabled>Delete Child
                                             Profile</c-dropdown.item>
                                         @else

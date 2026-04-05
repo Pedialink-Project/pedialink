@@ -135,16 +135,18 @@ Child Profiles
                                             info="{{ $child['phm']['name'] }}" />
                                     </c-modal.viewcard>
 
-                                    @if($child['parent'])
+                                    @if(!empty($child['parents']))
 
                                     <div class="parent-link-group">
+                                        @foreach($child['parents'] as $parent)
                                         <div class="parent-link-card">
                                             <div class="name-group">
-                                                <span class="parent-title">{{$child['parent']['name']}}</span>
-                                                <span class="parent-type">{{ucfirst($child['parent']['type'])}}</span>
+                                                <span class="parent-title">{{$parent['name']}}</span>
+                                                <span class="parent-type">{{ucfirst($parent['type'])}}</span>
                                             </div>
 
                                         </div>
+                                        @endforeach
                                     </div>
                                     @else
                                     <div class="parent-link-group">
