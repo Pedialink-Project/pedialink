@@ -25,10 +25,12 @@ class ChildService
 
     use NameRule, DivisionRule, DateRule, BirthCertificateValidator, NicValidator;
     private  $notificationService;
+    private ChildRecordService $childRecordService;
 
     public function __construct()
     {
         $this->notificationService = new NotificationService();
+        $this->childRecordService = new ChildRecordService();
     }
 
     private function applyChildSearch(QueryBuilder $children, string $search)
@@ -174,7 +176,7 @@ class ChildService
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
             $parent = $parentChild ? $parentChild->getParent() : null;
             $phm    = PublicHealthMidwife::find($child->phm_id);
-            $latestRecord = ChildRecord::query()->where('child_id', '=', $child->id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
+            $latestRecord = $this->childRecordService->getLatestHeathRecord($child->id);
 
             $childData = [
                 'id' => $child->id,
@@ -188,14 +190,7 @@ class ChildService
                     'id' => $phm->id,
                     'name' => User::find($phm->id)->name,
                 ] : null,
-                'record' => $latestRecord ? [
-                    'id' => $latestRecord->id,
-                    'height' => $latestRecord->height,
-                    'weight' => $latestRecord->weight,
-                    'bmi' => $latestRecord->bmi,
-                    'head_circumference' => $latestRecord->head_circumference,
-                    'health_status' => $latestRecord->health_status,
-                ] : null,
+                'record' => $latestRecord,
                 'parent' => $parent ? [
                     'id' => $parent->id,
                     'type' => $parent->type,
