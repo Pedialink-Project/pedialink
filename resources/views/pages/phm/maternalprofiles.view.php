@@ -33,7 +33,7 @@ Maternal Profiles - Overview
 @section('content')
 
 
-<c-table.controls action="{{ route('phm.maternal.profiles') }}" :filters="['access_status' => ['accepted', 'pending', 'not_requested', 'rejected'],'type' => ['antenatal', 'postnatal']]">
+<c-table.controls action="{{ route('phm.maternal.profiles') }}" :filters="['type' => ['antenatal', 'postnatal']]">
 
 
     <c-slot name="extrabtn">
@@ -102,7 +102,6 @@ Maternal Profiles - Overview
                     <c-table.th sortable="1" width="210px">Name</c-table.th>
                     <c-table.th sortable="1" width="200px">Age</c-table.th>
                     <c-table.th align="left" sortable="1" width="220px">Maternal Type</c-table.th>
-                    <c-table.th align="left" sortable="1">Access Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -114,16 +113,6 @@ Maternal Profiles - Overview
                     <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
                     <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
-                    <c-table.td col="access_status"> @if (strtolower($maternal['access_status']) === "accepted")
-                        <c-badge class="status-event" type="green">{{ ucfirst($maternal['access_status']) }}</c-badge>
-                        @elseif (strtolower($maternal['access_status']) === "pending")
-                        <c-badge class="status-event" type="yellow">{{ ucfirst($maternal['access_status']) }}</c-badge>
-                        @elseif (strtolower($maternal['access_status']) === "not_requested")
-                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
-                        @elseif (strtolower($maternal['access_status']) === "rejected")
-                        <c-badge class="status-event" type="red">{{ ucfirst($maternal['access_status'])}}</c-badge>
-                        @endif
-                    </c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
                             <c-slot name="trigger">
@@ -138,7 +127,6 @@ Maternal Profiles - Overview
                                     </c-slot>
 
                                     <c-slot name="headerSuffix">
-                                        @if($maternal['access_status'] === 'accepted')
                                         @if( $maternal['record'])
                                         @if (strtolower($maternal['record']['health_status']) === "good")
                                         <c-badge type="green">
@@ -152,7 +140,6 @@ Maternal Profiles - Overview
                                         <c-badge type="red">
                                             {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
                                         </c-badge>
-                                        @endif
                                         @endif
                                         @endif
                                     </c-slot>
@@ -178,7 +165,6 @@ Maternal Profiles - Overview
                                             title="Height" info="{{ $maternal['height'] }} cm" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
                                             title="Blood Type" info="{{ $maternal['blood_type'] }}" />
-                                        @if($maternal['access_status'] === 'accepted')
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}" title="LMP"
                                             info="{{ $maternal['lmp'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
@@ -187,9 +173,7 @@ Maternal Profiles - Overview
                                             title="Gravida" info="{{ $maternal['gravida'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
                                             title="Para" info="{{ $maternal['para'] }}" />
-                                        @endif
                                     </c-modal.viewcard>
-                                    @if ($maternal['access_status'] === "accepted")
 
 
                                     <c-modal.viewlist title="Latest Medical Records">
@@ -216,14 +200,10 @@ Maternal Profiles - Overview
                                         </c-slot>
                                     </c-modal.viewlist>
 
-
-                                    @endif
-
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
                                 </c-modal>
-                                @if ($maternal['access_status'] === "accepted")
                                 <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
@@ -283,8 +263,6 @@ Maternal Profiles - Overview
                                     </c-slot>
                                 </c-modal>
                                 @endif
-
-                                @endif
                             </c-slot>
                         </c-dropdown.main>
                     </c-table.td>
@@ -292,7 +270,7 @@ Maternal Profiles - Overview
                 @endforeach
                 @if(count($maternals) === 0)
                 <tr>
-                    <td colspan="6">
+                    <td colspan="5">
                         <c-emptytable
                             alt="No Maternals found"
                             title="No Maternal Profiles Available"
