@@ -171,9 +171,18 @@ class ChildService
                 continue;
             }
 
-            //For now only one parent details get but it modifeid to get both parent deatils and return that
-            $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
-            $parent = $parentChild ? $parentChild->getParent() : null;
+            $parentLinks = ParentChild::query()->where('child_id', '=', $child->id)->get();
+            $parents = [];
+            foreach ($parentLinks as $parentLink) {
+                $parent = $parentLink->getParent();
+                if ($parent) {
+                    $parents[] = [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ];
+                }
+            }
             $phm    = PublicHealthMidwife::find($child->phm_id);
             $latestRecord = $this->childRecordService->getLatestHeathRecord($child->id);
 
@@ -190,11 +199,7 @@ class ChildService
                     'name' => User::find($phm->id)->name,
                 ] : null,
                 'record' => $latestRecord,
-                'parent' => $parent ? [
-                    'id' => $parent->id,
-                    'type' => $parent->type,
-                    'name' => User::find($parent->id)->name,
-                ] : null,
+                'parents' => $parents,
 
 
             ];
@@ -229,11 +234,20 @@ class ChildService
         foreach ($results['items'] as $child) {
 
             $linkedStatus = 'unlinked';
-            //For now only one parent details get but it modifeid to get both parent deatils and return that
-            $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
-            $parent = $parentChild ? $parentChild->getParent() : null;
+            $parentLinks = ParentChild::query()->where('child_id', '=', $child->id)->get();
+            $parents = [];
+            foreach ($parentLinks as $parentLink) {
+                $parent = $parentLink->getParent();
+                if ($parent) {
+                    $parents[] = [
+                        'id' => $parent->id,
+                        'type' => $parent->type,
+                        'name' => User::find($parent->id)->name,
+                    ];
+                }
+            }
 
-            if ($parent) {
+            if (!empty($parents)) {
                 $linkedStatus = 'linked';
             } else {
                 $linkedStatus = 'unlinked';
@@ -274,11 +288,7 @@ class ChildService
                     'birth_certificate' => $child->birth_certificate,
                     'date_of_birth' => $child->date_of_birth,
                     'parent_nic' => $childMisc->parent_nic,
-                    'parent' => $parent ? [
-                        'id' => $parent->id,
-                        'type' => $parent->type,
-                        'name' => User::find($parent->id)->name,
-                    ] : null,
+                    'parents' => $parents,
                 ]);
             }
 
@@ -297,11 +307,7 @@ class ChildService
                     'head_circumference' => $latestRecord->head_circumference,
                     'health_status' => $latestRecord->health_status,
                 ] : null,
-                'parent' => $parent ? [
-                    'id' => $parent->id,
-                    'type' => $parent->type,
-                    'name' => User::find($parent->id)->name,
-                ] : null,
+                'parents' => $parents,
             ]);
 
             $resource[] = $childData;
