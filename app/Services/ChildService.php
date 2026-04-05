@@ -8,7 +8,6 @@ use App\Models\PublicHealthMidwife;
 use App\Models\User;
 use App\Models\ChildRecord;
 use App\Helpers\Validator;
-use App\Models\ChildAccessRequest;
 use App\Models\Appointment;
 use App\Models\ParentChild;
 use App\Rules\NameRule;
@@ -621,7 +620,7 @@ class ChildService
         $childMiscFather->children_id = $child->id;
         $childMiscFather->save();
 
-        $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
+        // $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
     }
 
     public function editChildProfile(int $childId, string $name, string $dob, string $gender, string $bloodType)
@@ -641,116 +640,116 @@ class ChildService
         return null;
     }
 
-    public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
-    {
-        $errors = [];
+    // public function validateRequestAccess($childId, $reasonTitle, $reasonDescription)
+    // {
+    //     $errors = [];
 
-        if (!Validator::validateFieldExistence($childId)) {
-            $errors['child_id'] = "Child Profile field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($childId)) {
+    //         $errors['child_id'] = "Child Profile field cannot be empty";
+    //     }
 
-        if (!Validator::validateFieldExistence($reasonTitle)) {
-            $errors['reason_title'] = "Reason Title field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($reasonTitle)) {
+    //         $errors['reason_title'] = "Reason Title field cannot be empty";
+    //     }
 
-        if (!Validator::validateFieldExistence($reasonDescription)) {
-            $errors['reason_description'] = "Reason Description field cannot be empty";
-        }
+    //     if (!Validator::validateFieldExistence($reasonDescription)) {
+    //         $errors['reason_description'] = "Reason Description field cannot be empty";
+    //     }
 
-        return $errors;
-    }
+    //     return $errors;
+    // }
 
-    public function requestChildAccess(
-        int $staffId,
-        int $childId,
-        string $reasonTitle,
-        string $reasonDescription
-    ): ?string {
-        // Prevent duplicate requests
-        $existing = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->where('child_id', '=', $childId)
-            ->first();
+    // public function requestChildAccess(
+    //     int $staffId,
+    //     int $childId,
+    //     string $reasonTitle,
+    //     string $reasonDescription
+    // ): ?string {
+    //     // Prevent duplicate requests
+    //     $existing = ChildAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->where('child_id', '=', $childId)
+    //         ->first();
 
-        if ($existing) {
-            return "Access request already exists";
-        }
+    //     if ($existing) {
+    //         return "Access request already exists";
+    //     }
 
-        $request = new ChildAccessRequest();
-        $request->staff_id = $staffId;
-        $request->child_id = $childId;
-        $request->reason_title = $reasonTitle;
-        $request->reason_description = $reasonDescription;
-        $request->save();
+    //     $request = new ChildAccessRequest();
+    //     $request->staff_id = $staffId;
+    //     $request->child_id = $childId;
+    //     $request->reason_title = $reasonTitle;
+    //     $request->reason_description = $reasonDescription;
+    //     $request->save();
 
-        $staff = User::find($staffId);
-        $child = Child::find($childId);
+    //     $staff = User::find($staffId);
+    //     $child = Child::find($childId);
 
-        $this->notificationService->notifyAdmins(
-            "Child Access Request",
-            "{$staff->name} requested access to child profile {$child->name}. Reason: {$reasonTitle}",
-            "child_access_request",
-            $request->id
-        );
+    //     $this->notificationService->notifyAdmins(
+    //         "Child Access Request",
+    //         "{$staff->name} requested access to child profile {$child->name}. Reason: {$reasonTitle}",
+    //         "child_access_request",
+    //         $request->id
+    //     );
 
-        return null;
-    }
+    //     return null;
+    // }
 
-    public function getUnaccessedChildrenForStaff(int $staffId): array
-    {
-        $requestedChildIds = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->pluck('child_id');
+    // public function getUnaccessedChildrenForStaff(int $staffId): array
+    // {
+    //     $requestedChildIds = ChildAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->pluck('child_id');
 
-        $childrenQuery = Child::query();
+    //     $childrenQuery = Child::query();
 
-        if (!empty($requestedChildIds)) {
-            $childrenQuery->whereNotIn('id', $requestedChildIds);
-        }
+    //     if (!empty($requestedChildIds)) {
+    //         $childrenQuery->whereNotIn('id', $requestedChildIds);
+    //     }
 
-        $children = $childrenQuery->get();
+    //     $children = $childrenQuery->get();
 
-        $resource = [];
-        foreach ($children as $child) {
-            $resource[] = [
-                'id'   => $child->id,
-                'name' => $child->name,
-            ];
-        }
+    //     $resource = [];
+    //     foreach ($children as $child) {
+    //         $resource[] = [
+    //             'id'   => $child->id,
+    //             'name' => $child->name,
+    //         ];
+    //     }
 
-        return $resource;
-    }
+    //     return $resource;
+    // }
 
-    public function cancelChildAccessRequest(int $staffId, int $childId): ?string
-    {
-        $request = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->where('child_id', '=', $childId)
-            ->first();
+    // public function cancelChildAccessRequest(int $staffId, int $childId): ?string
+    // {
+    //     $request = ChildAccessRequest::query()
+    //         ->where('staff_id', '=', $staffId)
+    //         ->where('child_id', '=', $childId)
+    //         ->first();
 
-        if (!$request) {
-            return "Access request not found";
-        }
+    //     if (!$request) {
+    //         return "Access request not found";
+    //     }
 
-        if ($request->accepted === true) {
-            return "Cannot cancel an already accepted request";
-        }
+    //     if ($request->accepted === true) {
+    //         return "Cannot cancel an already accepted request";
+    //     }
 
-        $request->delete();
+    //     $request->delete();
 
-        $staff = User::find($staffId);
-        $child = Child::find($childId);
+    //     $staff = User::find($staffId);
+    //     $child = Child::find($childId);
 
-        $this->notificationService->notifyAdmins(
-            "Child Access Request Cancelled",
-            "{$staff->name} requested access to child profile {$child->name} has been cancelled.",
-            "child_access_request_canclled",
-            $request->id
-        );
+    //     $this->notificationService->notifyAdmins(
+    //         "Child Access Request Cancelled",
+    //         "{$staff->name} requested access to child profile {$child->name} has been cancelled.",
+    //         "child_access_request_canclled",
+    //         $request->id
+    //     );
 
 
-        return null;
-    }
+    //     return null;
+    // }
 
 
 
