@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Doctor;
 
+use App\Models\Area;
 use App\Services\ChildService;
 use Library\Framework\Http\Request;
 
@@ -19,11 +20,17 @@ class ChildProfileController
 
         $search = $request->input('search');
         $filters = $request->input('filters');
+        $areas = Area::query()->orderBy('code', 'ASC')->get();
+        $areaFilters = [];
+
+        foreach ($areas as $area) {
+            $areaFilters[] = $area->code;
+        }
 
         $staffId = auth()->user()->id;
         [$children,$links] = $this->childService->getChildrenByStaffId($staffId, $search, $filters);
 
-        return view("doctor/childprofile", ["children" => $children,"links"=> $links]);
+        return view("doctor/childprofile", ["children" => $children,"links"=> $links, "areaFilters" => $areaFilters]);
     }
 
     public function requestAccess(Request $request)
