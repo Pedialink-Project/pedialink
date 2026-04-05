@@ -165,6 +165,12 @@ class ChildService
         foreach ($results['items'] as $child) {
             $accessStatus = 'accepted';
             $hasFullAccess = true;
+            $childArea = $child->getArea();
+            $areaCode = $childArea ? $childArea->code : null;
+
+            if (!empty($filters['area']) && !in_array($areaCode, $filters['area'])) {
+                continue;
+            }
 
             //For now only one parent details get but it modifeid to get both parent deatils and return that
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
@@ -177,6 +183,7 @@ class ChildService
                 'name' => $child->name,
                 'age' => Calculator::calculateAge($child->date_of_birth),
                 'access_status' => $accessStatus,
+                'area' => $areaCode,
 
                 'phm' => $phm ? [
                     'id' => $phm->id,
@@ -190,7 +197,6 @@ class ChildService
                 $childData = array_merge($childData, [
                     'gender' => $child->gender,
                     'blood_type' => $child->blood_type,
-                    'area' => $child->getArea()->code,
 
                     'record' => $latestRecord ? [
                         'id' => $latestRecord->id,
