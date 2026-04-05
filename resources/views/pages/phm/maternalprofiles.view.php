@@ -181,13 +181,13 @@ Maternal Profiles - Overview
                                             @if($maternal['record'] == NULL)
                                                 <li>No medical records found.</li>
                                             @else
-                                                <li>Fundal Height: {{ $maternal['record']['fundal_height'] }} cm</li>
-                                                <li>Weight: {{ $maternal['record']['weight'] }} kg</li>
-                                                <li>BMI Value: {{ $maternal['record']['bmi'] }}</li>
-                                                <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] }} bpm</li>
-                                                <li>Glucose: {{ $maternal['record']['glucose'] }} mg/dL</li>
-                                                <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] }} g/dL</li>
-                                                <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] }} mmHg</li>
+                                                <li>Fundal Height: {{ $maternal['record']['fundal_height'] ?? '' }} cm</li>
+                                                <li>Weight: {{ $maternal['record']['weight'] ?? '' }} kg</li>
+                                                <li>BMI Value: {{ $maternal['record']['bmi'] ?? '' }}</li>
+                                                <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] ?? '' }} bpm</li>
+                                                <li>Glucose: {{ $maternal['record']['glucose'] ?? '' }} mg/dL</li>
+                                                <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] ?? '' }} g/dL</li>
+                                                <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] ?? '' }} mmHg</li>
                                             @endif
                                         </c-slot>
                                     </c-modal.viewlist>
