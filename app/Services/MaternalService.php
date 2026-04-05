@@ -336,40 +336,10 @@ class MaternalService
 
         $resource = [];
 
-        $requests = MaternalAccessRequest::query()
-            ->where('staff_id', '=', $phmId)
-            ->get();
-
         foreach ($results['items'] as $maternal) {
+            $accessStatus = 'accepted';
+            $hasFullAccess = true;
 
-            $request = null;
-
-            foreach ($requests as $req) {
-                if ($req->maternal_id == $maternal->parent_id) {
-                    $request = $req;
-                    break;
-                }
-            }
-
-            $accessStatus = 'not_requested';
-            $hasFullAccess = false;
-
-            if ($request) {
-                if ($request->accepted === true) {
-                    $accessStatus = 'accepted';
-                    $hasFullAccess = true;
-                } elseif ($request->accepted === false) {
-                    $accessStatus = 'pending';
-                } else {
-                    $accessStatus = 'rejected';
-                }
-            }
-
-            if (!empty($filters['access_status'])) {
-                if (!in_array($accessStatus, $filters['access_status'])) {
-                    continue;
-                }
-            }
             if (!empty($filters['type'])) {
                 if (!in_array($maternal->type, $filters['type'])) {
                     continue;
