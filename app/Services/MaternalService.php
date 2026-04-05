@@ -337,8 +337,6 @@ class MaternalService
         $resource = [];
 
         foreach ($results['items'] as $maternal) {
-            $accessStatus = 'accepted';
-            $hasFullAccess = true;
             $parentProfile = ParentM::find($maternal->parent_id);
             $maternalArea = $parentProfile ? $parentProfile->getArea() : null;
             $areaCode = $maternalArea ? $maternalArea->code : null;
@@ -364,46 +362,42 @@ class MaternalService
                 'blood_type' => $maternal->blood_type,
                 'type' => $maternal->type,
                 'area' => $areaCode,
-                'access_status' => $accessStatus,
             ];
 
-            if ($hasFullAccess) {
+            $latestPregnancy = Pregnancy::query()
+                ->where('maternal_id', '=', $maternal->id)
+                ->orderBy('id', 'DESC')
+                ->first();
 
-                $latestPregnancy = Pregnancy::query()
-                    ->where('maternal_id', '=', $maternal->id)
-                    ->orderBy('id', 'DESC')
+            $latestRecord = null;
+
+            if ($latestPregnancy) {
+                $latestRecord = MaternalRecord::query()
+                    ->where('parent_id', '=', $maternal->parent_id)
+                    ->where('mark_as_invalid', '=', 'false')
+                    ->orderBy('visit_date', 'DESC')
                     ->first();
-
-                $latestRecord = null;
-
-                if ($latestPregnancy) {
-                    $latestRecord = MaternalRecord::query()
-                        ->where('parent_id', '=', $maternal->parent_id)
-                        ->where('mark_as_invalid', '=', 'false')
-                        ->orderBy('visit_date', 'DESC')
-                        ->first();
-                }
-
-                $maternalData = array_merge($maternalData, [
-                    'lmp' => $latestPregnancy->lmp,
-                    'edd' => $latestPregnancy->edd,
-                    'gravida' => $latestPregnancy->gravida,
-                    'para' => $latestPregnancy->para,
-                    'delivery_outcome' => $latestPregnancy->delivery_outcome,
-                    'record' => $latestRecord ? [
-                        'visit_date' => $latestRecord->visit_date,
-                        'trimester' => $latestRecord->trimester,
-                        'weight' => $latestRecord->weight,
-                        'blood_pressure' => $latestRecord->blood_pressure,
-                        'bmi' => $latestRecord->bmi,
-                        'glucose' => $latestRecord->glucose,
-                        'hemoglobin' => $latestRecord->hemoglobin,
-                        'fundal_height' => $latestRecord->fundal_height,
-                        'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
-                        'health_status' => $latestRecord->health_status,
-                    ] : null
-                ]);
             }
+
+            $maternalData = array_merge($maternalData, [
+                'lmp' => $latestPregnancy->lmp,
+                'edd' => $latestPregnancy->edd,
+                'gravida' => $latestPregnancy->gravida,
+                'para' => $latestPregnancy->para,
+                'delivery_outcome' => $latestPregnancy->delivery_outcome,
+                'record' => $latestRecord ? [
+                    'visit_date' => $latestRecord->visit_date,
+                    'trimester' => $latestRecord->trimester,
+                    'weight' => $latestRecord->weight,
+                    'blood_pressure' => $latestRecord->blood_pressure,
+                    'bmi' => $latestRecord->bmi,
+                    'glucose' => $latestRecord->glucose,
+                    'hemoglobin' => $latestRecord->hemoglobin,
+                    'fundal_height' => $latestRecord->fundal_height,
+                    'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
+                    'health_status' => $latestRecord->health_status,
+                ] : null
+            ]);
 
             $resource[] = $maternalData;
         }
