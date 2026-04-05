@@ -220,16 +220,16 @@ PHM Child Profiles
                                     @endif
 
                                     <c-modal.viewlist title="Latest Medical Records">
-                                        @if($child['record'])
-                                        <c-slot name="list">
-                                            <li>Height:{{ $child['record']['height'] }}cm</li>
-                                            <li>Weight: {{ $child['record']['weight'] }}kg</li>
-                                            <li>BMI Value: {{ $child['record']['bmi'] }}</li>
-                                            <li>Head circumference: {{ $child['record']['head_circumference'] }}cm</li>
+                                            @if($child['record'] == NULL)
+                                            <c-slot name="list">
+                                            <li>No medical records found.</li>
                                         </c-slot>
                                         @else
                                         <c-slot name="list">
-                                            <li>No medical records found.</li>
+                                            <li>Height:{{ $child['record']['height'] }} cm</li>
+                                            <li>Weight: {{ $child['record']['weight'] }}  kg</li>
+                                            <li>BMI Value: {{ $child['record']['bmi'] }}</li>
+                                            <li>Head circumference: {{ $child['record']['head_circumference'] }} cm</li>
                                         </c-slot>
                                         @endif
                                     </c-modal.viewlist>
