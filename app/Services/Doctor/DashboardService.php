@@ -4,11 +4,9 @@ namespace App\Services\Doctor;
 
 use App\Models\Appointment;
 use App\Models\Child;
-use App\Models\ChildAccessRequest;
 use App\Models\ChildRecord;
 use App\Models\Doctor;
 use App\Models\Maternal;
-use App\Models\MaternalAccessRequest;
 use App\Models\MaternalRecord;
 use Library\Framework\Database\QueryBuilder;
 
@@ -16,17 +14,7 @@ class DashboardService
 {
     public function getPatientsCount()
     {
-        $maternalAccessRequest = MaternalAccessRequest::query()
-            ->where("staff_id", "=", auth()->user()->id)
-            ->where("accepted", "=", 1)
-            ->get();
-
-        $childAccessRequest = ChildAccessRequest::query()
-            ->where("staff_id", "=", auth()->user()->id)
-            ->where("accepted", "=", 1)
-            ->get();
-
-        return count($maternalAccessRequest) + count($childAccessRequest);
+        return count(Maternal::query()->get()) + count(Child::query()->get());
     }
 
     public function getAppointmentsCount()
@@ -41,8 +29,6 @@ class DashboardService
 
     public function getUrgentCasesCount()
     {
-        $userId = auth()->user()->id;
-
         // Maternal urgent cases: antenatal mothers with latest record showing critical health_status
         $maternalSql = "
             SELECT COUNT(*) as count
@@ -50,16 +36,13 @@ class DashboardService
                 SELECT DISTINCT ON (mr.parent_id) mr.parent_id, mr.health_status
                 FROM maternal_records mr
                 JOIN maternal m ON m.parent_id = mr.parent_id
-                JOIN maternal_access_requests mar ON mar.maternal_id = mr.parent_id
                 WHERE m.type = 'antenatal'
-                AND mar.accepted = true
-                AND mar.staff_id = :staff_id
                 ORDER BY mr.parent_id, mr.created_at DESC
             ) AS latest
             WHERE latest.health_status = 'critical'
         ";
 
-        $maternalResult = QueryBuilder::rawGet($maternalSql, ['staff_id' => $userId]);
+        $maternalResult = QueryBuilder::rawGet($maternalSql, []);
         $maternalCount = (int) ($maternalResult[0]['count'] ?? 0);
 
         // Children urgent cases: children with latest record showing critical health_status
@@ -68,15 +51,12 @@ class DashboardService
             FROM (
                 SELECT DISTINCT ON (cr.child_id) cr.child_id, cr.health_status
                 FROM child_records cr
-                JOIN children_access_requests car ON car.child_id = cr.child_id
-                WHERE car.accepted = true
-                AND car.staff_id = :staff_id
                 ORDER BY cr.child_id, cr.created_at DESC
             ) AS latest
             WHERE latest.health_status = 'critical'
         ";
 
-        $childResult = QueryBuilder::rawGet($childSql, ['staff_id' => $userId]);
+        $childResult = QueryBuilder::rawGet($childSql, []);
         $childCount = (int) ($childResult[0]['count'] ?? 0);
 
         return $maternalCount + $childCount;
@@ -240,8 +220,6 @@ class DashboardService
 
     public function getPatientRiskOverviewData(): array
     {
-        $userId = auth()->user()->id;
-
         // Children risk data: Get latest child_record per child grouped by age
         $childSql = "
             SELECT
@@ -257,9 +235,6 @@ class DashboardService
             FROM (
                 SELECT DISTINCT ON (cr.child_id) cr.child_id, cr.health_status
                 FROM child_records cr
-                JOIN children_access_requests car ON car.child_id = cr.child_id
-                WHERE car.accepted = true
-                AND car.staff_id = :staff_id
                 ORDER BY cr.child_id, cr.created_at DESC
             ) AS latest
             JOIN children c ON c.id = latest.child_id
@@ -267,7 +242,7 @@ class DashboardService
             ORDER BY age_group, latest.health_status
         ";
 
-        $childResults = QueryBuilder::rawGet($childSql, ['staff_id' => $userId]);
+        $childResults = QueryBuilder::rawGet($childSql, []);
 
         // Initialize children data structure
         $childLabels = ['0 - 1', '1 - 2', '2 - 3', '3 - 4', '4+'];
@@ -306,14 +281,12 @@ class DashboardService
             FROM maternal_records mr
             JOIN parents p ON mr.parent_id = p.id
             JOIN maternal m ON m.parent_id = p.id
-            JOIN maternal_access_requests mar ON mar.maternal_id = p.id
-            WHERE mar.staff_id = :staff_id
-            AND m.type = 'antenatal'
+            WHERE m.type = 'antenatal'
             GROUP BY age_group, mr.health_status
             ORDER BY age_group, mr.health_status
         ";
 
-        $maternalResults = QueryBuilder::rawGet($maternalSql, ['staff_id' => $userId]);
+        $maternalResults = QueryBuilder::rawGet($maternalSql, []);
 
         // Initialize maternal data structure
         $maternalLabels = ['18 - 25', '25 - 30', '30 - 40', '40 - 50', '50+'];
