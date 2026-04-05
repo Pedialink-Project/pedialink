@@ -33,7 +33,7 @@ Maternal Profiles - Overview
 @section('content')
 
 
-<c-table.controls action="{{ route('doctor.maternal.profiles') }}" :filters="['type' => ['antenatal', 'postnatal']]">
+<c-table.controls action="{{ route('doctor.maternal.profiles') }}" :filters="['type' => ['antenatal', 'postnatal'], 'area' => $areaFilters]">
 </c-table.controls>
 
 <c-table.wrapper card="1">
@@ -44,6 +44,7 @@ Maternal Profiles - Overview
                     <c-table.th sortable="1" width="160px">ID</c-table.th>
                     <c-table.th sortable="1" width="210px">Name</c-table.th>
                     <c-table.th sortable="1" width="200px">Age</c-table.th>
+                    <c-table.th align="left" sortable="1" width="200px">Area</c-table.th>
                     <c-table.th align="left" sortable="1" width="220px">Maternal Type</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
@@ -55,6 +56,7 @@ Maternal Profiles - Overview
                     <c-table.td col="id">M-00{{ $maternal['id'] }}</c-table.td>
                     <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
+                    <c-table.td col="area">{{ $maternal['area'] ?? '-' }}</c-table.td>
                     <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
                     <c-table.td class="table-actions" align="center">
                         <c-dropdown.main>
@@ -158,7 +160,7 @@ Maternal Profiles - Overview
                 @endforeach
                 @if(count($maternals) === 0)
                 <tr>
-                    <td colspan="5">
+                    <td colspan="6">
                         <c-emptytable
                             alt="No Maternals found"
                             title="No Maternal Profiles Available"
