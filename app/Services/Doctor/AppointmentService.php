@@ -41,8 +41,8 @@ class AppointmentService
             $resource[] = [
                 "id" => $appointment->id,
                 "slot_date" => $slot->slot_date,
-                "start_time" => $slot->start_time,
-                "end_time" => $slot->end_time,
+                "start_time" => date('h:i A', strtotime($slot->start_time)),
+                "end_time" => date('h:i A', strtotime($slot->end_time)),
                 "doctor" => $doctor ? [
                     "id" => $doctor->id,
                     "name" => $doctor->getUser()->name
@@ -148,8 +148,8 @@ class AppointmentService
                 "id" => $availability->id,
                 "weekday" => IntToDayName::convert($availability->weekday),
                 "active" => $availability->active,
-                "start_time" => $availability->start_time,
-                "end_time" => $availability->end_time,
+                "start_time" =>   date('h:i A', strtotime($availability->start_time)),
+                "end_time" =>  date('h:i A', strtotime($availability->end_time)),
                 "slot_length_minutes" => $availability->slot_length_minutes
             ];
         }
