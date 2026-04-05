@@ -339,6 +339,13 @@ class MaternalService
         foreach ($results['items'] as $maternal) {
             $accessStatus = 'accepted';
             $hasFullAccess = true;
+            $parentProfile = ParentM::find($maternal->parent_id);
+            $maternalArea = $parentProfile ? $parentProfile->getArea() : null;
+            $areaCode = $maternalArea ? $maternalArea->code : null;
+
+            if (!empty($filters['area']) && !in_array($areaCode, $filters['area'])) {
+                continue;
+            }
 
             if (!empty($filters['type'])) {
                 if (!in_array($maternal->type, $filters['type'])) {
@@ -352,10 +359,11 @@ class MaternalService
             $maternalData = [
                 'id' => $maternal->id,
                 'name' => User::find($maternal->parent_id)->name,
-                'age' => Calculator::calculateAge(ParentM::find($maternal->parent_id)->date_of_birth),
+                'age' => $parentProfile ? Calculator::calculateAge($parentProfile->date_of_birth) : null,
                 'height' => $maternal->height,
                 'blood_type' => $maternal->blood_type,
                 'type' => $maternal->type,
+                'area' => $areaCode,
                 'access_status' => $accessStatus,
             ];
 
