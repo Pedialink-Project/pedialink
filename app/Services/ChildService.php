@@ -227,40 +227,7 @@ class ChildService
 
         $resource = [];
 
-        $requests = ChildAccessRequest::query()
-            ->where('staff_id', '=', $phmId)
-            ->get();
-
         foreach ($results['items'] as $child) {
-
-            $request = null;
-
-            foreach ($requests as $req) {
-                if ($req->child_id == $child->id) {
-                    $request = $req;
-                    break;
-                }
-            }
-
-            $accessStatus = 'not_requested';
-            $hasFullAccess = false;
-
-            if ($request) {
-                if ($request->accepted === true) {
-                    $accessStatus = 'accepted';
-                    $hasFullAccess = true;
-                } elseif ($request->accepted === false) {
-                    $accessStatus = 'pending';
-                } else {
-                    $accessStatus = 'rejected';
-                }
-            }
-
-            if (!empty($filters['access_status'])) {
-                if (!in_array($accessStatus, $filters['access_status'])) {
-                    continue;
-                }
-            }
 
             $linkedStatus = 'unlinked';
             //For now only one parent details get but it modifeid to get both parent deatils and return that
@@ -295,7 +262,6 @@ class ChildService
                 'age' => Calculator::calculateAge($child->date_of_birth),
                 'gender' => $child->gender,
                 'area' => $child->getArea()->code,
-                'access_status' => $accessStatus,
                 'linked_status' => $linkedStatus,
                 'is_created' => $isPhmCreated,
 
@@ -317,29 +283,27 @@ class ChildService
                 ]);
             }
 
-            if ($hasFullAccess) {
-                $childData = array_merge($childData, [
-                    'blood_type' => $child->blood_type,
-                    'birth_certificate' => $child->birth_certificate,
-                    'phm' => $phm ? [
-                        'id' => $phm->id,
-                        'name' => User::find($phm->id)->name,
-                    ] : null,
-                    'record' => $latestRecord ? [
-                        'id' => $latestRecord->id,
-                        'height' => $latestRecord->height,
-                        'weight' => $latestRecord->weight,
-                        'bmi' => $latestRecord->bmi,
-                        'head_circumference' => $latestRecord->head_circumference,
-                        'health_status' => $latestRecord->health_status,
-                    ] : null,
-                    'parent' => $parent ? [
-                        'id' => $parent->id,
-                        'type' => $parent->type,
-                        'name' => User::find($parent->id)->name,
-                    ] : null,
-                ]);
-            }
+            $childData = array_merge($childData, [
+                'blood_type' => $child->blood_type,
+                'birth_certificate' => $child->birth_certificate,
+                'phm' => $phm ? [
+                    'id' => $phm->id,
+                    'name' => User::find($phm->id)->name,
+                ] : null,
+                'record' => $latestRecord ? [
+                    'id' => $latestRecord->id,
+                    'height' => $latestRecord->height,
+                    'weight' => $latestRecord->weight,
+                    'bmi' => $latestRecord->bmi,
+                    'head_circumference' => $latestRecord->head_circumference,
+                    'health_status' => $latestRecord->health_status,
+                ] : null,
+                'parent' => $parent ? [
+                    'id' => $parent->id,
+                    'type' => $parent->type,
+                    'name' => User::find($parent->id)->name,
+                ] : null,
+            ]);
 
             $resource[] = $childData;
         }
