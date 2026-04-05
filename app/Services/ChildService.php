@@ -163,8 +163,6 @@ class ChildService
         $resource = [];
 
         foreach ($results['items'] as $child) {
-            $accessStatus = 'accepted';
-            $hasFullAccess = true;
             $childArea = $child->getArea();
             $areaCode = $childArea ? $childArea->code : null;
 
@@ -182,38 +180,30 @@ class ChildService
                 'id' => $child->id,
                 'name' => $child->name,
                 'age' => Calculator::calculateAge($child->date_of_birth),
-                'access_status' => $accessStatus,
                 'area' => $areaCode,
+                'gender' => $child->gender,
+                'blood_type' => $child->blood_type,
 
                 'phm' => $phm ? [
                     'id' => $phm->id,
                     'name' => User::find($phm->id)->name,
                 ] : null,
+                'record' => $latestRecord ? [
+                    'id' => $latestRecord->id,
+                    'height' => $latestRecord->height,
+                    'weight' => $latestRecord->weight,
+                    'bmi' => $latestRecord->bmi,
+                    'head_circumference' => $latestRecord->head_circumference,
+                    'health_status' => $latestRecord->health_status,
+                ] : null,
+                'parent' => $parent ? [
+                    'id' => $parent->id,
+                    'type' => $parent->type,
+                    'name' => User::find($parent->id)->name,
+                ] : null,
 
 
             ];
-
-            if ($hasFullAccess) {
-                $childData = array_merge($childData, [
-                    'gender' => $child->gender,
-                    'blood_type' => $child->blood_type,
-
-                    'record' => $latestRecord ? [
-                        'id' => $latestRecord->id,
-                        'height' => $latestRecord->height,
-                        'weight' => $latestRecord->weight,
-                        'bmi' => $latestRecord->bmi,
-                        'head_circumference' => $latestRecord->head_circumference,
-                        'health_status' => $latestRecord->health_status,
-                    ] : null,
-
-                    'parent' => $parent ? [
-                        'id' => $parent->id,
-                        'type' => $parent->type,
-                        'name' => User::find($parent->id)->name,
-                    ] : null,
-                ]);
-            }
 
             $resource[] = $childData;
         }
