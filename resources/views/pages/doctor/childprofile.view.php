@@ -163,10 +163,10 @@ Child Profiles
                                         </c-slot>
                                         @else
                                         <c-slot name="list">
-                                            <li>Height:{{ $child['record']['height'] }} cm</li>
-                                            <li>Weight: {{ $child['record']['weight'] }}  kg</li>
-                                            <li>BMI Value: {{ $child['record']['bmi'] }}</li>
-                                            <li>Head circumference: {{ $child['record']['head_circumference'] }} cm</li>
+                                                <li>Height: {{ $child['record']['height'] ?? '' }} cm</li>
+                                                <li>Weight: {{ $child['record']['weight'] ?? '' }} kg</li>
+                                                <li>BMI Value: {{ $child['record']['bmi'] ?? '' }}</li>
+                                                <li>Head circumference: {{ $child['record']['head_circumference'] ?? '' }} cm</li>
                                         </c-slot>
                                         
                                         
