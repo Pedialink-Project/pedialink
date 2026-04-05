@@ -45,7 +45,6 @@ Maternal Profiles - Overview
                     <c-table.th sortable="1" width="210px">Name</c-table.th>
                     <c-table.th sortable="1" width="200px">Age</c-table.th>
                     <c-table.th align="left" sortable="1" width="220px">Maternal Type</c-table.th>
-                    <c-table.th align="left" sortable="1">Access Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -57,114 +56,7 @@ Maternal Profiles - Overview
                     <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
                     <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
-                    <c-table.td col="access_status"> @if (strtolower($maternal['access_status']) === "accepted")
-                        <c-badge class="status-event" type="green">{{ ucfirst($maternal['access_status']) }}</c-badge>
-                        @elseif (strtolower($maternal['access_status']) === "pending")
-                        <c-badge class="status-event" type="yellow">{{ ucfirst($maternal['access_status']) }}</c-badge>
-                        @elseif (strtolower($maternal['access_status']) === "not_requested")
-                        <c-badge class="status-event" type="purple">Not Requested</c-badge>
-                        @elseif (strtolower($maternal['access_status']) === "rejected")
-                        <c-badge class="status-event" type="red">{{ ucfirst($maternal['access_status'])}}</c-badge>
-                        @endif
-                    </c-table.td>
                     <c-table.td class="table-actions" align="center">
-                        @if($maternal['access_status'] == 'not_requested')
-                        <c-dropdown.main>
-                            <c-slot name="trigger">
-                                <c-button variant="ghost" class="dropdown-trigger">
-                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
-                                </c-button>
-                            </c-slot>
-                            <c-slot name="menu">
-                                <c-modal id="addmaternal-{{ $maternal['id'] }}" size="sm" :initOpen="flash('request') ? true : false">
-                                    <c-slot name="trigger">
-                                        <c-dropdown.item>Request Access</c-dropdown.item>
-                                    </c-slot>
-                                    <c-slot name="headerPrefix">
-                                        <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
-                                    </c-slot>
-                                    <c-slot name="header">
-                                        <div>Request maternal Profile Access</div>
-                                    </c-slot>
-
-                                    <form id="request-maternal-form-{{ $maternal['id'] }}" class="maternal-form" action="{{ route('doctor.maternalprofile.requestAccess') }}" method="POST">
-
-                                        <input type="hidden" name="maternal_id" value="{{ $maternal['id'] }}">
-
-                                        <c-select
-                                            label="Maternal Profile"
-                                            name="maternal_id_display"
-                                            searchable="0"
-                                            value="{{ $maternal['name'] }} ({{ 'C-00'.$maternal['id'] }})"
-                                            disabled="0">
-                                        </c-select>
-
-                                        <c-select
-                                            label="Reason Category"
-                                            name="reason_title"
-                                            searchable="1"
-                                            placeholder="Select Reason Category"
-                                            value="{{ old('reason_title') ?? '' }}"
-                                            error="{{ errors('reason_title') ?? '' }}">
-                                            @foreach ($accessReasons as $reason)
-                                            <li class="select-item" data-value="{{ $reason }}">
-                                                {{ $reason }}
-                                            </li>
-                                            @endforeach
-                                        </c-select>
-
-                                        <c-textarea label="Reason " value="{{ old('reason_description') ?? '' }}"
-                                            error="{{ errors('reason_description') ?? '' }}" name='reason_description' placeholder="Enter reason for request"></c-textarea>
-                                    </form>
-                                    <c-slot name="close">
-                                        Close
-                                    </c-slot>
-                                    <c-slot name="footer">
-                                        <c-button type="submit" form="request-maternal-form-{{ $maternal['id'] }}" variant="primary">Request Access</c-button>
-                                    </c-slot>
-                                </c-modal>
-
-
-                            </c-slot>
-                        </c-dropdown.main>
-                        @elseif($maternal['access_status'] === 'pending')
-                        <c-dropdown.main>
-                            <c-slot name="trigger">
-                                <c-button variant="ghost" class="dropdown-trigger">
-                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
-                                </c-button>
-                            </c-slot>
-                            <c-slot name="menu">
-                                <c-modal id="cancel-request-{{$maternal['id']}}" size="sm" :initOpen="flash('request') ? true : false">
-
-                                    <c-slot name="headerPrefix">
-                                        <img src="{{ asset('assets/icons/cancel-circle.svg' )}}" />
-                                    </c-slot>
-
-                                    <c-slot name="trigger">
-                                        <c-dropdown.item>Cancel Request</c-dropdown.item>
-                                    </c-slot>
-
-                                    <c-slot name="header">
-                                        <div>Cancel Maternal Access Request</div>
-                                    </c-slot>
-
-                                    <form id="cancel-request-maternal-form-{{$maternal['id']}}" class="maternal-form" action="{{ route('doctor.maternalprofile.cancel.requestAccess',['id' => $maternal['id']]) }}" method="POST">
-                                        <p>
-                                            Do you want to cancel <span class="delete-event-highlight">maternal ID C-00{{
-                                            $maternal['id'] }} access request</span>?
-                                        </p>
-
-                                    </form>
-                                    <c-slot name="close">
-                                        Close
-                                    </c-slot>
-                                    <c-slot name="footer">
-                                        <c-button type="submit" form="cancel-request-maternal-form-{{$maternal['id']}}" variant="destructive">Cancel Request</c-button>
-                                    </c-slot>
-                                </c-modal> </c-slot>
-                        </c-dropdown.main>
-                        @elseif($maternal['access_status'] === 'accepted')
                         <c-dropdown.main>
                             <c-slot name="trigger">
                                 <c-button variant="ghost" class="dropdown-trigger">
@@ -178,7 +70,6 @@ Maternal Profiles - Overview
                                     </c-slot>
 
                                     <c-slot name="headerSuffix">
-                                        @if($maternal['access_status'] === 'accepted')
                                         @if( $maternal['record'])
                                         @if (strtolower($maternal['record']['health_status']) === "good")
                                         <c-badge type="green">
@@ -192,7 +83,6 @@ Maternal Profiles - Overview
                                         <c-badge type="red">
                                             {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
                                         </c-badge>
-                                        @endif
                                         @endif
                                         @endif
                                     </c-slot>
@@ -218,7 +108,6 @@ Maternal Profiles - Overview
                                             title="Height" info="{{ $maternal['height'] }} cm" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
                                             title="Blood Type" info="{{ $maternal['blood_type'] }}" />
-                                        @if($maternal['access_status'] === 'accepted')
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}" title="LMP"
                                             info="{{ $maternal['lmp'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
@@ -227,9 +116,7 @@ Maternal Profiles - Overview
                                             title="Gravida" info="{{ $maternal['gravida'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
                                             title="Para" info="{{ $maternal['para'] }}" />
-                                        @endif
                                     </c-modal.viewcard>
-                                    @if ($maternal['access_status'] === "accepted")
 
 
                                     <c-modal.viewlist title="Latest Medical Records">
@@ -255,9 +142,6 @@ Maternal Profiles - Overview
                                         </c-slot>
                                     </c-modal.viewlist>
 
-
-                                    @endif
-
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
@@ -268,14 +152,13 @@ Maternal Profiles - Overview
 
                             </c-slot>
                         </c-dropdown.main>
-                        @endif
 
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
                 @if(count($maternals) === 0)
                 <tr>
-                    <td colspan="6">
+                    <td colspan="5">
                         <c-emptytable
                             alt="No Maternals found"
                             title="No Maternal Profiles Available"
