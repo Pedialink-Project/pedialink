@@ -171,13 +171,7 @@ Child Profiles
                                         @endif
                                     </c-modal.viewlist>
 
-                                    <c-modal.viewlist title="Recent Vaccinations">
-                                        <c-slot name="list">
-                                            <li>BCG - Dose 1 at 13th of July 2023</li>
-                                            <li>BCG - Dose 2 at 28th of September 2023</li>
-                                        </c-slot>
-                                    </c-modal.viewlist>
-
+                                 
 
                                     <c-slot name="close">
                                         Close
