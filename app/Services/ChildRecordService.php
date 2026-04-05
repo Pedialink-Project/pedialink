@@ -77,7 +77,7 @@ class ChildRecordService
 
     $record = ChildRecord::query()
         ->where('child_id', '=', $childId)
-        ->where('mark_as_invalid', '=', false)
+        ->where('mark_as_invalid', '=', 'false')
         ->orderBy('visit_date', 'DESC')
         ->orderBy('created_at', 'DESC')
         ->first();

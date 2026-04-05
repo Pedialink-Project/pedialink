@@ -336,40 +336,15 @@ class MaternalService
 
         $resource = [];
 
-        $requests = MaternalAccessRequest::query()
-            ->where('staff_id', '=', $phmId)
-            ->get();
-
         foreach ($results['items'] as $maternal) {
+            $parentProfile = ParentM::find($maternal->parent_id);
+            $maternalArea = $parentProfile ? $parentProfile->getArea() : null;
+            $areaCode = $maternalArea ? $maternalArea->code : null;
 
-            $request = null;
-
-            foreach ($requests as $req) {
-                if ($req->maternal_id == $maternal->parent_id) {
-                    $request = $req;
-                    break;
-                }
+            if (!empty($filters['area']) && !in_array($areaCode, $filters['area'])) {
+                continue;
             }
 
-            $accessStatus = 'not_requested';
-            $hasFullAccess = false;
-
-            if ($request) {
-                if ($request->accepted === true) {
-                    $accessStatus = 'accepted';
-                    $hasFullAccess = true;
-                } elseif ($request->accepted === false) {
-                    $accessStatus = 'pending';
-                } else {
-                    $accessStatus = 'rejected';
-                }
-            }
-
-            if (!empty($filters['access_status'])) {
-                if (!in_array($accessStatus, $filters['access_status'])) {
-                    continue;
-                }
-            }
             if (!empty($filters['type'])) {
                 if (!in_array($maternal->type, $filters['type'])) {
                     continue;
@@ -382,50 +357,47 @@ class MaternalService
             $maternalData = [
                 'id' => $maternal->id,
                 'name' => User::find($maternal->parent_id)->name,
-                'age' => Calculator::calculateAge(ParentM::find($maternal->parent_id)->date_of_birth),
+                'age' => $parentProfile ? Calculator::calculateAge($parentProfile->date_of_birth) : null,
                 'height' => $maternal->height,
                 'blood_type' => $maternal->blood_type,
                 'type' => $maternal->type,
-                'access_status' => $accessStatus,
+                'area' => $areaCode,
             ];
 
-            if ($hasFullAccess) {
+            $latestPregnancy = Pregnancy::query()
+                ->where('maternal_id', '=', $maternal->id)
+                ->orderBy('id', 'DESC')
+                ->first();
 
-                $latestPregnancy = Pregnancy::query()
-                    ->where('maternal_id', '=', $maternal->id)
-                    ->orderBy('id', 'DESC')
+            $latestRecord = null;
+
+            if ($latestPregnancy) {
+                $latestRecord = MaternalRecord::query()
+                    ->where('parent_id', '=', $maternal->parent_id)
+                    ->where('mark_as_invalid', '=', 'false')
+                    ->orderBy('visit_date', 'DESC')
                     ->first();
-
-                $latestRecord = null;
-
-                if ($latestPregnancy) {
-                    $latestRecord = MaternalRecord::query()
-                        ->where('parent_id', '=', $maternal->parent_id)
-                        ->where('mark_as_invalid', '=', 'false')
-                        ->orderBy('visit_date', 'DESC')
-                        ->first();
-                }
-
-                $maternalData = array_merge($maternalData, [
-                    'lmp' => $latestPregnancy->lmp,
-                    'edd' => $latestPregnancy->edd,
-                    'gravida' => $latestPregnancy->gravida,
-                    'para' => $latestPregnancy->para,
-                    'delivery_outcome' => $latestPregnancy->delivery_outcome,
-                    'record' => $latestRecord ? [
-                        'visit_date' => $latestRecord->visit_date,
-                        'trimester' => $latestRecord->trimester,
-                        'weight' => $latestRecord->weight,
-                        'blood_pressure' => $latestRecord->blood_pressure,
-                        'bmi' => $latestRecord->bmi,
-                        'glucose' => $latestRecord->glucose,
-                        'hemoglobin' => $latestRecord->hemoglobin,
-                        'fundal_height' => $latestRecord->fundal_height,
-                        'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
-                        'health_status' => $latestRecord->health_status,
-                    ] : null
-                ]);
             }
+
+            $maternalData = array_merge($maternalData, [
+                'lmp' => $latestPregnancy->lmp,
+                'edd' => $latestPregnancy->edd,
+                'gravida' => $latestPregnancy->gravida,
+                'para' => $latestPregnancy->para,
+                'delivery_outcome' => $latestPregnancy->delivery_outcome,
+                'record' => $latestRecord ? [
+                    'visit_date' => $latestRecord->visit_date,
+                    'trimester' => $latestRecord->trimester,
+                    'weight' => $latestRecord->weight,
+                    'blood_pressure' => $latestRecord->blood_pressure,
+                    'bmi' => $latestRecord->bmi,
+                    'glucose' => $latestRecord->glucose,
+                    'hemoglobin' => $latestRecord->hemoglobin,
+                    'fundal_height' => $latestRecord->fundal_height,
+                    'fetal_heart_rate' => $latestRecord->fetal_heart_rate,
+                    'health_status' => $latestRecord->health_status,
+                ] : null
+            ]);
 
             $resource[] = $maternalData;
         }

@@ -25,10 +25,12 @@ class ChildService
 
     use NameRule, DivisionRule, DateRule, BirthCertificateValidator, NicValidator;
     private  $notificationService;
+    private ChildRecordService $childRecordService;
 
     public function __construct()
     {
         $this->notificationService = new NotificationService();
+        $this->childRecordService = new ChildRecordService();
     }
 
     private function applyChildSearch(QueryBuilder $children, string $search)
@@ -162,83 +164,41 @@ class ChildService
 
         $resource = [];
 
-        $requests = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->get();
-
         foreach ($results['items'] as $child) {
+            $childArea = $child->getArea();
+            $areaCode = $childArea ? $childArea->code : null;
 
-            $request = null;
-
-            foreach ($requests as $req) {
-                if ($req->child_id == $child->id) {
-                    $request = $req;
-                    break;
-                }
-            }
-
-            $accessStatus = 'not_requested';
-            $hasFullAccess = false;
-
-            if ($request) {
-                if ($request->accepted === true) {
-                    $accessStatus = 'accepted';
-                    $hasFullAccess = true;
-                } elseif ($request->accepted === false) {
-                    $accessStatus = 'pending';
-                } else {
-                    $accessStatus = 'rejected';
-                }
-            }
-
-            if (!empty($filters['access_status'])) {
-                if (!in_array($accessStatus, $filters['access_status'])) {
-                    continue;
-                }
+            if (!empty($filters['area']) && !in_array($areaCode, $filters['area'])) {
+                continue;
             }
 
             //For now only one parent details get but it modifeid to get both parent deatils and return that
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
             $parent = $parentChild ? $parentChild->getParent() : null;
             $phm    = PublicHealthMidwife::find($child->phm_id);
-            $latestRecord = ChildRecord::query()->where('child_id', '=', $child->id)->orderBy('visit_date', 'DESC')->orderBy('created_at', 'DESC')->first();
+            $latestRecord = $this->childRecordService->getLatestHeathRecord($child->id);
 
             $childData = [
                 'id' => $child->id,
                 'name' => $child->name,
                 'age' => Calculator::calculateAge($child->date_of_birth),
-                'access_status' => $accessStatus,
+                'area' => $areaCode,
+                'gender' => $child->gender,
+                'blood_type' => $child->blood_type,
 
                 'phm' => $phm ? [
                     'id' => $phm->id,
                     'name' => User::find($phm->id)->name,
                 ] : null,
+                'record' => $latestRecord,
+                'parent' => $parent ? [
+                    'id' => $parent->id,
+                    'type' => $parent->type,
+                    'name' => User::find($parent->id)->name,
+                ] : null,
 
 
             ];
-
-            if ($hasFullAccess) {
-                $childData = array_merge($childData, [
-                    'gender' => $child->gender,
-                    'blood_type' => $child->blood_type,
-                    'area' => $child->getArea()->code,
-
-                    'record' => $latestRecord ? [
-                        'id' => $latestRecord->id,
-                        'height' => $latestRecord->height,
-                        'weight' => $latestRecord->weight,
-                        'bmi' => $latestRecord->bmi,
-                        'head_circumference' => $latestRecord->head_circumference,
-                        'health_status' => $latestRecord->health_status,
-                    ] : null,
-
-                    'parent' => $parent ? [
-                        'id' => $parent->id,
-                        'type' => $parent->type,
-                        'name' => User::find($parent->id)->name,
-                    ] : null,
-                ]);
-            }
 
             $resource[] = $childData;
         }
