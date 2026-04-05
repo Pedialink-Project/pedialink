@@ -42,7 +42,7 @@ Child Profiles
 
 
 
-<c-table.controls action="{{ route('doctor.child.profiles') }}">
+<c-table.controls action="{{ route('doctor.child.profiles') }}" :filters="['area' => $areaFilters]">
 </c-table.controls>
 
 <c-table.wrapper card="1">
@@ -53,6 +53,7 @@ Child Profiles
                     <c-table.th sortable="1">ID</c-table.th>
                     <c-table.th sortable="1">Name</c-table.th>
                     <c-table.th sortable="1">Age</c-table.th>
+                    <c-table.th>Area</c-table.th>
                     <c-table.th>Assigned PHM</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
@@ -67,6 +68,7 @@ Child Profiles
                     <c-table.td col="id">C-00{{ $child['id'] }}</c-table.td>
                     <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
                     <c-table.td col="age" class="child-col">{{ $child['age'] }}</c-table.td>
+                    <c-table.td col="area">{{ $child['area'] ?? '-' }}</c-table.td>
 
                     <c-table.td col="assigned_phm">{{ $child['phm']['name'] }}</c-table.td>
                     <c-table.td class="table-actions" align="center">
@@ -194,7 +196,7 @@ Child Profiles
                 @endforeach
                 @if(count($children) === 0)
                 <tr>
-                    <td colspan="5">
+                    <td colspan="6">
                         <c-emptytable
                             alt="No children found"
                             title="No Child Profiles Available"
