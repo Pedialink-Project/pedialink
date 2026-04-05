@@ -162,40 +162,9 @@ class ChildService
 
         $resource = [];
 
-        $requests = ChildAccessRequest::query()
-            ->where('staff_id', '=', $staffId)
-            ->get();
-
         foreach ($results['items'] as $child) {
-
-            $request = null;
-
-            foreach ($requests as $req) {
-                if ($req->child_id == $child->id) {
-                    $request = $req;
-                    break;
-                }
-            }
-
-            $accessStatus = 'not_requested';
-            $hasFullAccess = false;
-
-            if ($request) {
-                if ($request->accepted === true) {
-                    $accessStatus = 'accepted';
-                    $hasFullAccess = true;
-                } elseif ($request->accepted === false) {
-                    $accessStatus = 'pending';
-                } else {
-                    $accessStatus = 'rejected';
-                }
-            }
-
-            if (!empty($filters['access_status'])) {
-                if (!in_array($accessStatus, $filters['access_status'])) {
-                    continue;
-                }
-            }
+            $accessStatus = 'accepted';
+            $hasFullAccess = true;
 
             //For now only one parent details get but it modifeid to get both parent deatils and return that
             $parentChild = ParentChild::query()->where('child_id', '=', $child->id)->first();
