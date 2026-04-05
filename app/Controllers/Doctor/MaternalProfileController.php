@@ -22,10 +22,8 @@ class MaternalProfileController
         $filters = $request->input("filters");
         $doctorId = auth()->user()->id;
         [$maternals, $links] = $this->maternalService->getMaternalByDoctorId($doctorId, $search, $filters);
-        $unaccesedMaternals = $this->maternalService->getUnaccessedMaternalForStaff($doctorId);
-        $accessReasons = config('data.accessReason');
 
-        return view("doctor/maternalprofile", ['maternals' => $maternals, 'links' => $links, 'unacessedMaternals' => $unaccesedMaternals, 'accessReasons' => $accessReasons]);
+        return view("doctor/maternalprofile", ['maternals' => $maternals, 'links' => $links]);
     }
 
     public function requestAccess(Request $request)
