@@ -45,10 +45,6 @@ if ($error) {
                 accept="{{ $accept }}"
             @endif
 
-            @if (!empty($required))
-                required
-            @endif
-
             @if (!empty($disabled))
                 disabled
             @endif
@@ -61,7 +57,9 @@ if ($error) {
                 aria-invalid="true"
             @endif
 
-            tabindex="-1"
+            @if (!empty($required))
+                data-required="true"
+            @endif
         />
 
         <div class="fileinput-dropzone" data-fileinput-zone>
@@ -206,6 +204,23 @@ if ($error) {
 
             // Handle file selection
             fileInput.addEventListener('change', updateFileList);
+
+            // Custom validation for required fields
+            if (fileInput.dataset.required === 'true') {
+                const form = fileInput.closest('form');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        if (fileInput.files.length === 0) {
+                            e.preventDefault();
+                            fileInput.focus();
+                            fileInput.setCustomValidity('This field is required');
+                            fileInput.reportValidity();
+                        } else {
+                            fileInput.setCustomValidity('');
+                        }
+                    });
+                }
+            }
         };
 
         // Initialize on DOM ready
