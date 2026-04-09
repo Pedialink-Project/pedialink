@@ -43,27 +43,33 @@
                 @else
                     <form method="POST" action="{{ route('parent.document.submit') }}" id="verification-documents" enctype="multipart/form-data">
                         <div class="form-inputs">
-                            <c-input
-                                type="file"
+                            <c-fileinput
                                 label="Birth Certificate"
                                 name="birth_certificate"
+                                id="birth_document"
+                                accept=".pdf,.docx,.doc,.jpg"
                                 placeholder="Submit birth document"
+                                help="Max 10MB per file"
                                 error="{{ errors('birth_certificate_error') ?? '' }}"
                                 required
                             />
-                            <c-input
-                                type="file"
+                            <c-fileinput
                                 label="Marriage Certificate"
                                 name="marriage_certificate"
+                                id="marriage_document"
+                                accept=".pdf,.docx,.doc,.jpg"
                                 placeholder="Submit marriage document"
+                                help="Max 10MB per file"
                                 error="{{ errors('marriage_certificate_error') ?? '' }}"
                                 required
                             />
-                            <c-input
-                                type="file"
+                            <c-fileinput
                                 label="NIC copy"
                                 name="nic_copy"
+                                id="nic_document"
+                                accept=".pdf,.docx,.doc,.jpg"
                                 placeholder="Submit NIC copy"
+                                help="Max 10MB per file"
                                 error="{{ errors('nic_copy_error') ?? '' }}"
                                 required
                             />

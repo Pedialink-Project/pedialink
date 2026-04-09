@@ -24,6 +24,7 @@
 @import "./components/calendar.css";
 @import "./components/checkbox.css";
 @import "./components/no-data.css";
+@import "./components/file-input.css";
 
 /* helper/additional css for components */
 @import "./components/password-icon.css";
