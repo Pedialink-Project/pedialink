@@ -28,27 +28,40 @@ class NicExtractor
     private function extractNic()
     {
         $year = null;
+        $rawDoy = null;
         $doy = null;
 
         if ($this->isOldFormat($this->nic)) {
             $this->nicExtracted['format'] = 'old';
-            $year   = (int) substr($this->nic, 0, 2);
-            $doy  = (int) substr($this->nic, 2, 3);
+            $twoDigitYear = (int) substr($this->nic, 0, 2);
+            $currentYearSuffix = (int) date('y');
+            $year = $twoDigitYear <= $currentYearSuffix
+                ? 2000 + $twoDigitYear
+                : 1900 + $twoDigitYear;
+            $rawDoy  = (int) substr($this->nic, 2, 3);
         } else if ($this->isNewFormat($this->nic)) {
             $this->nicExtracted['format'] = 'new';
             $year = (int) substr($this->nic, 0, 4);
-            $doy  = (int) substr($this->nic, 4, 3);
+            $rawDoy  = (int) substr($this->nic, 4, 3);
         } else {
             return;
         }
 
-        if ($this->isDoyValid($doy)) {
-            if ($doy > 500) {
-                $this->nicExtracted["gender"] = "F";
-            } else {
-                $this->nicExtracted["gender"] = "M";
-            }
+        if (!$this->isYearValid($year)) {
+            return;
+        }
+
+        if ($rawDoy >= 501 && $rawDoy <= 866) {
+            $this->nicExtracted["gender"] = "F";
+            $doy = $rawDoy - 500;
+        } else if ($rawDoy >= 1 && $rawDoy <= 366) {
+            $this->nicExtracted["gender"] = "M";
+            $doy = $rawDoy;
         } else {
+            return;
+        }
+
+        if (!$this->isDoyValid($doy)) {
             return;
         }
 

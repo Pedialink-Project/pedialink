@@ -52,6 +52,13 @@ trait NicRule
         );
         $errors = DateTime::getLastErrors();
 
+        if ($errors === false) {
+            $errors = [
+                'warning_count' => 0,
+                'error_count' => 0,
+            ];
+        }
+
         if (!$dt || $errors['warning_count'] > 0 || $errors['error_count'] > 0) {
             return false;
         }
