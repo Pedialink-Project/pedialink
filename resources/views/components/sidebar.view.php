@@ -128,11 +128,11 @@ $menuItems = [
                 'link' => route('phm.calendar'),
                 'icon' => asset('/assets/icons/calendar-01.svg')
             ],
-            // [
-            //     'name' => 'Appointments',
-            //     'link' => route('phm.appointments'),
-            //     'icon' => asset('/assets/icons/profile.svg'),
-            // ],
+            [
+                'name' => 'Appointments',
+                'link' => route('phm.appointments'),
+                'icon' => asset('/assets/icons/profile.svg'),
+            ],
             // [
             //     'name' => 'Appointments',
             //     'link' => route('phm.appointments'),
