@@ -111,7 +111,7 @@ if ($error) {
                 
                 if (files.length === 0) {
                     fileListContainer.style.display = 'none';
-                    dropzone.style.display = 'flex';
+                    dropzone.style.display = '';
                     return;
                 }
 
