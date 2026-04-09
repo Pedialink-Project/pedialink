@@ -126,6 +126,92 @@
     gap: 0.75rem;
 }
 
+.fileinput-selected {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    background-color: #fafafa;
+}
+
+.fileinput-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.fileinput-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.fileinput-item:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.fileinput-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.fileinput-item-name {
+    font-weight: 500;
+    color: #1f2937;
+    word-break: break-word;
+    font-size: 0.95rem;
+}
+
+.fileinput-item-size {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.fileinput-item-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+    padding: 0.375rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.fileinput-item-remove:hover {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+
+.fileinput-item-remove:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+    ring-offset: 1px;
+}
+
+.fileinput-item-remove svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
 @media (max-width: 640px) {
     .fileinput-dropzone {
         padding: 2rem 1.5rem;
@@ -138,5 +224,13 @@
     .fileinput-icon {
         width: 36px;
         height: 36px;
+    }
+
+    .fileinput-item {
+        padding: 0.75rem;
+    }
+
+    .fileinput-item-remove {
+        margin-left: 0.75rem;
     }
 }
