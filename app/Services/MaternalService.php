@@ -368,6 +368,93 @@ class MaternalService
     }
 
 
+    
+    public function getMaternalByParentId(int $parentId): ?array
+    {
+        $maternal = Maternal::query()
+            ->where('parent_id', '=', $parentId)
+            ->first();
+
+        if (!$maternal) {
+            return null;
+        }
+
+        $parentProfile = ParentM::find($maternal->parent_id);
+
+        $maternalData = [
+            'id' => $maternal->id,
+            'name' => User::find($maternal->parent_id)->name,
+            'age' => $parentProfile ? Calculator::calculateAge($parentProfile->date_of_birth) : null,
+            'height' => $maternal->height,
+            'blood_type' => $maternal->blood_type,
+            'type' => $maternal->type,
+        ];
+
+        // Current (latest) pregnancy
+        $latestPregnancy = Pregnancy::query()
+            ->where('maternal_id', '=', $maternal->id)
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        // All pregnancies history for this maternal profile
+        $allPregnancies = Pregnancy::query()
+            ->where('maternal_id', '=', $maternal->id)
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        $pregnancyHistory = [];
+        foreach ($allPregnancies as $pregnancy) {
+            $pregnancyHistory[] = [
+                'id' => $pregnancy->id,
+                'lmp' => $pregnancy->lmp,
+                'edd' => $pregnancy->edd,
+                'gravida' => $pregnancy->gravida,
+                'para' => $pregnancy->para,
+                'delivery_outcome' => $pregnancy->delivery_outcome,
+                'created_at' => $pregnancy->created_at,
+            ];
+        }
+
+        $latestRecord = null;
+
+        if ($latestPregnancy) {
+            $latestRecordModel = MaternalRecord::query()
+                ->where('parent_id', '=', $maternal->parent_id)
+                ->where('mark_as_invalid', '=', 'false')
+                ->orderBy('visit_date', 'DESC')
+                ->first();
+
+            if ($latestRecordModel) {
+                $latestRecord = [
+                    'visit_date' => $latestRecordModel->visit_date,
+                    'trimester' => $latestRecordModel->trimester,
+                    'weight' => $latestRecordModel->weight,
+                    'blood_pressure' => $latestRecordModel->blood_pressure,
+                    'bmi' => $latestRecordModel->bmi,
+                    'glucose' => $latestRecordModel->glucose,
+                    'hemoglobin' => $latestRecordModel->hemoglobin,
+                    'fundal_height' => $latestRecordModel->fundal_height,
+                    'fetal_heart_rate' => $latestRecordModel->fetal_heart_rate,
+                    'health_status' => $latestRecordModel->health_status,
+                ];
+            }
+        }
+
+        return array_merge($maternalData, [
+            'current_pregnancy' => $latestPregnancy ? [
+                'id' => $latestPregnancy->id,
+                'lmp' => $latestPregnancy->lmp,
+                'edd' => $latestPregnancy->edd,
+                'gravida' => $latestPregnancy->gravida,
+                'para' => $latestPregnancy->para,
+                'delivery_outcome' => $latestPregnancy->delivery_outcome,
+            ] : null,
+            'pregnancies' => $pregnancyHistory,
+            'record' => $latestRecord,
+        ]);
+    }
+
+
     private function validateBloodType($bloodType)
     {
         $error = null;
