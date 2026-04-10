@@ -10,12 +10,38 @@ use Library\Framework\Database\QueryBuilder;
 
 class VaccinationSchedulerService
 {
+    public function createInitialRemindersForChild(int $childId): void
+    {
+        $this->syncRemindersForChild($childId, false);
+    }
+
+    public function refreshRemindersAfterVaccination(int $childId): void
+    {
+        $this->syncRemindersForChild($childId, true);
+    }
+
     public function recalculateForChild(int $childId): void
     {
+        $this->syncRemindersForChild($childId, true);
+    }
+
+    private function syncRemindersForChild(int $childId, bool $clearUnadministered): void
+    {
+
         $child = Child::find($childId);
-        if (!$child || empty($child->date_of_birth) || empty($child->area_id)) {
+
+        $dobValue = $child ? (string)($child->date_of_birth ?? '') : '';
+        $areaValue = $child ? ($child->area_id ?? null) : null;
+
+        $hasChild = $child !== null;
+        $hasDob = trim($dobValue) !== '';
+        $hasArea = $areaValue !== null && (string)$areaValue !== '';
+
+        if (!$hasChild || !$hasDob || !$hasArea) {
             return;
         }
+
+        $areaId = (int)$child->area_id;
 
         try {
             $dob = new DateTimeImmutable($child->date_of_birth);
@@ -28,11 +54,23 @@ class VaccinationSchedulerService
              FROM area_clinic_schedules
              WHERE area_id = :area_id AND active = TRUE
              ORDER BY weekday ASC, ordinal_week ASC",
-            [':area_id' => (int)$child->area_id]
+            [':area_id' => $areaId]
         );
 
         if (empty($clinicRules)) {
-            return;
+            $this->insertDefaultClinicRulesForArea($areaId);
+
+            $clinicRules = QueryBuilder::rawGet(
+                "SELECT weekday, ordinal_week
+                 FROM area_clinic_schedules
+                 WHERE area_id = :area_id AND active = TRUE
+                 ORDER BY weekday ASC, ordinal_week ASC",
+                [':area_id' => $areaId]
+            );
+
+            if (empty($clinicRules)) {
+                return;
+            }
         }
 
         $scheduleVaccines = QueryBuilder::rawGet(
@@ -76,17 +114,19 @@ class VaccinationSchedulerService
             }
         }
 
-        QueryBuilder::rawExec(
-            "DELETE FROM vaccination_reminders vr
-             WHERE vr.child_id = :child_id
-               AND NOT EXISTS (
-                   SELECT 1
-                   FROM vaccinations v
-                   WHERE v.child_id = vr.child_id
-                     AND v.schedule_vaccine_id = vr.schedule_vaccine_id
-               )",
-            [':child_id' => $childId]
-        );
+                if ($clearUnadministered) {
+                    $deleted = QueryBuilder::rawExec(
+                                "DELETE FROM vaccination_reminders vr
+                                 WHERE vr.child_id = :child_id
+                                     AND NOT EXISTS (
+                                             SELECT 1
+                                             FROM vaccinations v
+                                             WHERE v.child_id = vr.child_id
+                                                 AND v.schedule_vaccine_id = vr.schedule_vaccine_id
+                                     )",
+                                [':child_id' => $childId]
+                        );
+                }
 
         $today = new DateTimeImmutable('today');
 
@@ -135,6 +175,16 @@ class VaccinationSchedulerService
                 ]
             );
         }
+    }
+
+    private function insertDefaultClinicRulesForArea(int $areaId): void
+    {
+        QueryBuilder::rawExec(
+            "INSERT INTO area_clinic_schedules (area_id, weekday, ordinal_week, active)
+             VALUES (:area_id, 2, 1, TRUE), (:area_id, 2, 3, TRUE)
+             ON CONFLICT (area_id, weekday, ordinal_week) DO NOTHING",
+            [':area_id' => $areaId]
+        );
     }
 
     private function findNextClinicDate(DateTimeImmutable $threshold, array $clinicRules): ?DateTimeImmutable
