@@ -69,7 +69,7 @@ class VaccinationController
         $success = $vaccination->save();
 
         if ($success) {
-            $this->vaccinationSchedulerService->recalculateForChild($id);
+            $this->vaccinationSchedulerService->refreshRemindersAfterVaccination($id);
         }
 
         return redirect(route("phm.child.vaccinations", ["id" => $id]))
