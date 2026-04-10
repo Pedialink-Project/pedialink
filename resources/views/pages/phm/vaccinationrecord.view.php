@@ -142,10 +142,14 @@ Vaccination Details &middot; C-{{ $id }} &rarr; {{ $name }}
                                             Close
                                         </c-slot>
                                     </c-modal>
-                                    @if (strtolower($item['status']) === "pending")
+                                    @if (in_array(strtolower($item['status']), ['pending', 'overdue']))
                                         <c-modal id="accept-vaccination-{{ $key }}" size="md" :initOpen="false">
                                             <c-slot name="trigger">
-                                                <c-dropdown.item>Mark as completed</c-dropdown.item>
+                                                @if ($item['status'] == 'pending')
+                                                    <c-dropdown.item>Mark as completed</c-dropdown.item>
+                                                @elseif ($item['status'] == 'overdue')
+                                                    <c-dropdown.item>Re-assign next session</c-dropdown.item> 
+                                                @endif
                                             </c-slot>
                                             <c-slot name="headerPrefix">
                                                 <img src="{{ asset('assets/icons/edit-01.svg' )}}" />
@@ -154,7 +158,12 @@ Vaccination Details &middot; C-{{ $id }} &rarr; {{ $name }}
                                                 <div>Mark as Completed</div>
                                             </c-slot>
 
-                                            <p>Mark this vaccination as completed? This action cannot be undone.</p>
+                                            @if ($item['status'] == 'pending')
+                                                <p>Mark this vaccination as completed? This action cannot be undone.</p>
+                                            @elseif ($item['status'] == 'overdue')
+                                                <p>Mark this vaccination as not completed? This will attempt to reassign current overdue vaccination on future date!</p>
+                                            @endif
+
 
                                             <form id="accept-vaccination-form-{{ $key }}" action="{{ route('phm.child.vaccination.record.completed', ['id' => $id, 'recordId' => $item['id']]) }}" method="POST" class="hidden">
                                             </form>
