@@ -117,8 +117,8 @@ ORDER BY h.visit_date
                 'id' => $childData->id,
                 'name' => $childData->name,
             ];
+            return $resource;
         }
-        return $resource;
     }
 
     public function getChildById(int $childId)
