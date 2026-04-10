@@ -5,16 +5,19 @@ namespace App\Controllers\PublicHealthMidwife;
 use App\Models\Child;
 use App\Models\Vaccination;
 use App\Models\VaccinationReminder;
+use App\Services\VaccinationSchedulerService;
 use App\Services\VaccinationService;
 use Library\Framework\Http\Request;
 
 class VaccinationController
 {
     private VaccinationService $vaccinationService;
+    private VaccinationSchedulerService $vaccinationSchedulerService;
 
     public function __construct()
     {
         $this->vaccinationService = new VaccinationService();
+        $this->vaccinationSchedulerService = new VaccinationSchedulerService();
     }
 
     public function childVaccinationRecords(Request $request, int $id)
@@ -66,8 +69,7 @@ class VaccinationController
         $success = $vaccination->save();
 
         if ($success) {
-            $vaccinationReminder->status = "complete";
-            $vaccinationReminder->save();
+            $this->vaccinationSchedulerService->recalculateForChild($id);
         }
 
         return redirect(route("phm.child.vaccinations", ["id" => $id]))
