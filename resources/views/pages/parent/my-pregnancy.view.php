@@ -47,11 +47,10 @@ Parent - My Pregnancy
       <div class="card-header">
          <div class="header__left">
             <div class="profile-pic">
-               <div class="initials">{{ $initials }}</div>
+               <div class="initials">0{{ $index + 1 }}</div>
             </div>
             <div class="preg-info">
                <h3 class="preg-number">Pregnancy {{ $index + 1 }}</h3>
-               <p class="nickname">{{ $maternal['name'] }}</p>
             </div>
          </div>
       </div>
