@@ -56,6 +56,7 @@ class DashboardService
             $vaccine =  $sheduledVaccine->getVaccine();
             $vaccination = $remainder->getLinkedVaccination();
             $child = $remainder->getChild();
+            $status = $remainder->getComputedStatus();
             $resource[] = [
                 "id" => $remainder->id,
                 "scheduled_date" => $remainder->scheduled_date,
@@ -76,7 +77,7 @@ class DashboardService
                     "name" => $vaccine->name,
                     "code" => $vaccine->code,
                 ] : null,
-                "status" => $remainder->status,
+                "status" => $status,
                 "administered_at" => $vaccination ? $vaccination->administered_at : null,
                 "recorded_at" => $vaccination ? $vaccination->recorded_at : null,
 
