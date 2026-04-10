@@ -11,7 +11,6 @@ class VaccinationReminder extends Model
         "child_id",
         "schedule_vaccine_id",
         "scheduled_date",
-        "status",
     ];
 
     public function getChild()
@@ -26,13 +25,31 @@ class VaccinationReminder extends Model
 
     public function getLinkedVaccination()
     {
-        if ($this->status !== "complete") {
-            return null;
-        }
-
         return Vaccination::query()
             ->where("child_id", "=", $this->child_id)
             ->where("schedule_vaccine_id", "=", $this->schedule_vaccine_id)
             ->first();
+    }
+
+    public function getComputedStatus(): string
+    {
+        $linkedVaccination = $this->getLinkedVaccination();
+        if ($linkedVaccination) {
+            return "complete";
+        }
+
+        $today = new \DateTimeImmutable('today');
+
+        try {
+            $scheduledDate = new \DateTimeImmutable((string)$this->scheduled_date);
+        } catch (\Exception $e) {
+            return "pending";
+        }
+
+        if ($scheduledDate < $today) {
+            return "overdue";
+        }
+
+        return "pending";
     }
 }
