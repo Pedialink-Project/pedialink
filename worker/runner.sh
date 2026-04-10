@@ -6,8 +6,6 @@ trap 'echo "[$(date)] received stop signal, exiting"; exit 0' TERM INT
 
 # run forever: run worker, sleep 30s
 while true; do
-  echo "[$(date)] invoking vaccination.php"
-  php /var/www/html/worker/vaccination.php || echo "[$(date)] worker failed"
   echo "[$(date)] invoking appointment.php"
   # run appointment worker
   php /var/www/html/worker/appointment.php || echo "[$(date)] appointment worker failed"
