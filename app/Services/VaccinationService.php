@@ -4,31 +4,33 @@ namespace App\Services;
 
 use App\Models\Vaccination;
 use App\Models\VaccinationReminder;
+use Library\Framework\Database\Paginator;
 
 class VaccinationService
 {
     public function fetchVaccinationRecordsByChildId(int $childId, string $search = "", array $filters = []): array
     {
-        $vaccinationRemainder = VaccinationReminder::query()
-            ->where("child_id", "=", $childId);
+        $query = VaccinationReminder::query()
+            ->where("child_id", "=", $childId)
+            ->orderBy("scheduled_date", "DESC");
 
-        // if ($search) {
-        //     $vaccinationRecords = $vaccinationRecords
-        //         ->where(function ($query) use ($search) {
-        //             $query->where("vaccine_name", "LIKE", "%$search%")
-        //                 ->orWhere("notes", "LIKE", "%$search%");
-        //         });
-        // }
+        if (isset($filters['status']) && !empty($filters['status'])) {
+            $allReminders = $query->get();
+            $allowedStatuses = array_map('strtolower', $filters['status']);
+            $filteredReminders = array_values(array_filter(
+                $allReminders,
+                fn($reminder) => in_array($reminder->getComputedStatus(), $allowedStatuses, true)
+            ));
 
-        if (isset($filters['status'])) {
-            $vaccinationRemainder = $vaccinationRemainder
-                ->whereIn("status", $filters['status']);
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $page = max(1, $page);
+            $perPage = 10;
+            $offset = ($page - 1) * $perPage;
+            $pageItems = array_slice($filteredReminders, $offset, $perPage);
+            $vaccinationRemainder = (new Paginator($pageItems, count($filteredReminders), $perPage, $page))->toArray();
+        } else {
+            $vaccinationRemainder = $query->paginate(10)->toArray();
         }
-
-        $vaccinationRemainder = $vaccinationRemainder
-            ->orderBy("scheduled_date", "DESC")
-            ->paginate(10)
-            ->toArray();
 
         $resource = [];
         foreach ($vaccinationRemainder['items'] as $remainder) {
@@ -36,6 +38,7 @@ class VaccinationService
             $schedule = $scheduleVaccine ? $scheduleVaccine->getSchedule() : null;
             $vaccine = $scheduleVaccine ? $scheduleVaccine->getVaccine() : null;
             $vaccination = $remainder->getLinkedVaccination();
+            $status = $remainder->getComputedStatus();
 
             $recorded_age = calculateAge($remainder->getChild()->date_of_birth, new \DateTimeImmutable($remainder->scheduled_date));
             $resource[] = [
@@ -53,7 +56,7 @@ class VaccinationService
                     "id" => $schedule->id,
                     "name" => $schedule->name,
                 ] : null,
-                "status" => $remainder->status,
+                "status" => $status,
                 "recorded_age" => $recorded_age,
                 "scheduled_date" => $remainder->scheduled_date,
                 "administered_at" => $vaccination ?

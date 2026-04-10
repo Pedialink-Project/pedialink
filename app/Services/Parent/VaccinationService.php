@@ -8,23 +8,34 @@ use App\Models\Maternal;
 use App\Models\ParentChild;
 use App\Models\VaccinationReminder;
 use App\Rules\TextRule;
+use Library\Framework\Database\Paginator;
 
 class VaccinationService
 {
     public function getChildVaccinationByParentId($parentId, string $search, array $filters = [])
     {
         $childIds = ParentChild::query()->where("parent_id", '=', $parentId)->pluck("child_id");
-        $remainders = VaccinationReminder::query()->whereIn('child_id', $childIds);
+        $query = VaccinationReminder::query()
+            ->whereIn('child_id', $childIds)
+            ->orderBy("scheduled_date", "DESC");
 
-        if (isset($filters['status'])) {
-            $remainders = $remainders
-                ->whereIn("status", $filters['status']);
+        if (isset($filters['status']) && !empty($filters['status'])) {
+            $allReminders = $query->get();
+            $allowedStatuses = array_map('strtolower', $filters['status']);
+            $filteredReminders = array_values(array_filter(
+                $allReminders,
+                fn($reminder) => in_array($reminder->getComputedStatus(), $allowedStatuses, true)
+            ));
+
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $page = max(1, $page);
+            $perPage = 10;
+            $offset = ($page - 1) * $perPage;
+            $pageItems = array_slice($filteredReminders, $offset, $perPage);
+            $remainders = (new Paginator($pageItems, count($filteredReminders), $perPage, $page))->toArray();
+        } else {
+            $remainders = $query->paginate(10)->toArray();
         }
-
-        $remainders = $remainders   
-            ->orderBy("scheduled_date", "DESC")
-            ->paginate(10)
-            ->toArray();
 
         $resource = [];
         foreach ($remainders['items'] as $remainder) {
@@ -33,6 +44,7 @@ class VaccinationService
             $vaccine =  $sheduledVaccine->getVaccine();
             $vaccination = $remainder->getLinkedVaccination();
             $child = $remainder->getChild();
+            $status = $remainder->getComputedStatus();
             $resource[] = [
                 "id" => $remainder->id,
                 "scheduled_date" => $remainder->scheduled_date,
@@ -53,7 +65,7 @@ class VaccinationService
                     "name" => $vaccine->name,
                     "code" => $vaccine->code,
                 ] : null,
-                "status" => $remainder->status,
+                "status" => $status,
                 "administered_at" => $vaccination ? $vaccination->administered_at : null,
                 "recorded_at" => $vaccination ? $vaccination->recorded_at : null,
 
