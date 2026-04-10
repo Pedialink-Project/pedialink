@@ -369,7 +369,7 @@ class MaternalService
 
 
     
-    public function getMaternalByParentId(int $parentId): ?array
+    public function getPregnancyDetailsByParentId(int $parentId): ?array
     {
         $maternal = Maternal::query()
             ->where('parent_id', '=', $parentId)
@@ -390,22 +390,19 @@ class MaternalService
             'type' => $maternal->type,
         ];
 
-        // Current (latest) pregnancy
-        $latestPregnancy = Pregnancy::query()
-            ->where('maternal_id', '=', $maternal->id)
-            ->orderBy('id', 'DESC')
-            ->first();
+        
 
         // All pregnancies history for this maternal profile
         $allPregnancies = Pregnancy::query()
             ->where('maternal_id', '=', $maternal->id)
-            ->orderBy('id', 'DESC')
+            ->orderBy('id', 'ASC')
             ->get();
 
         $pregnancyHistory = [];
         foreach ($allPregnancies as $pregnancy) {
             $pregnancyHistory[] = [
                 'id' => $pregnancy->id,
+                'age_at_lmp'=> Calculator::calculateMaternalAgeAtLMP($parentProfile->date_of_birth, $pregnancy->lmp),
                 'lmp' => $pregnancy->lmp,
                 'edd' => $pregnancy->edd,
                 'gravida' => $pregnancy->gravida,
@@ -417,7 +414,7 @@ class MaternalService
 
         $latestRecord = null;
 
-        if ($latestPregnancy) {
+       
             $latestRecordModel = MaternalRecord::query()
                 ->where('parent_id', '=', $maternal->parent_id)
                 ->where('mark_as_invalid', '=', 'false')
@@ -438,20 +435,9 @@ class MaternalService
                     'health_status' => $latestRecordModel->health_status,
                 ];
             }
-        }
+        
 
-        return array_merge($maternalData, [
-            'current_pregnancy' => $latestPregnancy ? [
-                'id' => $latestPregnancy->id,
-                'lmp' => $latestPregnancy->lmp,
-                'edd' => $latestPregnancy->edd,
-                'gravida' => $latestPregnancy->gravida,
-                'para' => $latestPregnancy->para,
-                'delivery_outcome' => $latestPregnancy->delivery_outcome,
-            ] : null,
-            'pregnancies' => $pregnancyHistory,
-            'record' => $latestRecord,
-        ]);
+        return [ $maternalData, $pregnancyHistory, $latestRecord];
     }
 
 
