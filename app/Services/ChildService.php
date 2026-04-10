@@ -617,7 +617,7 @@ class ChildService
         $child->area_id = $areaId;
         $child->blood_type = $bloodType;
         $child->phm_id = $phmId;
-        $child->save();
+        $childId = $child->save();
 
 
         $childMiscMother = new ChildMisc();
@@ -630,7 +630,7 @@ class ChildService
         $childMiscFather->children_id = $child->id;
         $childMiscFather->save();
 
-        $this->vaccinationSchedulerService->recalculateForChild((int)$child->id);
+        $this->vaccinationSchedulerService->createInitialRemindersForChild((int)$childId);
 
         // $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
     }
@@ -647,9 +647,9 @@ class ChildService
             $child->date_of_birth = $dob;
             $child->gender = $gender;
             $child->blood_type = $bloodType;
-            $child->save();
+            $childId= $child->save();
 
-            $this->vaccinationSchedulerService->recalculateForChild((int)$child->id);
+            $this->vaccinationSchedulerService->recalculateForChild((int)$childId);
         }
         return null;
     }
