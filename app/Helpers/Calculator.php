@@ -207,4 +207,23 @@ public static function formatTimeToAmPm(?string $time): ?string
 
     return $dateTime->format('g:i A');
 }
+
+public static function calculateMaternalAgeAtLMP(?string $dateOfBirth, ?string $lmp): ?int
+{
+    if (!$dateOfBirth || !$lmp) {
+        return null;
+    }
+
+    $dob = new \DateTime($dateOfBirth);
+    $lmpDate = new \DateTime($lmp);
+
+    if ($dob > $lmpDate) {
+        return null; 
+    }
+
+    $diff = $lmpDate->diff($dob);
+
+    return $diff->y; 
+}
+
 }
