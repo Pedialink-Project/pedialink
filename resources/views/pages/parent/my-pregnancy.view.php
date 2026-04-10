@@ -39,7 +39,7 @@ Parent - My Pregnancy
 />
 @else
 <div class="card-container">
-   @foreach ($pregnancies as $pregnancy)
+   @foreach ($pregnancies as $index => $pregnancy)
    <?php $words = explode(" ", $maternal["name"]);
    $initials = strtoupper(substr($words[0], 0, 1) . substr(end($words), 0, 1));
    ?>
@@ -50,8 +50,8 @@ Parent - My Pregnancy
                <div class="initials">{{ $initials }}</div>
             </div>
             <div class="preg-info">
-               <h3 class="preg-number">{{ $maternal['name'] }}</h3>
-               <p class="nickname">Sara</p>
+               <h3 class="preg-number">Pregnancy {{ $index + 1 }}</h3>
+               <p class="nickname">{{ $maternal['name'] }}</p>
             </div>
          </div>
       </div>
