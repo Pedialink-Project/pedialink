@@ -18,6 +18,7 @@ use App\Helpers\NicValidator;
 use App\Models\VaccinationReminder;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
+use App\Services\VaccinationSchedulerService;
 
 class ChildService
 {
@@ -25,11 +26,13 @@ class ChildService
     use NameRule, DivisionRule, DateRule, BirthCertificateValidator, NicValidator;
     private  $notificationService;
     private ChildRecordService $childRecordService;
+    private VaccinationSchedulerService $vaccinationSchedulerService;
 
     public function __construct()
     {
         $this->notificationService = new NotificationService();
         $this->childRecordService = new ChildRecordService();
+        $this->vaccinationSchedulerService = new VaccinationSchedulerService();
     }
 
     private function applyChildSearch(QueryBuilder $children, string $search)
@@ -331,6 +334,7 @@ class ChildService
             $vaccine = $scheduleVaccine ? $scheduleVaccine->getVaccine() : null;
 
             $recorded_age = calculateAge($remainder->getChild()->date_of_birth, new \DateTimeImmutable($remainder->scheduled_date));
+            $status = $remainder->getComputedStatus();
             $resource[] = [
                 "id" => $remainder->id,
                 "vaccine" => $vaccine ? [
@@ -346,7 +350,7 @@ class ChildService
                     "id" => $schedule->id,
                     "name" => $schedule->name,
                 ] : null,
-                "status" => $remainder->status,
+                "status" => $status,
                 "recorded_age" => $recorded_age,
                 "scheduled_date" => $remainder->scheduled_date,
                 
@@ -626,6 +630,8 @@ class ChildService
         $childMiscFather->children_id = $child->id;
         $childMiscFather->save();
 
+        $this->vaccinationSchedulerService->recalculateForChild((int)$child->id);
+
         // $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
     }
 
@@ -642,6 +648,8 @@ class ChildService
             $child->gender = $gender;
             $child->blood_type = $bloodType;
             $child->save();
+
+            $this->vaccinationSchedulerService->recalculateForChild((int)$child->id);
         }
         return null;
     }
