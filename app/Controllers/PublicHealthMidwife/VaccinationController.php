@@ -33,7 +33,7 @@ class VaccinationController
         $child = Child::find($id);
         return view("phm/vaccinationrecord", [
             "id" => $id,
-            "name" => $child->name,
+            "name" => $child?->name ?? "Unknown Child",
             "vaccinations" => $vaccinations,
             "links" => $links,
         ]);
@@ -78,5 +78,20 @@ class VaccinationController
                 "Success",
                 "success"
             );
+    }
+
+    public function childVaccinationCard(Request $request, int $id)
+    {
+        [$vaccinations, $links] = $this->vaccinationService->fetchVaccinationRecordsByChildId($id, "", [], true);
+
+        $child = Child::find($id);
+        return view("vaccination/childcard", [
+            "id" => $id,
+            "name" => $child?->name ?? "Unknown Child",
+            "child" => $child,
+            "vaccinations" => $vaccinations,
+            "links" => $links,
+            "backUrl" => "javascript:history.back()",
+        ]);
     }
 }
