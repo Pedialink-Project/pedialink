@@ -81,7 +81,7 @@ Doctor Dashboard
             </div>
             <hr class="divider">
             <div class="card-body">
-                @if(count($upcomingAppointments) < 0)
+                @if(count($upcomingAppointments) <= 0)
                     <c-emptycard
                         title="No upcoming appointments"
                         description="There are no scheduled appointments in the near future."
@@ -128,7 +128,7 @@ Doctor Dashboard
             </div>
             <hr class="divider">
             <div class="card-body">
-                @if(count($latestHealthRecords) < 0)
+                @if(count($latestHealthRecords) <= 0)
                     <c-emptycard
                         title="No new health records"
                         description="There are no updated health records at the moment."
