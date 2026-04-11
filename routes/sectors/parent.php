@@ -8,6 +8,7 @@ use App\Controllers\Parent\EventController;
 use App\Controllers\Parent\MyChildrenController;
 use App\Controllers\Parent\GrowthController;
 use App\Controllers\Parent\VaccinationController;
+use App\Controllers\Parent\PregnancyController;
 use App\Controllers\SettingController;
 
 return [
@@ -17,6 +18,9 @@ return [
     //Child routes
     ['GET', '/parent/my-children', [MyChildrenController::class, 'index'], 'parent.my.children', ['parent','verified']],
     ['GET', '/parent/my-children/{id}', [MyChildrenController::class, 'viewChildDetails'], 'parent.child.details', ['parent','verified' ]],
+
+    // Maternal / pregnancy routes
+    ['GET', '/parent/my-pregnancy', [PregnancyController::class, 'myPregnancy'], 'parent.my.pregnancy', ['parent','verified']],
 
     //Vaccination routes
     ['GET', '/parent/vaccination', [VaccinationController::class, 'index'], 'parent.vaccination', ['parent','verified']],

@@ -162,6 +162,12 @@ $menuItems = [
 
             ],
             [
+                'name' => 'My Pregnancy',
+                'link' => route('parent.my.pregnancy'),
+                'icon' => asset('/assets/icons/mother.svg'),
+               
+            ],
+            [
                 'name' => 'My Children',
                 'link' => route('parent.my.children'),
                 'icon' => asset('/assets/icons/baby-01.svg'),
