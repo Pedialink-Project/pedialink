@@ -1,5 +1,7 @@
 <?php
 
+use App\Controllers\PublicHealthMidwife\VaccinationController;
+
 $allRoutes = [];
 
 $routeFiles = [
@@ -26,5 +28,11 @@ foreach ($routeFiles as $file) {
 // ];
 
 // $allRoutes = array_merge($allRoutes, $commonRoutes);
+
+$commonRoutes = [
+    ['GET', '/vaccinations/{id}/card', [VaccinationController::class, 'childVaccinationCard'], 'vaccination.child.card', ['auth', 'verified']],
+];
+
+$allRoutes = array_merge($allRoutes, $commonRoutes);
 
 return $allRoutes;
