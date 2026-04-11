@@ -10,9 +10,20 @@ class VaccinationService
 {
     public function fetchVaccinationRecordsByChildId(int $childId, string $search = "", array $filters = []): array
     {
+        $date = new \DateTime(); // Defaults to "now"
+        $date->modify('+14 days');
+
         $query = VaccinationReminder::query()
             ->where("child_id", "=", $childId)
+            ->where("scheduled_date", "<", $date->format('Y-m-d'))
             ->orderBy("scheduled_date", "DESC");
+
+        if ($search !== '') {
+            $query
+                ->leftJoin("schedule_vaccines", "schedule_vaccines.id", "=", "vaccination_reminders.schedule_vaccine_id")
+                ->join("vaccines", "vaccines.id", "=", "schedule_vaccines.vaccine_id")
+                ->where("vaccines.code", "ILIKE", "{$search}%");
+        }
 
         if (isset($filters['status']) && !empty($filters['status'])) {
             $allReminders = $query->get();
