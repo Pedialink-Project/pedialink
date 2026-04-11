@@ -83,6 +83,7 @@ foreach ($groupedRecords as &$group) {
 	$group['items'] = $items;
 }
 unset($items);
+unset($group);
 
 uksort($groupedRecords, function ($left, $right) use ($groupedRecords) {
 	$leftItems = $groupedRecords[$left]['items'] ?? [];
