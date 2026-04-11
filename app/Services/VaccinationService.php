@@ -8,15 +8,19 @@ use Library\Framework\Database\Paginator;
 
 class VaccinationService
 {
-    public function fetchVaccinationRecordsByChildId(int $childId, string $search = "", array $filters = []): array
+    public function fetchVaccinationRecordsByChildId(int $childId, string $search = "", array $filters = [], $card = false): array
     {
         $date = new \DateTime(); // Defaults to "now"
         $date->modify('+14 days');
 
         $query = VaccinationReminder::query()
             ->where("child_id", "=", $childId)
-            ->where("scheduled_date", "<", $date->format('Y-m-d'))
-            ->orderBy("scheduled_date", "DESC");
+            ->orderBy("scheduled_date", $card ? "ASC" : "DESC");
+
+        if (!$card) {
+            $query
+                ->where("scheduled_date", "<", $date->format('Y-m-d'));
+        }
 
         if ($search !== '') {
             $query
@@ -25,7 +29,11 @@ class VaccinationService
                 ->where("vaccines.code", "ILIKE", "{$search}%");
         }
 
-        if (isset($filters['status']) && !empty($filters['status'])) {
+        if ($card) {
+            $vaccinationRemainder = [
+                'items' => $query->get(),
+            ];
+        } elseif (isset($filters['status']) && !empty($filters['status'])) {
             $allReminders = $query->get();
             $allowedStatuses = array_map('strtolower', $filters['status']);
             $filteredReminders = array_values(array_filter(
@@ -80,7 +88,7 @@ class VaccinationService
             ];
         }
 
-        $links = array_diff_key($vaccinationRemainder, ['items' => true]);
+        $links = $card ? [] : array_diff_key($vaccinationRemainder, ['items' => true]);
         
         return [
             $resource,
