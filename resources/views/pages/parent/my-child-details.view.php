@@ -76,9 +76,9 @@
             <div class="header">
                 <div class="title-section">
                     <span class="card-title">Vaccination Timeline</span>
-                    <span class="card-subtitle">View {{$child['name']}}'s Vaccination timeline</span>
+                    <span class="card-subtitle">View {{$child['name']}}'s Vaccination timeline</span>
                 </div>
-                <c-link type="secondary" href="{{route('parent.vaccination')}}">View All</c-link>
+                <c-link type="secondary" href="{{route('vaccination.child.card', ['id' => $child['id']])}}">View Card</c-link>
             </div>
             <hr class="divider">
             <div class="card-body">
