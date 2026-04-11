@@ -56,15 +56,20 @@ foreach ($records as $record) {
 
 	$statusTotals[$status]++;
 
-	$groupName = trim((string) ($record['schedule']['name'] ?? 'Vaccination Schedule'));
-	if ($groupName === '') {
-		$groupName = 'Vaccination Schedule';
-	}
+	$scheduledDateKey = !empty($record['scheduled_date'])
+		? (new DateTimeImmutable((string) $record['scheduled_date']))->format('Y-m-d')
+		: 'unscheduled';
 
-	$groupedRecords[$groupName][] = $record;
+	$groupName = $scheduledDateKey === 'unscheduled'
+		? 'Unscheduled'
+		: (new DateTimeImmutable((string) $record['scheduled_date']))->format('F j, Y');
+
+	$groupedRecords[$scheduledDateKey]['name'] = $groupName;
+	$groupedRecords[$scheduledDateKey]['items'][] = $record;
 }
 
-foreach ($groupedRecords as &$items) {
+foreach ($groupedRecords as &$group) {
+	$items = $group['items'] ?? [];
 	usort($items, function ($left, $right) {
 		$leftDate = !empty($left['scheduled_date']) ? strtotime((string) $left['scheduled_date']) : 0;
 		$rightDate = !empty($right['scheduled_date']) ? strtotime((string) $right['scheduled_date']) : 0;
@@ -75,12 +80,13 @@ foreach ($groupedRecords as &$items) {
 
 		return $leftDate <=> $rightDate;
 	});
+	$group['items'] = $items;
 }
 unset($items);
 
 uksort($groupedRecords, function ($left, $right) use ($groupedRecords) {
-	$leftItems = $groupedRecords[$left] ?? [];
-	$rightItems = $groupedRecords[$right] ?? [];
+	$leftItems = $groupedRecords[$left]['items'] ?? [];
+	$rightItems = $groupedRecords[$right]['items'] ?? [];
 
 	$leftDate = 0;
 	foreach ($leftItems as $item) {
@@ -106,7 +112,9 @@ uksort($groupedRecords, function ($left, $right) use ($groupedRecords) {
 });
 
 $timelineGroups = [];
-foreach ($groupedRecords as $groupName => $items) {
+foreach ($groupedRecords as $groupKey => $group) {
+	$items = $group['items'] ?? [];
+	$groupName = $group['name'] ?? 'Unscheduled';
 	$groupComplete = 0;
 	$groupPending = 0;
 	$groupOverdue = 0;
