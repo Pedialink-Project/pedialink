@@ -9,7 +9,7 @@ Vaccination Card
 @endsection
 
 @section('back')
-	<c-link href="{{ $backUrl ?? 'javascript:history.back()' }}" type="secondary">
+	<c-link href="{{ $backUrl ?? 'javascript:history.back()' }}">
 		<c-slot name="icon">
 			<svg width="25px" height="25px" viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
 				<path d="M669.6 849.6c8.8 8 22.4 7.2 30.4-1.6s7.2-22.4-1.6-30.4l-309.6-280c-8-7.2-8-17.6 0-24.8l309.6-270.4c8.8-8 9.6-21.6 2.4-30.4-8-8.8-21.6-9.6-30.4-2.4L360.8 480.8c-27.2 24-28 64-0.8 88.8l309.6 280z" fill="" />
@@ -32,9 +32,9 @@ foreach (array_slice($nameParts, 0, 2) as $part) {
 $initials = strtoupper($initials !== '' ? $initials : 'C');
 ?>
 <div class="vaccination-page-heading">
-	<span class="vaccination-page-heading__eyebrow">Immunization Passport</span>
-	<span class="vaccination-page-heading__title">{{ ucwords($childName) }}</span>
-	<span class="vaccination-page-heading__subtitle">A complete overview of this child’s vaccination history and upcoming doses.</span>
+	<span class="vaccination-page-heading__eyebrow">Immunization Card</span>
+	<span class="vaccination-page-heading__title">Vaccination Card</span>
+	<span class="vaccination-page-heading__subtitle">A complete overview of this child's vaccination history and upcoming doses.</span>
 </div>
 @endsection
 
@@ -169,7 +169,7 @@ $overdueRecords = $statusTotals['overdue'] ?? 0;
 				<span class="vaccination-hero__label">Child vaccination card</span>
 				<h2 class="vaccination-hero__name">{{ ucwords($childName) }}</h2>
 				<p class="vaccination-hero__description">
-					A clean, role-agnostic timeline of every recorded vaccination, scheduled dose, and its current status.
+					Vaccination details of child {{ ucfirst($childName) }}
 				</p>
 			</div>
 		</div>
