@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\PublicHealthMidwife\VaccinationController;
+use App\Controllers\VaccinationController;
 
 $allRoutes = [];
 
