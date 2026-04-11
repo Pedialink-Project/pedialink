@@ -70,7 +70,6 @@ Parent - My Childern
             </div>
             <div class="child-info">
                <h3 class="child-name">{{ $child['name'] }}</h3>
-               <p class="nickname">Sara</p>
             </div>
          </div>
          <!-- <c-badge type="{{ strtolower($child['status']) == 'critical' ? 'red' : 'green' }}">

@@ -4,31 +4,52 @@ namespace App\Services;
 
 use App\Models\Vaccination;
 use App\Models\VaccinationReminder;
+use Library\Framework\Database\Paginator;
 
 class VaccinationService
 {
-    public function fetchVaccinationRecordsByChildId(int $childId, string $search = "", array $filters = []): array
+    public function fetchVaccinationRecordsByChildId(int $childId, string $search = "", array $filters = [], $card = false): array
     {
-        $vaccinationRemainder = VaccinationReminder::query()
-            ->where("child_id", "=", $childId);
+        $date = new \DateTime(); // Defaults to "now"
+        $date->modify('+14 days');
 
-        // if ($search) {
-        //     $vaccinationRecords = $vaccinationRecords
-        //         ->where(function ($query) use ($search) {
-        //             $query->where("vaccine_name", "LIKE", "%$search%")
-        //                 ->orWhere("notes", "LIKE", "%$search%");
-        //         });
-        // }
+        $query = VaccinationReminder::query()
+            ->where("child_id", "=", $childId)
+            ->orderBy("scheduled_date", $card ? "ASC" : "DESC");
 
-        if (isset($filters['status'])) {
-            $vaccinationRemainder = $vaccinationRemainder
-                ->whereIn("status", $filters['status']);
+        if (!$card) {
+            $query
+                ->where("scheduled_date", "<", $date->format('Y-m-d'));
         }
 
-        $vaccinationRemainder = $vaccinationRemainder
-            ->orderBy("scheduled_date", "DESC")
-            ->paginate(10)
-            ->toArray();
+        if ($search !== '') {
+            $query
+                ->leftJoin("schedule_vaccines", "schedule_vaccines.id", "=", "vaccination_reminders.schedule_vaccine_id")
+                ->join("vaccines", "vaccines.id", "=", "schedule_vaccines.vaccine_id")
+                ->where("vaccines.code", "ILIKE", "{$search}%");
+        }
+
+        if ($card) {
+            $vaccinationRemainder = [
+                'items' => $query->get(),
+            ];
+        } elseif (isset($filters['status']) && !empty($filters['status'])) {
+            $allReminders = $query->get();
+            $allowedStatuses = array_map('strtolower', $filters['status']);
+            $filteredReminders = array_values(array_filter(
+                $allReminders,
+                fn($reminder) => in_array($reminder->getComputedStatus(), $allowedStatuses, true)
+            ));
+
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $page = max(1, $page);
+            $perPage = 10;
+            $offset = ($page - 1) * $perPage;
+            $pageItems = array_slice($filteredReminders, $offset, $perPage);
+            $vaccinationRemainder = (new Paginator($pageItems, count($filteredReminders), $perPage, $page))->toArray();
+        } else {
+            $vaccinationRemainder = $query->paginate(10)->toArray();
+        }
 
         $resource = [];
         foreach ($vaccinationRemainder['items'] as $remainder) {
@@ -36,6 +57,7 @@ class VaccinationService
             $schedule = $scheduleVaccine ? $scheduleVaccine->getSchedule() : null;
             $vaccine = $scheduleVaccine ? $scheduleVaccine->getVaccine() : null;
             $vaccination = $remainder->getLinkedVaccination();
+            $status = $remainder->getComputedStatus();
 
             $recorded_age = calculateAge($remainder->getChild()->date_of_birth, new \DateTimeImmutable($remainder->scheduled_date));
             $resource[] = [
@@ -53,7 +75,7 @@ class VaccinationService
                     "id" => $schedule->id,
                     "name" => $schedule->name,
                 ] : null,
-                "status" => $remainder->status,
+                "status" => $status,
                 "recorded_age" => $recorded_age,
                 "scheduled_date" => $remainder->scheduled_date,
                 "administered_at" => $vaccination ?
@@ -66,7 +88,7 @@ class VaccinationService
             ];
         }
 
-        $links = array_diff_key($vaccinationRemainder, ['items' => true]);
+        $links = $card ? [] : array_diff_key($vaccinationRemainder, ['items' => true]);
         
         return [
             $resource,

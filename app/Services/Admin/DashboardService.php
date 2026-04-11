@@ -73,21 +73,24 @@ class DashboardService
     {
         $year = (int)date('Y');
 
-        // Safe: we cast $year to int above so direct interpolation here is safe.
-        // SQL: group by month (1..12) and sum CASEs for statuses.
         $sql = "
         SELECT
-            EXTRACT(MONTH FROM scheduled_date)::int AS month,
-            SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END)::int AS scheduled,
-            SUM(CASE WHEN status = 'complete' THEN 1 ELSE 0 END)::int AS completed
-        FROM vaccination_reminders
-        WHERE EXTRACT(YEAR FROM scheduled_date)::int = {$year}
+            EXTRACT(MONTH FROM vr.scheduled_date)::int AS month,
+            COUNT(*)::int AS scheduled,
+            SUM(
+                CASE WHEN EXISTS (
+                    SELECT 1
+                    FROM vaccinations v
+                    WHERE v.child_id = vr.child_id
+                      AND v.schedule_vaccine_id = vr.schedule_vaccine_id
+                ) THEN 1 ELSE 0 END
+            )::int AS completed
+        FROM vaccination_reminders vr
+        WHERE EXTRACT(YEAR FROM vr.scheduled_date)::int = {$year}
         GROUP BY month
         ORDER BY month
         ";
 
-        // Execute raw SQL. QueryBuilder::raw should return an array of rows.
-        // If your QueryBuilder returns objects instead of arrays, adapt accordingly.
         $rows = QueryBuilder::rawGet($sql);
 
         // Initialize 12-month buckets (index 0 -> January)

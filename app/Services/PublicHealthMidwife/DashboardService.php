@@ -64,13 +64,19 @@ class DashboardService
                 return $child->id;
             }, $linkedChildren);
 
-            $upcomingVaccinations = Child::query()
-                ->join("vaccination_reminders as vr", "vr.child_id", "=", "children.id")
-                ->whereIn("children.id", $childIds)
-                ->where("vr.status", "=", "pending")
+            $upcomingCount = 0;
+
+            $upcomingVaccinations = VaccinationReminder::query()
+                ->whereIn("child_id", $childIds)
                 ->get();
 
-            return count($upcomingVaccinations);
+            foreach ($upcomingVaccinations as $reminder) {
+                if ($reminder->getComputedStatus() === 'pending') {
+                    $upcomingCount++;
+                }
+            }
+
+            return $upcomingCount;
         }
     }
 
@@ -133,16 +139,20 @@ class DashboardService
                 return $child->id;
             }, $linkedChildren);
 
-            $upcomingVaccinations = VaccinationReminder::query()
-                ->join("children", "vaccination_reminders.child_id", "=", "children.id")
-                ->whereIn("children.id", $childIds)
-                ->where("vaccination_reminders.status", "=", "pending")
-                ->orderBy("vaccination_reminders.scheduled_date", "ASC")
-                ->paginate(3)
-                ->toArray();
+            $allReminders = VaccinationReminder::query()
+                ->whereIn("child_id", $childIds)
+                ->orderBy("scheduled_date", "ASC")
+                ->get();
+
+            $pendingReminders = array_values(array_filter(
+                $allReminders,
+                fn($reminder) => $reminder->getComputedStatus() === 'pending'
+            ));
+
+            $upcomingVaccinations = array_slice($pendingReminders, 0, 3);
 
             $resource = [];
-            foreach ($upcomingVaccinations['items'] as $item) {
+            foreach ($upcomingVaccinations as $item) {
                 $child = Child::find($item->child_id);
                 $scheduleVaccine = $item->getScheduleVaccine();
                 $vaccine = $scheduleVaccine ? $scheduleVaccine->getVaccine() : null;
@@ -232,21 +242,27 @@ class DashboardService
             ];
         }
 
-        // Get the latest status for each unique (child_id, schedule_vaccine_id) combination
-        // to avoid counting duplicate entries for overdue cases
         $sql = "
-            SELECT latest.status, COUNT(*) as count
+            SELECT latest.computed_status AS status, COUNT(*) as count
             FROM (
                 SELECT DISTINCT ON (vr.child_id, vr.schedule_vaccine_id)
                     vr.child_id,
                     vr.schedule_vaccine_id,
-                    vr.status
+                    CASE
+                        WHEN EXISTS (
+                            SELECT 1 FROM vaccinations v
+                            WHERE v.child_id = vr.child_id
+                              AND v.schedule_vaccine_id = vr.schedule_vaccine_id
+                        ) THEN 'complete'
+                        WHEN vr.scheduled_date < CURRENT_DATE THEN 'overdue'
+                        ELSE 'pending'
+                    END AS computed_status
                 FROM vaccination_reminders vr
                 JOIN children c ON vr.child_id = c.id
                 WHERE c.phm_id = :phm_id
                 ORDER BY vr.child_id, vr.schedule_vaccine_id, vr.scheduled_date DESC
             ) AS latest
-            GROUP BY latest.status
+            GROUP BY latest.computed_status
         ";
 
         $results = QueryBuilder::rawGet($sql, ['phm_id' => $currentUser->id]);

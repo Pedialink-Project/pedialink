@@ -12,8 +12,10 @@ class Child extends Model
 
     public function getParents()
     {
-        $parents = ParentChild::query()
-            ->where("child_id", "=", $this->id)
+        $parents = ParentM::query()
+            ->select("parents.*")
+            ->leftJoin("parent_children", "parent_children.parent_id", "=", "parents.id")
+            ->where("parent_children.child_id", "=", $this->id)
             ->get();
 
         return $parents;

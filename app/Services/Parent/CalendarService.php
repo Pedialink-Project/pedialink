@@ -134,6 +134,7 @@ class CalendarService
             $child = $reminder->getChild();
             $scheduledVaccine = $reminder->getScheduleVaccine();
             $vaccine = $scheduledVaccine ? $scheduledVaccine->getVaccine() : null;
+            $status = $reminder->getComputedStatus();
 
             $events[] = [
                 'date' => $reminder->scheduled_date,
@@ -143,7 +144,7 @@ class CalendarService
                 'items' => [[
                     'child' => $child ? $child->name : 'Child',
                     'vaccine' => $vaccine ? $vaccine->name : '-',
-                    'status' => ucfirst((string)$reminder->status),
+                    'status' => ucfirst($status),
                 ]],
             ];
         }
