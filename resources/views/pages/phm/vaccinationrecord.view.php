@@ -27,7 +27,7 @@ PHM Vaccination
     </defs>
 </svg>
 
-Vaccination Details &middot; C-{{ $id }} &rarr; {{ $name }}
+Vaccination Details : {{ ucwords($name) }}
 @endsection
 
 @section('content')
