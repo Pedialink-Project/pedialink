@@ -41,7 +41,11 @@ Vaccination Details : {{ ucwords($name) }}
 
 @section('content')
 <c-table.controls action="{{ route('phm.child.vaccinations', ['id' => $id]) }}" :filters="['status' => ['complete', 'pending', 'overdue']]">
-    
+    <c-slot name="extrabtn">
+        <c-link href="{{ route('vaccination.child.card', ['id' => $id]) }}" type="primary">
+            View Vaccination Card
+        </c-link>
+    </c-slot>
 </c-table.controls>
 <c-table.wrapper card="1">
     <div class="table-wrapper" data-responsive="true">
