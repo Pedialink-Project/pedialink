@@ -96,6 +96,10 @@ flex-wrap: wrap;
 
 }
 
+.page__back {
+  margin-bottom: calc(var(--spacing) * 5);
+}
+
 /* ---------- Mobile: sidebar becomes off-canvas under the navbar ----------
    Sidebar should be off-canvas starting under the navbar, not covering it. */
 @media (max-width: 920px) {

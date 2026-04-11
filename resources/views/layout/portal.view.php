@@ -21,6 +21,9 @@
         <div class="sidebar-overlay" onclick="document.body.classList.remove('show-sidebar')"></div>
         <main class="app-main">
             <div class="content-inner">
+                <div class="page__back">
+                    @yield('back')
+                </div>
                 <header class="page-header">
                     <h1 class="page-title">@yield('header')</h1>
                     <div class="header__right">@yield('header_right')</div>
