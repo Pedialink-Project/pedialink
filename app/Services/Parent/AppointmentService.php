@@ -6,11 +6,19 @@ use App\Helpers\Calculator;
 use App\Models\Appointment;
 use App\Models\Maternal;
 use App\Models\ParentChild;
+use App\Services\AppointmentSchedulerService;
 use App\Rules\TextRule;
 
 class AppointmentService
 {
     use TextRule;
+
+    private AppointmentSchedulerService $appointmentSchedulerService;
+
+    public function __construct()
+    {
+        $this->appointmentSchedulerService = new AppointmentSchedulerService();
+    }
 
     public function getChildAppointmentByParentId($parentId, string $search, array $filters = [])
     {
@@ -141,9 +149,15 @@ class AppointmentService
             return "Appointment not found";
         }
 
+        if ($appointment->status === 'cancelled') {
+            return "Appointment is already cancelled";
+        }
+
         $appointment->status = "cancelled";
         $appointment->reason = $reason;
         $appointment->save();
+
+        $this->appointmentSchedulerService->onAppointmentCancelled((int)$appointmentId);
 
 
         return null;

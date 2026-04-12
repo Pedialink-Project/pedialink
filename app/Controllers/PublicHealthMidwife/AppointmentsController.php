@@ -3,16 +3,19 @@
 namespace App\Controllers\PublicHealthMidwife;
 
 use App\Models\Appointment;
+use App\Services\AppointmentSchedulerService;
 use App\Services\PublicHealthMidwife\AppointmentService;
 use Library\Framework\Http\Request;
 
 class AppointmentsController
 {
     private AppointmentService $appointmentService;
+    private AppointmentSchedulerService $appointmentSchedulerService;
 
     public function __construct()
     {
         $this->appointmentService = new AppointmentService();
+        $this->appointmentSchedulerService = new AppointmentSchedulerService();
     }
 
     public function index(Request $request)
@@ -96,8 +99,14 @@ class AppointmentsController
         }
 
         $appointment->status = 'cancelled';
-        $appointment->reason = $request->input('reason', "Cancelled by PHM". auth()->check() ? " (" . auth()->user()->name . ")" : "");
+        $defaultReason = 'Cancelled by PHM';
+        if (auth()->check()) {
+            $defaultReason .= ' (' . auth()->user()->name . ')';
+        }
+        $appointment->reason = $request->input('reason', $defaultReason);
         $appointment->save();
+
+        $this->appointmentSchedulerService->onAppointmentCancelled((int)$appointment->id);
 
         return redirect(route('phm.appointments'))
             ->withMessage(

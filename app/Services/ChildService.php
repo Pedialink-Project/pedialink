@@ -19,6 +19,7 @@ use App\Models\VaccinationReminder;
 use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 use App\Services\VaccinationSchedulerService;
+use App\Services\AppointmentSchedulerService;
 
 class ChildService
 {
@@ -27,12 +28,14 @@ class ChildService
     private  $notificationService;
     private ChildRecordService $childRecordService;
     private VaccinationSchedulerService $vaccinationSchedulerService;
+    private AppointmentSchedulerService $appointmentSchedulerService;
 
     public function __construct()
     {
         $this->notificationService = new NotificationService();
         $this->childRecordService = new ChildRecordService();
         $this->vaccinationSchedulerService = new VaccinationSchedulerService();
+        $this->appointmentSchedulerService = new AppointmentSchedulerService();
     }
 
     private function applyChildSearch(QueryBuilder $children, string $search)
@@ -631,6 +634,7 @@ class ChildService
         $childMiscFather->save();
 
         $this->vaccinationSchedulerService->createInitialRemindersForChild((int)$childId);
+        $this->appointmentSchedulerService->scheduleInitialForChild((int)$childId);
 
         // $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
     }

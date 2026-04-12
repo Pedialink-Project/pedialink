@@ -66,8 +66,13 @@ class DashboardService
 
             $upcomingCount = 0;
 
+            $firstDay = date("Y-m-01");
+            $lastDay = date("Y-m-t");
+            
             $upcomingVaccinations = VaccinationReminder::query()
                 ->whereIn("child_id", $childIds)
+                ->where("scheduled_date", ">=", $firstDay)
+                ->where("scheduled_date", "<=", $lastDay)
                 ->get();
 
             foreach ($upcomingVaccinations as $reminder) {
@@ -260,6 +265,7 @@ class DashboardService
                 FROM vaccination_reminders vr
                 JOIN children c ON vr.child_id = c.id
                 WHERE c.phm_id = :phm_id
+                  AND DATE_TRUNC('month', vr.scheduled_date) = DATE_TRUNC('month', CURRENT_DATE)
                 ORDER BY vr.child_id, vr.schedule_vaccine_id, vr.scheduled_date DESC
             ) AS latest
             GROUP BY latest.computed_status

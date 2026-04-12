@@ -35,6 +35,7 @@ $app->singleton('config', function() {
         'storage' => require __DIR__ . '/../config/storage.php',
         'mail' => require __DIR__ . '/../config/mail.php',
         'data' => require __DIR__ . '/../config/data.php',
+        'appointments' => require __DIR__ . '/../config/appointments.php',
     ];
 });
 

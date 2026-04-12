@@ -69,7 +69,7 @@ Parent Dashboard
                 <span class="card-title">Upcoming Appointments</span>
                 <span class="card-subtitle">Your scheduled visits to the clinic</span>
             </div>
-            <c-link type="secondary"  >View Schedule</c-link>
+            <c-link type="secondary" href="{{ route('phm.appointments') }}">View Appointments</c-link>
         </div>
         <div class="card-body">
             @if (count($appointments) <= 0)

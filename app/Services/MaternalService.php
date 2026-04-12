@@ -19,10 +19,12 @@ class MaternalService
     use DateRule;
 
     private $notificationService;
+    private AppointmentSchedulerService $appointmentSchedulerService;
 
     public function __construct()
     {
         $this->notificationService = new NotificationService();
+        $this->appointmentSchedulerService = new AppointmentSchedulerService();
     }
     public function getAllMaternal()
     {
@@ -585,6 +587,8 @@ class MaternalService
             "maternal_profile_created",
             $maternal->id
         );
+
+        $this->appointmentSchedulerService->scheduleInitialForMaternal((int)$maternal->id);
         return null;
     }
 
@@ -668,6 +672,8 @@ class MaternalService
             "antenatal_care_restarted",
             $maternalId
         );
+
+        $this->appointmentSchedulerService->scheduleOnAntenatalStart((int)$maternalId);
 
         return null;
     }
