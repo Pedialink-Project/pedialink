@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Parent - Appointments
+Parent - Child Appointments
 @endsection
 
 @section('css')
