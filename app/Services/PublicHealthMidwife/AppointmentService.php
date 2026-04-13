@@ -26,9 +26,20 @@ class AppointmentService
                 ->whereIn("appointments.status", $filters['status']);
         }
 
+        $today = new \DateTime();
+
+        // Clone today and subtract 5 days
+        $startDate = (clone $today)->modify('-5 days')->format('Y-m-d');
+
+        // Clone today and add 14 days
+        $endDate = (clone $today)->modify('+14 days')->format('Y-m-d');
+
         $appointments = $appointments
             ->join('appointment_slots', 'appointments.slot_id', '=', 'appointment_slots.id')
+            ->where("appointment_slots.slot_date", ">=", $startDate)
+            ->where("appointment_slots.slot_date", "<=", $endDate)
             ->orderBy("appointment_slots.slot_date", "DESC")
+            ->orderBy("appointment_slots.start_time", "ASC")
             ->paginate(10)
             ->toArray();
 
