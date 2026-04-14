@@ -5,7 +5,16 @@
 @endsection
 
 @section('header')
-    Appointments
+    <svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.08337 10C2.08337 6.26806 2.08337 4.40208 3.24274 3.24271C4.40211 2.08334 6.26809 2.08334 10 2.08334C13.732 2.08334 15.598 2.08334 16.7573 3.24271C17.9167 4.40208 17.9167 6.26806 17.9167 10C17.9167 13.732 17.9167 15.5979 16.7573 16.7573C15.598 17.9167 13.732 17.9167 10 17.9167C6.26809 17.9167 4.40211 17.9167 3.24274 16.7573C2.08337 15.5979 2.08337 13.732 2.08337 10Z" stroke="#3A3C41" stroke-width="1.5"/>
+        <path d="M9.16663 5.83334L14.1666 5.83334" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M5.83337 5.83334L6.66671 5.83334" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M5.83337 10L6.66671 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M5.83337 14.1667L6.66671 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M9.16663 10L14.1666 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    {{ !empty($history) && $history['status'] === true ? "Appointment History - " . $history['name'] : "Recent Appointments" }}
 @endsection
 
 @section('css')
@@ -13,7 +22,15 @@
 @endsection
 
 @section('content')
-    <c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ route('doctor.appointments.overview')}}">
+    <?php
+    $actionRouteName = 'doctor.appointments' . (!empty($history) && $history['status'] === true ? '.history' : '.overview');
+    $actionRoute = route($actionRouteName);
+
+    if (!empty($history) && $history['status'] === true) {
+        $actionRoute = route($actionRouteName, ['id' => $history['id'], 'type' => $history['type']]);
+    }
+    ?>
+    <c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ $actionRoute }}">
         <c-slot name="filter">
             <c-button variant="outline">
                 <img src="{{ asset('assets/icons/filter.svg') }}" />
@@ -28,9 +45,9 @@
                 <c-table.thead>
                     <c-table.tr>
                         <c-table.th sortable="1">Name</c-table.th>
+                        <c-table.th>Category</c-table.th>
                         <c-table.th sortable="1">Date</c-table.th>
                         <c-table.th sortable="1">Time</c-table.th>
-                        <c-table.th sortable="1">Doctor</c-table.th>
                         <c-table.th>Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
@@ -48,12 +65,16 @@
                                     N/A
                                 @endif
                             </c-table.td>
+                            <c-table.td class="appointment-tdata" col="category">
+                                @if ($appointment['child'])
+                                    Child
+                                @else 
+                                    Mother                                    
+                                @endif
+                            </c-table.td>
                             <c-table.td class="appointment-tdata" col="date">{{ $appointment['slot_date'] }}</c-table.td>
                             <c-table.td class="appointment-tdata" col="time">
                                 {{ $appointment['start_time'] }} - {{ $appointment['end_time'] }}
-                            </c-table.td>
-                            <c-table.td class="appointment-tdata" col="doctor">
-                                {{ $appointment['doctor'] ? $appointment['doctor']['name'] : 'N/A' }}
                             </c-table.td>
                             <c-table.td class="appointment-tdata" col="status">
                                 @if (strtolower($appointment['status']) === "attended")
@@ -93,11 +114,6 @@
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Requestor"
                                                     info="{{ $appointment['maternal'] ? $appointment['maternal']['name'] : ($appointment['child'] ? $appointment['child']['name'] : 'N/A') }}"
-                                                />
-                                                <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/user.svg') }}"
-                                                    title="Doctor"
-                                                    info="{{ $appointment['doctor'] ? $appointment['doctor']['name'] : 'N/A' }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"

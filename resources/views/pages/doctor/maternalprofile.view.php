@@ -146,6 +146,9 @@ Maternal Profiles - Overview
                                 <c-dropdown.item href="{{ route('doctor.maternal.health', ['id' => $maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('doctor.appointments.history', ['id' => $maternal['id'], 'type' => 'maternal'])}}">
+                                    View Appointments History
+                                </c-dropdown.item>
 
                             </c-slot>
                         </c-dropdown.main>

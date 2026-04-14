@@ -202,6 +202,9 @@ Maternal Profiles - Overview
                                 <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('phm.appointments.history',['id'=>$maternal['id'], 'type' => 'maternal'])}}">
+                                    View Appointments History
+                                </c-dropdown.item>
                                 @if ($maternal['type'] === "antenatal")
                                 <c-modal id="end-antenatal-profile" size="sm" :initOpen="flash('end') ? true : false">
                                     <c-slot name="trigger">

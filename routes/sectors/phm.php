@@ -56,6 +56,7 @@ return [
 
     // Appointments
     ['GET', '/phm/appointments', [AppointmentsController::class, 'index'], 'phm.appointments', ['phm','verified']],
+    ['GET', '/phm/appointments/{id}/{type}/history', [AppointmentsController::class, 'viewHistory'], 'phm.appointments.history', ['phm','verified']],
     ['POST', '/phm/appointments/{id}/attend', [AppointmentsController::class, 'attendAppointment'], 'phm.appointments.attend', ['phm','verified']],
     ['POST', '/phm/appointments/{id}/cancel', [AppointmentsController::class, 'cancelAppointment'], 'phm.appointments.cancel', ['phm','verified']],
 

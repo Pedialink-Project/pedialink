@@ -11,19 +11,52 @@ use App\Models\DoctorWeeklyAvailability;
 
 class AppointmentService
 {
-    public function getAppointmentOverviewData(string $search, array $filters = [])
+    public function getAppointmentOverviewData(
+        string $search,
+        array $filters = [],
+        $history = false,
+        array $info = [
+            'type' => 'child',
+            'id' => null
+        ]
+    )
     {
         $appointments = Appointment::query();
 
-            if (isset($filters['status'])) {
-                $appointments = $appointments
-                    ->whereIn("appointments.status", $filters['status']);
-            }
+        if (isset($filters['status'])) {
+            $appointments = $appointments
+                ->whereIn("appointments.status", $filters['status']);
+        }
 
-        $appointments = $appointments
+        $appointments
             ->join('appointment_slots', 'appointments.slot_id', '=', 'appointment_slots.id')
             ->whereNotNull("appointment_slots.doctor_id")
-            ->orderBy("id", "ASC")
+            ->where("appointment_slots.doctor_id", "=", auth()->user()?->id);
+
+        if ($history) {
+            $appointments
+                ->whereIn("appointments.status", ["confirmed", "attended", "no-show", "cancelled"])
+                ->where($info['type'] === 'child' ? "appointments.child_id" : "appointments.maternal_id", "=", $info['id'])
+                ->orderBy("appointment_slots.slot_date", "DESC")
+                ->orderBy("appointment_slots.start_time", "DESC");
+        } else {
+            $today = new \DateTime();
+
+            // Clone today and subtract 5 days
+            $startDate = (clone $today)->modify('-5 days')->format('Y-m-d');
+
+            // Clone today and add 14 days
+            $endDate = (clone $today)->modify('+14 days')->format('Y-m-d');
+
+            $appointments
+                ->where("appointment_slots.slot_date", ">=", $startDate)
+                ->where("appointment_slots.slot_date", "<=", $endDate)
+                ->orderBy("appointment_slots.slot_date", "DESC")
+                ->orderBy("appointment_slots.start_time", "ASC");
+        }
+            
+
+        $appointments = $appointments
             ->paginate(10)
             ->toArray();
 
@@ -43,10 +76,6 @@ class AppointmentService
                 "slot_date" => $slot->slot_date,
                 "start_time" => date('h:i A', strtotime($slot->start_time)),
                 "end_time" => date('h:i A', strtotime($slot->end_time)),
-                "doctor" => $doctor ? [
-                    "id" => $doctor->id,
-                    "name" => $doctor->getUser()->name
-                ] : null,
                 "child" => $child ? [
                     "id" => $child->id,
                     "name" => $child->name,
