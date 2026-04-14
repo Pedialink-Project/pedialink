@@ -3,6 +3,8 @@
 namespace App\Controllers\PublicHealthMidwife;
 
 use App\Models\Appointment;
+use App\Models\Child;
+use App\Models\Maternal;
 use App\Services\AppointmentSchedulerService;
 use App\Services\PublicHealthMidwife\AppointmentService;
 use Library\Framework\Http\Request;
@@ -28,6 +30,30 @@ class AppointmentsController
         return view("phm/appointments", [
             "appointments" => $appointments,
             "links" => $links
+        ]);
+    }
+
+    public function viewHistory(Request $request, int $id, string $type)
+    {
+        $search = $request->query("search", "");
+        $filters = $request->query("filters", []);
+        [$appointments, $links] = $this->appointmentService
+            ->getAppointmentData($search, $filters, true, [
+                'type' => $type,
+                'id' => $id
+            ]);
+
+        return view("phm/appointments", [
+            "appointments" => $appointments,
+            "links" => $links,
+            "history" => [
+                "status" => true,
+                "id" => $id,
+                "name" => $type === 'child' ? 
+                    Child::find($id)->name : 
+                    Maternal::find($id)->getUser()->name,
+                "type" => $type
+            ],
         ]);
     }
 

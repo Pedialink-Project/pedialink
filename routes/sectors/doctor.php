@@ -33,6 +33,7 @@ return [
     ['POST', '/phm/maternal-profiles/{id}/health-records/{recordId}/mark-as-invalid', [MaternalHealthController::class, 'markAsInvalid'], 'doctor.maternal.health.markinvalid', ['doctor', 'verified']],
     //Appointment rotues
     ['GET', '/doctor/appointments/overview', [AppointmentController::class, 'overview'], 'doctor.appointments.overview', ['doctor', 'verified']],
+    ['GET', '/doctor/appointments/{id}/{type}/history', [AppointmentController::class, 'viewHistory'], 'doctor.appointments.history', ['doctor', 'verified']],
     ['GET', '/doctor/appointments/configure', [AppointmentController::class, 'configure'], 'doctor.appointments.configure', ['doctor', 'verified']],
     ['POST', '/doctor/appointments/configure/create', [AppointmentController::class, 'createAvailability'], 'doctor.appointments.configure.create', ['doctor', 'verified']],
     ['POST', '/doctor/appointments/configure/{id}/disable', [AppointmentController::class, 'disableAvailability'], 'doctor.appointments.configure.disable', ['doctor', 'verified']],

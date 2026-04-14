@@ -16,6 +16,6 @@ class Maternal extends Model
 
     public function getUser()
     {
-        return User::find($this->id);
+        return User::find($this->parent_id);
     }
 }

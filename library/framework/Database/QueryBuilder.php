@@ -39,7 +39,9 @@ class QueryBuilder
 
     /**
      * Array to store all where() calls in the
-     * query builder instance
+     * query builder instance.
+     *
+     * Each item is either a basic condition or a grouped condition.
      * @var array
      */
     protected array $wheres = [];
@@ -56,11 +58,14 @@ class QueryBuilder
     protected array $orderBys = [];
     protected array $joins = [];
     protected array $selects = [];
+    protected string $bindingPrefix;
+    protected int $bindingIndex = 0;
 
     public function __construct(?string $table = null, ?string $modelClass = null)
     {
         $this->table = $table;
         $this->modelClass = $modelClass;
+        $this->bindingPrefix = 'qb' . spl_object_id($this);
     }
 
     /**
@@ -135,6 +140,107 @@ class QueryBuilder
     }
 
     /**
+     * Add a where expression with a boolean connector.
+     *
+     * @param string $expression
+     * @param string $boolean
+     * @return $this
+     */
+    protected function addWhere(string $expression, string $boolean = 'AND'): static
+    {
+        $boolean = strtoupper($boolean) === 'OR' ? 'OR' : 'AND';
+        $this->wheres[] = [
+            'type' => 'basic',
+            'boolean' => $boolean,
+            'expression' => $expression,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Add a grouped where expression.
+     *
+     * @param callable $callback
+     * @param string $boolean
+     * @return $this
+     */
+    protected function addWhereGroup(callable $callback, string $boolean = 'AND'): static
+    {
+        $boolean = strtoupper($boolean) === 'OR' ? 'OR' : 'AND';
+        $group = new static($this->table, $this->modelClass);
+        $group->bindings = [];
+        $callback($group);
+
+        if (empty($group->wheres)) {
+            return $this;
+        }
+
+        $this->wheres[] = [
+            'type' => 'group',
+            'boolean' => $boolean,
+            'wheres' => $group->wheres,
+        ];
+
+        $this->bindings = array_merge($this->bindings, $group->bindings);
+
+        return $this;
+    }
+
+    /**
+     * Build the SQL WHERE clause from stored conditions.
+     *
+     * @param array|null $wheres
+     * @return string
+     */
+    protected function buildWhereClause(?array $wheres = null): string
+    {
+        $wheres = $wheres ?? $this->wheres;
+
+        if (empty($wheres)) {
+            return '';
+        }
+
+        $parts = [];
+        foreach ($wheres as $index => $where) {
+            $prefix = $index === 0 ? '' : ($where['boolean'] . ' ');
+
+            if (($where['type'] ?? 'basic') === 'group') {
+                $groupClause = $this->buildWhereClause($where['wheres'] ?? []);
+                if ($groupClause !== '') {
+                    $parts[] = $prefix . '(' . $groupClause . ')';
+                }
+                continue;
+            }
+
+            $parts[] = $prefix . $where['expression'];
+        }
+
+        return implode(' ', $parts);
+    }
+
+    /**
+     * Generate a unique named placeholder.
+     *
+     * @param string $column
+     * @param string $suffix
+     * @return string
+     */
+    protected function makePlaceholder(string $column, string $suffix = ''): string
+    {
+        $placeholderName = str_replace('.', '_', $column);
+        $placeholder = ':' . $this->bindingPrefix . '_' . $placeholderName . '_' . $this->bindingIndex;
+
+        if ($suffix !== '') {
+            $placeholder .= '_' . $suffix;
+        }
+
+        $this->bindingIndex++;
+
+        return $placeholder;
+    }
+
+    /**
      * Shorthand method similar to `where` syntax in sql.
      * Can be chained in query builder instance.
      * @param string $column
@@ -153,13 +259,59 @@ class QueryBuilder
             throw new PDOException("Invalid operator: {$operator}");
         }
 
-        // Sanitize column name for placeholder (replace dots with underscores)
-        $placeholderName = str_replace('.', '_', $column);
-        $placeholder = ':' . $placeholderName . count($this->bindings);
-        $this->wheres[] = "{$column} {$operator} {$placeholder}";
+        $placeholder = $this->makePlaceholder($column);
+        $this->addWhere("{$column} {$operator} {$placeholder}", 'AND');
         $this->bindings[$placeholder] = $value;
 
         return $this;
+    }
+
+    /**
+     * Add an OR WHERE condition.
+     *
+     * @param string $column
+     * @param string $operator
+     * @param mixed $value
+     * @return QueryBuilder
+     */
+    public function orWhere(string $column, string $operator, $value): static
+    {
+        $allowed = ['=', '<', '>', '<=', '>=', '<>', '!=', 'LIKE', 'ILIKE'];
+
+        if (!in_array(strtoupper($operator), $allowed, true)) {
+            throw new PDOException("Invalid operator: {$operator}");
+        }
+
+        $placeholder = $this->makePlaceholder($column);
+        $this->addWhere("{$column} {$operator} {$placeholder}", 'OR');
+        $this->bindings[$placeholder] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Group WHERE clauses with AND.
+     *
+     * Example:
+     * whereGroup(fn ($q) => $q->where('a', '=', 1)->orWhere('b', '=', 2))
+     *
+     * @param callable $callback
+     * @return QueryBuilder
+     */
+    public function whereGroup(callable $callback): static
+    {
+        return $this->addWhereGroup($callback, 'AND');
+    }
+
+    /**
+     * Group WHERE clauses with OR.
+     *
+     * @param callable $callback
+     * @return QueryBuilder
+     */
+    public function orWhereGroup(callable $callback): static
+    {
+        return $this->addWhereGroup($callback, 'OR');
     }
 
     /**
@@ -172,20 +324,18 @@ class QueryBuilder
     {
         if (empty($values)) {
             // No values, so condition will never match
-            $this->wheres[] = "0 = 1";
+            $this->addWhere('0 = 1', 'AND');
             return $this;
         }
 
-        // Sanitize column name for placeholder (replace dots with underscores)
-        $placeholderName = str_replace('.', '_', $column);
         $placeholders = [];
         foreach ($values as $index => $value) {
-            $key = ":{$placeholderName}_in{$index}";
+            $key = $this->makePlaceholder($column, 'in' . $index);
             $placeholders[] = $key;
             $this->bindings[$key] = $value;
         }
 
-        $this->wheres[] = "{$column} IN (" . implode(',', $placeholders) . ")";
+        $this->addWhere("{$column} IN (" . implode(',', $placeholders) . ")", 'AND');
         return $this;
     }
 
@@ -203,16 +353,14 @@ class QueryBuilder
             return $this;
         }
 
-        // Sanitize column name for placeholder (replace dots with underscores)
-        $placeholderName = str_replace('.', '_', $column);
         $placeholders = [];
         foreach ($values as $index => $value) {
-            $key = ":{$placeholderName}_notin{$index}";
+            $key = $this->makePlaceholder($column, 'notin' . $index);
             $placeholders[] = $key;
             $this->bindings[$key] = $value;
         }
 
-        $this->wheres[] = "{$column} NOT IN (" . implode(',', $placeholders) . ")";
+        $this->addWhere("{$column} NOT IN (" . implode(',', $placeholders) . ")", 'AND');
         return $this;
     }
 
@@ -223,7 +371,7 @@ class QueryBuilder
      */
     public function whereNull(string $column): static
     {
-        $this->wheres[] = "{$column} IS NULL";
+        $this->addWhere("{$column} IS NULL", 'AND');
         return $this;
     }
 
@@ -234,7 +382,7 @@ class QueryBuilder
      */
     public function whereNotNull(string $column): static
     {
-        $this->wheres[] = "{$column} IS NOT NULL";
+        $this->addWhere("{$column} IS NOT NULL", 'AND');
         return $this;
     }
 
@@ -254,8 +402,8 @@ class QueryBuilder
             $sql .= ' ' . implode(' ', $this->joins);
         }
         
-        if ($this->wheres) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
+        if ($whereClause = $this->buildWhereClause()) {
+            $sql .= ' WHERE ' . $whereClause;
         }
 
         if ($this->orderBys) {
@@ -297,8 +445,8 @@ class QueryBuilder
             $sql .= ' ' . implode(' ', $this->joins);
         }
 
-        if ($this->wheres) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
+        if ($whereClause = $this->buildWhereClause()) {
+            $sql .= ' WHERE ' . $whereClause;
         }
 
         if ($this->orderBys) {
@@ -360,7 +508,7 @@ class QueryBuilder
     {
         $sets = [];
         foreach ($data as $col => $val) {
-            $placeholder = ':' . $col . count($this->bindings);
+            $placeholder = $this->makePlaceholder($col, 'set');
             $sets[] = "{$col} = {$placeholder}";
             $this->bindings[$placeholder] = $val;
         }
@@ -371,8 +519,8 @@ class QueryBuilder
             implode(', ', $sets)
         );
 
-        if ($this->wheres) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
+        if ($whereClause = $this->buildWhereClause()) {
+            $sql .= ' WHERE ' . $whereClause;
         }
 
         $stmt = static::$pdo->prepare($sql);
@@ -394,9 +542,10 @@ class QueryBuilder
      */
     public function delete(): bool
     {
+        $whereClause = $this->buildWhereClause();
         $sql = sprintf(
             "DELETE FROM %s" .
-                ($this->wheres ? ' WHERE ' . implode(' AND ', $this->wheres) : ''),
+                ($whereClause ? ' WHERE ' . $whereClause : ''),
             $this->table
         );
 
@@ -465,8 +614,8 @@ class QueryBuilder
         if ($this->joins) {
             $countSql .= ' ' . implode(' ', $this->joins);
         }
-        if ($this->wheres) {
-            $countSql .= ' WHERE ' . implode(' AND ', $this->wheres);
+        if ($whereClause = $this->buildWhereClause()) {
+            $countSql .= ' WHERE ' . $whereClause;
         }
 
         $countStmt = static::$pdo->prepare($countSql);
@@ -485,8 +634,8 @@ class QueryBuilder
         if ($this->joins) {
             $sql .= ' ' . implode(' ', $this->joins);
         }
-        if ($this->wheres) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
+        if ($whereClause = $this->buildWhereClause()) {
+            $sql .= ' WHERE ' . $whereClause;
         }
         if ($this->orderBys) {
             $sql .= ' ORDER BY ' . implode(', ', $this->orderBys);
@@ -528,8 +677,8 @@ class QueryBuilder
         if ($this->joins) {
             $sql .= ' ' . implode(' ', $this->joins);
         }
-        if ($this->wheres) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
+        if ($whereClause = $this->buildWhereClause()) {
+            $sql .= ' WHERE ' . $whereClause;
         }
 
         $stmt = static::$pdo->prepare($sql);

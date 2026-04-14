@@ -184,6 +184,9 @@ Child Profiles
                                 <c-dropdown.item href="{{ route('doctor.child.health', ['id' => $child['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('doctor.appointments.history', ['id' => $child['id'], 'type' => 'child']) }}">
+                                    View Appointment History
+                                </c-dropdown.item>
                                 <c-dropdown.item href="{{ route('doctor.child.vaccination', ['id' => $child['id']]) }}">
                                     View Vaccination Records
                                 </c-dropdown.item>
