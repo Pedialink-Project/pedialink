@@ -28,14 +28,14 @@ Parent Dashboard
             </c-slot>
         </c-pill>
         <c-pill>
-            <c-slot name="title">Appoinments</c-slot>
+            <c-slot name="title">Upcoming Appoinments</c-slot>
             <c-slot name="number">{{$appointmentCount}}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/profile.svg')}}">
             </c-slot>
         </c-pill>
         <c-pill>
-            <c-slot name="title">Vaccinations</c-slot>
+            <c-slot name="title">Upcoming Vaccinations</c-slot>
             <c-slot name="number">{{$vaccinationCount}}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/vaccine.svg')}}">
