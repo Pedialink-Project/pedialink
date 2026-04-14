@@ -97,11 +97,14 @@ $unreadCount = $data['unreadCount'] ?? 0;
     <c-dropdown.main>
       <c-slot name="trigger" class="nav-user-trigger">
         <div class="nav-user" role="button" aria-haspopup="true">
-          <div class="avatar">
-            <img src="{{ asset('assets/avatar-placeholder.png') }}" alt="User avatar">
+          <?php $words = auth()->check() ? auth()->user()->name : 'Test Name';
+            $initials = strtoupper(substr($words, 0, 1) . substr($words, 1, 1));
+            ?>
+          <div class="avatar nav-profile-pic">
+               <div class="user-initials">{{ $initials }}</div>
           </div>
           <div class="user-meta">
-            <div class="user-name">{{ auth()->check() ? auth()->user()->name : 'Test Name'}}</div>
+            <div class="user-name">{{  auth()->check() ? auth()->user()->name : 'Test Name' }}</div>
             <div class="user-role">{{ auth()->check() ? ucfirst(auth()->user()->role) : 'Test role' }}</div>
           </div>
         </div>
