@@ -59,7 +59,13 @@ Parent - Child Appointments
                     <c-table.td col="slot-date" width="200px">{{$appointment['slot_date']}} </c-table.td>
                     <c-table.td col="start-time" width="200px">{{$appointment['start_time']}}</c-table.td>
                     <c-table.td col="end-time" width="200px">{{$appointment['end_time']}}</c-table.td>
-                    <c-table.td col="doctor">{{'Dr. '.$appointment['doctor']['name']}}</c-table.td>
+                    <c-table.td col="doctor">
+                        @if($appointment['doctor'])
+                        {{'Dr. '.$appointment['doctor']['name']}}
+                        @else
+                        Not Assigned
+                        @endif
+                    </c-table.td>
                     <c-table.td col="status">
                         {{
                         $badgeType = '';
