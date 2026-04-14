@@ -102,8 +102,8 @@ Parent Dashboard
             <div class="card-body">
                 @if(count($childAppointments) === 0)
                 <c-emptycard
-                    title="No appointments today"
-                    description="There are no scheduled appointments for today." />
+                    title="No upcoming appointments"
+                    description="There are no upcoming appointments for your children." />
                 @else
 
                 @foreach ($childAppointments as $key => $childAppointment)
@@ -153,8 +153,8 @@ Parent Dashboard
             <div class="card-body">
                 @if(count($maternalAppointments) === 0)
                 <c-emptycard
-                    title="No appointments today"
-                    description="There are no scheduled appointments for today." />
+                    title="No upcoming appointments"
+                    description="There are no upcoming appointments." />
                 @else
 
                 @foreach ($maternalAppointments as $key => $maternalAppointment)
