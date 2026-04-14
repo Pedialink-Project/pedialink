@@ -21,19 +21,7 @@ $unreadCount = $data['unreadCount'] ?? 0;
     </button>
   </div>
 
-  <div class="app-navbar__center">
-    @if (!empty($slots['search']))
-    {{ $slots['search'] }}
-    @else
-    <div class="nav-search" role="search">
-      <span class="search-icon" aria-hidden="true">
-        <img src="{{ asset('assets/icons/search.svg') }}" />
-
-      </span>
-      <input type="search" name="q" placeholder="Search" />
-    </div>
-    @endif
-  </div>
+  
 
   <div class="app-navbar__right">
     <c-dropdown.main>
