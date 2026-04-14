@@ -37,15 +37,6 @@ Parent - My Childern
 </div>
 @endsection
 
-@section('header_right')
-<div class="search-box">
-   <span class="search-icon" aria-hidden="true">
-      <img src="{{ asset('assets/icons/search.svg') }}" />
-
-   </span>
-   <input type="search" name="q" placeholder="Search" />
-</div>
-@endsection
 
 @section('content')
 
