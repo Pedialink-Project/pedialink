@@ -14,7 +14,7 @@
         <path d="M9.16663 10L14.1666 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
         <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
-   Recent Appointments
+   {{ !empty($history) && $history['status'] === true ? "Appointment History - " . $history['name'] : "Recent Appointments" }}
 @endsection
 
 @section('css')
@@ -22,7 +22,15 @@
 @endsection
 
 @section('content')
-    <c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ route('phm.appointments')}}">
+    <?php
+    $actionRouteName = 'phm.appointments' . (!empty($history) && $history['status'] === true ? '.history' : '');
+    $actionRoute = route($actionRouteName);
+
+    if (!empty($history) && $history['status'] === true) {
+        $actionRoute = route($actionRouteName, ['id' => $history['id'], 'type' => $history['type']]);
+    }
+    ?>
+    <c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ $actionRoute }}">
 
     </c-table.controls>
 
