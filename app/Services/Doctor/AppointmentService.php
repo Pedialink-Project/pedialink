@@ -54,10 +54,6 @@ class AppointmentService
                 "slot_date" => $slot->slot_date,
                 "start_time" => date('h:i A', strtotime($slot->start_time)),
                 "end_time" => date('h:i A', strtotime($slot->end_time)),
-                "doctor" => $doctor ? [
-                    "id" => $doctor->id,
-                    "name" => $doctor->getUser()->name
-                ] : null,
                 "child" => $child ? [
                     "id" => $child->id,
                     "name" => $child->name,

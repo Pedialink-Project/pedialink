@@ -37,9 +37,9 @@
                 <c-table.thead>
                     <c-table.tr>
                         <c-table.th sortable="1">Name</c-table.th>
+                        <c-table.th>Category</c-table.th>
                         <c-table.th sortable="1">Date</c-table.th>
                         <c-table.th sortable="1">Time</c-table.th>
-                        <c-table.th sortable="1">Doctor</c-table.th>
                         <c-table.th>Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
@@ -57,12 +57,16 @@
                                     N/A
                                 @endif
                             </c-table.td>
+                            <c-table.td class="appointment-tdata" col="category">
+                                @if ($appointment['child'])
+                                    Child
+                                @else 
+                                    Mother                                    
+                                @endif
+                            </c-table.td>
                             <c-table.td class="appointment-tdata" col="date">{{ $appointment['slot_date'] }}</c-table.td>
                             <c-table.td class="appointment-tdata" col="time">
                                 {{ $appointment['start_time'] }} - {{ $appointment['end_time'] }}
-                            </c-table.td>
-                            <c-table.td class="appointment-tdata" col="doctor">
-                                {{ $appointment['doctor'] ? $appointment['doctor']['name'] : 'N/A' }}
                             </c-table.td>
                             <c-table.td class="appointment-tdata" col="status">
                                 @if (strtolower($appointment['status']) === "attended")
@@ -102,11 +106,6 @@
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Requestor"
                                                     info="{{ $appointment['maternal'] ? $appointment['maternal']['name'] : ($appointment['child'] ? $appointment['child']['name'] : 'N/A') }}"
-                                                />
-                                                <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/user.svg') }}"
-                                                    title="Doctor"
-                                                    info="{{ $appointment['doctor'] ? $appointment['doctor']['name'] : 'N/A' }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
