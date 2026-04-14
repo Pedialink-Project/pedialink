@@ -145,7 +145,7 @@ Parent - My Childern
          </div>
 
       </div>
-      <c-link class="btn" type="primary" href="{{ route('parent.child.details',['id' => $child['id']]) }}">
+      <c-link class="button" type="primary" href="{{ route('parent.child.details',['id' => $child['id']]) }}">
          View Details
       </c-link>
    </c-card>
