@@ -21,7 +21,7 @@ class AppointmentController
         $filters = $request->query("filters", []);
         [$appointments, $links] = $this->appointmentService
             ->getAppointmentOverviewData($search, $filters);
-        return view("doctor/appointment/overview", [
+        return view("doctor/appointment", [
             "appointments" => $appointments,
             "links" => $links
         ]);
