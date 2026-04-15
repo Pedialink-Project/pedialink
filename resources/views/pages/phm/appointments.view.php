@@ -14,7 +14,7 @@ PHM Appointments
     <path d="M9.16663 10L14.1666 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" />
     <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" />
 </svg>
-{{ !empty($history) && $history['status'] === true ? "Appointment History - " . $history['name'] : "Recent Appointments" }}
+{{ !empty($history) && $history['status'] === true ? "Appointment History of  " . $history['name'] . ' (C-00' . $history['id'] . ')' : "Recent Appointments" }}
 @endsection
 
 @section('css')

@@ -78,7 +78,7 @@ Vaccination Details of {{ $name .' (C-00'.$id.')' }}
                                     {{ ucwords(str_replace('_', ' ',$item['status']) )}}
                                 </c-badge>
                             @elseif (strtolower($item['status']) === "overdue")
-                                <c-badge type="destructive">
+                                <c-badge type="red">
                                     {{ ucwords(str_replace('_', ' ',$item['status'] ))}}
                                 </c-badge>
                             @endif
