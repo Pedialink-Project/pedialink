@@ -44,7 +44,7 @@
                         <c-table.th sortable="0">Category</c-table.th>
                         <c-table.th align="left" sortable="0">Date & Time</c-table.th>
                         <c-table.th align="left" sortable="0">Status</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
@@ -94,7 +94,7 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item><b>Actions</c-dropdown.item>
+                                        <c-dropdown.item><b>Actions</b></c-dropdown.item>
                                         <c-modal id="View-appointment-{{ $key }}" size="sm" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Appointment</c-dropdown.item>

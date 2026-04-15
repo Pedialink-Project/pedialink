@@ -102,7 +102,7 @@ Maternal Profiles - Overview
                     <c-table.th sortable="0" width="210px">Name</c-table.th>
                     <c-table.th sortable="0" width="200px">Age</c-table.th>
                     <c-table.th align="left" sortable="0" width="220px">Maternal Type</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 

@@ -55,7 +55,7 @@ Child Profiles
                     <c-table.th sortable="0">Age</c-table.th>
                     <c-table.th>Area</c-table.th>
                     <c-table.th>Assigned PHM</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 

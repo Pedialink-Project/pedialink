@@ -232,7 +232,7 @@ $vaccinations = [
                     <c-table.th sortable="0">Date & Time</c-table.th>
                     <c-table.th sortable="0">Location</c-table.th>
                     <c-table.th sortable="0">Administerd By</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
             <c-table.tbody>

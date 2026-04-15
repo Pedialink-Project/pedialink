@@ -113,7 +113,7 @@ Health Records of {{ $name .' (M-00'.$id.')' }}
                     <c-table.th sortable="0">Trimester</c-table.th>
                     <c-table.th sortable="0">Fetal Heart Rate</c-table.th>
                     <c-table.th>Health Status</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 

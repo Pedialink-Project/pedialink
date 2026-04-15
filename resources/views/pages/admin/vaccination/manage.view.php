@@ -119,7 +119,7 @@
                         <c-table.th sortable="0">Name</c-table.th>
                         <c-table.th sortable="0">Code</c-table.th>
                         <c-table.th sortable="0">Dose Number</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
