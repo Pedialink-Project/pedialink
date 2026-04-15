@@ -77,4 +77,145 @@ class VaccinationService
 
         return [$resource, $links];
     }
+
+
+    public function getParentVaccinationOverview(int $parentId): array
+    {
+        [$vaccinations, $links] = $this->getChildVaccinationByParentId($parentId, "", []);
+
+        $groupedRecords = [];
+        $statusTotals = [
+            'complete' => 0,
+            'pending' => 0,
+            'overdue' => 0,
+        ];
+
+        foreach ($vaccinations as $record) {
+            $status = strtolower((string) ($record['status'] ?? 'pending'));
+            if (!isset($statusTotals[$status])) {
+                $statusTotals[$status] = 0;
+            }
+            $statusTotals[$status]++;
+
+            $scheduledDateKey = !empty($record['scheduled_date'])
+                ? (new \DateTimeImmutable((string) $record['scheduled_date']))->format('Y-m-d')
+                : 'unscheduled';
+
+            $groupName = $scheduledDateKey === 'unscheduled'
+                ? 'Unscheduled'
+                : (new \DateTimeImmutable((string) $record['scheduled_date']))->format('F j, Y');
+
+            $groupedRecords[$scheduledDateKey]['name'] = $groupName;
+            $groupedRecords[$scheduledDateKey]['items'][] = $record;
+        }
+
+        foreach ($groupedRecords as &$group) {
+            $items = $group['items'] ?? [];
+            usort($items, function ($left, $right) {
+                $leftDate = !empty($left['scheduled_date']) ? strtotime((string) $left['scheduled_date']) : 0;
+                $rightDate = !empty($right['scheduled_date']) ? strtotime((string) $right['scheduled_date']) : 0;
+
+                if ($leftDate === $rightDate) {
+                    return strcmp((string) ($left['vaccine']['code'] ?? ''), (string) ($right['vaccine']['code'] ?? ''));
+                }
+
+                return $leftDate <=> $rightDate;
+            });
+            $group['items'] = $items;
+        }
+        unset($items);
+        unset($group);
+
+        uksort($groupedRecords, function ($left, $right) use ($groupedRecords) {
+            $leftItems = $groupedRecords[$left]['items'] ?? [];
+            $rightItems = $groupedRecords[$right]['items'] ?? [];
+
+            $leftDate = 0;
+            foreach ($leftItems as $item) {
+                if (!empty($item['scheduled_date'])) {
+                    $leftDate = strtotime((string) $item['scheduled_date']);
+                    break;
+                }
+            }
+
+            $rightDate = 0;
+            foreach ($rightItems as $item) {
+                if (!empty($item['scheduled_date'])) {
+                    $rightDate = strtotime((string) $item['scheduled_date']);
+                    break;
+                }
+            }
+
+            if ($leftDate === $rightDate) {
+                return strcasecmp($left, $right);
+            }
+
+            return $leftDate <=> $rightDate;
+        });
+
+        $timelineGroups = [];
+        foreach ($groupedRecords as $groupKey => $group) {
+            $items = $group['items'] ?? [];
+            $groupName = $group['name'] ?? 'Unscheduled';
+            $groupComplete = 0;
+            $groupPending = 0;
+            $groupOverdue = 0;
+
+            foreach ($items as $item) {
+                $itemStatus = strtolower((string) ($item['status'] ?? 'pending'));
+                if ($itemStatus === 'complete') {
+                    $groupComplete++;
+                } elseif ($itemStatus === 'pending') {
+                    $groupPending++;
+                } elseif ($itemStatus === 'overdue') {
+                    $groupOverdue++;
+                }
+            }
+
+            $groupCount = count($items);
+            $groupBadgeType = 'purple';
+            $groupStatusLabel = 'Upcoming';
+
+            if ($groupOverdue > 0) {
+                $groupBadgeType = 'red';
+                $groupStatusLabel = 'Action needed';
+            } elseif ($groupComplete === $groupCount && $groupCount > 0) {
+                $groupBadgeType = 'green';
+                $groupStatusLabel = 'Completed';
+            } elseif ($groupPending > 0) {
+                $groupBadgeType = 'purple';
+                $groupStatusLabel = 'Scheduled';
+            }
+
+            $timelineGroups[] = [
+                'name' => $groupName,
+                'items' => $items,
+                'count' => $groupCount,
+                'badgeType' => $groupBadgeType,
+                'statusLabel' => $groupStatusLabel,
+            ];
+        }
+
+        $totalRecords = count($vaccinations);
+
+
+        return [$timelineGroups, $statusTotals, $totalRecords];
+    }
+
+
+    public function getLinkedChildrenListByParentId(int $parentId)
+    {
+        $childrenParent = ParentChild::query()->where('parent_id', '=', $parentId)->get();
+
+        $resource = [];
+        foreach ($childrenParent as $childParent) {
+            $child = $childParent->getChild();
+            $resource[] = [
+                'id' => $child->id,
+                'name' => $child->name,
+            ];
+        }
+
+        return $resource;
+    }
 }

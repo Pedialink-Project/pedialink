@@ -5,6 +5,7 @@ namespace App\Controllers\PublicHealthMidwife;
 use App\Models\Child;
 use App\Models\Vaccination;
 use App\Models\VaccinationReminder;
+use App\Services\NotificationService;
 use App\Services\VaccinationSchedulerService;
 use App\Services\VaccinationService;
 use Library\Framework\Http\Request;
@@ -13,11 +14,13 @@ class VaccinationController
 {
     private VaccinationService $vaccinationService;
     private VaccinationSchedulerService $vaccinationSchedulerService;
+    private NotificationService $notificationService;
 
     public function __construct()
     {
         $this->vaccinationService = new VaccinationService();
         $this->vaccinationSchedulerService = new VaccinationSchedulerService();
+        $this->notificationService = new NotificationService();
     }
 
     public function childVaccinationRecords(Request $request, int $id)
@@ -70,6 +73,33 @@ class VaccinationController
 
         if ($success) {
             $this->vaccinationSchedulerService->refreshRemindersAfterVaccination($id);
+
+            $parents = $child->getParents();
+            $recipientIds = [];
+            if ($parents) {
+                foreach ($parents as $parent) {
+                    $user = $parent->getUser();
+                    if ($user) {
+                        $recipientIds[] = (int)$user->id;
+                    }
+                }
+            }
+
+            if (!empty($recipientIds)) {
+                $scheduleVaccine = $vaccinationReminder->getScheduleVaccine();
+                $vaccine = $scheduleVaccine ? $scheduleVaccine->getVaccine() : null;
+                $vaccineName = $vaccine ? $vaccine->name : 'a scheduled vaccine';
+
+                $message = "Vaccination {$vaccineName} for {$child->name} was recorded as completed.";
+
+                $this->notificationService->notifyMany(
+                    $recipientIds,
+                    "Vaccination completed",
+                    $message,
+                    "vaccination",
+                    (int)$vaccination->id
+                );
+            }
         }
 
         return redirect(route("phm.child.vaccinations", ["id" => $id]))

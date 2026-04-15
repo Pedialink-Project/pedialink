@@ -7,6 +7,7 @@ use App\Models\Appointment;
 use App\Models\Maternal;
 use App\Models\ParentChild;
 use App\Services\AppointmentSchedulerService;
+use App\Services\NotificationService;
 use App\Rules\TextRule;
 
 class AppointmentService
@@ -14,10 +15,12 @@ class AppointmentService
     use TextRule;
 
     private AppointmentSchedulerService $appointmentSchedulerService;
+    private NotificationService $notificationService;
 
     public function __construct()
     {
         $this->appointmentSchedulerService = new AppointmentSchedulerService();
+        $this->notificationService = new NotificationService();
     }
 
     public function getChildAppointmentByParentId($parentId, string $search, array $filters = [])
@@ -158,6 +161,42 @@ class AppointmentService
         $appointment->save();
 
         $this->appointmentSchedulerService->onAppointmentCancelled((int)$appointmentId);
+
+        $slot = $appointment->getSlot();
+        $doctor = $slot ? $slot->getDoctor() : null;
+
+        if ($slot && $doctor) {
+            $patientName = null;
+
+            if ($appointment->child_id) {
+                $child = $appointment->getChild();
+                $patientName = $child ? $child->name : null;
+            } elseif ($appointment->maternal_id) {
+                $maternal = $appointment->getMaternal();
+                $patientName = $maternal && $maternal->getUser() ? $maternal->getUser()->name : null;
+            }
+
+            $patientPart = $patientName ? " for {$patientName}" : "";
+            $message = "An appointment{$patientPart} on {$slot->slot_date} from "
+                . Calculator::formatTimeToAmPm($slot->start_time)
+                . " to " . Calculator::formatTimeToAmPm($slot->end_time)
+                . " was cancelled. Reason: {$reason}";
+
+            $this->notificationService->notify(
+                (int)$doctor->id,
+                "Appointment cancelled",
+                $message,
+                "appointment",
+                (int)$appointment->id
+            );
+
+            $this->notificationService->notifyAdmins(
+                "Appointment cancelled",
+                "An appointment{$patientPart} on {$slot->slot_date} was cancelled by a parent.",
+                "appointment",
+                (int)$appointment->id
+            );
+        }
 
 
         return null;

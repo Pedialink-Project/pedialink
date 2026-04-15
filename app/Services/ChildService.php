@@ -10,6 +10,7 @@ use App\Models\ChildRecord;
 use App\Helpers\Validator;
 use App\Models\Appointment;
 use App\Models\ParentChild;
+use App\Models\ParentM;
 use App\Rules\NameRule;
 use App\Rules\DivisionRule;
 use App\Rules\DateRule;
@@ -131,7 +132,7 @@ class ChildService
             }
 
             $childAppointments = Appointment::query()->where('child_id','=', $child->id)->where('status', '=', 'confirmed')->get();
-            $childVaccinations = VaccinationReminder::query()->where('child_id','=',$child->id)->get();
+            $childVaccinations = VaccinationReminder::query()->where('child_id','=',$child->id)->where('status', '=', 'pending')->get();
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,
@@ -636,7 +637,47 @@ class ChildService
         $this->vaccinationSchedulerService->createInitialRemindersForChild((int)$childId);
         $this->appointmentSchedulerService->scheduleInitialForChild((int)$childId);
 
-        // $this->requestChildAccess($phmId, $child->id, "New Child Profile Created", "A new child profile named {$child->name} has been created and is awaiting your approval.");
+        $recipientIds = [];
+
+        if (!empty($mother_nic)) {
+            $mother = ParentM::query()->where('nic', '=', $mother_nic)->first();
+            if ($mother) {
+                $user = $mother->getUser();
+                if ($user) {
+                    $recipientIds[] = (int)$user->id;
+                }
+            }
+        }
+
+        if (!empty($father_nic)) {
+            $father = ParentM::query()->where('nic', '=', $father_nic)->first();
+            if ($father) {
+                $user = $father->getUser();
+                if ($user) {
+                    $recipientIds[] = (int)$user->id;
+                }
+            }
+        }
+
+        $phmName = auth()->check() ? auth()->user()->name : 'PHM';
+
+        if (!empty($recipientIds)) {
+            $message = "A new child profile for {$child->name} has been created by {$phmName}.";
+            $this->notificationService->notifyMany(
+                $recipientIds,
+                "New child profile created",
+                $message,
+                "child_profile",
+                (int)$childId
+            );
+        }
+
+        $this->notificationService->notifyAdmins(
+            "New child profile created",
+            "{$phmName} created a new child profile for {$child->name}.",
+            "child_profile",
+            (int)$childId
+        );
     }
 
     public function editChildProfile(int $childId, string $name, string $dob, string $gender, string $bloodType)

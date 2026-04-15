@@ -148,10 +148,3 @@ body {
     color: var(--text-primary);
 }
 
-.btn {
-    margin-top: .5rem;
-    justify-content: center;
-    width: 100%;
-    padding: 0;
-}
-

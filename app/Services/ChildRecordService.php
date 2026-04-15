@@ -235,6 +235,31 @@ class ChildRecordService
 
         $record->save();
 
+        $child = Child::find($childId);
+        if ($child) {
+            $parents = $child->getParents();
+            $recipientIds = [];
+            if ($parents) {
+                foreach ($parents as $parent) {
+                    $user = $parent->getUser();
+                    if ($user) {
+                        $recipientIds[] = (int)$user->id;
+                    }
+                }
+            }
+
+            if (!empty($recipientIds)) {
+                $message = "A new health record for {$child->name} was added on {$visitDate}.";
+                $this->notificationService->notifyMany(
+                    $recipientIds,
+                    "Child health record added",
+                    $message,
+                    "child_record",
+                    (int)$record->id
+                );
+            }
+        }
+
         return $record;
     }
 

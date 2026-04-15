@@ -52,11 +52,11 @@ Vaccination Details of {{ $name .' (M-00'.$id.')' }}
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1" width="200px">ID</c-table.th>
-                    <c-table.th sortable="1" width="220px">Vaccine</c-table.th>
-                    <c-table.th sortable="1" width="220px">Recorded Age</c-table.th>
-                    <c-table.th align="left" sortable="1" width="220px">Vaccination Status</c-table.th>
-                    <c-table.th align="left" sortable="1">Vaccination Date</c-table.th>
+                    <c-table.th sortable="0" width="200px">ID</c-table.th>
+                    <c-table.th sortable="0" width="220px">Vaccine</c-table.th>
+                    <c-table.th sortable="0" width="220px">Recorded Age</c-table.th>
+                    <c-table.th align="left" sortable="0" width="220px">Vaccination Status</c-table.th>
+                    <c-table.th align="left" sortable="0">Vaccination Date</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
@@ -64,7 +64,7 @@ Vaccination Details of {{ $name .' (M-00'.$id.')' }}
             <c-table.tbody>
                 @foreach ($vaccinations as $key => $item)
                     <c-table.tr>
-                        <c-table.td col="id">V-{{ $item['id'] }}</c-table.td>
+                        <c-table.td col="id">V-00{{ $item['id'] }}</c-table.td>
                         <c-table.td col="name">{{ $item['vaccine']['code'] }}</c-table.td>
                         <c-table.td col="Recorded Age">{{ $item['recorded_age'] }}</c-table.td>
                         <c-table.td col="Vaccination Status">
@@ -77,7 +77,7 @@ Vaccination Details of {{ $name .' (M-00'.$id.')' }}
                                     {{ ucfirst($item['status'] )}}
                                 </c-badge>
                             @elseif (strtolower($item['status']) === "overdue")
-                                <c-badge type="destructive">
+                                <c-badge type="red">
                                     {{ ucfirst($item['status'] )}}
                                 </c-badge>
                             @endif
@@ -111,7 +111,7 @@ Vaccination Details of {{ $name .' (M-00'.$id.')' }}
                                                     {{ ucfirst($item['status'] )}}
                                                 </c-badge>
                                             @elseif (strtolower($item['status']) === "overdue")
-                                                <c-badge type="destructive">
+                                                <c-badge type="red">
                                                     {{ ucfirst($item['status'] )}}
                                                 </c-badge>
                                             @endif
@@ -124,7 +124,7 @@ Vaccination Details of {{ $name .' (M-00'.$id.')' }}
 
                                         <c-modal.viewcard>
                                             <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="ID"
-                                                info="{{ $item['id'] }}" />
+                                                info="V-00{{ $item['id'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
                                                 title="Recorded Age" info="{{ $item['recorded_age'] }}" />
                                             <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"

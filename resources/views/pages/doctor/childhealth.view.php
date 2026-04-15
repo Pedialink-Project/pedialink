@@ -8,6 +8,17 @@ Child Health Records
 <link rel="stylesheet" href="{{ asset('css/pages/doctor/child-health.css') }}">
 @endsection
 
+@section('back')
+	<c-link href="{{ $backUrl ?? 'javascript:history.back()' }}">
+		<c-slot name="icon">
+			<svg width="25px" height="25px" viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
+				<path d="M669.6 849.6c8.8 8 22.4 7.2 30.4-1.6s7.2-22.4-1.6-30.4l-309.6-280c-8-7.2-8-17.6 0-24.8l309.6-270.4c8.8-8 9.6-21.6 2.4-30.4-8-8.8-21.6-9.6-30.4-2.4L360.8 480.8c-27.2 24-28 64-0.8 88.8l309.6 280z" fill="" />
+			</svg>
+		</c-slot>
+		Go Back
+	</c-link>
+@endsection
+
 @section('header')
 <svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_474_12888)">
@@ -38,7 +49,7 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
 
 
 <c-table.controls action="{{route('doctor.child.health',['id' => $id])}}" :filters="['health_status' => ['good', 'at_risk', 'critical']]">
-
+{{--
     <c-slot name="extrabtn">
         <c-modal id="add-health-record-modal" size="sm" :initOpen="flash('add') ? true : false">
             <c-slot name="trigger">
@@ -76,6 +87,7 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
             </c-slot>
         </c-modal>
     </c-slot>
+    --}}
 </c-table.controls>
 
 <c-table.wrapper card="1">
@@ -83,10 +95,10 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">Recorded at</c-table.th>
-                    <c-table.th sortable="1">Height</c-table.th>
-                    <c-table.th sortable="1">Weight</c-table.th>
-                    <c-table.th align="left" sortable="1">Head Circumference</c-table.th>
+                    <c-table.th sortable="0">Recorded at</c-table.th>
+                    <c-table.th sortable="0">Height</c-table.th>
+                    <c-table.th sortable="0">Weight</c-table.th>
+                    <c-table.th align="left" sortable="0">Head Circumference</c-table.th>
                     <c-table.th align="left">Health Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
@@ -199,6 +211,8 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                {{--
+
                                 <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="flash('edit') == $record['id'] ? true : false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>Edit Health Records</c-dropdown.item>
@@ -252,8 +266,10 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
                                     <c-slot name="footer">
                                         <c-button size="sm" type="submit" form="mark-as-invalid-record-form-{{$record['id']}}" variant="destructive">Mark</c-button>
                                     </c-slot>
-                                </c-modal>
+                                </c-modal> 
+                                --}}
                             </c-slot>
+                           
                         </c-dropdown.main>
                     </c-table.td>
                 </c-table.tr>

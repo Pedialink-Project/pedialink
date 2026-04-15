@@ -16,17 +16,16 @@ class VaccinationController
     }
     public function index(Request $request)
     {
-
-        $search = $request->query("search", "");
-        $filters = $request->query("filters", []);
         $parentId = auth()->user()->id;
-
-        [$vaccinations, $links] = $this->vaccinationService->getChildVaccinationByParentId($parentId, $search, $filters);
-
+        [$timelineGroups, $statusTotals, $totalRecords] = $this->vaccinationService->getParentVaccinationOverview($parentId);
+        $childrenList = $this->vaccinationService->getLinkedChildrenListByParentId($parentId);
 
         return view("parent/vaccination", [
-            "vaccinations" => $vaccinations,
-            "links" => $links
+            "timelineGroups" => $timelineGroups,
+            "statusTotals" => $statusTotals,
+            "totalRecords" => $totalRecords,
+            "childrenList" => $childrenList
         ]);
     }
+   
 }

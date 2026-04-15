@@ -6,15 +6,18 @@ use App\Models\Child;
 use App\Models\DoctorWeeklyAvailability;
 use App\Models\Maternal;
 use App\Services\Doctor\AppointmentService;
+use App\Services\NotificationService;
 use Library\Framework\Http\Request;
 
 class AppointmentController
 {
     private AppointmentService $appointmentService;
+    private NotificationService $notificationService;
 
     public function __construct()
     {
         $this->appointmentService = new AppointmentService();
+        $this->notificationService = new NotificationService();
     }
 
     public function overview(Request $request)
@@ -91,6 +94,18 @@ class AppointmentController
         $doctorWeeklyAvailability->start_time = $data['start_time'];
         $doctorWeeklyAvailability->end_time = $data['end_time'];
         $doctorWeeklyAvailability->save();
+
+        $doctorName = auth()->check() ? auth()->user()->name : 'Doctor';
+        $message = $doctorName . " created availability on weekday " . $doctorWeeklyAvailability->weekday
+            . " from " . $doctorWeeklyAvailability->start_time
+            . " to " . $doctorWeeklyAvailability->end_time . ".";
+
+        $this->notificationService->notifyAdmins(
+            "New doctor availability",
+            $message,
+            "appointment_availability",
+            (int)$doctorWeeklyAvailability->id
+        );
         
         return redirect(route("doctor.appointments.configure"))
             ->withMessage("Availability created successfully.", "Success", "success");

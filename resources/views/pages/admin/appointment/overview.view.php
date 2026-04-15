@@ -27,10 +27,10 @@
             <c-table.main sticky="1" size="comfortable">
                 <c-table.thead>
                     <c-table.tr>
-                        <c-table.th sortable="1">Name</c-table.th>
-                        <c-table.th sortable="1">Date</c-table.th>
-                        <c-table.th sortable="1">Time</c-table.th>
-                        <c-table.th sortable="1">Doctor</c-table.th>
+                        <c-table.th sortable="0">Name</c-table.th>
+                        <c-table.th sortable="0">Date</c-table.th>
+                        <c-table.th sortable="0">Time</c-table.th>
+                        <c-table.th sortable="0">Doctor</c-table.th>
                         <c-table.th>Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>

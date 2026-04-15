@@ -89,12 +89,12 @@ Health Records  of {{ $name .' (M-00'.$id.')' }}
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">Recorded at</c-table.th>
-                    <c-table.th sortable="1">BMI</c-table.th>
-                    <c-table.th sortable="1">Blood Pressure</c-table.th>
-                    <c-table.th sortable="1">Glucose</c-table.th>
-                    <c-table.th sortable="1">Trimester</c-table.th>
-                    <c-table.th sortable="1">Fetal Heart Rate</c-table.th>
+                    <c-table.th sortable="0">Recorded at</c-table.th>
+                    <c-table.th sortable="0">BMI</c-table.th>
+                    <c-table.th sortable="0">Blood Pressure</c-table.th>
+                    <c-table.th sortable="0">Glucose</c-table.th>
+                    <c-table.th sortable="0">Trimester</c-table.th>
+                    <c-table.th sortable="0">Fetal Heart Rate</c-table.th>
                     <c-table.th>Health Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>

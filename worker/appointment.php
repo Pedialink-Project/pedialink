@@ -11,7 +11,12 @@ date_default_timezone_set('Asia/Colombo');
 require __DIR__ . '/../vendor/autoload.php';
 
 use Library\Framework\Database\QueryBuilder;
+use App\Helpers\Calculator;
+use App\Models\AppointmentSlot;
+use App\Models\Child;
+use App\Models\Maternal;
 use App\Services\AppointmentSchedulerService;
+use App\Services\NotificationService;
 
 // bootstrap app (must call QueryBuilder::init(...) in bootstrap)
 $app = require __DIR__ . '/../bootstrap/app.php';
@@ -80,6 +85,7 @@ try {
 
     if ($updatedCount > 0) {
         $scheduler = new AppointmentSchedulerService();
+        $notificationService = new NotificationService();
         foreach ($updatedAppointments as $row) {
             $slotId = isset($row['slot_id']) ? (int)$row['slot_id'] : 0;
             $childId = isset($row['child_id']) ? (int)$row['child_id'] : null;
@@ -94,6 +100,67 @@ try {
                 $childId > 0 ? $childId : null,
                 $maternalId > 0 ? $maternalId : null
             );
+
+            $slot = AppointmentSlot::find($slotId);
+            if (!$slot) {
+                continue;
+            }
+
+            $doctor = $slot->getDoctor();
+            $doctorId = $doctor ? (int)$doctor->id : null;
+
+            $patientName = null;
+            $parentRecipientIds = [];
+
+            if ($childId && $childId > 0) {
+                $child = Child::find($childId);
+                if ($child) {
+                    $patientName = $child->name;
+                    $parents = $child->getParents();
+                    if ($parents) {
+                        foreach ($parents as $parent) {
+                            $user = $parent->getUser();
+                            if ($user) {
+                                $parentRecipientIds[] = (int)$user->id;
+                            }
+                        }
+                    }
+                }
+            } elseif ($maternalId && $maternalId > 0) {
+                $maternal = Maternal::find($maternalId);
+                if ($maternal && $maternal->getUser()) {
+                    $patientName = $maternal->getUser()->name;
+                    $parentRecipientIds[] = (int)$maternal->getUser()->id;
+                }
+            }
+
+            $patientPart = $patientName ? " for {$patientName}" : "";
+
+            if ($doctorId !== null) {
+                $doctorMessage = "An appointment{$patientPart} on {$slot->slot_date} was marked as no-show.";
+                $notificationService->notify(
+                    $doctorId,
+                    "Missed appointment",
+                    $doctorMessage,
+                    "appointment",
+                    isset($row['id']) ? (int)$row['id'] : null
+                );
+            }
+
+            if (!empty($parentRecipientIds)) {
+                $parentMessage = "Your appointment{$patientPart} on {$slot->slot_date} from "
+                    . Calculator::formatTimeToAmPm($slot->start_time)
+                    . " to " . Calculator::formatTimeToAmPm($slot->end_time)
+                    . " was marked as missed (no-show). You can book a new appointment through the portal.";
+
+                $notificationService->notifyMany(
+                    $parentRecipientIds,
+                    "Missed appointment",
+                    $parentMessage,
+                    "appointment",
+                    isset($row['id']) ? (int)$row['id'] : null
+                );
+            }
         }
         logMsg('Triggered recalculation for no-show appointments.');
     }
