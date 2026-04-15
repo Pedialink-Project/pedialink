@@ -87,7 +87,7 @@ class MaternalRecordService
                 'id' => $record->id,
                 'maternal_id' => $record->maternal_id,
                 'parent_id' => $record->parent_id,
-                'age_recorded-at' => Calculator::calculateAgeInMonths(ParentM::find($record->parent_id)->date_of_birth, $record->visit_date),
+                'age_recorded-at' => Calculator::calculateAgeWithVisitDate(ParentM::find($record->parent_id)->date_of_birth, $record->visit_date),
                 'staff_id' => $record->staff_id,
                 'staff' => [
                     'id' => $record->staff_id,
