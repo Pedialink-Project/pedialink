@@ -20,13 +20,17 @@ class VaccinationController
         $search = $request->query("search", "");
         $filters = $request->query("filters", []);
         $parentId = auth()->user()->id;
-
-        [$vaccinations, $links] = $this->vaccinationService->getChildVaccinationByParentId($parentId, $search, $filters);
-
+        $overview = $this->vaccinationService->getParentVaccinationOverview($parentId, $search, $filters);
+        $childrenList = $this->vaccinationService->getLinkedChildrenListByParentId($parentId);
 
         return view("parent/vaccination", [
-            "vaccinations" => $vaccinations,
-            "links" => $links
+            "vaccinations" => $overview['vaccinations'],
+            "links" => $overview['links'],
+            "childrenList" => $childrenList,
+            "timelineGroups" => $overview['timelineGroups'],
+            "statusTotals" => $overview['statusTotals'],
+            "totalRecords" => $overview['totalRecords']
         ]);
     }
+   
 }
