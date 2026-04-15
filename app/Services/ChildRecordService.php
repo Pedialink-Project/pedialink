@@ -55,7 +55,7 @@ class ChildRecordService
             $resource[] = [
                 'id' => $record->id,
                 'visit_date' => $record->visit_date,
-                'age_recorded_at' => Calculator::calculateAgeInMonths(Child::find($childId)->date_of_birth, $record->visit_date),
+                'age_recorded_at' => Calculator::calculateAgeWithVisitDate(Child::find($childId)->date_of_birth, $record->visit_date),
                 'height' => $record->height,
                 'weight' => $record->weight,
                 'bmi' => $record->bmi,
@@ -89,7 +89,7 @@ class ChildRecordService
         return [
             'id' => $record->id,
             'visit_date' => $record->visit_date,
-            'age_recorded_at' => Calculator::calculateAgeInMonths(Child::find($childId)->date_of_birth, $record->visit_date),
+            'age_recorded_at' => Calculator::calculateAgeWithVisitDate(Child::find($childId)->date_of_birth, $record->visit_date),
             'height' => $record->height,
             'weight' => $record->weight,
             'bmi' => $record->bmi,
@@ -210,7 +210,7 @@ class ChildRecordService
         $bmi = Calculator::calculateBMI($height, $weight);
 
         $childDob = Child::find($childId)->date_of_birth;
-        $ageMonths = Calculator::calculateAgeInMonths($childDob, $visitDate);
+        $ageMonths = Calculator::calculateAgeWithVisitDate($childDob, $visitDate);
 
         $healthStatus = Calculator::evaluateChildHealthStatus(
             $ageMonths,
