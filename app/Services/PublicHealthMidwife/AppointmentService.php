@@ -14,8 +14,7 @@ class AppointmentService
             'type' => 'child',
             'id' => null
         ]
-    )
-    {
+    ) {
         $appointments = Appointment::query();
 
         // if ($search != '') {
@@ -43,7 +42,6 @@ class AppointmentService
                 ->where($info['type'] === 'child' ? "appointments.child_id" : "appointments.maternal_id", "=", $info['id'])
                 ->orderBy("appointment_slots.slot_date", "DESC")
                 ->orderBy("appointment_slots.start_time", "DESC");
-            
         } else {
             $today = new \DateTime();
 
@@ -59,7 +57,7 @@ class AppointmentService
                 ->orderBy("appointment_slots.slot_date", "DESC")
                 ->orderBy("appointment_slots.start_time", "ASC");
         }
-        
+
         $appointments = $appointments
             ->paginate(10)
             ->toArray();
@@ -73,8 +71,8 @@ class AppointmentService
             $resource[] = [
                 "id" => $appointment->id,
                 "slot_date" => $slot->slot_date,
-                "start_time" => $slot->start_time,
-                "end_time" => $slot->end_time,
+                "start_time" => date('h:i A', strtotime($slot->start_time)),
+                "end_time" => date('h:i A', strtotime($slot->end_time)),
                 "doctor" => $doctor ? [
                     "id" => $doctor->id,
                     "name" => $doctor->getUser()->name,
