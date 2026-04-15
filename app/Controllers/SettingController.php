@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Services\NotificationService;
 use App\Services\Profile\NameService;
 use App\Services\Profile\PasswordService;
 use Library\Framework\Http\Request;
@@ -10,11 +11,13 @@ class SettingController
 {
     private NameService $nameService;
     private PasswordService $passwordService;
+    private NotificationService $notificationService;
 
     public function __construct()
     {
         $this->nameService = new NameService();
         $this->passwordService = new PasswordService();
+        $this->notificationService = new NotificationService();
     }
 
     public function index()
@@ -80,6 +83,17 @@ class SettingController
 
         if (count($errors) === 0) {
             $this->passwordService->updatePassword($data['password']);
+
+            if ($user) {
+                $time = (new \DateTime('now', new \DateTimeZone('Asia/Colombo')))->format('Y-m-d H:i');
+                $this->notificationService->notify(
+                    (int)$user->id,
+                    'Password changed',
+                    "Your account password was changed on {$time}.",
+                    'user_security',
+                    null
+                );
+            }
 
             return redirect(route($redirectRoutePrefix . '.settings') . '#update-password')
                 ->withMessage(
