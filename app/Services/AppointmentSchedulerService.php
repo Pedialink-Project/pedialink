@@ -62,6 +62,22 @@ class AppointmentSchedulerService
         $this->recalculateUpcomingFromAppointment($appointmentId);
     }
 
+    public function onNoShowDetected(?int $slotId, ?int $childId, ?int $maternalId): void
+    {
+        if ($slotId !== null && $slotId > 0) {
+            $this->releaseSlotCapacityBySlotId($slotId);
+        }
+
+        if (!empty($childId)) {
+            $this->recalculateNextForChild((int)$childId);
+            return;
+        }
+
+        if (!empty($maternalId)) {
+            $this->recalculateNextForMaternal((int)$maternalId);
+        }
+    }
+
     public function recalculateUpcomingFromAppointment(int $appointmentId): bool
     {
         $appointment = Appointment::find($appointmentId);
@@ -360,6 +376,20 @@ class AppointmentSchedulerService
              SET booked_count = CASE WHEN booked_count > 0 THEN booked_count - 1 ELSE 0 END
              WHERE id = ?',
             [(int)$rows[0]['slot_id']]
+        );
+    }
+
+    private function releaseSlotCapacityBySlotId(int $slotId): void
+    {
+        if ($slotId <= 0) {
+            return;
+        }
+
+        QueryBuilder::rawExec(
+            'UPDATE appointment_slots
+             SET booked_count = CASE WHEN booked_count > 0 THEN booked_count - 1 ELSE 0 END
+             WHERE id = ?',
+            [$slotId]
         );
     }
 
