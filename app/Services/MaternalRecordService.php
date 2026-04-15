@@ -243,6 +243,17 @@ class MaternalRecordService
 
         $record->save();
 
+        $user = User::find($parentId);
+        if ($user) {
+            $this->notificationService->notify(
+                (int)$user->id,
+                "Maternal health record added",
+                "A new maternal health record was added on {$visitDate}.",
+                "maternal_record",
+                (int)$record->id
+            );
+        }
+
         return $record;
     }
 
