@@ -207,6 +207,21 @@ Admin Dashboard
             </c-card>
         @endif
 
+        @if (in_array(auth()->user()?->getRole()->getAdminType(), ['user']))
+            <c-card class="card growth-card">
+                <div class="header">
+                    <div class="title-section">
+                        <span class="card-title">Users Joined (Last 6 Months)</span>
+                        <span class="card-subtitle">Monthly trend of newly registered users</span>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="card-body growth-card">
+                    <canvas id="recentUsersChart"></canvas>
+                </div>
+            </c-card>
+        @endif
+
          <!-- Upcoming Events Card -->
         @if (in_array(auth()->user()?->getRole()->getAdminType(), ['super', 'data']))
             <c-card class="card event-card">
@@ -305,6 +320,34 @@ Admin Dashboard
                 <hr class="divider">
                 <div class="card-body growth-card">
                     <canvas id="barChart"></canvas>
+                </div>
+            </c-card>
+        @endif
+
+        @if (in_array(auth()->user()?->getRole()->getAdminType(), ['user']))
+            <c-card class="card growth-card">
+                <div class="header">
+                    <div class="title-section">
+                        <span class="card-title">Email Verification Status</span>
+                        <span class="card-subtitle">Verified vs unverified user accounts</span>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="card-body growth-card">
+                    <canvas id="emailVerificationChart"></canvas>
+                </div>
+            </c-card>
+
+            <c-card class="card growth-card">
+                <div class="header">
+                    <div class="title-section">
+                        <span class="card-title">Users by Role</span>
+                        <span class="card-subtitle">Distribution of accounts by role type</span>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="card-body growth-card">
+                    <canvas id="userRoleChart"></canvas>
                 </div>
             </c-card>
         @endif
@@ -428,167 +471,305 @@ Admin Dashboard
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // --- Data for the left chart (monthly) ---
+    const chartInstances = [];
+
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const scheduled = <?php echo json_encode($vaccinationChartData['scheduled']); ?>; // blue-ish small area
-    const completed = <?php echo json_encode($vaccinationChartData['completed']); ?>; // pink/peach large area
+    const scheduled = <?php echo json_encode($vaccinationChartData['scheduled']); ?>;
+    const completed = <?php echo json_encode($vaccinationChartData['completed']); ?>;
 
-    // Create gradients (requires canvas context)
-    const ctxLine = document.getElementById('lineAreaChart').getContext('2d');
-    const gradCompleted = ctxLine.createLinearGradient(0,0,0,220);
-    gradCompleted.addColorStop(0, 'rgba(255,120,120,0.26)');
-    gradCompleted.addColorStop(1, 'rgba(255,120,120,0.04)');
+    const lineAreaCanvas = document.getElementById('lineAreaChart');
+    if (lineAreaCanvas) {
+        const ctxLine = lineAreaCanvas.getContext('2d');
+        const gradCompleted = ctxLine.createLinearGradient(0,0,0,220);
+        gradCompleted.addColorStop(0, 'rgba(255,120,120,0.26)');
+        gradCompleted.addColorStop(1, 'rgba(255,120,120,0.04)');
 
-    const gradScheduled = ctxLine.createLinearGradient(0,0,0,220);
-    gradScheduled.addColorStop(0, 'rgba(88,116,255,0.18)');
-    gradScheduled.addColorStop(1, 'rgba(88,116,255,0.02)');
+        const gradScheduled = ctxLine.createLinearGradient(0,0,0,220);
+        gradScheduled.addColorStop(0, 'rgba(88,116,255,0.18)');
+        gradScheduled.addColorStop(1, 'rgba(88,116,255,0.02)');
 
-    // Left: area line chart
-    const lineAreaChart = new Chart(ctxLine, {
-        type: 'line',
-        data: {
-        labels: months,
-        datasets: [
-            {
-            label: 'Scheduled',
-            data: scheduled,
-            tension: 0.36,
-            borderWidth: 2,
-            borderColor: 'rgba(88,116,255,1)',
-            backgroundColor: gradScheduled,
-            pointRadius: 3,
-            pointBackgroundColor: 'rgba(88,116,255,1)',
-            fill: true,
-            yAxisID: 'y',
+        const lineAreaChart = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+            labels: months,
+            datasets: [
+                {
+                label: 'Scheduled',
+                data: scheduled,
+                tension: 0.36,
+                borderWidth: 2,
+                borderColor: 'rgba(88,116,255,1)',
+                backgroundColor: gradScheduled,
+                pointRadius: 3,
+                pointBackgroundColor: 'rgba(88,116,255,1)',
+                fill: true,
+                yAxisID: 'y',
+                },
+                {
+                label: 'Completed',
+                data: completed,
+                tension: 0.36,
+                borderWidth: 2,
+                borderColor: 'rgba(255,100,100,1)',
+                backgroundColor: gradCompleted,
+                pointRadius: 0,
+                fill: true,
+                yAxisID: 'y',
+                }
+            ]
             },
-            {
-            label: 'Completed',
-            data: completed,
-            tension: 0.36,
-            borderWidth: 2,
-            borderColor: 'rgba(255,100,100,1)',
-            backgroundColor: gradCompleted,
-            pointRadius: 0,
-            fill: true,
-            yAxisID: 'y',
+            options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: {
+                legend: {
+                position: 'bottom',
+                labels: { boxWidth: 10, padding: 12, usePointStyle: true }
+                },
+                tooltip: {
+                backgroundColor: '#fff',
+                titleColor: '#111',
+                bodyColor: '#111',
+                borderColor: '#eee',
+                borderWidth: 1,
+                }
+            },
+            scales: {
+                x: {
+                grid: { display: false },
+                ticks: { color: '#6b7280' }
+                },
+                y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(150,160,180,0.08)',
+                    borderDash: [4,4],
+                },
+                ticks: { color: '#6b7280' }
+                }
             }
-        ]
-        },
-        options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { intersect: false, mode: 'index' },
-        plugins: {
-            legend: {
-            position: 'bottom',
-            labels: { boxWidth: 10, padding: 12, usePointStyle: true }
-            },
-            tooltip: {
-            backgroundColor: '#fff',
-            titleColor: '#111',
-            bodyColor: '#111',
-            borderColor: '#eee',
-            borderWidth: 1,
             }
-        },
-        scales: {
-            x: {
-            grid: { display: false },
-            ticks: { color: '#6b7280' }
-            },
-            y: {
-            beginAtZero: true,
-            grid: {
-                color: 'rgba(150,160,180,0.08)',
-                borderDash: [4,4],
-            },
-            ticks: { color: '#6b7280' }
-            }
-        }
-        }
-    });
+        });
 
-    // --- Data for the right chart (weekly) ---
+        chartInstances.push(lineAreaChart);
+    }
+
     const days = ['Mon','Tue','Wed','Thu','Fri'];
     const completedWeekly = <?php echo json_encode($weeklyAppointmentsData['completed']); ?>;
     const cancelledWeekly = <?php echo json_encode($weeklyAppointmentsData['cancelled']); ?>;
 
-    const ctxBar = document.getElementById('barChart').getContext('2d');
+    const barCanvas = document.getElementById('barChart');
+    if (barCanvas) {
+        const ctxBar = barCanvas.getContext('2d');
 
-    // small gradient for bars (optional subtle)
-    const barGradA = ctxBar.createLinearGradient(0,0,0,220);
-    barGradA.addColorStop(0, 'rgba(88,116,255,0.95)');
-    barGradA.addColorStop(1, 'rgba(88,116,255,0.75)');
+        const barGradA = ctxBar.createLinearGradient(0,0,0,220);
+        barGradA.addColorStop(0, 'rgba(88,116,255,0.95)');
+        barGradA.addColorStop(1, 'rgba(88,116,255,0.75)');
 
-    const barGradB = ctxBar.createLinearGradient(0,0,0,220);
-    barGradB.addColorStop(0, 'rgba(255,145,135,0.95)');
-    barGradB.addColorStop(1, 'rgba(255,145,135,0.75)');
+        const barGradB = ctxBar.createLinearGradient(0,0,0,220);
+        barGradB.addColorStop(0, 'rgba(255,145,135,0.95)');
+        barGradB.addColorStop(1, 'rgba(255,145,135,0.75)');
 
-    const barChart = new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-        labels: days,
-        datasets: [
-            {
-            label: 'Completed',
-            data: completedWeekly,
-            backgroundColor: barGradA,
-            borderRadius: 8,
-            barPercentage: 0.48,
-            categoryPercentage: 0.7
+        const barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+            labels: days,
+            datasets: [
+                {
+                label: 'Completed',
+                data: completedWeekly,
+                backgroundColor: barGradA,
+                borderRadius: 8,
+                barPercentage: 0.48,
+                categoryPercentage: 0.7
+                },
+                {
+                label: 'Cancelled',
+                data: cancelledWeekly,
+                backgroundColor: barGradB,
+                borderRadius: 8,
+                barPercentage: 0.48,
+                categoryPercentage: 0.7
+                }
+            ]
             },
-            {
-            label: 'Cancelled',
-            data: cancelledWeekly,
-            backgroundColor: barGradB,
-            borderRadius: 8,
-            barPercentage: 0.48,
-            categoryPercentage: 0.7
-            }
-        ]
-        },
-        options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 10 } },
-            tooltip: {
-            backgroundColor: '#fff',
-            titleColor: '#111',
-            bodyColor: '#111',
-            borderColor: '#eee',
-            borderWidth: 1,
-            }
-        },
-        scales: {
-            x: {
-            grid: { display: false },
-            ticks: { color: '#6b7280' }
+            options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 10 } },
+                tooltip: {
+                backgroundColor: '#fff',
+                titleColor: '#111',
+                bodyColor: '#111',
+                borderColor: '#eee',
+                borderWidth: 1,
+                }
             },
-            y: {
-            beginAtZero: true,
-            suggestedMax: 110,
-            grid: {
-                color: 'rgba(150,160,180,0.08)',
-                borderDash: [4,4],
-            },
-            ticks: { color: '#6b7280' }
+            scales: {
+                x: {
+                grid: { display: false },
+                ticks: { color: '#6b7280' }
+                },
+                y: {
+                beginAtZero: true,
+                suggestedMax: 110,
+                grid: {
+                    color: 'rgba(150,160,180,0.08)',
+                    borderDash: [4,4],
+                },
+                ticks: { color: '#6b7280' }
+                }
             }
-        }
-        }
-    });
+            }
+        });
 
-    window.addEventListener('resize', () => {
-        lineAreaChart.resize();
-        barChart.resize();
-    });
+        chartInstances.push(barChart);
+    }
+
+    const recentUsersChartData = <?php echo json_encode($recentUsersLastSixMonthsData); ?>;
+    const userRoleChartData = <?php echo json_encode($userRoleDistributionData); ?>;
+    const emailVerificationChartData = <?php echo json_encode($emailVerificationDistributionData); ?>;
+
+    const recentUsersCanvas = document.getElementById('recentUsersChart');
+    if (recentUsersCanvas) {
+        const recentUsersChart = new Chart(recentUsersCanvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: recentUsersChartData.labels,
+                datasets: [
+                    {
+                        label: 'New Users',
+                        data: recentUsersChartData.counts,
+                        tension: 0.35,
+                        borderWidth: 2,
+                        borderColor: 'rgba(88,116,255,1)',
+                        backgroundColor: 'rgba(88,116,255,0.16)',
+                        fill: true,
+                        pointRadius: 3,
+                        pointBackgroundColor: 'rgba(88,116,255,1)',
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true } },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#111',
+                        bodyColor: '#111',
+                        borderColor: '#eee',
+                        borderWidth: 1,
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#6b7280' },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#6b7280', precision: 0 },
+                        grid: {
+                            color: 'rgba(150,160,180,0.08)',
+                            borderDash: [4,4],
+                        },
+                    },
+                },
+            },
+        });
+
+        chartInstances.push(recentUsersChart);
+    }
+
+    const userRoleCanvas = document.getElementById('userRoleChart');
+    if (userRoleCanvas) {
+        const userRoleChart = new Chart(userRoleCanvas.getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: userRoleChartData.labels,
+                datasets: [
+                    {
+                        data: userRoleChartData.counts,
+                        backgroundColor: [
+                            'rgba(88,116,255,0.9)',
+                            'rgba(255,145,135,0.9)',
+                            'rgba(111,217,151,0.9)',
+                            'rgba(171,134,255,0.9)',
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10 } },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#111',
+                        bodyColor: '#111',
+                        borderColor: '#eee',
+                        borderWidth: 1,
+                    },
+                },
+            },
+        });
+
+        chartInstances.push(userRoleChart);
+    }
+
+    const emailVerificationCanvas = document.getElementById('emailVerificationChart');
+    if (emailVerificationCanvas) {
+        const emailVerificationChart = new Chart(emailVerificationCanvas.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: emailVerificationChartData.labels,
+                datasets: [
+                    {
+                        data: emailVerificationChartData.counts,
+                        backgroundColor: [
+                            'rgba(111,217,151,0.9)',
+                            'rgba(255,145,135,0.9)',
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10 } },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#111',
+                        bodyColor: '#111',
+                        borderColor: '#eee',
+                        borderWidth: 1,
+                    },
+                },
+            },
+        });
+
+        chartInstances.push(emailVerificationChart);
+    }
+
+    const resizeCharts = () => {
+        chartInstances.forEach(chart => chart.resize());
+    };
+
+    window.addEventListener('resize', resizeCharts);
 
     Array.from(document.getElementsByClassName('nav-toggle-btn')).forEach(element => {
         element.addEventListener('click', () => {
-            setTimeout(() => {
-                lineAreaChart.resize();
-                barChart.resize();
-            }, 500);
+            setTimeout(resizeCharts, 500);
         });
     });
 
