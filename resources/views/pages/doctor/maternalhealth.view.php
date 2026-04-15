@@ -158,7 +158,7 @@ Health Records of {{ $name .' (M-00'.$id.')' }}
                                         @endif
                                     </c-slot>
 
-                                    <c-slot name="headerPrefix">
+                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/profile.svg' )}}" />
                                     </c-slot>
 

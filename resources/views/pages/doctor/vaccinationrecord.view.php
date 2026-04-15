@@ -52,11 +52,11 @@ Vaccination Details of {{ $name .' (M-00'.$id.')' }}
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1" width="200px">ID</c-table.th>
-                    <c-table.th sortable="1" width="220px">Vaccine</c-table.th>
-                    <c-table.th sortable="1" width="220px">Recorded Age</c-table.th>
-                    <c-table.th align="left" sortable="1" width="220px">Vaccination Status</c-table.th>
-                    <c-table.th align="left" sortable="1">Vaccination Date</c-table.th>
+                    <c-table.th sortable="0" width="200px">ID</c-table.th>
+                    <c-table.th sortable="0" width="220px">Vaccine</c-table.th>
+                    <c-table.th sortable="0" width="220px">Recorded Age</c-table.th>
+                    <c-table.th align="left" sortable="0" width="220px">Vaccination Status</c-table.th>
+                    <c-table.th align="left" sortable="0">Vaccination Date</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>

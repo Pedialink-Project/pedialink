@@ -105,7 +105,7 @@ Events & Campaigns
                     <c-table.th sortable="0">Date</c-table.th>
                     <c-table.th sortable="0">Time</c-table.th>
                     <c-table.th sortable="0">Location</c-table.th>
-                    <c-table.th sortable="0">Participants</c.table.th>
+                    <c-table.th sortable="0">Participants</c-table.th>
                     <c-table.th sortable="0">Visibility</c-table.th>
                     <c-table.th>Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>

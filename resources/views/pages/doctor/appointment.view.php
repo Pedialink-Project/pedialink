@@ -44,10 +44,10 @@
             <c-table.main sticky="1" size="comfortable">
                 <c-table.thead>
                     <c-table.tr>
-                        <c-table.th sortable="1">Name</c-table.th>
+                        <c-table.th sortable="0">Name</c-table.th>
                         <c-table.th>Category</c-table.th>
-                        <c-table.th sortable="1">Date</c-table.th>
-                        <c-table.th sortable="1">Time</c-table.th>
+                        <c-table.th sortable="0">Date</c-table.th>
+                        <c-table.th sortable="0">Time</c-table.th>
                         <c-table.th>Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
@@ -102,7 +102,7 @@
                                             </c-slot>
 
                                             <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/profile-02.svg' )}}" />
+                                                <img src="{{ asset('assets/icons/profile.svg' )}}" />
                                             </c-slot>
 
                                             <c-slot name="header">
@@ -111,7 +111,7 @@
                                             
                                             <c-modal.viewcard>
                                                 <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                                    icon="{{ asset('assets/icons/profile.svg') }}"
                                                     title="Requestor"
                                                     info="{{ $appointment['maternal'] ? $appointment['maternal']['name'] : ($appointment['child'] ? $appointment['child']['name'] : 'N/A') }}"
                                                 />
