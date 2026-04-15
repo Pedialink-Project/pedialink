@@ -176,29 +176,31 @@ Maternal Profiles - Overview
                                     </c-modal.viewcard>
 
 
-                                   <c-modal.viewlist title="Latest Medical Records">
+                                    <c-modal.viewlist title="Latest Medical Records">
                                         <c-slot name="list">
                                             @if($maternal['record'] == NULL)
-                                                <li>No medical records found.</li>
+                                            <li>No medical records found.</li>
                                             @else
-                                                <li>Fundal Height: {{ $maternal['record']['fundal_height'] ?? '' }} cm</li>
-                                                <li>Weight: {{ $maternal['record']['weight'] ?? '' }} kg</li>
-                                                <li>BMI Value: {{ $maternal['record']['bmi'] ?? '' }}</li>
-                                                <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] ?? '' }} bpm</li>
-                                                <li>Glucose: {{ $maternal['record']['glucose'] ?? '' }} mg/dL</li>
-                                                <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] ?? '' }} g/dL</li>
-                                                <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] ?? '' }} mmHg</li>
+                                            <li>Fundal Height: {{ $maternal['record']['fundal_height'] ?? '' }} cm</li>
+                                            <li>Weight: {{ $maternal['record']['weight'] ?? '' }} kg</li>
+                                            <li>BMI Value: {{ $maternal['record']['bmi'] ?? '' }}</li>
+                                            <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] ?? '' }} bpm</li>
+                                            <li>Glucose: {{ $maternal['record']['glucose'] ?? '' }} mg/dL</li>
+                                            <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] ?? '' }} g/dL</li>
+                                            <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] ?? '' }} mmHg</li>
                                             @endif
                                         </c-slot>
                                     </c-modal.viewlist>
 
 
-                                    <
+
 
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                <c-dropdown.sep />
+
                                 <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
@@ -206,6 +208,8 @@ Maternal Profiles - Overview
                                     View Appointments History
                                 </c-dropdown.item>
                                 @if ($maternal['type'] === "antenatal")
+                                <c-dropdown.sep />
+
                                 <c-modal id="end-antenatal-profile" size="sm" :initOpen="flash('end') ? true : false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>End Antenatal Profile</c-dropdown.item>

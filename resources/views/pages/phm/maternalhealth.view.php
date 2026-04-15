@@ -201,6 +201,7 @@ Health Records  of {{ $name .' (M-00'.$id.')' }}
                                     </c-slot>
 
                                 </c-modal>
+                                <c-dropdown.sep />
 
                                 <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="flash('edit') == $record['id'] ? true : false">
                                     <c-slot name="trigger">
