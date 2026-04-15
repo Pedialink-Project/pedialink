@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 class Calculator
 {
-    public static function calculateAgeInMonths(string $dob, string $visitDate): int
+    public static function calculateAgeWithVisitDate(string $dob, string $visitDate): int
     {
         $dobDate = new \DateTime($dob);
         $now = new \DateTime($visitDate);
@@ -14,6 +14,10 @@ class Calculator
         }
 
         $diff = $now->diff($dobDate);
+
+        if ($diff->days < 30) {
+            return $diff->days;
+        }
 
         $months = ($diff->y * 12) + $diff->m;
 
