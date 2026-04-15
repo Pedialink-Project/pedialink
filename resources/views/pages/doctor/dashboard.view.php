@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Dashboard
+Doctor Dashboard
 @endsection
 
 @section('css')

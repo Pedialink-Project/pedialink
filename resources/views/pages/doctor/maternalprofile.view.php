@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Maternal Profiles
+Doctor Maternal Profiles
 @endsection
 
 @section('header')
@@ -99,7 +99,7 @@ Maternal Profiles - Overview
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="Maternal ID"
-                                            info="C-00{{ $maternal['id'] }}" />
+                                            info="M-00{{ $maternal['id'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
                                             info="{{ $maternal['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"

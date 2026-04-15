@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Child Profiles
+Doctor Child Profiles
 @endsection
 
 @section('css')

@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Child Health Records
+Doctor Child Health Records
 @endsection
 
 @section('css')

@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
- Appoinments Configure
+Doctor Appoinments Configure
 @endsection
 
 @section('header')
