@@ -16,6 +16,7 @@ $menuItems = [
                 'name' => 'User Management',
                 'link' => '#',
                 'icon' => asset('/assets/icons/user.svg'),
+                'admintype' => 'user',
 
                 'children' => [
                     ['name' => 'Overview', 'link' => route('admin.user.overview')],
@@ -27,10 +28,9 @@ $menuItems = [
                 'name' => 'Child Profiles',
                 'link' => '#',
                 'icon' => asset('/assets/icons/baby-01.svg'),
-
                 'children' => [
-                    ['name' => 'Overview', 'link' => route('admin.child.overview')],
-                    ['name' => 'Linkage Requests', 'link' => route('admin.child.linkage.requests')],
+                    ['name' => 'Overview', 'link' => route('admin.child.overview'), 'admintype' => 'data'],
+                    ['name' => 'Linkage Requests', 'link' => route('admin.child.linkage.requests'), 'admintype' => 'user'],
                     // ['name' => 'Access Requests', 'link' => route('admin.child.access.requests')],
                 ]
             ],
@@ -38,6 +38,7 @@ $menuItems = [
                 'name' => 'Maternal Profiles',
                 'link' => '#',
                 'icon' => asset('/assets/icons/mother.svg'),
+                'admintype'  => 'data',
 
                 'children' => [
                     ['name' => 'Overview', 'link' => route('admin.maternal.overview')],
@@ -53,6 +54,7 @@ $menuItems = [
                 'name' => 'Vaccination',
                 'link' => '#',
                 'icon' => asset('/assets/icons/vaccine.svg'),
+                'admintype'  => 'data',
                 'children' => [
                     ['name' => 'Vaccines', 'link' => route('admin.vaccination.vaccines')],
                     ['name' => 'Schedule', 'link' => route('admin.vaccination.schedule')],
@@ -63,6 +65,7 @@ $menuItems = [
                 'link' => '#',
                 // 'link' => route('admin.appointment'),
                 'icon' => asset('/assets/icons/profile.svg'),
+                'admintype'  => 'data',
                 'children' => [
                     ['name' => 'Overview', 'link' => route('admin.appointment.overview')],
                     ['name' => 'Configure', 'link' => route('admin.appointment.configure')],
@@ -72,6 +75,7 @@ $menuItems = [
                 'name' => 'Events & Campaigns',
                 'link' => route('admin.event'),
                 'icon' => asset('/assets/icons/megaphone-02.svg'),
+                'admintype'  => 'data',
             ],
             // [
             //     'name' => 'Communication',
@@ -308,25 +312,45 @@ function isCurrentParentItemOpen(array $item)
     <div class="sidebar-section">
         <div class="sidebar-subtitle">{{ $section }}</div>
         @foreach ($items as $item)
-            <div class="tab {{ isCurrentParentItemOpen($item) ? 'active open' : (route()->current() === $item['link'] ? 'active' : '') }} {{ !empty($item['children']) ? 'has-children' : '' }}">
-                <a href="{{ $item['link'] }}" class="menu-link">
-                    <img src="{{ asset($item['icon'] ?? '') }}" /> 
-                    {{ $item['name'] }}
+            <?php
+            $mainSidebarAdminCheck = !isset($item['admintype']) || 
+                ($type === 'admin' && (
+                        (auth()->user()->getRole()->getAdminType() === 'super') ||
+                        (isset($item['admintype']) && $item['admintype'] === auth()->user()->getRole()->getAdminType())
+                    )
+                )
+            ?>
+            @if ($mainSidebarAdminCheck) 
+                <div class="tab {{ isCurrentParentItemOpen($item) ? 'active open' : (route()->current() === $item['link'] ? 'active' : '') }} {{ !empty($item['children']) ? 'has-children' : '' }}">
+                    <a href="{{ $item['link'] }}" class="menu-link">
+                        <img src="{{ asset($item['icon'] ?? '') }}" /> 
+                        {{ $item['name'] }}
+                        @if (!empty($item['children']))
+                            <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" class="arrow">
+                        @endif
+                    </a>
                     @if (!empty($item['children']))
-                        <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" class="arrow">
+                        <div class="submenu">
+                            @foreach ($item['children'] as $child)
+                                <?php
+                                $childSidebarAdminCheck = !isset($child['admintype']) || 
+                                    ($type === 'admin' && (
+                                            (auth()->user()->getRole()->getAdminType() === 'super') ||
+                                            (isset($child['admintype']) && $child['admintype'] === auth()->user()->getRole()->getAdminType())
+                                        )
+                                    )
+                                ?>
+                                @if ($childSidebarAdminCheck)
+                                    <a href="{{ $child['link'] }}"
+                                        class="submenu-link {{ route()->current() === $child['link'] ? 'active' : '' }}">
+                                        {{ $child['name'] }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
                     @endif
-                </a>
-                @if (!empty($item['children']))
-                    <div class="submenu">
-                        @foreach ($item['children'] as $child)
-                            <a href="{{ $child['link'] }}"
-                                class="submenu-link {{ route()->current() === $child['link'] ? 'active' : '' }}">
-                                {{ $child['name'] }}
-                            </a>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
+                </div>
+            @endif
         @endforeach
     </div>
     @endforeach

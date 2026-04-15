@@ -170,6 +170,11 @@ canvas{
     width: 100%;
 }
 
+.small-pie-chart-wrap {
+    width: min(100%, 320px);
+    margin: 0 auto;
+}
+
 /* Responsive Design */
 
 @media (max-width: 1400px) {
