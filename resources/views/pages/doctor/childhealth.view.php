@@ -38,7 +38,7 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
 
 
 <c-table.controls action="{{route('doctor.child.health',['id' => $id])}}" :filters="['health_status' => ['good', 'at_risk', 'critical']]">
-
+{{--
     <c-slot name="extrabtn">
         <c-modal id="add-health-record-modal" size="sm" :initOpen="flash('add') ? true : false">
             <c-slot name="trigger">
@@ -76,6 +76,7 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
             </c-slot>
         </c-modal>
     </c-slot>
+    --}}
 </c-table.controls>
 
 <c-table.wrapper card="1">
@@ -83,10 +84,10 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">Recorded at</c-table.th>
-                    <c-table.th sortable="1">Height</c-table.th>
-                    <c-table.th sortable="1">Weight</c-table.th>
-                    <c-table.th align="left" sortable="1">Head Circumference</c-table.th>
+                    <c-table.th sortable="0">Recorded at</c-table.th>
+                    <c-table.th sortable="0">Height</c-table.th>
+                    <c-table.th sortable="0">Weight</c-table.th>
+                    <c-table.th align="left" sortable="0">Head Circumference</c-table.th>
                     <c-table.th align="left">Health Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
@@ -199,6 +200,8 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                {{--
+
                                 <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="flash('edit') == $record['id'] ? true : false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>Edit Health Records</c-dropdown.item>
@@ -252,8 +255,10 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
                                     <c-slot name="footer">
                                         <c-button size="sm" type="submit" form="mark-as-invalid-record-form-{{$record['id']}}" variant="destructive">Mark</c-button>
                                     </c-slot>
-                                </c-modal>
+                                </c-modal> 
+                                --}}
                             </c-slot>
+                           
                         </c-dropdown.main>
                     </c-table.td>
                 </c-table.tr>
