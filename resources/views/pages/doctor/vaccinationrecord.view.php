@@ -77,7 +77,7 @@ Vaccination Details of {{ $name .' (M-00'.$id.')' }}
                                     {{ ucfirst($item['status'] )}}
                                 </c-badge>
                             @elseif (strtolower($item['status']) === "overdue")
-                                <c-badge type="destructive">
+                                <c-badge type="red">
                                     {{ ucfirst($item['status'] )}}
                                 </c-badge>
                             @endif
@@ -111,7 +111,7 @@ Vaccination Details of {{ $name .' (M-00'.$id.')' }}
                                                     {{ ucfirst($item['status'] )}}
                                                 </c-badge>
                                             @elseif (strtolower($item['status']) === "overdue")
-                                                <c-badge type="destructive">
+                                                <c-badge type="red">
                                                     {{ ucfirst($item['status'] )}}
                                                 </c-badge>
                                             @endif
