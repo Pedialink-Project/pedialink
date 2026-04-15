@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-    Appoinments
+Appoinments
 @endsection
 
 @section('header')

@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-doctor Maternal Health
+Maternal Health
 @endsection
 
 @section('css')

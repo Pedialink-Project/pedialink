@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Doctor Vaccination
+Vaccination
 @endsection
 
 @section('back')

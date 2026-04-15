@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-doctor Maternal Profiles
+Maternal Profiles
 @endsection
 
 @section('header')
