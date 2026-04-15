@@ -131,7 +131,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                                     title="Appointment ID"
-                                                    info="{{ $appointment['id'] }}"
+                                                    info="AP-00{{ $appointment['id'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/location-05.svg') }}"
