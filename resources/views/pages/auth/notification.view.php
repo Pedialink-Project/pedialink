@@ -101,6 +101,7 @@ Notification
                         </button>
                     </c-slot>
                     <c-slot name="menu">
+                        @if(!$notification['is_read'])
                         <c-modal>
                             <c-slot name="trigger">
                                 <c-dropdown.item>
@@ -128,6 +129,7 @@ Notification
                                 </c-button>
                             </c-slot>
                         </c-modal>
+                        @endif
                         <c-modal>
                             <c-slot name="trigger">
                                 <c-dropdown.item>
