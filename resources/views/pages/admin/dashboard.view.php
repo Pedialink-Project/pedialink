@@ -334,7 +334,9 @@ Admin Dashboard
                 </div>
                 <hr class="divider">
                 <div class="card-body growth-card">
-                    <canvas id="emailVerificationChart"></canvas>
+                    <div class="small-pie-chart-wrap">
+                        <canvas id="emailVerificationChart"></canvas>
+                    </div>
                 </div>
             </c-card>
 
@@ -347,7 +349,9 @@ Admin Dashboard
                 </div>
                 <hr class="divider">
                 <div class="card-body growth-card">
-                    <canvas id="userRoleChart"></canvas>
+                    <div class="small-pie-chart-wrap">
+                        <canvas id="userRoleChart"></canvas>
+                    </div>
                 </div>
             </c-card>
         @endif
@@ -707,7 +711,8 @@ Admin Dashboard
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 1.8,
                 plugins: {
                     legend: { position: 'bottom', labels: { boxWidth: 10 } },
                     tooltip: {
@@ -744,7 +749,8 @@ Admin Dashboard
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 1.8,
                 plugins: {
                     legend: { position: 'bottom', labels: { boxWidth: 10 } },
                     tooltip: {
