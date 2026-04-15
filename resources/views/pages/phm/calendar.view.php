@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Calendar
+PHM Calendar
 @endsection
 
 @section('header')

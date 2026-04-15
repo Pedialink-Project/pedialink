@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-    PHM  Appointments
+ PHM Appointments
 @endsection
 
 @section('header')
