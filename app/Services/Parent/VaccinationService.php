@@ -79,9 +79,9 @@ class VaccinationService
     }
 
 
-    public function getParentVaccinationOverview(int $parentId, string $search = "", array $filters = []): array
+    public function getParentVaccinationOverview(int $parentId): array
     {
-        [$vaccinations, $links] = $this->getChildVaccinationByParentId($parentId, $search, $filters);
+        [$vaccinations, $links] = $this->getChildVaccinationByParentId($parentId, "", []);
 
         $groupedRecords = [];
         $statusTotals = [
@@ -198,13 +198,8 @@ class VaccinationService
 
         $totalRecords = count($vaccinations);
 
-        return [
-            'vaccinations' => $vaccinations,
-            'links' => $links,
-            'timelineGroups' => $timelineGroups,
-            'statusTotals' => $statusTotals,
-            'totalRecords' => $totalRecords,
-        ];
+
+        return [$timelineGroups, $statusTotals, $totalRecords];
     }
 
 
