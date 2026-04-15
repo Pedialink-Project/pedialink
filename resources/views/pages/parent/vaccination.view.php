@@ -6,7 +6,6 @@ Parent - Vaccination
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/pages/parent/vaccination.css') }}">
-<link rel="stylesheet" href="{{ asset('css/pages/common/vaccination-card.css') }}">
 @endsection
 
 
@@ -156,6 +155,11 @@ Parent - Vaccination
         </article>
         @endforeach
     </section>
+    <div class="vaccination-empty-state vaccination-empty-state--child" style="display: none;">
+        <div class="vaccination-empty-state__icon">⚕</div>
+        <h3>No vaccination records</h3>
+        <p>There are no vaccination records available for this child yet.</p>
+    </div>
     @endif
 </div>
 
@@ -168,6 +172,7 @@ Parent - Vaccination
 
         var items = select.querySelectorAll('.select-item[data-value]');
         var tiles = document.querySelectorAll('.vaccination-tile[data-child-id]');
+        var childEmptyState = document.querySelector('.vaccination-empty-state--child');
 
         function applyFilter(value) {
             tiles.forEach(function(tile) {
@@ -186,6 +191,18 @@ Parent - Vaccination
                 });
                 milestone.style.display = hasVisible ? '' : 'none';
             });
+
+            if (!childEmptyState) return;
+
+            var anyVisibleTile = Array.from(tiles).some(function(tile) {
+                return tile.style.display !== 'none';
+            });
+
+            if (!value || value === 'all-children') {
+                childEmptyState.style.display = 'none';
+            } else {
+                childEmptyState.style.display = anyVisibleTile ? 'none' : '';
+            }
         }
 
         items.forEach(function(item) {
