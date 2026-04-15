@@ -65,7 +65,7 @@ $noShowUpdateSql = "
         WHERE s.slot_date < :current_date
         OR (s.slot_date = :current_date2 AND s.end_time < :current_time)
     )
-    RETURNING id
+    RETURNING id, slot_id, child_id, maternal_id
 ";
 
 try {
@@ -81,11 +81,19 @@ try {
     if ($updatedCount > 0) {
         $scheduler = new AppointmentSchedulerService();
         foreach ($updatedAppointments as $row) {
-            $appointmentId = (int)($row['id'] ?? 0);
-            if ($appointmentId <= 0) {
+            $slotId = isset($row['slot_id']) ? (int)$row['slot_id'] : 0;
+            $childId = isset($row['child_id']) ? (int)$row['child_id'] : null;
+            $maternalId = isset($row['maternal_id']) ? (int)$row['maternal_id'] : null;
+
+            if ($slotId <= 0) {
                 continue;
             }
-            $scheduler->onAppointmentNoShow($appointmentId);
+
+            $scheduler->onNoShowDetected(
+                $slotId,
+                $childId > 0 ? $childId : null,
+                $maternalId > 0 ? $maternalId : null
+            );
         }
         logMsg('Triggered recalculation for no-show appointments.');
     }
