@@ -114,7 +114,7 @@ Parent - Vaccination
                                     <c-slot name="headerSuffix">
 
                                         <c-badge type="{{ $badgeType }}">
-                                            {{$vaccination['status']}}
+                                            {{ucfirst($vaccination['status'])}}
                                         </c-badge>
                                     </c-slot>
 
