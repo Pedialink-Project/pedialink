@@ -52,7 +52,7 @@ if (!empty($history) && $history['status'] === true) {
             <c-table.tbody>
                 @foreach ($appointments as $key => $appointment)
                 <c-table.tr>
-                    <c-table.td col="id">{{ $appointment['id'] }}</c-table.td>
+                    <c-table.td col="id">AP-00{{ $appointment['id'] }}</c-table.td>
                     <c-table.td col="name">
                         @if ($appointment['child'])
                         {{ $appointment['child']['name'] }}
@@ -124,8 +124,8 @@ if (!empty($history) && $history['status'] === true) {
                                     <c-modal.viewcard>
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/profile-02.svg') }}"
-                                            title="Record ID"
-                                            info="{{ $appointment['id'] }}" />
+                                            title="Appointment ID"
+                                            info="AP-00{{ $appointment['id'] }}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/user.svg') }}"
                                             title="Name"
