@@ -167,9 +167,9 @@ class UserController
 
     public function createAdmin(Request $request)
     {
-        $name = $request->input("name");
-        $email = $request->input("email");
-        $type = $request->input("type");
+        $name = $request->input("name", "");
+        $email = $request->input("email", "");
+        $type = $request->input("type", "");
 
         $errors = $this->adminUserService
             ->validateAdminUser($name, $email, $type);
@@ -196,9 +196,9 @@ class UserController
 
     public function editAdmin(Request $request, int $id)
     {
-        $name = $request->input("e_name");
-        $email = $request->input("e_email");
-        $type = $request->input("e_type");
+        $name = $request->input("e_name", "");
+        $email = $request->input("e_email", "");
+        $type = $request->input("e_type", "");
 
         $errors = $this->adminUserService
             ->validateAdminUserChanges($id, $name, $email, $type);
