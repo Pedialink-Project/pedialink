@@ -333,7 +333,7 @@ function isCurrentParentItemOpen(array $item)
                         <div class="submenu">
                             @foreach ($item['children'] as $child)
                                 <?php
-                                $childSidebarAdminCheck = isset($child['admintype']) || 
+                                $childSidebarAdminCheck = !isset($child['admintype']) || 
                                     ($type === 'admin' && (
                                             (auth()->user()->getRole()->getAdminType() === 'super') ||
                                             (isset($child['admintype']) && $child['admintype'] === auth()->user()->getRole()->getAdminType())
