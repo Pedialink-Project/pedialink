@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Calendar
+Parent - Calendar
 @endsection
 
 @section('header')

@@ -37,15 +37,6 @@ Parent - My Childern
 </div>
 @endsection
 
-@section('header_right')
-<div class="search-box">
-   <span class="search-icon" aria-hidden="true">
-      <img src="{{ asset('assets/icons/search.svg') }}" />
-
-   </span>
-   <input type="search" name="q" placeholder="Search" />
-</div>
-@endsection
 
 @section('content')
 
@@ -154,7 +145,7 @@ Parent - My Childern
          </div>
 
       </div>
-      <c-link class="btn" type="primary" href="{{ route('parent.child.details',['id' => $child['id']]) }}">
+      <c-link class="button" type="primary" href="{{ route('parent.child.details',['id' => $child['id']]) }}">
          View Details
       </c-link>
    </c-card>

@@ -131,7 +131,7 @@ class ChildService
             }
 
             $childAppointments = Appointment::query()->where('child_id','=', $child->id)->where('status', '=', 'confirmed')->get();
-            $childVaccinations = VaccinationReminder::query()->where('child_id','=',$child->id)->get();
+            $childVaccinations = VaccinationReminder::query()->where('child_id','=',$child->id)->where('status', '=', 'pending')->get();
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,

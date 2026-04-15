@@ -8,177 +8,208 @@ Parent - Vaccination
 <link rel="stylesheet" href="{{ asset('css/pages/parent/vaccination.css') }}">
 @endsection
 
-@section('header')
-<div class="title-section">
-    <svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_474_7688)">
-            <path
-                d="M11.1666 15L11.6504 15.4838C11.8918 15.7252 12.0125 15.8458 12.1593 15.8392C12.3062 15.8325 12.4155 15.7014 12.634 15.4392L13.8333 14M15.8333 15C15.8333 16.8409 14.3409 18.3333 12.5 18.3333C10.659 18.3333 9.16663 16.8409 9.16663 15C9.16663 13.159 10.659 11.6667 12.5 11.6667C14.3409 11.6667 15.8333 13.159 15.8333 15Z"
-                stroke="#18181B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path
-                d="M11.1666 15L11.6504 15.4838C11.8918 15.7252 12.0125 15.8458 12.1593 15.8392C12.3062 15.8325 12.4155 15.7014 12.634 15.4392L13.8333 14M15.8333 15C15.8333 16.8409 14.3409 18.3333 12.5 18.3333C10.659 18.3333 9.16663 16.8409 9.16663 15C9.16663 13.159 10.659 11.6667 12.5 11.6667C14.3409 11.6667 15.8333 13.159 15.8333 15Z"
-                stroke="#18181B" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-            <path
-                d="M16.5551 5.09675L16.0247 5.62708L16.0247 5.62708L16.5551 5.09675ZM14.9032 3.44489L15.4335 2.91456L15.4335 2.91456L14.9032 3.44489ZM14.3525 2.81435L15.0078 2.44971L15.0078 2.44971L14.3525 2.81435ZM14.9166 1.66666C14.9166 1.25244 14.5808 0.916656 14.1666 0.916656C13.7524 0.916656 13.4166 1.25244 13.4166 1.66666H14.1666H14.9166ZM14.2231 2.50195L14.9443 2.29636L14.9443 2.29636L14.2231 2.50195ZM18.3333 6.58332C18.7475 6.58332 19.0833 6.24754 19.0833 5.83332C19.0833 5.41911 18.7475 5.08332 18.3333 5.08332V5.83332V6.58332ZM17.498 5.77689L17.7036 5.05562L17.7036 5.05562L17.498 5.77689ZM17.1856 5.6475L16.821 6.30289L16.821 6.30289L17.1856 5.6475ZM10.2745 6.36365C10.5674 6.07076 10.5674 5.59589 10.2745 5.30299C9.98164 5.0101 9.50677 5.0101 9.21387 5.30299L9.7442 5.83332L10.2745 6.36365ZM5.63767 14.3623L5.10734 14.8926L5.10734 14.8926L5.63767 14.3623ZM4.20096 12.4997L4.93655 12.3534L4.93655 12.3534L4.20096 12.4997ZM4.20096 11.8025L4.93655 11.9488L4.93655 11.9488L4.20096 11.8025ZM7.35395 16.5346C7.7602 16.6154 8.15505 16.3516 8.23586 15.9453C8.31666 15.5391 8.05284 15.1442 7.64658 15.0634L7.50027 15.799L7.35395 16.5346ZM9.69696 4.46966C9.40406 4.17677 8.92919 4.17677 8.6363 4.46966C8.3434 4.76255 8.3434 5.23743 8.6363 5.53032L9.16663 4.99999L9.69696 4.46966ZM13.6363 10.5303C13.9292 10.8232 14.4041 10.8232 14.697 10.5303C14.9898 10.2374 14.9898 9.76255 14.697 9.46966L14.1666 9.99999L13.6363 10.5303ZM7.10256 16.1413C7.43961 15.9005 7.51768 15.4321 7.27693 15.095C7.03617 14.758 6.56776 14.6799 6.2307 14.9207L6.66663 15.531L7.10256 16.1413ZM5.69207 16.2271L5.25614 15.6168L5.25614 15.6168L5.69207 16.2271ZM3.77287 14.3079L4.38317 14.7438L4.38317 14.7438L3.77287 14.3079ZM5.07928 13.7693C5.32003 13.4322 5.24196 12.9638 4.9049 12.723C4.56784 12.4823 4.09943 12.5603 3.85868 12.8974L4.46898 13.3333L5.07928 13.7693ZM3.91956 16.0804L4.44989 15.5501L4.44989 15.5501L3.91956 16.0804ZM3.35626 15.3598L2.62843 15.5408L2.62843 15.5408L3.35626 15.3598ZM3.33569 15.1113L4.08338 15.1702L4.08338 15.1702L3.33569 15.1113ZM4.88867 16.6643L4.82979 15.9166L4.82979 15.9166L4.88867 16.6643ZM4.64016 16.6437L4.45916 17.3715L4.45916 17.3715L4.64016 16.6437ZM10.7895 6.07464C10.4625 6.32895 10.4036 6.80015 10.6579 7.12711C10.9122 7.45407 11.3835 7.51297 11.7104 7.25867L11.25 6.66666L10.7895 6.07464ZM15.4604 4.342C15.7874 4.0877 15.8463 3.61649 15.592 3.28953C15.3377 2.96257 14.8665 2.90367 14.5395 3.15798L15 3.74999L15.4604 4.342ZM12.7413 8.28953C12.487 8.6165 12.5459 9.0877 12.8728 9.342C13.1998 9.59631 13.671 9.53741 13.9253 9.21045L13.3333 8.74999L12.7413 8.28953ZM16.842 5.46045C17.0963 5.13349 17.0374 4.66228 16.7104 4.40798C16.3835 4.15367 15.9122 4.21257 15.6579 4.53953L16.25 4.99999L16.842 5.46045ZM4.28029 16.7803C4.57318 16.4874 4.57318 16.0126 4.28029 15.7197C3.9874 15.4268 3.51252 15.4268 3.21963 15.7197L3.74996 16.25L4.28029 16.7803ZM1.1363 17.803C0.843403 18.0959 0.843403 18.5708 1.1363 18.8637C1.42919 19.1565 1.90406 19.1565 2.19696 18.8637L1.66663 18.3333L1.1363 17.803ZM16.5551 5.09675L17.0854 4.56642L15.4335 2.91456L14.9032 3.44489L14.3729 3.97522L16.0247 5.62708L16.5551 5.09675ZM14.9032 3.44489L15.4335 2.91456C15.1032 2.58419 15.0451 2.51671 15.0078 2.44971L14.3525 2.81435L13.6971 3.17898C13.86 3.47176 14.1024 3.70472 14.3729 3.97522L14.9032 3.44489ZM14.1666 1.66666H13.4166C13.4166 2.04921 13.4099 2.38535 13.5018 2.70755L14.2231 2.50195L14.9443 2.29636C14.9233 2.22262 14.9166 2.13387 14.9166 1.66666H14.1666ZM14.3525 2.81435L15.0078 2.44971C14.9809 2.4012 14.9595 2.34975 14.9443 2.29636L14.2231 2.50195L13.5018 2.70755C13.5486 2.87167 13.6141 3.02985 13.6971 3.17898L14.3525 2.81435ZM18.3333 5.83332V5.08332C17.8661 5.08332 17.7773 5.07664 17.7036 5.05562L17.498 5.77689L17.2924 6.49816C17.6146 6.59001 17.9507 6.58332 18.3333 6.58332V5.83332ZM16.5551 5.09675L16.0247 5.62708C16.2952 5.89759 16.5282 6.14 16.821 6.30289L17.1856 5.6475L17.5502 4.9921C17.4832 4.95483 17.4158 4.8968 17.0854 4.56642L16.5551 5.09675ZM17.498 5.77689L17.7036 5.05562C17.6502 5.04041 17.5988 5.01909 17.5502 4.9921L17.1856 5.6475L16.821 6.30289C16.9701 6.38586 17.1283 6.45138 17.2924 6.49816L17.498 5.77689ZM5.63767 9.93986L6.168 10.4702L10.2745 6.36365L9.7442 5.83332L9.21387 5.30299L5.10734 9.40953L5.63767 9.93986ZM5.63767 14.3623L6.168 13.832C5.71331 13.3773 5.41285 13.0755 5.20751 12.8237C5.01013 12.5816 4.95569 12.4496 4.93655 12.3534L4.20096 12.4997L3.46537 12.646C3.55198 13.0814 3.77224 13.4371 4.04495 13.7715C4.3097 14.0963 4.67472 14.46 5.10734 14.8926L5.63767 14.3623ZM5.63767 9.93986L5.10734 9.40953C4.67472 9.84214 4.3097 10.2059 4.04495 10.5306C3.77224 10.8651 3.55198 11.2207 3.46537 11.6561L4.20096 11.8025L4.93655 11.9488C4.95569 11.8525 5.01013 11.7205 5.20751 11.4785C5.41285 11.2266 5.71331 10.9249 6.168 10.4702L5.63767 9.93986ZM4.20096 12.4997L4.93655 12.3534C4.90998 12.2198 4.90998 12.0823 4.93655 11.9488L4.20096 11.8025L3.46537 11.6561C3.40038 11.9829 3.40038 12.3192 3.46537 12.646L4.20096 12.4997ZM5.63767 14.3623L5.10734 14.8926C5.53995 15.3252 5.90369 15.6902 6.22841 15.955C6.56288 16.2277 6.91854 16.448 7.35395 16.5346L7.50027 15.799L7.64658 15.0634C7.55035 15.0443 7.41836 14.9898 7.17628 14.7924C6.92443 14.5871 6.62269 14.2866 6.168 13.832L5.63767 14.3623ZM9.16663 4.99999L8.6363 5.53032L13.6363 10.5303L14.1666 9.99999L14.697 9.46966L9.69696 4.46966L9.16663 4.99999ZM6.66663 15.531L6.2307 14.9207L5.25614 15.6168L5.69207 16.2271L6.128 16.8374L7.10256 16.1413L6.66663 15.531ZM3.77287 14.3079L4.38317 14.7438L5.07928 13.7693L4.46898 13.3333L3.85868 12.8974L3.16257 13.8719L3.77287 14.3079ZM3.91956 16.0804L4.44989 15.5501C4.26914 15.3693 4.1719 15.2709 4.10859 15.194C4.05389 15.1276 4.07268 15.1329 4.08409 15.1788L3.35626 15.3598L2.62843 15.5408C2.6919 15.796 2.82193 15.9912 2.95066 16.1475C3.07078 16.2934 3.22916 16.4506 3.38923 16.6107L3.91956 16.0804ZM3.77287 14.3079L3.16257 13.8719C3.03098 14.0562 2.90061 14.2373 2.8061 14.4009C2.70483 14.5763 2.60865 14.7902 2.58801 15.0524L3.33569 15.1113L4.08338 15.1702C4.07966 15.2173 4.062 15.2256 4.10504 15.1511C4.15484 15.0649 4.23459 14.9518 4.38317 14.7438L3.77287 14.3079ZM3.35626 15.3598L4.08409 15.1788C4.08339 15.176 4.08315 15.1731 4.08338 15.1702L3.33569 15.1113L2.58801 15.0524C2.5751 15.2163 2.58875 15.3812 2.62843 15.5408L3.35626 15.3598ZM5.69207 16.2271L5.25614 15.6168C5.04814 15.7654 4.93509 15.8451 4.84885 15.8949C4.77433 15.9379 4.78266 15.9203 4.82979 15.9166L4.88867 16.6643L4.94755 17.4119C5.20975 17.3913 5.42367 17.2951 5.59903 17.1938C5.76267 17.0993 5.94378 16.969 6.128 16.8374L5.69207 16.2271ZM3.91956 16.0804L3.38923 16.6107C3.54931 16.7708 3.70653 16.9292 3.85241 17.0493C4.00873 17.178 4.20392 17.308 4.45916 17.3715L4.64016 16.6437L4.82116 15.9159C4.86704 15.9273 4.87235 15.9461 4.80592 15.8914C4.72905 15.8281 4.63064 15.7308 4.44989 15.5501L3.91956 16.0804ZM4.88867 16.6643L4.82979 15.9166C4.8269 15.9168 4.82398 15.9166 4.82116 15.9159L4.64016 16.6437L4.45916 17.3715C4.61872 17.4112 4.78364 17.4249 4.94756 17.4119L4.88867 16.6643ZM11.25 6.66666L11.7104 7.25867L15.4604 4.342L15 3.74999L14.5395 3.15798L10.7895 6.07464L11.25 6.66666ZM13.3333 8.74999L13.9253 9.21045L16.842 5.46045L16.25 4.99999L15.6579 4.53953L12.7413 8.28953L13.3333 8.74999ZM3.74996 16.25L3.21963 15.7197L1.1363 17.803L1.66663 18.3333L2.19696 18.8637L4.28029 16.7803L3.74996 16.25Z"
-                fill="#18181B" />
-            <path
-                d="M16.5551 5.09675L16.0247 5.62708L16.0247 5.62708L16.5551 5.09675ZM14.9032 3.44489L15.4335 2.91456L15.4335 2.91456L14.9032 3.44489ZM14.3525 2.81435L15.0078 2.44971L15.0078 2.44971L14.3525 2.81435ZM14.9166 1.66666C14.9166 1.25244 14.5808 0.916656 14.1666 0.916656C13.7524 0.916656 13.4166 1.25244 13.4166 1.66666H14.1666H14.9166ZM14.2231 2.50195L14.9443 2.29636L14.9443 2.29636L14.2231 2.50195ZM18.3333 6.58332C18.7475 6.58332 19.0833 6.24754 19.0833 5.83332C19.0833 5.41911 18.7475 5.08332 18.3333 5.08332V5.83332V6.58332ZM17.498 5.77689L17.7036 5.05562L17.7036 5.05562L17.498 5.77689ZM17.1856 5.6475L16.821 6.30289L16.821 6.30289L17.1856 5.6475ZM10.2745 6.36365C10.5674 6.07076 10.5674 5.59589 10.2745 5.30299C9.98164 5.0101 9.50677 5.0101 9.21387 5.30299L9.7442 5.83332L10.2745 6.36365ZM5.63767 14.3623L5.10734 14.8926L5.10734 14.8926L5.63767 14.3623ZM4.20096 12.4997L4.93655 12.3534L4.93655 12.3534L4.20096 12.4997ZM4.20096 11.8025L4.93655 11.9488L4.93655 11.9488L4.20096 11.8025ZM7.35395 16.5346C7.7602 16.6154 8.15505 16.3516 8.23586 15.9453C8.31666 15.5391 8.05284 15.1442 7.64658 15.0634L7.50027 15.799L7.35395 16.5346ZM9.69696 4.46966C9.40406 4.17677 8.92919 4.17677 8.6363 4.46966C8.3434 4.76255 8.3434 5.23743 8.6363 5.53032L9.16663 4.99999L9.69696 4.46966ZM13.6363 10.5303C13.9292 10.8232 14.4041 10.8232 14.697 10.5303C14.9898 10.2374 14.9898 9.76255 14.697 9.46966L14.1666 9.99999L13.6363 10.5303ZM7.10256 16.1413C7.43961 15.9005 7.51768 15.4321 7.27693 15.095C7.03617 14.758 6.56776 14.6799 6.2307 14.9207L6.66663 15.531L7.10256 16.1413ZM5.69207 16.2271L5.25614 15.6168L5.25614 15.6168L5.69207 16.2271ZM3.77287 14.3079L4.38317 14.7438L4.38317 14.7438L3.77287 14.3079ZM5.07928 13.7693C5.32003 13.4322 5.24196 12.9638 4.9049 12.723C4.56784 12.4823 4.09943 12.5603 3.85868 12.8974L4.46898 13.3333L5.07928 13.7693ZM3.91956 16.0804L4.44989 15.5501L4.44989 15.5501L3.91956 16.0804ZM3.35626 15.3598L2.62843 15.5408L2.62843 15.5408L3.35626 15.3598ZM3.33569 15.1113L4.08338 15.1702L4.08338 15.1702L3.33569 15.1113ZM4.88867 16.6643L4.82979 15.9166L4.82979 15.9166L4.88867 16.6643ZM4.64016 16.6437L4.45916 17.3715L4.45916 17.3715L4.64016 16.6437ZM10.7895 6.07464C10.4625 6.32895 10.4036 6.80015 10.6579 7.12711C10.9122 7.45407 11.3835 7.51297 11.7104 7.25867L11.25 6.66666L10.7895 6.07464ZM15.4604 4.342C15.7874 4.0877 15.8463 3.61649 15.592 3.28953C15.3377 2.96257 14.8665 2.90367 14.5395 3.15798L15 3.74999L15.4604 4.342ZM12.7413 8.28953C12.487 8.6165 12.5459 9.0877 12.8728 9.342C13.1998 9.59631 13.671 9.53741 13.9253 9.21045L13.3333 8.74999L12.7413 8.28953ZM16.842 5.46045C17.0963 5.13349 17.0374 4.66228 16.7104 4.40798C16.3835 4.15367 15.9122 4.21257 15.6579 4.53953L16.25 4.99999L16.842 5.46045ZM4.28029 16.7803C4.57318 16.4874 4.57318 16.0126 4.28029 15.7197C3.9874 15.4268 3.51252 15.4268 3.21963 15.7197L3.74996 16.25L4.28029 16.7803ZM1.1363 17.803C0.843403 18.0959 0.843403 18.5708 1.1363 18.8637C1.42919 19.1565 1.90406 19.1565 2.19696 18.8637L1.66663 18.3333L1.1363 17.803ZM16.5551 5.09675L17.0854 4.56642L15.4335 2.91456L14.9032 3.44489L14.3729 3.97522L16.0247 5.62708L16.5551 5.09675ZM14.9032 3.44489L15.4335 2.91456C15.1032 2.58419 15.0451 2.51671 15.0078 2.44971L14.3525 2.81435L13.6971 3.17898C13.86 3.47176 14.1024 3.70472 14.3729 3.97522L14.9032 3.44489ZM14.1666 1.66666H13.4166C13.4166 2.04921 13.4099 2.38535 13.5018 2.70755L14.2231 2.50195L14.9443 2.29636C14.9233 2.22262 14.9166 2.13387 14.9166 1.66666H14.1666ZM14.3525 2.81435L15.0078 2.44971C14.9809 2.4012 14.9595 2.34975 14.9443 2.29636L14.2231 2.50195L13.5018 2.70755C13.5486 2.87167 13.6141 3.02985 13.6971 3.17898L14.3525 2.81435ZM18.3333 5.83332V5.08332C17.8661 5.08332 17.7773 5.07664 17.7036 5.05562L17.498 5.77689L17.2924 6.49816C17.6146 6.59001 17.9507 6.58332 18.3333 6.58332V5.83332ZM16.5551 5.09675L16.0247 5.62708C16.2952 5.89759 16.5282 6.14 16.821 6.30289L17.1856 5.6475L17.5502 4.9921C17.4832 4.95483 17.4158 4.8968 17.0854 4.56642L16.5551 5.09675ZM17.498 5.77689L17.7036 5.05562C17.6502 5.04041 17.5988 5.01909 17.5502 4.9921L17.1856 5.6475L16.821 6.30289C16.9701 6.38586 17.1283 6.45138 17.2924 6.49816L17.498 5.77689ZM5.63767 9.93986L6.168 10.4702L10.2745 6.36365L9.7442 5.83332L9.21387 5.30299L5.10734 9.40953L5.63767 9.93986ZM5.63767 14.3623L6.168 13.832C5.71331 13.3773 5.41285 13.0755 5.20751 12.8237C5.01013 12.5816 4.95569 12.4496 4.93655 12.3534L4.20096 12.4997L3.46537 12.646C3.55198 13.0814 3.77224 13.4371 4.04495 13.7715C4.3097 14.0963 4.67472 14.46 5.10734 14.8926L5.63767 14.3623ZM5.63767 9.93986L5.10734 9.40953C4.67472 9.84214 4.3097 10.2059 4.04495 10.5306C3.77224 10.8651 3.55198 11.2207 3.46537 11.6561L4.20096 11.8025L4.93655 11.9488C4.95569 11.8525 5.01013 11.7205 5.20751 11.4785C5.41285 11.2266 5.71331 10.9249 6.168 10.4702L5.63767 9.93986ZM4.20096 12.4997L4.93655 12.3534C4.90998 12.2198 4.90998 12.0823 4.93655 11.9488L4.20096 11.8025L3.46537 11.6561C3.40038 11.9829 3.40038 12.3192 3.46537 12.646L4.20096 12.4997ZM5.63767 14.3623L5.10734 14.8926C5.53995 15.3252 5.90369 15.6902 6.22841 15.955C6.56288 16.2277 6.91854 16.448 7.35395 16.5346L7.50027 15.799L7.64658 15.0634C7.55035 15.0443 7.41836 14.9898 7.17628 14.7924C6.92443 14.5871 6.62269 14.2866 6.168 13.832L5.63767 14.3623ZM9.16663 4.99999L8.6363 5.53032L13.6363 10.5303L14.1666 9.99999L14.697 9.46966L9.69696 4.46966L9.16663 4.99999ZM6.66663 15.531L6.2307 14.9207L5.25614 15.6168L5.69207 16.2271L6.128 16.8374L7.10256 16.1413L6.66663 15.531ZM3.77287 14.3079L4.38317 14.7438L5.07928 13.7693L4.46898 13.3333L3.85868 12.8974L3.16257 13.8719L3.77287 14.3079ZM3.91956 16.0804L4.44989 15.5501C4.26914 15.3693 4.1719 15.2709 4.10859 15.194C4.05389 15.1276 4.07268 15.1329 4.08409 15.1788L3.35626 15.3598L2.62843 15.5408C2.6919 15.796 2.82193 15.9912 2.95066 16.1475C3.07078 16.2934 3.22916 16.4506 3.38923 16.6107L3.91956 16.0804ZM3.77287 14.3079L3.16257 13.8719C3.03098 14.0562 2.90061 14.2373 2.8061 14.4009C2.70483 14.5763 2.60865 14.7902 2.58801 15.0524L3.33569 15.1113L4.08338 15.1702C4.07966 15.2173 4.062 15.2256 4.10504 15.1511C4.15484 15.0649 4.23459 14.9518 4.38317 14.7438L3.77287 14.3079ZM3.35626 15.3598L4.08409 15.1788C4.08339 15.176 4.08315 15.1731 4.08338 15.1702L3.33569 15.1113L2.58801 15.0524C2.5751 15.2163 2.58875 15.3812 2.62843 15.5408L3.35626 15.3598ZM5.69207 16.2271L5.25614 15.6168C5.04814 15.7654 4.93509 15.8451 4.84885 15.8949C4.77433 15.9379 4.78266 15.9203 4.82979 15.9166L4.88867 16.6643L4.94755 17.4119C5.20975 17.3913 5.42367 17.2951 5.59903 17.1938C5.76267 17.0993 5.94378 16.969 6.128 16.8374L5.69207 16.2271ZM3.91956 16.0804L3.38923 16.6107C3.54931 16.7708 3.70653 16.9292 3.85241 17.0493C4.00873 17.178 4.20392 17.308 4.45916 17.3715L4.64016 16.6437L4.82116 15.9159C4.86704 15.9273 4.87235 15.9461 4.80592 15.8914C4.72905 15.8281 4.63064 15.7308 4.44989 15.5501L3.91956 16.0804ZM4.88867 16.6643L4.82979 15.9166C4.8269 15.9168 4.82398 15.9166 4.82116 15.9159L4.64016 16.6437L4.45916 17.3715C4.61872 17.4112 4.78364 17.4249 4.94756 17.4119L4.88867 16.6643ZM11.25 6.66666L11.7104 7.25867L15.4604 4.342L15 3.74999L14.5395 3.15798L10.7895 6.07464L11.25 6.66666ZM13.3333 8.74999L13.9253 9.21045L16.842 5.46045L16.25 4.99999L15.6579 4.53953L12.7413 8.28953L13.3333 8.74999ZM3.74996 16.25L3.21963 15.7197L1.1363 17.803L1.66663 18.3333L2.19696 18.8637L4.28029 16.7803L3.74996 16.25Z"
-                fill="#18181B" fill-opacity="0.2" />
-        </g>
-        <defs>
-            <clipPath id="clip0_474_7688">
-                <rect width="20" height="20" fill="white" />
-            </clipPath>
-        </defs>
-    </svg>
-
-    <span>Children Vaccinations</span>
-</div>
-
-@endsection
 
 
 @section('content')
 
+<div class="vaccination-card-page">
+    <section class="vaccination-hero">
+        <div class="vaccination-hero__identity">
+            <div class="vaccination-avatar">
+                <img src="{{asset('assets/icons/vaccine.svg')}}" alt="">
+            </div>
+            <div class="vaccination-hero__copy">
+                <h2 class="vaccination-hero__name">Children Vaccinations</h2>
+                <p class="vaccination-hero__description">
+                    A complete overview of all your children's vaccination history and upcoming doses.
+                </p>
+            </div>
+        </div>
 
-
-
-
-<c-table.controls action="{{ route('parent.vaccination') }}" :filters="['status' => ['complete', 'pending', 'overdue']]">
-    
-</c-table.controls>
-
-
-<c-table.wrapper card="1">
-    <div class="table-wrapper" data-responsive="true">
-        <c-table.main sticky="1" size="comfortable">
-            <c-table.thead>
-                <c-table.tr>
-                    <c-table.th>Child Name</c-table.th>
-                    <c-table.th>Vaccine Code</c-table.th>
-                    <c-table.th>Scheduled Date</c-table.th>
-                    <c-table.th>Status</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
-                </c-table.tr>
-            </c-table.thead>
-            <c-table.tbody>
-                @foreach ($vaccinations as $key => $vaccination)
-                <c-table.tr>
-                    <c-table.td col="name">{{ $vaccination['child']['name'] }}</c-table.td>
-                    <c-table.td col="vaccine-name"><c-badge type="purple">
-                            {{ $vaccination['vaccine']['code'] }}
-                        </c-badge></c-table.td>
-                    <c-table.td col="date-time">{{ $vaccination['scheduled_date'] }}</c-table.td>
-                    <c-table.td col="status">
-                        {{
-                        $badgeType = '';
-                        if(strtolower($vaccination['status']) == 'complete') {
-                        $badgeType = 'green';
-                        } elseif (strtolower($vaccination['status']) == 'overdue') {
-                        $badgeType = 'red';
-                        } elseif (strtolower($vaccination['status']) == 'pending') {
-                        $badgeType = 'yellow';
-                        }
-                        else {
-                        $badgeType = 'purple';
-                        }
-
-                        }}
-                        <c-badge type="{{ $badgeType }}">
-                            {{ucfirst($vaccination['status'])}}
-                        </c-badge>
-                    </c-table.td>
-                    <c-table.td class="table-actions">
-                        <c-dropdown.main>
-                            <c-slot name="trigger">
-                                <c-button variant="ghost" class="dropdown-trigger">
-                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
-                                </c-button>
-                            </c-slot>
-                            <c-slot name="menu">
-                                <c-modal id="view-vaccination-{{$key}}" size="md" :initOpen="false">
-                                    <c-slot name="trigger">
-                                        <c-dropdown.item>
-                                            View Details
-                                        </c-dropdown.item>
-                                    </c-slot>
-                                    <c-slot name="headerPrefix">
-                                        <img src="{{ asset('assets/icons/vaccine.svg' )}}" />
-                                    </c-slot>
-
-                                    <c-slot name="header">
-                                        <div>Vaccination Details</div>
-                                    </c-slot>
-
-                                    <c-slot name="headerSuffix">
-
-                                        <c-badge type="{{ $badgeType }}">
-                                            {{$vaccination['status']}}
-                                        </c-badge>
-                                    </c-slot>
-
-
-
-                                    <c-modal.viewcard>
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Vaccination Code" info="{{ $vaccination['vaccine']['code'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
-                                            title="Vaccine Name" info="{{ $vaccination['vaccine']['name']  }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}" title="Child Name"
-                                            info="{{ $vaccination['child']['name'] }}" />
-                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}"
-                                            title="Sheduled Date" info="{{ $vaccination['scheduled_date'] }} " />
-                                       
-                                    </c-modal.viewcard>
-
-
-
-
-
-                                    <c-modal.viewlist title="Vaccination Details">
-                                        <c-slot name="list">
-                                            <li>Info: {{ $vaccination['sheduled_vaccine']['additional_information'] }}</li>
-                                            <li>Dose No:{{ $vaccination['sheduled_vaccine']['dose_number'] }}</li>
-
-                                        </c-slot>
-                                    </c-modal.viewlist>
-                                   
-
-                                    <c-slot name="close">
-                                        Close
-
-                                    </c-slot>
-
-
-                                </c-modal>
-
-                            </c-slot>
-                        </c-dropdown.main>
-                    </c-table.td>
-
-                </c-table.tr>
+        <div class="vaccination-hero__stats-wrapper">
+            <c-select class="parent-vaccination-child-select" placeholder="Filter by child">
+                @if (!empty($childrenList))
+                @foreach ($childrenList as $child)
+                <li class="select-item" data-value="{{ $child['id'] }}">
+                    {{ $child['name'] }}
+                </li>
                 @endforeach
-                 @if(count($vaccinations) === 0)
-                <tr>
-                    <td colspan="5">
-                        <c-emptytable
-                            alt="No Vaccinations found"
-                            title="No Vaccinations Available"
-                            description="No vaccinations match your current search or filters. Try adjusting them to see more results." />
-                    </td>
-                </tr>
+                <li class="select-item" data-value="all-children">
+                    All Children
+                </li>
+                @else
+                <li class="select-item disabled">
+                    No children available
+                </li>
                 @endif
-            </c-table.tbody>
+            </c-select>
 
+            <div class="vaccination-hero__stats">
+                <div class="vaccination-stat">
+                    <span class="vaccination-stat__label">Total</span>
+                    <strong class="vaccination-stat__value">{{ $totalRecords }}</strong>
+                </div>
+                <div class="vaccination-stat">
+                    <span class="vaccination-stat__label">Completed</span>
+                    <strong class="vaccination-stat__value vaccination-stat__value--success">{{ $statusTotals['complete'] ?? 0 }}</strong>
+                </div>
+                <div class="vaccination-stat">
+                    <span class="vaccination-stat__label">Pending</span>
+                    <strong class="vaccination-stat__value vaccination-stat__value--pending">{{ $statusTotals['pending'] ?? 0 }}</strong>
+                </div>
+                <div class="vaccination-stat">
+                    <span class="vaccination-stat__label">Overdue</span>
+                    <strong class="vaccination-stat__value vaccination-stat__value--danger">{{ $statusTotals['overdue'] ?? 0 }}</strong>
+                </div>
+            </div>
+        </div>
+    </section>
 
-
-
-        </c-table.main>
+    @if ($totalRecords === 0)
+    <div class="vaccination-empty-state">
+        <div class="vaccination-empty-state__icon">⚕</div>
+        <h3>No vaccination records</h3>
+        <p>There are no vaccination records available for your children yet.</p>
     </div>
-</c-table.wrapper>
+    @else
+    <section class="vaccination-timeline">
+        <div class="vaccination-timeline__rail"></div>
 
-<c-table.pagination :links="$links" />
+        @foreach ($timelineGroups as $group)
+        <article class="vaccination-milestone">
+            <div class="vaccination-milestone__marker"></div>
+            <div class="vaccination-milestone__panel">
+                <div class="vaccination-milestone__header">
+                    <div>
+                        <h3 class="vaccination-milestone__title">{{ $group['name'] }}</h3>
+                        <p class="vaccination-milestone__subtitle">{{ $group['count'] }} vaccine{{ $group['count'] === 1 ? '' : 's' }} in this milestone</p>
+                    </div>
 
+                    <c-badge type="{{ $group['badgeType'] }}">{{ $group['statusLabel'] }}</c-badge>
+                </div>
+
+                <div class="vaccination-grid">
+                    @foreach ($group['items'] as $item)
+                    <?php
+                    $status = strtolower((string) ($item['status'] ?? 'pending'));
+                    $badgeType = 'yellow';
+
+                    if ($status === 'complete') {
+                        $badgeType = 'green';
+                    } elseif ($status === 'overdue') {
+                        $badgeType = 'red';
+                    }
+
+                    $vaccineCode = $item['vaccine']['code'] ?? 'Vaccine';
+                    $vaccineName = $item['vaccine']['name'] ?? 'Unnamed vaccine';
+                    $doseNumber = $item['sheduled_vaccine']['dose_number'] ?? 'N/A';
+                    $scheduleInfo = $item['sheduled_vaccine']['additional_information'] ?? 'No additional information available.';
+                    $recordedAge = $item['recorded_age'] ?? 'N/A';
+                    $scheduledDate = $item['scheduled_date'] ?? 'N/A';
+                    $administeredTime = $item['administered_at'] ?? 'N/A';
+                    $childName = $item['child']['name'] ?? 'Unknown Child';
+                    $childId = $item['child']['id'] ?? '';
+                    ?>
+
+                    <div class="vaccination-tile vaccination-tile--{{ $status }}" data-child-id="{{ $childId }}">
+                        <div class="vaccination-tile__top">
+                            <div>
+                                <div class="vaccination-tile__code">{{ $vaccineCode }}</div>
+                                <h4 class="vaccination-tile__title">{{ $vaccineName }}</h4>
+                            </div>
+                            <c-badge type="{{ $badgeType }}">{{ ucfirst($status) }}</c-badge>
+                        </div>
+
+                        <div class="vaccination-tile__details">
+                            <div class="vaccination-detail">
+                                <span class="vaccination-detail__label">Child</span>
+                                <strong class="vaccination-detail__value">{{ $childName }}</strong>
+                            </div>
+
+                            <div class="vaccination-detail">
+                                <span class="vaccination-detail__label">Dose</span>
+                                <strong class="vaccination-detail__value">{{ $doseNumber }}</strong>
+                            </div>
+
+                            <div class="vaccination-detail">
+                                <span class="vaccination-detail__label">Scheduled date</span>
+                                <strong class="vaccination-detail__value">{{ $scheduledDate }}</strong>
+                            </div>
+
+                            @if ($status === 'complete')
+                            <div class="vaccination-detail">
+                                <span class="vaccination-detail__label">Administered time</span>
+                                <strong class="vaccination-detail__value">{{ $administeredTime }}</strong>
+                            </div>
+                            @endif
+
+                            <div class="vaccination-detail vaccination-detail--wide">
+                                <span class="vaccination-detail__label">Additional information</span>
+                                <strong class="vaccination-detail__value">{{ $scheduleInfo }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </article>
+        @endforeach
+    </section>
+    <div class="vaccination-empty-state vaccination-empty-state--child" style="display: none;">
+        <div class="vaccination-empty-state__icon">⚕</div>
+        <h3>No vaccination records</h3>
+        <p>There are no vaccination records available for this child yet.</p>
+    </div>
+    @endif
+</div>
 
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var select = document.querySelector('.parent-vaccination-child-select');
+        if (!select) return;
+
+        var items = select.querySelectorAll('.select-item[data-value]');
+        var tiles = document.querySelectorAll('.vaccination-tile[data-child-id]');
+        var childEmptyState = document.querySelector('.vaccination-empty-state--child');
+
+        function applyFilter(value) {
+            tiles.forEach(function(tile) {
+                var childId = tile.getAttribute('data-child-id');
+                if (!value || value === 'all-children') {
+                    tile.style.display = '';
+                } else {
+                    tile.style.display = childId === value ? '' : 'none';
+                }
+            });
+
+            var milestones = document.querySelectorAll('.vaccination-milestone');
+            milestones.forEach(function(milestone) {
+                var hasVisible = Array.from(milestone.querySelectorAll('.vaccination-tile[data-child-id]')).some(function(tile) {
+                    return tile.style.display !== 'none';
+                });
+                milestone.style.display = hasVisible ? '' : 'none';
+            });
+
+            if (!childEmptyState) return;
+
+            var anyVisibleTile = Array.from(tiles).some(function(tile) {
+                return tile.style.display !== 'none';
+            });
+
+            if (!value || value === 'all-children') {
+                childEmptyState.style.display = 'none';
+            } else {
+                childEmptyState.style.display = anyVisibleTile ? 'none' : '';
+            }
+        }
+
+        items.forEach(function(item) {
+            item.addEventListener('click', function() {
+                var value = item.getAttribute('data-value');
+                applyFilter(value);
+            });
+        });
+    });
+</script>

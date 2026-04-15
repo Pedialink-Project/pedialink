@@ -35,10 +35,11 @@ class DashboardService
     public function getAppointmentCount()
     {
         $childIds = ParentChild::query()->where("parent_id", '=', auth()->user()->id)->pluck("child_id");
-        $childAppointments = Appointment::query()->whereIn('child_id', $childIds)->get();
+        $childAppointments = Appointment::query()->whereIn('child_id', $childIds)->where('status','=', 'pending')->get();
         $maternalId  = Maternal::query()->where("parent_id", "=", auth()->user()->id)->pluck("id");
         $maternalappointments = Appointment::query()
             ->whereIn("maternal_id", $maternalId)
+            ->where('status','=', 'pending')
             ->get();
 
         return count($childAppointments) + count($maternalappointments);
