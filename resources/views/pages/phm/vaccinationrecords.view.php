@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Parent - Vaccination
+PHM - Vaccination
 @endsection
 
 @section('css')

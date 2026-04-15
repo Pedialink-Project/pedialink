@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Parent - Growth Tracking
+PHM - Growth Tracking
 @endsection
 
 @section('css')
