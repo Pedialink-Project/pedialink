@@ -28,7 +28,7 @@ Test Table
             <c-table.thead>
                 <c-table.tr>
                     <c-table.th width="70px">ID</c-table.th>
-                    <c-table.th sortable="1">Name</c-table.th>
+                    <c-table.th sortable="0">Name</c-table.th>
                     <c-table.th>Category</c-table.th>
                     <c-table.th align="center">Price</c-table.th>
                     <c-table.th align="center">Stock</c-table.th>

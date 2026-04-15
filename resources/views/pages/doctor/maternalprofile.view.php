@@ -41,11 +41,11 @@ Maternal Profiles - Overview
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1" width="160px">ID</c-table.th>
-                    <c-table.th sortable="1" width="210px">Name</c-table.th>
-                    <c-table.th sortable="1" width="200px">Age</c-table.th>
-                    <c-table.th align="left" sortable="1" width="200px">Area</c-table.th>
-                    <c-table.th align="left" sortable="1" width="220px">Maternal Type</c-table.th>
+                    <c-table.th sortable="0" width="160px">ID</c-table.th>
+                    <c-table.th sortable="0" width="210px">Name</c-table.th>
+                    <c-table.th sortable="0" width="200px">Age</c-table.th>
+                    <c-table.th align="left" sortable="0" width="200px">Area</c-table.th>
+                    <c-table.th align="left" sortable="0" width="220px">Maternal Type</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>

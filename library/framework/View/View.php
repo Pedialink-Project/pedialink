@@ -260,6 +260,9 @@ class View
             $php
         );
 
+        // Remove custom comments like {{-- comment --}}
+        $php = preg_replace('/\{\{\-\-(.*?)\-\-\}\}/s', '', $php);
+
         // Handle component directives
 
         // Handles self closing component tags

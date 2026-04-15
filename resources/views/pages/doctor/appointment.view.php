@@ -20,6 +20,19 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/pages/admin/appointment.css') }}">
 @endsection
+@if(!empty($history) && $history['status'] === true)
+    @section('back')
+	<c-link href="{{ $backUrl ?? 'javascript:history.back()' }}">
+		<c-slot name="icon">
+			<svg width="25px" height="25px" viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
+				<path d="M669.6 849.6c8.8 8 22.4 7.2 30.4-1.6s7.2-22.4-1.6-30.4l-309.6-280c-8-7.2-8-17.6 0-24.8l309.6-270.4c8.8-8 9.6-21.6 2.4-30.4-8-8.8-21.6-9.6-30.4-2.4L360.8 480.8c-27.2 24-28 64-0.8 88.8l309.6 280z" fill="" />
+			</svg>
+		</c-slot>
+		Go Back
+	</c-link>
+@endsection
+@endif
+
 
 @section('content')
     <?php
@@ -44,10 +57,10 @@
             <c-table.main sticky="1" size="comfortable">
                 <c-table.thead>
                     <c-table.tr>
-                        <c-table.th sortable="1">Name</c-table.th>
+                        <c-table.th sortable="0">Name</c-table.th>
                         <c-table.th>Category</c-table.th>
-                        <c-table.th sortable="1">Date</c-table.th>
-                        <c-table.th sortable="1">Time</c-table.th>
+                        <c-table.th sortable="0">Date</c-table.th>
+                        <c-table.th sortable="0">Time</c-table.th>
                         <c-table.th>Status</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>
@@ -102,7 +115,7 @@
                                             </c-slot>
 
                                             <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/profile-02.svg' )}}" />
+                                                <img src="{{ asset('assets/icons/profile.svg' )}}" />
                                             </c-slot>
 
                                             <c-slot name="header">
@@ -111,14 +124,14 @@
                                             
                                             <c-modal.viewcard>
                                                 <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                                    icon="{{ asset('assets/icons/profile.svg') }}"
                                                     title="Requestor"
                                                     info="{{ $appointment['maternal'] ? $appointment['maternal']['name'] : ($appointment['child'] ? $appointment['child']['name'] : 'N/A') }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                                     title="Appointment ID"
-                                                    info="{{ $appointment['id'] }}"
+                                                    info="AP-00{{ $appointment['id'] }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/location-05.svg') }}"

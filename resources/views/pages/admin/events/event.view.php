@@ -101,12 +101,12 @@ Events & Campaigns
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">Title</c-table.th>
-                    <c-table.th sortable="1">Date</c-table.th>
-                    <c-table.th sortable="1">Time</c-table.th>
-                    <c-table.th sortable="1">Location</c-table.th>
-                    <c-table.th sortable="1">Participants</c-table.th>
-                    <c-table.th sortable="1">Visibility</c-table.th>
+                    <c-table.th sortable="0">Title</c-table.th>
+                    <c-table.th sortable="0">Date</c-table.th>
+                    <c-table.th sortable="0">Time</c-table.th>
+                    <c-table.th sortable="0">Location</c-table.th>
+                    <c-table.th sortable="0">Participants</c-table.th>
+                    <c-table.th sortable="0">Visibility</c-table.th>
                     <c-table.th>Status</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
