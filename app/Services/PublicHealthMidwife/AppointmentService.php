@@ -2,6 +2,7 @@
 
 namespace App\Services\PublicHealthMidwife;
 
+use App\Helpers\Calculator;
 use App\Models\Appointment;
 
 class AppointmentService
@@ -71,8 +72,8 @@ class AppointmentService
             $resource[] = [
                 "id" => $appointment->id,
                 "slot_date" => $slot->slot_date,
-                "start_time" => date('h:i A', strtotime($slot->start_time)),
-                "end_time" => date('h:i A', strtotime($slot->end_time)),
+                "start_time" => Calculator::formatTimeToAmPm($slot->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($slot->end_time),
                 "doctor" => $doctor ? [
                     "id" => $doctor->id,
                     "name" => $doctor->getUser()->name,

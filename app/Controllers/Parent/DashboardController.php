@@ -24,7 +24,6 @@ class DashboardController
         $vaccinations = $this->dashboardService->getChildVaccinationByParentId();
         $vaccinationCount = $this->dashboardService->getChildVaccinationCountByParentId();
 
-        var_dump($maternalAppointments);
         return view("parent/dashboard", ['events' => $events, 'appointmentCount' => $appointmentCount,'childAppointments' => $childAppointments, 'maternalAppointments' => $maternalAppointments, 'childCount' => $childCount, 'bmiData' => $bmiData, 'childrenList' => $childList,'vaccinations'=>$vaccinations, 'vaccinationCount'=>$vaccinationCount]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\Parent;
 
+use App\Helpers\Calculator;
 use App\Models\Appointment;
 use App\Models\Events;
 use App\Models\Maternal;
@@ -56,7 +57,7 @@ class CalendarService
                 'color' => 'linear-gradient(90deg,#28bdf8,#3b82f6)',
                 'items' => [[
                     'child' => $child ? $child->name : 'Child',
-                    'time' => $slot->start_time,
+                    'time' => Calculator::formatTimeToAmPm($slot->start_time),
                     'doctor' => $doctor && $doctor->getUser() ? $doctor->getUser()->name : '-',
                     'status' => ucfirst((string)$appointment->status),
                 ]],
@@ -99,7 +100,7 @@ class CalendarService
                 'color' => 'linear-gradient(90deg,#f5a623,#f97316)',
                 'items' => [[
                     'maternal' => $maternal && $maternal->getUser() ? $maternal->getUser()->name : 'Maternal',
-                    'time' => $slot->start_time,
+                    'time' => Calculator::formatTimeToAmPm($slot->start_time),
                     'doctor' => $doctor && $doctor->getUser() ? $doctor->getUser()->name : '-',
                     'status' => ucfirst((string)$appointment->status),
                 ]],
@@ -173,7 +174,7 @@ class CalendarService
                 'color' => 'linear-gradient(90deg,#9333ea,#6366f1)',
                 'items' => [[
                     'location' => $campaign->event_location,
-                    'time' => $campaign->start_time,
+                    'time' => Calculator::formatTimeToAmPm($campaign->start_time),
                 ]],
             ];
         }

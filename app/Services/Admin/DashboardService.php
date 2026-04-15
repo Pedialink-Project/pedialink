@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\Calculator;
 use App\Models\Child;
 use App\Models\ChildAccessRequest;
 use App\Models\ChildMisc;
@@ -165,7 +166,7 @@ class DashboardService
                 "title" => $event->title,
                 "description" => $event->description,
                 "date" => $event->event_date,
-                "start_time" => $event->start_time,
+                "start_time" => Calculator::formatTimeToAmPm($event->start_time),
                 "count" => count($eventRegistration),
                 "location" => $event->event_location,
                 "status" => $this->eventService->getEventStatus($event->id)
@@ -266,15 +267,8 @@ class DashboardService
 
         $resource = [];
         foreach ($rows as $r) {
-            // Format time to 12-hour format (e.g., "10:00 AM")
             $startTime = $r['start_time'] ?? null;
-            $formattedTime = 'N/A';
-            if ($startTime) {
-                $timeObj = \DateTime::createFromFormat('H:i:s', $startTime);
-                if ($timeObj) {
-                    $formattedTime = $timeObj->format('g:i A');
-                }
-            }
+            $formattedTime = $startTime ? Calculator::formatTimeToAmPm($startTime) : 'N/A';
 
             // Map status to display label
             $statusMap = [
