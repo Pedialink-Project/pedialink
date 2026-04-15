@@ -272,10 +272,10 @@ class DashboardService
 
                 "maternal" => $maternal ? [
                     "id" => $maternal->id,
-                    "name" => $maternal->name
+                    "name" => $maternal->getUser()->name
                 ] : null,
 
-
+                "reason" => $appointment->reason,
                 "status" => $appointment->status
             ];
         }
