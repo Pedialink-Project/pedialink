@@ -18,9 +18,9 @@
             <c-table.main sticky="1" size="comfortable">
                 <c-table.thead>
                     <c-table.tr>
-                        <c-table.th sortable="1">ID</c-table.th>
-                        <c-table.th sortable="1">Name</c-table.th>
-                        <c-table.th sortable="1" width="200px">Age</c-table.th>
+                        <c-table.th sortable="0">ID</c-table.th>
+                        <c-table.th sortable="0">Name</c-table.th>
+                        <c-table.th sortable="0" width="200px">Age</c-table.th>
                         <c-table.th>Assigned PHM</c-table.th>
                         <c-table.th class="table-actions"></c-table.th>
                     </c-table.tr>

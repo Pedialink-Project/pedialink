@@ -228,10 +228,10 @@ $vaccinations = [
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
                 <c-table.tr>
-                    <c-table.th sortable="1">Vaccine Name</c-table.th>
-                    <c-table.th sortable="1">Date & Time</c-table.th>
-                    <c-table.th sortable="1">Location</c-table.th>
-                    <c-table.th sortable="1">Administerd By</c-table.th>
+                    <c-table.th sortable="0">Vaccine Name</c-table.th>
+                    <c-table.th sortable="0">Date & Time</c-table.th>
+                    <c-table.th sortable="0">Location</c-table.th>
+                    <c-table.th sortable="0">Administerd By</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
             </c-table.thead>
