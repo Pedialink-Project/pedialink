@@ -114,7 +114,12 @@ $unreadCount = $data['unreadCount'] ?? 0;
           </div>
           <div class="user-meta">
             <div class="user-name">{{ auth()->check() ? auth()->user()->name : 'Test Name'}}</div>
-            <div class="user-role">{{ auth()->check() ? auth()->user()->role : 'Test role' }}</div>
+            <div class="user-role">
+              {{ auth()->check() ? 
+                (auth()->user()?->isAdmin() ? ucfirst(auth()->user()->getRole()->getAdminType()) . ' ' : '') .
+                ucfirst(auth()->user()->role) : 'Test role'
+              }}
+            </div>
           </div>
         </div>
       </c-slot>
