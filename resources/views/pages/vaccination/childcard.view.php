@@ -220,7 +220,7 @@ $overdueRecords = $statusTotals['overdue'] ?? 0;
 							@foreach ($group['items'] as $item)
 								<?php
 								$status = strtolower((string) ($item['status'] ?? 'pending'));
-								$badgeType = 'purple';
+								$badgeType = 'yellow';
 
 								if ($status === 'complete') {
 									$badgeType = 'green';

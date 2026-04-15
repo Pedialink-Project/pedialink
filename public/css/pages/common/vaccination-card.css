@@ -245,7 +245,7 @@
 }
 
 .vaccination-tile--pending {
-	border-color: rgba(139, 92, 246, 0.2);
+	border-color: rgba(217, 244, 12, 0.2);
 }
 
 .vaccination-tile--overdue {
