@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Child;
 use App\Models\Maternal;
 use App\Services\AppointmentSchedulerService;
+use App\Services\NotificationService;
 use App\Services\PublicHealthMidwife\AppointmentService;
 use Library\Framework\Http\Request;
 
@@ -13,11 +14,13 @@ class AppointmentsController
 {
     private AppointmentService $appointmentService;
     private AppointmentSchedulerService $appointmentSchedulerService;
+    private NotificationService $notificationService;
 
     public function __construct()
     {
         $this->appointmentService = new AppointmentService();
         $this->appointmentSchedulerService = new AppointmentSchedulerService();
+        $this->notificationService = new NotificationService();
     }
 
     public function index(Request $request)
@@ -133,6 +136,59 @@ class AppointmentsController
         $appointment->save();
 
         $this->appointmentSchedulerService->onAppointmentCancelled((int)$appointment->id);
+
+        $slot = $appointment->getSlot();
+        $doctor = $slot ? $slot->getDoctor() : null;
+
+        if ($slot && $doctor) {
+            $patientName = null;
+            $parentRecipientIds = [];
+
+            if ($appointment->child_id) {
+                $child = $appointment->getChild();
+                if ($child) {
+                    $patientName = $child->name;
+                    $parents = $child->getParents();
+                    if ($parents) {
+                        foreach ($parents as $parent) {
+                            $user = $parent->getUser();
+                            if ($user) {
+                                $parentRecipientIds[] = (int)$user->id;
+                            }
+                        }
+                    }
+                }
+            } elseif ($appointment->maternal_id) {
+                $maternal = $appointment->getMaternal();
+                if ($maternal && $maternal->getUser()) {
+                    $patientName = $maternal->getUser()->name;
+                    $parentRecipientIds[] = (int)$maternal->getUser()->id;
+                }
+            }
+
+            $patientPart = $patientName ? " for {$patientName}" : "";
+
+            $doctorMessage = "An appointment{$patientPart} on {$slot->slot_date} was cancelled by PHM.";
+            $this->notificationService->notify(
+                (int)$doctor->id,
+                "Appointment cancelled",
+                $doctorMessage,
+                "appointment",
+                (int)$appointment->id
+            );
+
+            if (!empty($parentRecipientIds)) {
+                $phmName = auth()->check() ? auth()->user()->name : 'PHM';
+                $parentMessage = "Your appointment{$patientPart} on {$slot->slot_date} was cancelled by {$phmName}.";
+                $this->notificationService->notifyMany(
+                    $parentRecipientIds,
+                    "Appointment cancelled",
+                    $parentMessage,
+                    "appointment",
+                    (int)$appointment->id
+                );
+            }
+        }
 
         return redirect(route('phm.appointments'))
             ->withMessage(
