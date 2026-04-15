@@ -32,7 +32,6 @@ foreach (array_slice($nameParts, 0, 2) as $part) {
 $initials = strtoupper($initials !== '' ? $initials : 'C');
 ?>
 <div class="vaccination-page-heading">
-	<span class="vaccination-page-heading__eyebrow">Immunization Card</span>
 	<span class="vaccination-page-heading__title">Vaccination Card</span>
 	<span class="vaccination-page-heading__subtitle">A complete overview of this child's vaccination history and upcoming doses.</span>
 </div>
@@ -136,7 +135,7 @@ foreach ($groupedRecords as $groupKey => $group) {
 	$groupStatusLabel = 'Upcoming';
 
 	if ($groupOverdue > 0) {
-		$groupBadgeType = 'destructive';
+		$groupBadgeType = 'red';
 		$groupStatusLabel = 'Action needed';
 	} elseif ($groupComplete === $groupCount && $groupCount > 0) {
 		$groupBadgeType = 'green';
@@ -166,7 +165,6 @@ $overdueRecords = $statusTotals['overdue'] ?? 0;
 		<div class="vaccination-hero__identity">
 			<div class="vaccination-avatar">{{ $initials }}</div>
 			<div class="vaccination-hero__copy">
-				<span class="vaccination-hero__label">Child vaccination card</span>
 				<h2 class="vaccination-hero__name">{{ ucwords($childName) }}</h2>
 				<p class="vaccination-hero__description">
 					Vaccination details of child {{ ucfirst($childName) }}
@@ -227,7 +225,7 @@ $overdueRecords = $statusTotals['overdue'] ?? 0;
 								if ($status === 'complete') {
 									$badgeType = 'green';
 								} elseif ($status === 'overdue') {
-									$badgeType = 'destructive';
+									$badgeType = 'red';
 								}
 
 								$vaccineCode = $item['vaccine']['code'] ?? 'Vaccine';
@@ -273,7 +271,7 @@ $overdueRecords = $statusTotals['overdue'] ?? 0;
 
 										<div class="vaccination-detail vaccination-detail--wide">
 											<span class="vaccination-detail__label">Additional information</span>
-											<p class="vaccination-detail__text">{{ $scheduleInfo }}</p>
+											<strong class="vaccination-detail__value">{{ $scheduleInfo }}</strong>
 										</div>
 									</div>
 								</div>
