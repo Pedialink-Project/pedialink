@@ -98,7 +98,6 @@ if (!empty($history) && $history['status'] === true) {
                                 </c-button>
                             </c-slot>
                             <c-slot name="menu">
-                                <c-dropdown.item><b>Actions</b></c-dropdown.item>
                                 <c-modal id="View-appointment-{{ $key }}" size="sm" :initOpen="false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>View Appointment</c-dropdown.item>
