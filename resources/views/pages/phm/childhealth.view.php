@@ -1,11 +1,11 @@
 @extends('layout/portal')
 
 @section('title')
-    Child Health Records
+Child Health Records
 @endsection
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/pages/phm/child-health.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/phm/child-health.css') }}">
 @endsection
 
 @section('header')
@@ -35,9 +35,9 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
 @endsection
 
 @section('content')
-  
 
-    <c-table.controls action="{{route('phm.child.health',['id' => $id])}}" :filters="['health_status' => ['good', 'at_risk', 'critical']]">
+
+<c-table.controls action="{{route('phm.child.health',['id' => $id])}}" :filters="['health_status' => ['good', 'at_risk', 'critical']]">
 
     <c-slot name="extrabtn">
         <c-modal id="add-health-record-modal" size="sm" :initOpen="flash('add') ? true : false">
@@ -78,7 +78,7 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
     </c-slot>
 </c-table.controls>
 
-   <c-table.wrapper card="1">
+<c-table.wrapper card="1">
     <div class="table-wrapper" data-responsive="true">
         <c-table.main sticky="1" size="comfortable">
             <c-table.thead>
@@ -199,6 +199,8 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                <c-dropdown.sep />
+
                                 <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="flash('edit') == $record['id'] ? true : false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>Edit Health Records</c-dropdown.item>
@@ -275,5 +277,5 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
     </div>
 </c-table.wrapper>
 
-    <c-table.pagination :links="$links" />
+<c-table.pagination :links="$links" />
 @endsection

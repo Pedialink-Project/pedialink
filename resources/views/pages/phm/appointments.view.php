@@ -171,6 +171,8 @@
                                                 Close
                                             </c-slot>
                                         </c-modal>
+                                                                        <c-dropdown.sep />
+
                                         @if ($appointment['status'] === 'pending' || $appointment['status'] === 'confirmed')
                                              <c-modal id="attend-appointment-{{ $key }}" size="sm" :initOpen="false">
                                                 <c-slot name="trigger">
