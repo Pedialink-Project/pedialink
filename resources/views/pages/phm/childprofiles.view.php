@@ -133,7 +133,7 @@ PHM Child Profiles
                     <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
                     <c-table.td col="Gender">
                         @if (strtolower($child['gender']) === "m")
-                        <c-badge type="green">
+                        <c-badge type="blue">
                             Male
                         </c-badge>
                         @elseif (strtolower($child['gender']) === "f")
