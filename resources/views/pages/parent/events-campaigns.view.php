@@ -324,9 +324,9 @@ Parent - Event & Campaigns
             </c-slot>
          </c-modal>
          @elseif (strtolower($event['event_status']) == 'completed')
-         <c-button variant="disabled">
+         <!-- <c-button variant="disabled">
             Event Completed
-         </c-button>
+         </c-button> -->
          @elseif (strtolower($event['event_status']) == 'ongoing')
          <c-button variant="disabled">
             Event Ongoing
