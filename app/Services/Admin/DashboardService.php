@@ -237,6 +237,142 @@ class DashboardService
         ];
     }
 
+    public function getRecentUsersLastSixMonthsData()
+    {
+        $sql = "
+        SELECT
+            to_char(m.month_bucket, 'Mon YYYY') AS label,
+            COALESCE(u.total, 0)::int AS total
+        FROM (
+            SELECT
+                date_trunc('month', CURRENT_DATE) - INTERVAL '5 months' +
+                (generate_series(0, 5) * INTERVAL '1 month') AS month_bucket
+        ) m
+        LEFT JOIN (
+            SELECT
+                date_trunc('month', created_at) AS month_bucket,
+                COUNT(*)::int AS total
+            FROM users
+            WHERE created_at >= date_trunc('month', CURRENT_DATE) - INTERVAL '5 months'
+              AND created_at < date_trunc('month', CURRENT_DATE) + INTERVAL '1 month'
+            GROUP BY month_bucket
+        ) u ON u.month_bucket = m.month_bucket
+        ORDER BY m.month_bucket
+        ";
+
+        $rows = QueryBuilder::rawGet($sql);
+
+        $labels = [];
+        $counts = [];
+
+        foreach ($rows as $r) {
+            if (is_array($r)) {
+                $labels[] = $r['label'] ?? '';
+                $counts[] = isset($r['total']) ? (int)$r['total'] : 0;
+                continue;
+            }
+
+            $labels[] = $r->label ?? '';
+            $counts[] = isset($r->total) ? (int)$r->total : 0;
+        }
+
+        return [
+            'labels' => $labels,
+            'counts' => $counts,
+        ];
+    }
+
+    public function getUserRoleDistributionData()
+    {
+        $sql = "
+        SELECT role, COUNT(*)::int AS total
+        FROM users
+        GROUP BY role
+        ";
+
+        $rows = QueryBuilder::rawGet($sql);
+
+        $roleCounts = [
+            'doctor' => 0,
+            'parent' => 0,
+            'phm' => 0,
+            'admin' => 0,
+        ];
+
+        foreach ($rows as $r) {
+            $role = null;
+            $count = 0;
+
+            if (is_array($r)) {
+                $role = $r['role'] ?? null;
+                $count = isset($r['total']) ? (int)$r['total'] : 0;
+            } else {
+                $role = $r->role ?? null;
+                $count = isset($r->total) ? (int)$r->total : 0;
+            }
+
+            if ($role !== null && array_key_exists($role, $roleCounts)) {
+                $roleCounts[$role] = $count;
+            }
+        }
+
+        return [
+            'labels' => ['doctor', 'parent', 'phm', 'admin'],
+            'counts' => [
+                $roleCounts['doctor'],
+                $roleCounts['parent'],
+                $roleCounts['phm'],
+                $roleCounts['admin'],
+            ],
+        ];
+    }
+
+    public function getEmailVerificationDistributionData()
+    {
+        $sql = "
+        SELECT email_verified, COUNT(*)::int AS total
+        FROM users
+        GROUP BY email_verified
+        ";
+
+        $rows = QueryBuilder::rawGet($sql);
+
+        $verified = 0;
+        $unverified = 0;
+
+        foreach ($rows as $r) {
+            $rawStatus = null;
+            $count = 0;
+
+            if (is_array($r)) {
+                $rawStatus = $r['email_verified'] ?? null;
+                $count = isset($r['total']) ? (int)$r['total'] : 0;
+            } else {
+                $rawStatus = $r->email_verified ?? null;
+                $count = isset($r->total) ? (int)$r->total : 0;
+            }
+
+            $isVerified = false;
+            if (is_bool($rawStatus)) {
+                $isVerified = $rawStatus;
+            } elseif ($rawStatus !== null) {
+                $normalizedStatus = strtolower((string)$rawStatus);
+                $isVerified = in_array($normalizedStatus, ['1', 't', 'true', 'yes'], true);
+            }
+
+            if ($isVerified) {
+                $verified = $count;
+            } else {
+                $unverified = $count;
+            }
+        }
+
+        return [
+            'labels' => ['verified', 'unverified'],
+            'counts' => [$verified, $unverified],
+        ];
+    }
+
     public function getTodaysAppointments()
     {
         $today = (new \DateTimeImmutable('today'))->format('Y-m-d');
