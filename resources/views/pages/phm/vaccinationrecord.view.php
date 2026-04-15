@@ -71,15 +71,15 @@ Vaccination Details of {{ $name .' (C-00'.$id.')' }}
                         <c-table.td col="Vaccination Status">
                             @if (strtolower($item['status']) === "complete")
                                 <c-badge type="green">
-                                    {{ ucfirst($item['status'] )}}
+                                    {{ ucwords(str_replace('_', ' ',$item['status']))}}
                                 </c-badge>
                             @elseif (strtolower($item['status']) === "pending")
                                 <c-badge type="purple">
-                                    {{ ucfirst($item['status'] )}}
+                                    {{ ucwords(str_replace('_', ' ',$item['status']) )}}
                                 </c-badge>
                             @elseif (strtolower($item['status']) === "overdue")
                                 <c-badge type="destructive">
-                                    {{ ucfirst($item['status'] )}}
+                                    {{ ucwords(str_replace('_', ' ',$item['status'] ))}}
                                 </c-badge>
                             @endif
                         </c-table.td>

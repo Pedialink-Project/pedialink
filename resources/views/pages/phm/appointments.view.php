@@ -79,15 +79,15 @@ if (!empty($history) && $history['status'] === true) {
                     </c-table.td>
                     <c-table.td col="Status">
                         @if (strtolower($appointment["status"]) === "confirmed")
-                        <c-badge type="primary">{{ $appointment['status']}}</c-badge>
+                        <c-badge type="primary">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                         @elseif (strtolower($appointment["status"]) === "pending")
-                        <c-badge type="yellow">{{ $appointment['status']}}</c-badge>
+                        <c-badge type="yellow">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                         @elseif (strtolower($appointment["status"]) === "attended")
-                        <c-badge type="green">{{ $appointment['status']}}</c-badge>
+                        <c-badge type="green">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                         @elseif (strtolower($appointment["status"]) === "cancelled")
-                        <c-badge type="destructive">{{ $appointment['status']}}</c-badge>
+                        <c-badge type="destructive">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                         @elseif (strtolower($appointment["status"]) === "no-show")
-                        <c-badge type="red">{{ $appointment['status']}}</c-badge>
+                        <c-badge type="red">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                         @endif
                     </c-table.td>
                     <c-table.td class="table-actions" align="center">
@@ -106,15 +106,15 @@ if (!empty($history) && $history['status'] === true) {
 
                                     <c-slot name="headerSuffix">
                                         @if (strtolower($appointment["status"]) === "confirmed")
-                                        <c-badge type="primary">{{ $appointment['status']}}</c-badge>
+                                        <c-badge type="primary">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                                         @elseif (strtolower($appointment["status"]) === "pending")
-                                        <c-badge type="yellow">{{ $appointment['status']}}</c-badge>
+                                        <c-badge type="yellow">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                                         @elseif (strtolower($appointment["status"]) === "attended")
-                                        <c-badge type="green">{{ $appointment['status']}}</c-badge>
+                                        <c-badge type="green">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                                         @elseif (strtolower($appointment["status"]) === "cancelled")
-                                        <c-badge type="destructive">{{ $appointment['status']}}</c-badge>
+                                        <c-badge type="destructive">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                                         @elseif (strtolower($appointment["status"]) === "no-show")
-                                        <c-badge type="red">{{ $appointment['status']}}</c-badge>
+                                        <c-badge type="red">{{ ucwords(str_replace('-', ' ',$appointment['status']))}}</c-badge>
                                         @endif
                                     </c-slot>
 
