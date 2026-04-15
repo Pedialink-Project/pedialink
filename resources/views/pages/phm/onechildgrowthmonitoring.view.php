@@ -26,7 +26,7 @@ PHM - Growth Tracking
             stroke="#18181B" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
 
-Growth of {{ $name .' (C-00'.$id.')' }}
+Growth of {{ $child['name'] .' (C-00'.$child['id'].')' }}
 </div>
 @endsection
 
