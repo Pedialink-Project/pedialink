@@ -132,7 +132,16 @@ class ChildService
             }
 
             $childAppointments = Appointment::query()->where('child_id','=', $child->id)->where('status', '=', 'confirmed')->get();
-            $childVaccinations = VaccinationReminder::query()->where('child_id','=',$child->id)->where('status', '=', 'pending')->get();
+
+            $today = new \DateTime();
+            $startDate = $today->format('Y-m-d');
+            $today->modify('+14 days');
+            $endDate = $today->format('Y-m-d');
+
+            $childVaccinations = VaccinationReminder::query()->where('child_id','=',$child->id)
+                ->where('scheduled_date', ">=", $startDate)
+                ->where("scheduled_date", "<=", $endDate)
+                ->get();
             $resource[] = [
                 'id' => $child->id,
                 'name' => $child->name,
