@@ -148,6 +148,16 @@ body {
     gap: .25rem;
 }
 
+.logs-details {
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+}
+
+.logs-user-meta {
+    align-items: flex-end;
+}
+
 .appointment .secondary-details {
     align-items: center;
 }

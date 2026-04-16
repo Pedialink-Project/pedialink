@@ -364,62 +364,57 @@ Admin Dashboard
                         <span class="card-title">Recent Activity</span>
                         <span class="card-subtitle">Recent activity of all users</span>
                     </div>
-                    <c-button varient="secondary" size="sm">Check Logs</c-button>
+                    <c-link type="secondary" href="{{ route('admin.logs') }}">Check Logs</c-link>
                 </div>
                 <hr class="divider">
                 <div class="card-body">
-                    <!-- Single activity row  -->
-                    <div class="row activity">
-                        <div class="primary-details">
-                            <div class="name">User did something</div>
-                            <div class="sub-details">
-                                <!-- Doctor Icon -->
-                                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="7.00002" cy="7.50002" r="5.83333" stroke="#71717A"/>
-                                    <path d="M7 5.16669V7.50002L8.16667 8.66669" stroke="#71717A" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
+                    @if (count($recentLogs) === 0)
+                        <c-emptycard
+                            title="No recent activity"
+                            description="There are no captured log entries yet."
+                        />
+                    @endif
 
-                                <div class="sub-name">13:46:23, Sun 2025</div>
+                    @foreach ($recentLogs as $log)
+                        <?php
+                            $level = strtolower($log['level'] ?? 'info');
+                            $context = $log['context'] ?? [];
+                            $user = $context['user'] ?? [];
+                            $controllerAction = trim(($context['controller'] ?? 'System') . '@' . ($context['action'] ?? 'log'), '@');
+                        ?>
+                        <div class="row activity">
+                            <div class="primary-details logs-details">
+                                <div class="name">{{ $log['message'] ?? 'Log entry' }}</div>
+                                <div class="sub-details">
+                                    <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="7.00002" cy="7.50002" r="5.83333" stroke="#71717A"/>
+                                        <path d="M7 5.16669V7.50002L8.16667 8.66669" stroke="#71717A" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+
+                                    <div class="sub-name">{{ $log['timestamp'] ?? '' }}</div>
+                                </div>
+                                <div class="sub-details">
+                                    <div class="sub-name">{{ $controllerAction }}</div>
+                                </div>
+                                <div class="sub-details">
+                                    <div class="sub-name">{{ $context['method'] ?? '' }} {{ $context['uri'] ?? '' }}</div>
+                                </div>
+                            </div>
+                            <div class="secondary-details logs-user-meta">
+                                @if ($level === 'error')
+                                    <c-badge type="red">Error</c-badge>
+                                @elseif ($level === 'warning')
+                                    <c-badge type="yellow">Warning</c-badge>
+                                @elseif ($level === 'debug')
+                                    <c-badge type="secondary">Debug</c-badge>
+                                @else
+                                    <c-badge type="blue">Info</c-badge>
+                                @endif
+
+                                <div class="sub-name">{{ $user['name'] ?? 'System' }}</div>
                             </div>
                         </div>
-                        <div class="secondary-details">
-                            <c-badge type="green">Doctor</c-badge>
-                        </div>
-                    </div>
-                    <div class="row activity">
-                        <div class="primary-details">
-                            <div class="name">User did something</div>
-                            <div class="sub-details">
-                                <!-- Doctor Icon -->
-                                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="7.00002" cy="7.50002" r="5.83333" stroke="#71717A"/>
-                                    <path d="M7 5.16669V7.50002L8.16667 8.66669" stroke="#71717A" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-
-                                <div class="sub-name">13:46:23, Sun 2025</div>
-                            </div>
-                        </div>
-                        <div class="secondary-details">
-                            <c-badge type="blue">PHM</c-badge>
-                        </div>
-                    </div>
-                    <div class="row activity">
-                        <div class="primary-details">
-                            <div class="name">User did something</div>
-                            <div class="sub-details">
-                                <!-- Doctor Icon -->
-                                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="7.00002" cy="7.50002" r="5.83333" stroke="#71717A"/>
-                                    <path d="M7 5.16669V7.50002L8.16667 8.66669" stroke="#71717A" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-
-                                <div class="sub-name">13:46:23, Sun 2025</div>
-                            </div>
-                        </div>
-                        <div class="secondary-details">
-                            <c-badge type="purple">Parent</c-badge>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </c-card>
         @endif
