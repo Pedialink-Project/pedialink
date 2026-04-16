@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 use App\Models\ParentM;
 use App\Models\User;
 use App\Services\Admin\AdminUserService;
+use App\Services\Admin\ChildLinkageService;
 use App\Services\Admin\ParentApprovalService;
 use App\Services\Admin\UserOverviewService;
 use App\Services\RegisterStaffService;
@@ -16,6 +17,7 @@ class UserController
     private AdminUserService $adminUserService;
     private RegisterStaffService $registerStaffService;
     private ParentApprovalService $parentApprovalService;
+    private ChildLinkageService $childLinkageService;
 
     public function __construct()
     {
@@ -23,6 +25,7 @@ class UserController
         $this->adminUserService = new AdminUserService();
         $this->registerStaffService = new RegisterStaffService();
         $this->parentApprovalService = new ParentApprovalService();
+        $this->childLinkageService = new ChildLinkageService();
     }
 
     public function overview(Request $request)
@@ -116,13 +119,24 @@ class UserController
         $parent = ParentM::find($id);
         $quick = $request->query('quick', false);
 
+        $parentPendingLinkageCount = count(
+            $this->childLinkageService
+                ->getLinkageData()
+            );
+
         if ($parent) {
             $parent->verified = 1;
             $parent->save();
 
-            return redirect($quick ? route('admin.dashboard') : route('admin.user.parent'))
+            return redirect($quick ? route('admin.dashboard') : (
+                    $parentPendingLinkageCount > 0 ?
+                    route('admin.child.linkage.requests', [], ['parent' => $id]) :
+                    route('admin.user.parent')
+                ))
                 ->withMessage(
-                    'Parent has been approved successfully',
+                    $parentPendingLinkageCount > 0 ? 
+                        'Parent has been approved successfully. Please verify pending parent account linkage with their children accounts!' :
+                        'Parent has been approved successfully',
                     'Success',
                     'success'
                 );

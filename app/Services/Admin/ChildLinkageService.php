@@ -8,15 +8,24 @@ use App\Models\ParentM;
 
 class ChildLinkageService
 {
-    public function getLinkageData()
+    public function getLinkageData(int $parentId = null)
     {
         $data = [];
 
         $childMiscs = ChildMisc::query()
             ->leftJoin("parents", "parents.nic", "=", "child_miscs.parent_nic")
             ->whereNotNull("parents.nic")
-            ->where("accepted", "=", 0)
-            ->orderBy("id", "ASC")
+            ->where("accepted", "=", 0);
+
+        if ($parentId) {
+            $childMiscs
+                ->where("parents.id", "=", $parentId);
+        }
+        
+        $childMiscs
+            ->orderBy("id", "ASC");
+        
+        $childMiscs = $childMiscs
             ->paginate(10)
             ->toArray();
 
