@@ -5,6 +5,7 @@ use Library\Framework\Core\Application;
 use Library\Framework\Core\Env;
 use Library\Framework\Http\RedirectResponse;
 use Library\Framework\Http\Response;
+use Library\Framework\Logger\Logger;
 use Library\Framework\Mail\Mailer;
 use Library\Framework\Routing\Router;
 use Library\Framework\Session\SessionManager;
@@ -214,6 +215,33 @@ function storage(): Storage
     $storage = app(Storage::class);
 
     return $storage;
+}
+
+/**
+ * Global helper to access the application logger.
+ *
+ * @return Logger
+ */
+function logger(): Logger
+{
+    return app(Logger::class);
+}
+
+/**
+ * Log an activity entry without interrupting the current flow.
+ *
+ * @param string $message
+ * @param array $context
+ * @param string $level
+ * @return bool
+ */
+function log_activity(string $message, array $context = [], string $level = 'info'): bool
+{
+    try {
+        return logger()->log($level, $message, $context);
+    } catch (\Throwable) {
+        return false;
+    }
 }
 
 /**
