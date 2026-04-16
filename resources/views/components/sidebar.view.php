@@ -89,6 +89,12 @@ $menuItems = [
                 'link' => route('admin.notification'),
                 'icon' => asset('/assets/icons/notification-02.svg'),
             ],
+            [
+                'name' => 'Logs',
+                'link' => route('admin.logs'),
+                'icon' => asset('/assets/icons/document-validation.svg'),
+                'admintype' => 'super',
+            ],
             // [
             //     'name' => 'System Configuration',
             //     'link' => '#',
