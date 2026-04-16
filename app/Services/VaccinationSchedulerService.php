@@ -114,8 +114,8 @@ class VaccinationSchedulerService
             }
         }
 
-                if ($clearUnadministered) {
-                    $deleted = QueryBuilder::rawExec(
+        if ($clearUnadministered) {
+                    QueryBuilder::rawExec(
                                 "DELETE FROM vaccination_reminders vr
                                  WHERE vr.child_id = :child_id
                                      AND NOT EXISTS (
@@ -126,6 +126,29 @@ class VaccinationSchedulerService
                                      )",
                                 [':child_id' => $childId]
                         );
+                }
+
+                $dailyLoadRows = QueryBuilder::rawGet(
+                        "SELECT vr.scheduled_date, COUNT(*)::int AS reminder_count
+                         FROM vaccination_reminders vr
+                         WHERE vr.child_id = :child_id
+                             AND NOT EXISTS (
+                                        SELECT 1
+                                        FROM vaccinations v
+                                        WHERE v.child_id = vr.child_id
+                                            AND v.schedule_vaccine_id = vr.schedule_vaccine_id
+                             )
+                         GROUP BY vr.scheduled_date",
+                        [':child_id' => $childId]
+                );
+
+                $dailyLoadByDate = [];
+                foreach ($dailyLoadRows as $row) {
+                        $date = (string)($row['scheduled_date'] ?? '');
+                        if ($date === '') {
+                                continue;
+                        }
+                        $dailyLoadByDate[$date] = (int)($row['reminder_count'] ?? 0);
                 }
 
         $today = new DateTimeImmutable('today');
@@ -159,10 +182,18 @@ class VaccinationSchedulerService
                 $threshold = $today;
             }
 
-            $scheduledClinicDate = $this->findNextClinicDate($threshold, $clinicRules);
+            $scheduledClinicDate = $this->findNextClinicDateWithCapacity(
+                $threshold,
+                $clinicRules,
+                $dailyLoadByDate,
+                2
+            );
             if ($scheduledClinicDate === null) {
                 continue;
             }
+
+            $scheduledKey = $scheduledClinicDate->format('Y-m-d');
+            $dailyLoadByDate[$scheduledKey] = (int)($dailyLoadByDate[$scheduledKey] ?? 0) + 1;
 
             QueryBuilder::rawExec(
                 "INSERT INTO vaccination_reminders (child_id, schedule_vaccine_id, scheduled_date)
@@ -209,6 +240,33 @@ class VaccinationSchedulerService
             }
 
             $monthCursor = $monthCursor->modify('first day of next month');
+        }
+
+        return null;
+    }
+
+    private function findNextClinicDateWithCapacity(
+        DateTimeImmutable $threshold,
+        array $clinicRules,
+        array $dailyLoadByDate,
+        int $maxPerDay
+    ): ?DateTimeImmutable {
+        $searchCursor = $threshold;
+
+        for ($attempt = 0; $attempt < 120; $attempt++) {
+            $candidate = $this->findNextClinicDate($searchCursor, $clinicRules);
+            if ($candidate === null) {
+                return null;
+            }
+
+            $dateKey = $candidate->format('Y-m-d');
+            $currentLoad = (int)($dailyLoadByDate[$dateKey] ?? 0);
+
+            if ($currentLoad < $maxPerDay) {
+                return $candidate;
+            }
+
+            $searchCursor = $candidate->modify('+1 day');
         }
 
         return null;
