@@ -126,7 +126,7 @@
                 <c-table.tbody>
                     @foreach ($scheduleList as $key => $scheduleItem)
                         <c-table.tr>
-                            <c-table.td col="id">{{ $scheduleItem['id'] }}</c-table.td>
+                            <c-table.td col="id">VS-00{{ $scheduleItem['id'] }}</c-table.td>
                             <c-table.td col="name">{{ $scheduleItem['vaccine']['name'] }}</c-table.td>
                             <c-table.td col="code">{{ $scheduleItem['vaccine']['code'] }}</c-table.td>
                             <c-table.td col="dose_number">{{ $scheduleItem['dose_number'] }}</c-table.td>
@@ -138,7 +138,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy Vaccine Code</c-dropdown.item>
                                         <c-dropdown.sep />
                                         <c-modal size="md" :initOpen="false">
                                             <c-slot name="trigger">

@@ -110,7 +110,7 @@
                 <c-table.tbody>
                     @foreach ($schedules as $key => $schedule)
                         <c-table.tr>
-                            <c-table.td col="id">{{ $schedule['id'] }}</c-table.td>
+                            <c-table.td col="id">VS-00{{ $schedule['id'] }}</c-table.td>
                             <c-table.td col="name">{{ $schedule['name'] }}</c-table.td>
                             <c-table.td col="version">{{ $schedule['version'] }}</c-table.td>
                             <c-table.td col="status">
@@ -133,7 +133,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy Schedule ID</c-dropdown.item>
                                         <c-dropdown.sep />
                                         <c-modal size="md" :initOpen="flash('edit') === $schedule['id'] ? true : false">
                                             <c-slot name="trigger">
