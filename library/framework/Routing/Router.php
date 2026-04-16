@@ -124,10 +124,43 @@ class Router
                 };
             },
             // Final handler invokes controller or closure
-            function ($request, $params) use ($action) {
+            function ($request, $params) use ($action, $route) {
                 if (is_array($action) && count($action) === 2 && is_string($action[0])) {
                     // e.g. [$className, 'method']
                     list($class, $method) = $action;
+
+                    try {
+                        $currentUser = null;
+                        $adminType = null;
+
+                        if (function_exists('auth') && auth()->check()) {
+                            $currentUser = auth()->user();
+                            $role = $currentUser?->getRole();
+
+                            if (is_object($role) && method_exists($role, 'getAdminType')) {
+                                $adminType = $role->getAdminType();
+                            }
+                        }
+
+                        log_activity('Controller action executed', [
+                            'controller' => $class,
+                            'action' => $method,
+                            'route' => $route['name'] ?? null,
+                            'method' => $request->method ?? null,
+                            'uri' => $request->uri ?? null,
+                            'params' => $params,
+                            'user' => $currentUser ? [
+                                'id' => $currentUser->id ?? null,
+                                'name' => $currentUser->name ?? null,
+                                'role' => $currentUser->role ?? null,
+                                'admin_type' => $adminType,
+                            ] : null,
+                            'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        ]);
+                    } catch (\Throwable) {
+                        // Logging must never interrupt the request lifecycle.
+                    }
+
                     $instance = new $class;
                     return $instance->$method($request, ...array_values($params));
                 }

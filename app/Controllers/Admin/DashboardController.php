@@ -30,6 +30,7 @@ class DashboardController
         $recentUsersLastSixMonthsData = $this->dashboardService->getRecentUsersLastSixMonthsData();
         $userRoleDistributionData = $this->dashboardService->getUserRoleDistributionData();
         $emailVerificationDistributionData = $this->dashboardService->getEmailVerificationDistributionData();
+        $recentLogs = logger()->recent(3);
 
         return view("admin/dashboard", [
             "childrenCount" => $childrenCount,
@@ -45,7 +46,8 @@ class DashboardController
             "todaysAppointments" => $todaysAppointments,
             "recentUsersLastSixMonthsData" => $recentUsersLastSixMonthsData,
             "userRoleDistributionData" => $userRoleDistributionData,
-            "emailVerificationDistributionData" => $emailVerificationDistributionData
+            "emailVerificationDistributionData" => $emailVerificationDistributionData,
+            "recentLogs" => $recentLogs,
         ]);
     }
 }
