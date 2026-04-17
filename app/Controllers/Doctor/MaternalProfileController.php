@@ -14,6 +14,6 @@ class MaternalProfileController
 
      public function __construct()
     {
-        
+        $this->maternalService = new MaternalService();
     }
 }
