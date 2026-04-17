@@ -14,7 +14,7 @@ class ChildProfileController
     {
         $this->childService = new ChildService();
     }
-    
+
      public function index(Request $request)
     {
 
@@ -26,4 +26,10 @@ class ChildProfileController
         foreach ($areas as $area) {
             $areaFilters[] = $area->code;
         }
+
+        $staffId = auth()->user()->id;
+        [$children,$links] = $this->childService->getChildrenByStaffId($staffId, $search, $filters);
+
+        return view("doctor/childprofile", ["children" => $children,"links"=> $links, "areaFilters" => $areaFilters]);
+    }
 }
