@@ -225,3 +225,28 @@ function mailer(): Mailer
     $mailer = app(Mailer::class);
     return $mailer;
 }
+
+/**
+ * Format numeric entity IDs for frontend display.
+ *
+ * Example: AP-001, EV-001, C-001, M-001.
+ *
+ * @param string $entity appointment|event|child|maternal
+ * @param mixed $id
+ * @param int $padLength
+ * @return string
+ */
+function display_entity_id(string $entity, $id, int $padLength = 3): string
+{
+    $prefixMap = [
+        'appointment' => 'AP',
+        'event' => 'EV',
+        'child' => 'C',
+        'maternal' => 'M',
+    ];
+
+    $prefix = $prefixMap[strtolower($entity)] ?? strtoupper($entity);
+    $number = max((int) $id, 0);
+
+    return sprintf('%s-%0' . $padLength . 'd', $prefix, $number);
+}
