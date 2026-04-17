@@ -28,7 +28,7 @@
                     <h3>{{ $primaryAccount["name"] }}</h3>
                 </c-slot>
                 <p class="control-card-content">
-                    P-{{ $primaryAccount["id"] }} has primary access to this profile
+                    {{ display_entity_id('parent', $primaryAccount["id"]) }} has primary access to this profile
                 </p>
                 <c-slot name="footer">
                     <div class="control-card-btn-grp">
@@ -52,7 +52,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="ID"
-                                    info="P-{{ $primaryAccount['id'] }}"
+                                    info="{{ display_entity_id('parent', $primaryAccount['id']) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -96,7 +96,7 @@
                     <h3>{{ $secondaryAccount["name"] }}</h3>
                 </c-slot>
                 <p class="control-card-content">
-                    PHM-{{ $secondaryAccount["id"] }} has secondary access to this profile
+                    {{ display_entity_id('phm', $secondaryAccount["id"]) }} has secondary access to this profile
                 </p>
                 <c-slot name="footer">
                     <div class="control-card-btn-grp">
@@ -120,7 +120,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="ID"
-                                    info="P-{{ $secondaryAccount['id'] }}"
+                                    info="{{ display_entity_id('phm', $secondaryAccount['id']) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -187,7 +187,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="ID"
-                                    info="P-{{ $staffAccount['id'] }}"
+                                    info="{{ display_entity_id(strtolower($staffAccount['role']), $staffAccount['id']) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -238,7 +238,7 @@
 
                             <p>
                                 Remove access of <span class="name-deny">"{{ $staffAccount["name"] }}"</span> of 
-                                id <span class="id-deny">{{ ucfirst($staffAccount["role"]) }}-{{ $staffAccount["id"] }}</span> with child account
+                                id <span class="id-deny">{{ display_entity_id(strtolower($staffAccount['role']), $staffAccount['id']) }}</span> with child account
                                 <span class="child-name-deny">"{{ $name }}"</span> of id <span class="child-id-deny">{{ display_entity_id('child', $id) }}</span>?
                             </p>
                             
