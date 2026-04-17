@@ -31,6 +31,7 @@ class AppointmentController
             "links" => $links
         ]);
     }
+    
     public function viewHistory(Request $request, int $id, string $type)
     {
         $search = $request->query("search", "");
@@ -133,3 +134,22 @@ class AppointmentController
         return redirect(route("doctor.appointments.configure"))
             ->withMessage("Availability updated successfully.", "Success", "success");
     }
+
+    public function disableAvailability(Request $request, int $id)
+    {
+        $doctorWeeklyAvailability = DoctorWeeklyAvailability::find($id);
+        $doctorWeeklyAvailability->active = 0;
+        $doctorWeeklyAvailability->save();
+        return redirect(route("doctor.appointments.configure"))
+            ->withMessage("Availability disabled successfully.", "Success", "success");
+    }
+
+    public function enableAvailability(Request $request, int $id)
+    {
+        $doctorWeeklyAvailability = DoctorWeeklyAvailability::find($id);
+        $doctorWeeklyAvailability->active = 1;
+        $doctorWeeklyAvailability->save();
+        return redirect(route("doctor.appointments.configure"))
+            ->withMessage("Availability enabled successfully.", "Success", "success");
+    }
+}
