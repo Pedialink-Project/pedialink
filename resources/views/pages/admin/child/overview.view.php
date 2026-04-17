@@ -43,8 +43,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy Child Profile ID</c-dropdown.item>
-                                        <c-dropdown.sep />
                                         <c-modal size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Child Profile</c-dropdown.item>

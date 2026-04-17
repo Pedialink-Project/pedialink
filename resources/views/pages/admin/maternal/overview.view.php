@@ -39,8 +39,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy Maternal Profile ID</c-dropdown.item>
-                                        <c-dropdown.sep />
                                         <c-modal size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Maternal Profile</c-dropdown.item>

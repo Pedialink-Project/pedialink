@@ -120,8 +120,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy ID</c-dropdown.item>
-                                        <c-dropdown.sep />
                                         <c-modal id="view-account-{{ $key }}" size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Account Info</c-dropdown.item>
