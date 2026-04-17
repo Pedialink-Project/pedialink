@@ -13,4 +13,14 @@ class DashboardController
     {
         $this->dashboardService = new DashboardService();
     }
+
+    public function index(Request $request)
+    {
+        $patientsCount = $this->dashboardService->getPatientsCount();
+        $appointmentsCount = $this->dashboardService->getAppointmentsCount();
+        $urgentCasesCount = $this->dashboardService->getUrgentCasesCount();
+        $upcomingAppointments = $this->dashboardService->upcomingAppointments();
+        $weeklyAppointmentData = $this->dashboardService->getWeeklyAppointmentData();
+        $latestHealthRecords = $this->dashboardService->getLatestHealthRecords();
+        $patientRiskData = $this->dashboardService->getPatientRiskOverviewData();
 }
