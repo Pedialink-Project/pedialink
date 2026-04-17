@@ -11,7 +11,7 @@ Event Participants
 @section('header')
 
 
-Event Management → Participants · EV-000{{ $id }}
+Participants for Event {{ display_entity_id('event', $id) }}
 @endsection
 
 

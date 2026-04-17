@@ -466,7 +466,7 @@ class ChildService
             $childRecordResource = [
                 'id' => $childRecord->id,
                 'visit_date' => $childRecord->visit_date,
-                'age_recorded_at' => Calculator::calculateAgeInMonths(Child::find($child->id)->date_of_birth, $childRecord->visit_date),
+                'age_recorded_at' => Calculator::calculateAgeWithVisitDate(Child::find($child->id)->date_of_birth, $childRecord->visit_date),
                 'height' => $childRecord->height,
                 'weight' => $childRecord->weight,
                 'bmi' => $childRecord->bmi,

@@ -20,14 +20,14 @@
                         <c-table.th sortable="0">Name</c-table.th>
                         <c-table.th sortable="0" width="200px">Age</c-table.th>
                         <c-table.th>GS Division</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
                 <c-table.tbody>
                     @foreach ($maternal as $key => $mother)
                         <c-table.tr>
-                            <c-table.td col="id">C-{{ $mother['id'] }}</c-table.td>
+                            <c-table.td col="id">{{ display_entity_id('maternal', $mother['id']) }}</c-table.td>
                             <c-table.td col="name">{{ $mother['name'] }}</c-table.td>
                             <c-table.td col="age">{{ $mother['age'] }}</c-table.td>
                             <c-table.td col="age">{{ $mother['division'] }}</c-table.td>
@@ -39,8 +39,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy Maternal Profile ID</c-dropdown.item>
-                                        <c-dropdown.sep />
                                         <c-modal size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Maternal Profile</c-dropdown.item>
@@ -58,7 +56,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Profile"
-                                                    info="P-{{ $mother['id'] }}"
+                                                    info="{{ display_entity_id('maternal', $mother['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"

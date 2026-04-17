@@ -59,7 +59,7 @@
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                         title="Profile"
-                                        info="P-{{ $parent['id'] }}"
+                                        info="{{ display_entity_id('parent', $parent['id']) }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/user.svg') }}"
@@ -120,7 +120,7 @@
                         </c-slot>
                     </c-dropdown.main>
                 </c-slot>
-                <p class="approval-card-content">Parent Account P-{{ $parent["id"] }} is pending approval</p>
+                <p class="approval-card-content">Parent Account {{ display_entity_id('parent', $parent["id"]) }} is pending approval</p>
                 <c-slot name="footer">
                     <div class="approval-card-btn-grp">
                         <c-modal size="sm">
@@ -139,7 +139,7 @@
                                 Approve Account
                             </c-slot>
 
-                            <p>Approve parent <span class="parent-name-approve">"{{ $parent["name"] }}"</span> of id <span class="parent-id-approve">P-{{ $parent["id"] }}</span>?</p>
+                            <p>Approve parent <span class="parent-name-approve">"{{ $parent["name"] }}"</span> of id <span class="parent-id-approve">{{ display_entity_id('parent', $parent["id"]) }}</span>?</p>
 
                             <form id="approve-account-{{ $key }}" method="POST" action="{{ route('admin.user.parent.approve', ['id' => $parent['id']])}}" class="hidden">
 
@@ -171,7 +171,7 @@
                                 Deny Account
                             </c-slot>
 
-                            <p>Deny parent <span class="parent-name-deny">"{{ $parent["name"] }}"</span> of id <span class="parent-id-deny">P-{{ $parent["id"] }}</span>?</p>
+                            <p>Deny parent <span class="parent-name-deny">"{{ $parent["name"] }}"</span> of id <span class="parent-id-deny">{{ display_entity_id('parent', $parent["id"]) }}</span>?</p>
 
                             <form id="deny-account-{{ $key }}" method="POST" action="{{ route('admin.user.parent.deny', ['id' => $parent['id']])}}" class="hidden"></form>
 
@@ -205,7 +205,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Profile"
-                                    info="P-{{ $parent['id'] }}"
+                                    info="{{ display_entity_id('parent', $parent['id']) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"

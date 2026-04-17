@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Parent Dashboard
+PHM Dashboard
 @endsection
 
 @section('css')

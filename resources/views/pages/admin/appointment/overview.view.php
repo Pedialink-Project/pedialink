@@ -32,7 +32,7 @@
                         <c-table.th sortable="0">Time</c-table.th>
                         <c-table.th sortable="0">Doctor</c-table.th>
                         <c-table.th>Status</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
@@ -90,7 +90,7 @@
                                             
                                             <c-modal.viewcard>
                                                 <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/profile-02.svg') }}"
+                                                    icon="{{ asset('assets/icons/mother.svg') }}"
                                                     title="Requestor"
                                                     info="{{ $appointment['maternal'] ? $appointment['maternal']['name'] : ($appointment['child'] ? $appointment['child']['name'] : 'N/A') }}"
                                                 />
@@ -99,10 +99,10 @@
                                                     title="Doctor"
                                                     info="{{ $appointment['doctor'] ? $appointment['doctor']['name'] : 'N/A' }}"
                                                 />
-                                                <c-modal.viewitem
-                                                    icon="{{ asset('assets/icons/student-card.svg') }}"
-                                                    title="Appointment ID"
-                                                    info="{{ $appointment['id'] }}"
+                                                   <c-modal.viewitem
+                                                       icon="{{ asset('assets/icons/student-card.svg') }}"
+                                                       title="Appointment ID"
+                                                       info="{{ display_entity_id('appointment', $appointment['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/location-05.svg') }}"

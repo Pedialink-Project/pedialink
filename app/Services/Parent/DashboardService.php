@@ -178,7 +178,7 @@ class DashboardService
                 "title" => $event->title,
                 "description" => $event->description,
                 "event_date" => $event->event_date,
-                "start_time" => $event->start_time,
+                "start_time" => Calculator::formatTimeToAmPm($event->start_time),
                 "participants_count" => $event->participants_count,
                 "event_location" => $event->event_location,
                 "event_status" => $this->eventService->getEventStatus($event->id)
@@ -272,10 +272,10 @@ class DashboardService
 
                 "maternal" => $maternal ? [
                     "id" => $maternal->id,
-                    "name" => $maternal->name
+                    "name" => $maternal->getUser()->name
                 ] : null,
 
-
+                "reason" => $appointment->reason,
                 "status" => $appointment->status
             ];
         }

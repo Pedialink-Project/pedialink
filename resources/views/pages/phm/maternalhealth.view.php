@@ -8,6 +8,17 @@ PHM Maternal Health
 <link rel="stylesheet" href="{{ asset('css/pages/phm/maternal-health.css') }}">
 @endsection
 
+@section('back')
+	<c-link href="{{ $backUrl ?? 'javascript:history.back()' }}">
+		<c-slot name="icon">
+			<svg width="25px" height="25px" viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
+				<path d="M669.6 849.6c8.8 8 22.4 7.2 30.4-1.6s7.2-22.4-1.6-30.4l-309.6-280c-8-7.2-8-17.6 0-24.8l309.6-270.4c8.8-8 9.6-21.6 2.4-30.4-8-8.8-21.6-9.6-30.4-2.4L360.8 480.8c-27.2 24-28 64-0.8 88.8l309.6 280z" fill="" />
+			</svg>
+		</c-slot>
+		Go Back
+	</c-link>
+@endsection
+
 @section('header')
 <svg width="30" height="27" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_474_8661)">
@@ -30,7 +41,7 @@ PHM Maternal Health
         </clipPath>
     </defs>
 </svg>
-Health Records  of {{ $name .' (M-00'.$id.')' }}
+Health Records  of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
 @endsection
 
 @section('content')
@@ -96,7 +107,7 @@ Health Records  of {{ $name .' (M-00'.$id.')' }}
                     <c-table.th sortable="0">Trimester</c-table.th>
                     <c-table.th sortable="0">Fetal Heart Rate</c-table.th>
                     <c-table.th>Health Status</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
@@ -162,7 +173,7 @@ Health Records  of {{ $name .' (M-00'.$id.')' }}
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Record ID" info="REC-00{{ $record['id'] }}" />
+                                            title="Record ID" info="{{ display_entity_id('record', $record['id']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                             title="Recorded At" info="{{ $record['visit_date'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
@@ -201,6 +212,7 @@ Health Records  of {{ $name .' (M-00'.$id.')' }}
                                     </c-slot>
 
                                 </c-modal>
+                                <c-dropdown.sep />
 
                                 <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="flash('edit') == $record['id'] ? true : false">
                                     <c-slot name="trigger">

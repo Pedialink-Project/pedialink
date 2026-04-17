@@ -2,6 +2,7 @@
 
 namespace App\Services\Doctor;
 
+use App\Helpers\Calculator;
 use App\Models\Appointment;
 use App\Models\Child;
 use App\Models\ChildRecord;
@@ -86,8 +87,8 @@ class DashboardService
                     "id" => $appointment->id,
                     "child_name" => $child ? $child->name : null,
                     "slot_date" => $slot ? $slot->slot_date : null,
-                    "start_time" => $slot ? $slot->start_time : null,
-                    "end_time" => $slot ? $slot->end_time : null,
+                    "start_time" => $slot ? Calculator::formatTimeToAmPm($slot->start_time) : null,
+                    "end_time" => $slot ? Calculator::formatTimeToAmPm($slot->end_time) : null,
                     "status" => $appointment->status,
                     "reason" => $appointment->reason,
                     "doctor_name" => $doctor ? $doctor->getUser()->name : null,

@@ -74,7 +74,7 @@
                         <c-table.th sortable="0">Email</c-table.th>
                         <c-table.th sortable="0">Role</c-table.th>
                         <c-table.th>Status</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
@@ -122,8 +122,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy ID</c-dropdown.item>
-                                        <c-dropdown.sep />
                                         <c-modal id="view-account-{{ $key }}" size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Account Info</c-dropdown.item>
@@ -142,7 +140,7 @@
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                         title="Profile"
-                                                        info="P-{{ $user['id'] }}"
+                                                        info="{{ display_entity_id('parent', $user['id']) }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/user.svg') }}"
@@ -185,7 +183,7 @@
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                         title="Profile"
-                                                        info="PHM-{{ $user['id'] }}"
+                                                        info="{{ display_entity_id('phm', $user['id']) }}"
                                                     />
                                                     <c-modal.viewitem
                                                         icon="{{ asset('assets/icons/user.svg') }}"

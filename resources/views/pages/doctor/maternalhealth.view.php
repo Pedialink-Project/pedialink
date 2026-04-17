@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-doctor Maternal Health
+Doctor Maternal Health
 @endsection
 
 @section('css')
@@ -41,7 +41,7 @@ doctor Maternal Health
         </clipPath>
     </defs>
 </svg>
-Health Records of {{ $name .' (M-00'.$id.')' }}
+Health Records of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
 @endsection
 
 @section('content')
@@ -113,7 +113,7 @@ Health Records of {{ $name .' (M-00'.$id.')' }}
                     <c-table.th sortable="0">Trimester</c-table.th>
                     <c-table.th sortable="0">Fetal Heart Rate</c-table.th>
                     <c-table.th>Health Status</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
@@ -179,7 +179,7 @@ Health Records of {{ $name .' (M-00'.$id.')' }}
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Record ID" info="REC-00{{ $record['id'] }}" />
+                                            title="Record ID" info="{{ display_entity_id('record', $record['id']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                             title="Recorded At" info="{{ $record['visit_date'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
