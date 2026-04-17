@@ -25,4 +25,30 @@ class ChildHealthController
         [$records, $links] = $this->childRecordService->getChildRecordsByChildId($id, $search, $filters);
         $name = $this->childRecordService->getChildNameById($id);
 
+        return view("doctor/childhealth", [
+            "id" => $id,
+            'name' => $name,
+            "records" => $records,
+            "links" => $links
+        ]);
+    }
+
+    public function addHealthRecord(Request $request, int $id)
+    {
+        $staffId = auth()->user()->id;
+
+        $height = $request->input('height');
+        $weight = $request->input('weight');
+        $headCircumference = $request->input('head_circumference');
+        $visitDate = $request->input('visit_date');
+        $notes = $request->input('notes');
+
+
+        $errors = $this->childRecordService->validateRecordData(
+            $visitDate,
+            $height,
+            $weight,
+            $headCircumference,
+        );
+
 }
