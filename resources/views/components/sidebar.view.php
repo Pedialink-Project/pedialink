@@ -16,6 +16,7 @@ $menuItems = [
                 'name' => 'User Management',
                 'link' => '#',
                 'icon' => asset('/assets/icons/user.svg'),
+                'admintype' => 'user',
 
                 'children' => [
                     ['name' => 'Overview', 'link' => route('admin.user.overview')],
@@ -27,21 +28,21 @@ $menuItems = [
                 'name' => 'Child Profiles',
                 'link' => '#',
                 'icon' => asset('/assets/icons/baby-01.svg'),
-
                 'children' => [
-                    ['name' => 'Overview', 'link' => route('admin.child.overview')],
-                    ['name' => 'Linkage Requests', 'link' => route('admin.child.linkage.requests')],
-                    ['name' => 'Access Requests', 'link' => route('admin.child.access.requests')],
+                    ['name' => 'Overview', 'link' => route('admin.child.overview'), 'admintype' => 'data'],
+                    ['name' => 'Linkage Requests', 'link' => route('admin.child.linkage.requests'), 'admintype' => 'user'],
+                    // ['name' => 'Access Requests', 'link' => route('admin.child.access.requests')],
                 ]
             ],
             [
                 'name' => 'Maternal Profiles',
                 'link' => '#',
                 'icon' => asset('/assets/icons/mother.svg'),
+                'admintype'  => 'data',
 
                 'children' => [
                     ['name' => 'Overview', 'link' => route('admin.maternal.overview')],
-                    ['name' => 'Access Requests', 'link' => route('admin.maternal.access.requests')],
+                    // ['name' => 'Access Requests', 'link' => route('admin.maternal.access.requests')],
                 ]
             ],
             // [
@@ -53,6 +54,7 @@ $menuItems = [
                 'name' => 'Vaccination',
                 'link' => '#',
                 'icon' => asset('/assets/icons/vaccine.svg'),
+                'admintype'  => 'data',
                 'children' => [
                     ['name' => 'Vaccines', 'link' => route('admin.vaccination.vaccines')],
                     ['name' => 'Schedule', 'link' => route('admin.vaccination.schedule')],
@@ -60,13 +62,20 @@ $menuItems = [
             ],
             [
                 'name' => 'Appointments',
-                'link' => route('admin.appointment'),
+                'link' => '#',
+                // 'link' => route('admin.appointment'),
                 'icon' => asset('/assets/icons/profile.svg'),
+                'admintype'  => 'data',
+                'children' => [
+                    ['name' => 'Overview', 'link' => route('admin.appointment.overview')],
+                    ['name' => 'Configure', 'link' => route('admin.appointment.configure')],
+                ]
             ],
             [
                 'name' => 'Events & Campaigns',
                 'link' => route('admin.event'),
                 'icon' => asset('/assets/icons/megaphone-02.svg'),
+                'admintype'  => 'data',
             ],
             // [
             //     'name' => 'Communication',
@@ -79,6 +88,12 @@ $menuItems = [
                 'name' => 'Notifications',
                 'link' => route('admin.notification'),
                 'icon' => asset('/assets/icons/notification-02.svg'),
+            ],
+            [
+                'name' => 'Logs',
+                'link' => route('admin.logs'),
+                'icon' => asset('/assets/icons/document-validation.svg'),
+                'admintype' => 'super',
             ],
             // [
             //     'name' => 'System Configuration',
@@ -100,20 +115,11 @@ $menuItems = [
                 'icon' => asset('/assets/icons/dashboard-square-02.svg'),
 
             ],
-            // [
-            //     'name' => 'Child Profiles',
-            //     'link' => route('phm.child.profiles'),
-            //     'icon' => asset('/assets/icons/baby-01.svg'),
-               
-            // ],
             [
                 'name' => 'Child Profiles',
-                'link' => '#',
+                'link' => route('phm.child.profiles'),
                 'icon' => asset('/assets/icons/baby-01.svg'),
-               'children' => [
-                    ['name' => 'Active Child Profiles', 'link' => route('phm.child.profiles')],
-                    ['name' => 'Archived Child Profiles', 'link' => route('phm.child.archived')],
-                ]
+               
             ],
             [
                 'name' => 'Maternal Profiles',
@@ -128,26 +134,20 @@ $menuItems = [
                
             ],
             [
-                'name' => 'Vaccination',
-                'link' => route('phm.vaccination'),
-                'icon' => asset('/assets/icons/vaccine.svg'),
-               
+                'name' => 'Calendar',
+                'link' => route('phm.calendar'),
+                'icon' => asset('/assets/icons/calendar-01.svg')
+            ],
+            [
+                'name' => 'Appointments',
+                'link' => route('phm.appointments'),
+                'icon' => asset('/assets/icons/profile.svg'),
             ],
             // [
             //     'name' => 'Appointments',
             //     'link' => route('phm.appointments'),
             //     'icon' => asset('/assets/icons/profile.svg'),
             // ],
-            [
-                'name' => 'Appointments',
-                'link' => '#',
-                'icon' => asset('/assets/icons/profile.svg'),
-
-                'children' => [
-                    ['name' => 'My Appointments', 'link' => route('phm.appointments')],
-                    ['name' => 'Request Appointments', 'link' => route('phm.appointments.requests')],
-                ]
-            ],
            
              
         ],
@@ -172,6 +172,12 @@ $menuItems = [
 
             ],
             [
+                'name' => 'My Pregnancy',
+                'link' => route('parent.my.pregnancy'),
+                'icon' => asset('/assets/icons/mother.svg'),
+               
+            ],
+            [
                 'name' => 'My Children',
                 'link' => route('parent.my.children'),
                 'icon' => asset('/assets/icons/baby-01.svg'),
@@ -185,14 +191,23 @@ $menuItems = [
             ],
             [
                 'name' => 'Growth Tracking',
-                'link' => route('parent.nutrition.tracking'),
+                'link' => route('parent.growth.tracking'),
                 'icon' => asset('/assets/icons/chart-evaluation.svg'),
                
             ],
             [
                 'name' => 'Appointments',
-                'link' => route('parent.appointments'),
+                'link' => '#',
                 'icon' => asset('/assets/icons/profile.svg'),
+                'children' => [
+                    ['name' => 'My Appointments', 'link' => route('parent.appointments.my')],
+                    ['name' => 'Child Appointment', 'link' => route('parent.appointments.child')],
+                ]
+            ],
+             [
+                'name' => 'Calendar',
+                'link' => route('parent.calendar'),
+                'icon' => asset('/assets/icons/calendar-01.svg')
             ],
             [
                 'name' => 'Events & Campaigns',
@@ -237,8 +252,18 @@ $menuItems = [
           
             [
                 'name' => 'Appointments',
-                'link' => route('doctor.appointments'),
+                'link' => '#',
+                // 'link' => route('doctor.appointments'),
                 'icon' => asset('/assets/icons/profile.svg'),
+                'children' => [
+                    ['name' => 'Overview', 'link' => route('doctor.appointments.overview')],
+                    ['name' => 'Configure', 'link' => route('doctor.appointments.configure')],
+                ]
+            ],
+            [
+                'name' => 'Calendar',
+                'link' => route('doctor.calendar'),
+                'icon' => asset('/assets/icons/calendar-01.svg')
             ],
            
              
@@ -293,25 +318,45 @@ function isCurrentParentItemOpen(array $item)
     <div class="sidebar-section">
         <div class="sidebar-subtitle">{{ $section }}</div>
         @foreach ($items as $item)
-            <div class="tab {{ isCurrentParentItemOpen($item) ? 'active open' : (route()->current() === $item['link'] ? 'active' : '') }} {{ !empty($item['children']) ? 'has-children' : '' }}">
-                <a href="{{ $item['link'] }}" class="menu-link">
-                    <img src="{{ asset($item['icon'] ?? '') }}" /> 
-                    {{ $item['name'] }}
+            <?php
+            $mainSidebarAdminCheck = !isset($item['admintype']) || 
+                ($type === 'admin' && (
+                        (auth()->user()->getRole()->getAdminType() === 'super') ||
+                        (isset($item['admintype']) && $item['admintype'] === auth()->user()->getRole()->getAdminType())
+                    )
+                )
+            ?>
+            @if ($mainSidebarAdminCheck) 
+                <div class="tab {{ isCurrentParentItemOpen($item) ? 'active open' : (route()->current() === $item['link'] ? 'active' : '') }} {{ !empty($item['children']) ? 'has-children' : '' }}">
+                    <a href="{{ $item['link'] }}" class="menu-link">
+                        <img src="{{ asset($item['icon'] ?? '') }}" /> 
+                        {{ $item['name'] }}
+                        @if (!empty($item['children']))
+                            <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" class="arrow">
+                        @endif
+                    </a>
                     @if (!empty($item['children']))
-                        <img src="{{ asset('assets/icons/arrow-down-01-round.svg') }}" class="arrow">
+                        <div class="submenu">
+                            @foreach ($item['children'] as $child)
+                                <?php
+                                $childSidebarAdminCheck = !isset($child['admintype']) || 
+                                    ($type === 'admin' && (
+                                            (auth()->user()->getRole()->getAdminType() === 'super') ||
+                                            (isset($child['admintype']) && $child['admintype'] === auth()->user()->getRole()->getAdminType())
+                                        )
+                                    )
+                                ?>
+                                @if ($childSidebarAdminCheck)
+                                    <a href="{{ $child['link'] }}"
+                                        class="submenu-link {{ route()->current() === $child['link'] ? 'active' : '' }}">
+                                        {{ $child['name'] }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
                     @endif
-                </a>
-                @if (!empty($item['children']))
-                    <div class="submenu">
-                        @foreach ($item['children'] as $child)
-                            <a href="{{ $child['link'] }}"
-                                class="submenu-link {{ route()->current() === $child['link'] ? 'active' : '' }}">
-                                {{ $child['name'] }}
-                            </a>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
+                </div>
+            @endif
         @endforeach
     </div>
     @endforeach
