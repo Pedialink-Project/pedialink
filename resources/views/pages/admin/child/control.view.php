@@ -62,7 +62,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Child ID"
-                                    info="C-{{ $id }}"
+                                    info="{{ display_entity_id('child', $id) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -130,7 +130,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Child ID"
-                                    info="C-{{ $id }}"
+                                    info="{{ display_entity_id('child', $id) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -197,7 +197,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Child ID"
-                                    info="C-{{ $id }}"
+                                    info="{{ display_entity_id('child', $id) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -239,7 +239,7 @@
                             <p>
                                 Remove access of <span class="name-deny">"{{ $staffAccount["name"] }}"</span> of 
                                 id <span class="id-deny">{{ ucfirst($staffAccount["role"]) }}-{{ $staffAccount["id"] }}</span> with child account
-                                <span class="child-name-deny">"{{ $name }}"</span> of id <span class="child-id-deny">C-{{ $id }}</span>?
+                                <span class="child-name-deny">"{{ $name }}"</span> of id <span class="child-id-deny">{{ display_entity_id('child', $id) }}</span>?
                             </p>
                             
                             <form id="secondary-deny-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.control.revoke', ['id' => $id]) }}" class="hidden">

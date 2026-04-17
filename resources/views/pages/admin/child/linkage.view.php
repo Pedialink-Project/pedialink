@@ -25,7 +25,7 @@
         @foreach ($linkRequests as $key => $request)
             <c-card class="linkage-card">
                 <c-slot name="header">
-                    <h3>{{ $request["parent"]["name"] }} &#8594; Child &middot; C-{{ $request["child"]["id"] }}</h3>
+                    <h3>{{ $request["parent"]["name"] }} &#8594; Child &middot; {{ display_entity_id('child', $request["child"]["id"]) }}</h3>
                 </c-slot>
                 <c-slot name="headerSuffix">
                     <span class="linkage-time">{{ time_ago($request["parent"]["created_at"]) }}</span>
@@ -68,7 +68,7 @@
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                         title="Child ID"
-                                        info="C-{{ $request['child']['id'] }}"
+                                        info="{{ display_entity_id('child', $request['child']['id']) }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/user.svg') }}"
@@ -131,7 +131,7 @@
                             <p>
                                 Approve request of <span class="approve-text">"{{ $request["parent"]["name"] }}"</span> with 
                                 id <span class="approve-text">P-{{ $request["parent"]["id"] }}</span> to link with child account
-                                <span class="approve-text">"{{ $request["child"]["name"] }}"</span> of id <span class="approve-text">C-{{ $request["child"]["id"] }}</span>?
+                                <span class="approve-text">"{{ $request["child"]["name"] }}"</span> of id <span class="approve-text">{{ display_entity_id('child', $request["child"]["id"]) }}</span>?
                             </p>
 
                             <form id="approve-account-{{ $key }}" method="POST" action="{{ route('admin.child.linkage.requests.approve', ['id' => $request['id']]) }}" class="hidden"></form>
@@ -165,7 +165,7 @@
                             <p>
                                 Deny request of <span class="deny-text">"{{ $request["parent"]["name"] }}"</span> with 
                                 id <span class="deny-text">P-{{ $request["parent"]["id"] }}</span> to link with child account
-                                <span class="deny-text">"{{ $request["child"]["name"] }}"</span> of id <span class="deny-text">C-{{ $request["child"]["id"] }}</span>?
+                                <span class="deny-text">"{{ $request["child"]["name"] }}"</span> of id <span class="deny-text">{{ display_entity_id('child', $request["child"]["id"]) }}</span>?
                             </p>
                             
                             <form id="deny-account-{{ $key }}" method="POST" action="{{ route('admin.child.linkage.requests.deny', ['id' => $request['id']]) }}" class="hidden"></form>
@@ -210,7 +210,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Child ID"
-                                    info="C-{{ $request['child']['id'] }}"
+                                    info="{{ display_entity_id('child', $request['child']['id']) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"

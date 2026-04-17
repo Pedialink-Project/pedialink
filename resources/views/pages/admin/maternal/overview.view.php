@@ -27,7 +27,7 @@
                 <c-table.tbody>
                     @foreach ($maternal as $key => $mother)
                         <c-table.tr>
-                            <c-table.td col="id">C-{{ $mother['id'] }}</c-table.td>
+                            <c-table.td col="id">{{ display_entity_id('maternal', $mother['id']) }}</c-table.td>
                             <c-table.td col="name">{{ $mother['name'] }}</c-table.td>
                             <c-table.td col="age">{{ $mother['age'] }}</c-table.td>
                             <c-table.td col="age">{{ $mother['division'] }}</c-table.td>
