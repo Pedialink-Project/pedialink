@@ -82,7 +82,7 @@
                         <c-table.th sortable="0">Name</c-table.th>
                         <c-table.th sortable="0">Email</c-table.th>
                         <c-table.th sortable="0">Admin Type</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
@@ -120,8 +120,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy ID</c-dropdown.item>
-                                        <c-dropdown.sep />
                                         <c-modal id="view-account-{{ $key }}" size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Account Info</c-dropdown.item>

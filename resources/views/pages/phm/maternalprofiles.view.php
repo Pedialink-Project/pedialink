@@ -102,14 +102,14 @@ Maternal Profiles - Overview
                     <c-table.th sortable="0" width="210px">Name</c-table.th>
                     <c-table.th sortable="0" width="200px">Age</c-table.th>
                     <c-table.th align="left" sortable="0" width="220px">Maternal Type</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th align="center" class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
             <c-table.tbody>
                 @foreach ($maternals as $key => $maternal)
                 <c-table.tr>
-                    <c-table.td col="id">C-00{{ $maternal['id'] }}</c-table.td>
+                    <c-table.td col="id">{{ display_entity_id('maternal', $maternal['id']) }}</c-table.td>
                     <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
                     <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
@@ -154,7 +154,7 @@ Maternal Profiles - Overview
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="Maternal ID"
-                                            info="C-00{{ $maternal['id'] }}" />
+                                            info="{{ display_entity_id('maternal', $maternal['id']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
                                             info="{{ $maternal['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
@@ -176,29 +176,31 @@ Maternal Profiles - Overview
                                     </c-modal.viewcard>
 
 
-                                   <c-modal.viewlist title="Latest Medical Records">
+                                    <c-modal.viewlist title="Latest Medical Records">
                                         <c-slot name="list">
                                             @if($maternal['record'] == NULL)
-                                                <li>No medical records found.</li>
+                                            <li>No medical records found.</li>
                                             @else
-                                                <li>Fundal Height: {{ $maternal['record']['fundal_height'] ?? '' }} cm</li>
-                                                <li>Weight: {{ $maternal['record']['weight'] ?? '' }} kg</li>
-                                                <li>BMI Value: {{ $maternal['record']['bmi'] ?? '' }}</li>
-                                                <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] ?? '' }} bpm</li>
-                                                <li>Glucose: {{ $maternal['record']['glucose'] ?? '' }} mg/dL</li>
-                                                <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] ?? '' }} g/dL</li>
-                                                <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] ?? '' }} mmHg</li>
+                                            <li>Fundal Height: {{ $maternal['record']['fundal_height'] ?? '' }} cm</li>
+                                            <li>Weight: {{ $maternal['record']['weight'] ?? '' }} kg</li>
+                                            <li>BMI Value: {{ $maternal['record']['bmi'] ?? '' }}</li>
+                                            <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] ?? '' }} bpm</li>
+                                            <li>Glucose: {{ $maternal['record']['glucose'] ?? '' }} mg/dL</li>
+                                            <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] ?? '' }} g/dL</li>
+                                            <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] ?? '' }} mmHg</li>
                                             @endif
                                         </c-slot>
                                     </c-modal.viewlist>
 
 
-                                    <
+
 
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
                                 </c-modal>
+                                <c-dropdown.sep />
+
                                 <c-dropdown.item href="{{ route('phm.maternal.health',['id'=>$maternal['id']])}}">
                                     View Health Records
                                 </c-dropdown.item>
@@ -206,6 +208,8 @@ Maternal Profiles - Overview
                                     View Appointments History
                                 </c-dropdown.item>
                                 @if ($maternal['type'] === "antenatal")
+                                <c-dropdown.sep />
+
                                 <c-modal id="end-antenatal-profile" size="sm" :initOpen="flash('end') ? true : false">
                                     <c-slot name="trigger">
                                         <c-dropdown.item>End Antenatal Profile</c-dropdown.item>

@@ -47,7 +47,7 @@ Parent - My Appointments
                     <c-table.th>Doctor</c-table.th>
                     <c-table.th>Status</c-table.th>
 
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 

@@ -22,14 +22,14 @@
                         <c-table.th sortable="0">Name</c-table.th>
                         <c-table.th sortable="0" width="200px">Age</c-table.th>
                         <c-table.th>Assigned PHM</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
                 <c-table.tbody>
                     @foreach ($children as $key => $child)
                         <c-table.tr>
-                            <c-table.td col="id">C-{{ $child['id'] }}</c-table.td>
+                            <c-table.td col="id">{{ display_entity_id('child', $child['id']) }}</c-table.td>
                             <c-table.td col="name">{{ $child['name'] }}</c-table.td>
                             <c-table.td col="age" width="200px">
                                 {{ calculateAge($child['date_of_birth']) }}
@@ -43,8 +43,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy Child Profile ID</c-dropdown.item>
-                                        <c-dropdown.sep />
                                         <c-modal size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>View Child Profile</c-dropdown.item>
@@ -62,7 +60,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Profile"
-                                                    info="P-{{ $child['id'] }}"
+                                                    info="{{ display_entity_id('child', $child['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -77,7 +75,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user-add--01.svg') }}"
                                                     title="Created By"
-                                                    info="PHM-{{ $child['phm']['id'] }}"
+                                                    info="{{ display_entity_id('phm', $child['phm']['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/baby-01.svg') }}"

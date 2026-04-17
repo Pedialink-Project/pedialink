@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Parent - Vaccination
+PHM - Vaccination
 @endsection
 
 @section('css')
@@ -33,7 +33,7 @@ Parent - Vaccination
         </defs>
     </svg>
 
-    <span>Vaccination Records &#8594; Baby Sarah &middot; C-000{{ $id }}</span>
+    <span>Vaccination Records &#8594; Baby Sarah &middot; {{ display_entity_id('child', $id) }}</span>
 </div>
 
 @endsection
@@ -232,7 +232,7 @@ $vaccinations = [
                     <c-table.th sortable="0">Date & Time</c-table.th>
                     <c-table.th sortable="0">Location</c-table.th>
                     <c-table.th sortable="0">Administerd By</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
             <c-table.tbody>

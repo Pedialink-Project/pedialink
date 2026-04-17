@@ -162,7 +162,7 @@ Parent Dashboard
                 <!-- Single appointment row  -->
                 <div class="row appoinment">
                     <div class="primary-details">
-                        <div class="name">{{$maternalAppointment['child']['name']}} <span>Appointment</span></div>
+                        <div class="name">{{$maternalAppointment['maternal']['name']}}</div>
                         @if($maternalAppointment['doctor'])
                         <div class="sub-details">
                             <!-- Doctor Icon -->
