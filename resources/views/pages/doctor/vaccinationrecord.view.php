@@ -36,7 +36,7 @@ Doctor Vaccination
     </defs>
 </svg>
 
-Vaccination Details of {{ $name .' (M-00'.$id.')' }}
+Vaccination Details of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
 @endsection
 
 @section('content')

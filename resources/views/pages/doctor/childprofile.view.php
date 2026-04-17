@@ -65,7 +65,7 @@ Doctor Child Profiles
 
                 @foreach ($children as $key => $child)
                 <c-table.tr>
-                    <c-table.td col="id">C-00{{ $child['id'] }}</c-table.td>
+                    <c-table.td col="id">{{ display_entity_id('child', $child['id']) }}</c-table.td>
                     <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
                     <c-table.td col="age" class="child-col">{{ $child['age'] }}</c-table.td>
                     <c-table.td col="area">{{ $child['area'] ?? '-' }}</c-table.td>
@@ -112,7 +112,7 @@ Doctor Child Profiles
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/profile.svg') }}"
                                             title="Child ID"
-                                            info="{{'C-00'. $child['id'] }}" />
+                                            info="{{ display_entity_id('child', $child['id']) }}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/baby-01.svg') }}"
                                             title="Name"

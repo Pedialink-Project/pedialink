@@ -14,7 +14,7 @@ PHM Appointments
     <path d="M9.16663 10L14.1666 10" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" />
     <path d="M9.16663 14.1667L14.1666 14.1667" stroke="#3A3C41" stroke-width="1.5" stroke-linecap="round" />
 </svg>
-{{ !empty($history) && $history['status'] === true ? "Appointment History of  " . $history['name'] . ' (C-00' . $history['id'] . ')' : "Recent Appointments" }}
+{{ !empty($history) && $history['status'] === true ? "Appointment History of  " . $history['name'] . ' (' . display_entity_id('child', $history['id']) . ')' : "Recent Appointments" }}
 @endsection
 
 @section('css')
@@ -65,7 +65,7 @@ if (!empty($history) && $history['status'] === true) {
             <c-table.tbody>
                 @foreach ($appointments as $key => $appointment)
                 <c-table.tr>
-                    <c-table.td col="id">AP-00{{ $appointment['id'] }}</c-table.td>
+                    <c-table.td col="id">{{ display_entity_id('appointment', $appointment['id']) }}</c-table.td>
                     <c-table.td col="name">
                         @if ($appointment['child'])
                         {{ $appointment['child']['name'] }}
@@ -138,7 +138,7 @@ if (!empty($history) && $history['status'] === true) {
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/profile-02.svg') }}"
                                             title="Appointment ID"
-                                            info="AP-00{{ $appointment['id'] }}" />
+                                            info="{{ display_entity_id('appointment', $appointment['id']) }}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/user.svg') }}"
                                             title="Name"

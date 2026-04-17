@@ -42,7 +42,7 @@ Doctor Child Health Records
         </clipPath>
     </defs>
 </svg>
-Health Records of {{ $name .' (C-00'.$id.')' }}
+Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
 @endsection
 
 @section('content')
