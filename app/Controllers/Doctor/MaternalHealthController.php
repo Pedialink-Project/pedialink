@@ -12,7 +12,7 @@ class MaternalHealthController
 
     public function __construct()
     {
-        
+        $this->maternalRecordService = new MaternalRecordService();
     }
 
 }
