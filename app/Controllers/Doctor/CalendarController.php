@@ -18,4 +18,9 @@ class CalendarController
     {
         $doctorId = auth()->user()->id;
         $events = $this->calendarService->getDoctorCalendarEvents($doctorId);
+
+        return view('doctor/calendar', [
+            'events' => $events,
+        ]);
+    }
 }
