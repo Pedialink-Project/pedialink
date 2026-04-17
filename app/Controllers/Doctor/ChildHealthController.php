@@ -11,4 +11,10 @@ class ChildHealthController
 {
     private $childRecordService;
     private VaccinationService $vaccinationService;
+
+    public function __construct()
+    {
+        
+    }
+
 }
