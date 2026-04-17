@@ -11,6 +11,6 @@ class DashboardController
 
     public function __construct()
     {
-        
+        $this->dashboardService = new DashboardService();
     }
 }
