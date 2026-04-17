@@ -237,11 +237,11 @@ Events & Campaigns
                                                 error="{{ flash('edit') == $event['id'] ? (errors('e_date') ?? '') : '' }}"
                                                 placeholder="Select Date" required />
                                             <c-input label="Start Time" type="time" name="e_start_time"
-                                                value="{{ flash('edit') == $event['id'] ? (old('e_start_time') ?? '') : $event['start_time'] }}"
+                                                value="{{ flash('edit') == $event['id'] ? (old('e_start_time') ?? '') : formatAmPmToTime($event['start_time']) }}"
                                                 error="{{ flash('edit') == $event['id'] ? (errors('e_start_time') ?? '') : '' }}"
                                                 placeholder="Select Start Time" required />
                                             <c-input label="End Time" type="time" name="e_end_time"
-                                                value="{{ flash('edit') == $event['id'] ? (old('e_end_time') ?? '') : $event['end_time'] }}"
+                                                value="{{ flash('edit') == $event['id'] ? (old('e_end_time') ?? '') : formatAmPmToTime($event['end_time']) }}"
                                                 error="{{ flash('edit') == $event['id'] ? (errors('e_end_time') ?? '') : '' }}"
                                                 placeholder="Select End Time" required />
                                         </div>
