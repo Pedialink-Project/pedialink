@@ -51,4 +51,32 @@ class ChildHealthController
             $headCircumference,
         );
 
+        if (count($errors) !== 0) {
+            return redirect(route("doctor.child.health", ["id" => $id]))
+                ->withInput([
+                    "height" => $height,
+                    "weight" => $weight,
+                    "head_circumference" => $headCircumference,
+                    "visit_date" => $visitDate,
+                    "notes" => $notes,
+                ])
+                ->withErrors($errors)
+                ->with("add", true);
+        }
+
+        $this->childRecordService->addHealthRecord(
+            $id,
+            $staffId,
+            $visitDate,
+            $height,
+            $weight,
+            $headCircumference,
+            $notes
+        );
+
+        return redirect(route("doctor.child.health", ["id" => $id]))
+            ->withMessage("Health record added successfully.", "Success", "success");
+    }
+    
+
 }
