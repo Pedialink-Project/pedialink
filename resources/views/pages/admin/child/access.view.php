@@ -26,7 +26,7 @@
         @foreach ($accessRequests as $key => $request)
             <c-card class="access-card">
                 <c-slot name="header">
-                    <h3>{{ $request["staff"]['name'] }} &#8594; Child &middot; C-{{ $request["child"]['id'] }}</h3>
+                    <h3>{{ $request["staff"]['name'] }} &#8594; Child &middot; {{ display_entity_id('child', $request["child"]['id']) }}</h3>
                 </c-slot>
                 <c-slot name="headerSuffix">
                     <span class="access-time">{{ time_ago($request['created_at']) }}</span>
@@ -69,7 +69,7 @@
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                         title="Child ID"
-                                        info="C-{{ $request['child']['id'] }}"
+                                        info="{{ display_entity_id('child', $request['child']['id']) }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/user.svg') }}"
@@ -136,7 +136,7 @@
                             <p>
                                 Approve request of <span class="approve-text">"{{ $request["staff"]["name"] }}"</span> with 
                                 id <span class="approve-text">D-{{ $request["staff"]["id"] }}</span> to access child account
-                                <span class="approve-text">"{{ $request["child"]["name"] }}"</span> of id <span class="approve-text">C-{{ $request["child"]["id"] }}</span>?
+                                <span class="approve-text">"{{ $request["child"]["name"] }}"</span> of id <span class="approve-text">{{ display_entity_id('child', $request["child"]["id"]) }}</span>?
                             </p>
 
                             <form id="approve-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.requests.approve', ['id' => $request['id']]) }}" class="hidden"></form>
@@ -170,7 +170,7 @@
                             <p>
                                 Deny request of <span class="deny-text">"{{ $request["staff"]["name"] }}"</span> with 
                                 id <span class="deny-text">D-{{ $request["staff"]["id"] }}</span> to access child account
-                                <span class="deny-text">"{{ $request["child"]["name"] }}"</span> of id <span class="deny-text">C-{{ $request["child"]["id"] }}</span>?
+                                <span class="deny-text">"{{ $request["child"]["name"] }}"</span> of id <span class="deny-text">{{ display_entity_id('child', $request["child"]["id"]) }}</span>?
                             </p>
                             
                             <form id="deny-account-{{ $key }}" method="POST" action="{{ route('admin.child.access.requests.deny', ['id' => $request['id']]) }}" class="hidden"></form>
@@ -215,7 +215,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Child ID"
-                                    info="C-{{ $request['child']['id'] }}"
+                                    info="{{ display_entity_id('child', $request['child']['id']) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"

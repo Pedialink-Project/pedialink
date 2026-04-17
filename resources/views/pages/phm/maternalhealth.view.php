@@ -41,7 +41,7 @@ PHM Maternal Health
         </clipPath>
     </defs>
 </svg>
-Health Records  of {{ $name .' (M-00'.$id.')' }}
+Health Records  of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
 @endsection
 
 @section('content')

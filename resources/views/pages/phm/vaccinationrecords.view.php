@@ -33,7 +33,7 @@ PHM - Vaccination
         </defs>
     </svg>
 
-    <span>Vaccination Records &#8594; Baby Sarah &middot; C-000{{ $id }}</span>
+    <span>Vaccination Records &#8594; Baby Sarah &middot; {{ display_entity_id('child', $id) }}</span>
 </div>
 
 @endsection

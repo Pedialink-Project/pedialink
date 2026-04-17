@@ -29,7 +29,7 @@
                 <c-table.tbody>
                     @foreach ($children as $key => $child)
                         <c-table.tr>
-                            <c-table.td col="id">C-{{ $child['id'] }}</c-table.td>
+                            <c-table.td col="id">{{ display_entity_id('child', $child['id']) }}</c-table.td>
                             <c-table.td col="name">{{ $child['name'] }}</c-table.td>
                             <c-table.td col="age" width="200px">
                                 {{ calculateAge($child['date_of_birth']) }}

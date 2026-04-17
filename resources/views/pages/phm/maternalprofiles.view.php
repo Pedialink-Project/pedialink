@@ -109,7 +109,7 @@ Maternal Profiles - Overview
             <c-table.tbody>
                 @foreach ($maternals as $key => $maternal)
                 <c-table.tr>
-                    <c-table.td col="id">M-00{{ $maternal['id'] }}</c-table.td>
+                    <c-table.td col="id">{{ display_entity_id('maternal', $maternal['id']) }}</c-table.td>
                     <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
                     <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
@@ -154,7 +154,7 @@ Maternal Profiles - Overview
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="Maternal ID"
-                                            info="M-00{{ $maternal['id'] }}" />
+                                            info="{{ display_entity_id('maternal', $maternal['id']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
                                             info="{{ $maternal['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
