@@ -11,4 +11,9 @@ use App\Services\MaternalService;
 class MaternalProfileController
 {
     protected $maternalService;
+
+     public function __construct()
+    {
+        
+    }
 }
