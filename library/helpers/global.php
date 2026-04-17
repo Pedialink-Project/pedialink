@@ -243,6 +243,12 @@ function display_entity_id(string $entity, $id, int $padLength = 3): string
         'event' => 'EV',
         'child' => 'C',
         'maternal' => 'M',
+        'vaccination' => 'V',
+        'vaccinatio-shedule' => 'VS',
+        'user' => 'U',
+        'childhealthrecord' => 'CHR',
+        'maternalhealthrecord' => 'MHR',
+
     ];
 
     $prefix = $prefixMap[strtolower($entity)] ?? strtoupper($entity);
