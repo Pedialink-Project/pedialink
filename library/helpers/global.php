@@ -244,7 +244,7 @@ function display_entity_id(string $entity, $id, int $padLength = 3): string
         'child' => 'C',
         'maternal' => 'M',
         'vaccination' => 'V',
-        'vaccinatio-shedule' => 'VS',
+        'vaccinationschedule' => 'VS',
         'user' => 'U',
         'childhealthrecord' => 'CHR',
         'maternalhealthrecord' => 'MHR',
@@ -255,4 +255,19 @@ function display_entity_id(string $entity, $id, int $padLength = 3): string
     $number = max((int) $id, 0);
 
     return sprintf('%s-%0' . $padLength . 'd', $prefix, $number);
+}
+
+ function formatAmPmToTime(?string $time): ?string
+{
+    if (!$time) {
+        return null;
+    }
+
+    $dateTime = \DateTime::createFromFormat('g:i A', $time);
+
+    if (!$dateTime) {
+        return null; 
+    }
+
+    return $dateTime->format('H:i:s');
 }
