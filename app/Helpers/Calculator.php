@@ -230,4 +230,19 @@ public static function calculateMaternalAgeAtLMP(?string $dateOfBirth, ?string $
     return $diff->y; 
 }
 
+public static function formatAmPmToTime(?string $time): ?string
+{
+    if (!$time) {
+        return null;
+    }
+
+    $dateTime = \DateTime::createFromFormat('g:i A', $time);
+
+    if (!$dateTime) {
+        return null; 
+    }
+
+    return $dateTime->format('H:i:s');
+}
+
 }
