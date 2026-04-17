@@ -10,6 +10,52 @@ use Library\Framework\Database\QueryBuilder;
 
 class VaccinationSchedulerService
 {
+    public function recalculateForAllChildren(?int $scheduleId = null): void
+    {
+        if ($scheduleId !== null) {
+            $activeScheduleRows = QueryBuilder::rawGet(
+                "SELECT id
+                 FROM schedules
+                 WHERE id = :schedule_id AND active = TRUE
+                 LIMIT 1",
+                [':schedule_id' => $scheduleId]
+            );
+
+            if (empty($activeScheduleRows)) {
+                return;
+            }
+        }
+
+        $lastChildId = 0;
+
+        while (true) {
+            $children = QueryBuilder::rawGet(
+                "SELECT id
+                 FROM children
+                 WHERE id > :last_child_id
+                   AND area_id IS NOT NULL
+                   AND TRIM(COALESCE(date_of_birth::text, '')) <> ''
+                 ORDER BY id ASC
+                 LIMIT 500",
+                [':last_child_id' => $lastChildId]
+            );
+
+            if (empty($children)) {
+                break;
+            }
+
+            foreach ($children as $childRow) {
+                $childId = (int)($childRow['id'] ?? 0);
+                if ($childId <= 0) {
+                    continue;
+                }
+
+                $this->syncRemindersForChild($childId, true);
+                $lastChildId = $childId;
+            }
+        }
+    }
+
     public function createInitialRemindersForChild(int $childId): void
     {
         $this->syncRemindersForChild($childId, false);
