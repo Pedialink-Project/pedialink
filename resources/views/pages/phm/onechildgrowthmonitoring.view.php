@@ -5,7 +5,7 @@ PHM - Growth Tracking
 @endsection
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/pages/parent/nutrition-tracking.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/phm/growthmonitoring.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 @endsection
@@ -52,7 +52,7 @@ Growth of {{ $child['name'] . ' (' . display_entity_id('child', $child['id']) . 
         <div class="container">
             <div class="left-col">
 
-            <c-card class="card bmi-card">
+                <c-card class="card bmi-card">
                     <div class="header">
                         <div class="title-section">
                             <span class="card-title">BMI Tracking</span>
@@ -91,7 +91,7 @@ Growth of {{ $child['name'] . ' (' . display_entity_id('child', $child['id']) . 
                     </div>
                 </c-card>
 
-
+            </div>
             <div class="right-col">
 
 
