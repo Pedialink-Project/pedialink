@@ -14,4 +14,8 @@ class CalendarController
         $this->calendarService = new CalendarService();
     }
 
+    public function index(Request $request)
+    {
+        $doctorId = auth()->user()->id;
+        $events = $this->calendarService->getDoctorCalendarEvents($doctorId);
 }
