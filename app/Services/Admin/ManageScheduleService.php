@@ -31,17 +31,17 @@ class ManageScheduleService
             $schedule = $scheduledVaccine->getSchedule();
 
             // track vaccine index to remove
-            $vaccineIndexToRemove = [];
-            foreach ($vaccines as $key => $existingVaccine) {
-                if ($vaccine->id == $existingVaccine->id) {
-                    $vaccineIndexToRemove[] = $key;
-                }
-            }
+            // $vaccineIndexToRemove = [];
+            // foreach ($vaccines as $key => $existingVaccine) {
+            //     if ($vaccine->id == $existingVaccine->id) {
+            //         $vaccineIndexToRemove[] = $key;
+            //     }
+            // }
 
             // unset tracked vaccine index from array
-            foreach ($vaccineIndexToRemove as $vaccineIndex) {
-                unset($vaccines[$vaccineIndex]);
-            }
+            // foreach ($vaccineIndexToRemove as $vaccineIndex) {
+            //     unset($vaccines[$vaccineIndex]);
+            // }
 
             // remove gaps from array
             array_values($vaccines);
@@ -84,15 +84,15 @@ class ManageScheduleService
             return $error;
         }
 
-        $schedule = ScheduledVaccine::query()
-            ->where("vaccine_id", "=", $vaccine_id)
-            ->where("schedule_id", "=", $schedule_id)
-            ->first();
+        // $schedule = ScheduledVaccine::query()
+        //     ->where("vaccine_id", "=", $vaccine_id)
+        //     ->where("schedule_id", "=", $schedule_id)
+        //     ->first();
 
-        if ($schedule) {
-            $error = "Selected vaccine is already added to this schedule.";
-            return $error;
-        }
+        // if ($schedule) {
+        //     $error = "Selected vaccine is already added to this schedule.";
+        //     return $error;
+        // }
 
         return $error;
     }
