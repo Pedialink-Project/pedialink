@@ -1,0 +1,84 @@
+* {
+    box-sizing: border-box;
+}
+
+.logs-actions {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.logs-actions form {
+    margin: 0;
+}
+
+.logs-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.logs-summary-card {
+    padding: 1rem 1.1rem;
+}
+
+.logs-summary-label {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    margin-bottom: .35rem;
+}
+
+.logs-summary-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.logs-card .card-body {
+    gap: .75rem;
+}
+
+.logs-card .row.activity {
+    align-items: flex-start;
+}
+
+.logs-user-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .25rem;
+}
+
+.logs-details {
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+}
+
+.logs-details .sub-name {
+    word-break: break-word;
+}
+
+@media (max-width: 1100px) {
+    .logs-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .logs-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .logs-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .logs-user-meta {
+        align-items: flex-start;
+    }
+}

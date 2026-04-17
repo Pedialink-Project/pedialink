@@ -3,6 +3,7 @@
 use App\Controllers\Admin\AppointmentController;
 use App\Controllers\Admin\ChildController;
 use App\Controllers\Admin\DashboardController;
+use App\Controllers\Admin\LoggingController;
 use App\Controllers\Admin\EventController;
 use App\Controllers\Admin\MaternalController;
 use App\Controllers\Admin\UserController;
@@ -86,6 +87,11 @@ return [
 
     // Admin notification
     ['GET', '/admin/notification', [NotificationController::class, 'index'], 'admin.notification', ['admin', 'verified']],
+
+    // Admin logs
+    ['GET', '/admin/logs', [LoggingController::class, 'view'], 'admin.logs', ['superAdmin', 'verified']],
+    ['GET', '/admin/logs/download', [LoggingController::class, 'download'], 'admin.logs.download', ['superAdmin', 'verified']],
+    ['POST', '/admin/logs/delete', [LoggingController::class, 'delete'], 'admin.logs.delete', ['superAdmin', 'verified']],
    
 
 ];

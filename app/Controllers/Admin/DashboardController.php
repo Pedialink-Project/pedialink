@@ -27,6 +27,10 @@ class DashboardController
         $eventsData = $this->dashboardService->getEventsData();
         $weeklyAppointmentsData = $this->dashboardService->getWeeklyAppointmentsData();
         $todaysAppointments = $this->dashboardService->getTodaysAppointments();
+        $recentUsersLastSixMonthsData = $this->dashboardService->getRecentUsersLastSixMonthsData();
+        $userRoleDistributionData = $this->dashboardService->getUserRoleDistributionData();
+        $emailVerificationDistributionData = $this->dashboardService->getEmailVerificationDistributionData();
+        $recentLogs = logger()->recent(3);
 
         return view("admin/dashboard", [
             "childrenCount" => $childrenCount,
@@ -39,7 +43,11 @@ class DashboardController
             "parentApprovalRequests" => $parentApprovalRequests,
             "eventsData" => $eventsData,
             "weeklyAppointmentsData" => $weeklyAppointmentsData,
-            "todaysAppointments" => $todaysAppointments
+            "todaysAppointments" => $todaysAppointments,
+            "recentUsersLastSixMonthsData" => $recentUsersLastSixMonthsData,
+            "userRoleDistributionData" => $userRoleDistributionData,
+            "emailVerificationDistributionData" => $emailVerificationDistributionData,
+            "recentLogs" => $recentLogs,
         ]);
     }
 }

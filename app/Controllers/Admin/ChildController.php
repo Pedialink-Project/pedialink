@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Models\Child;
 use App\Models\ChildAccessRequest;
+use App\Models\User;
 use App\Services\Admin\ChildAccessRequestsService;
 use App\Services\Admin\ChildLinkageService;
 use App\Services\Admin\ChildService;
@@ -82,19 +83,29 @@ class ChildController
 
     public function linkageRequests(Request $request)
     {
-        [$linkRequests, $links] = $this->childLinkageService->getLinkageData();
+        $parentId = $request->query("parent", null);
+        [$linkRequests, $links] = $parentId ? 
+            $this->childLinkageService->getLinkageData($parentId) :
+            $this->childLinkageService->getLinkageData();
         return view("admin/child/linkage", [
             "linkRequests" => $linkRequests,
-            "links" => $links
+            "links" => $links,
+            "parent" => $parentId ? [
+                "id" => $parentId,
+                "name" => User::find($parentId)->name,
+            ] : null,
         ]);
     }
 
     public function approveLinkageRequest(Request $request, int $id)
     {
+        $parentId = $request->query("parent", null);
         $value = $this->childLinkageService->approveLinkage($id);
 
         if ($value) {
-            return redirect(route("admin.child.linkage.requests"))
+            return redirect(route("admin.child.linkage.requests", [], $parentId ? [
+                'parent' => $parentId
+            ] : []))
                 ->withMessage(
                     "Linkage request approved successfully",
                     "Success",
@@ -102,7 +113,9 @@ class ChildController
                 );
         }
 
-        return redirect(route("admin.child.linkage.requests"))
+        return redirect(route("admin.child.linkage.requests", [], $parentId ? [
+            'parent' => $parentId,
+        ] : []))
             ->withMessage(
                 "Linkage request failed to approve",
                 "Error",
@@ -112,10 +125,13 @@ class ChildController
 
     public function denyLinkageRequest(Request $request, int $id)
     {
+        $parentId = $request->query("parent", null);
         $value = $this->childLinkageService->denyLinkage($id);
 
         if ($value) {
-            return redirect(route("admin.child.linkage.requests"))
+            return redirect(route("admin.child.linkage.requests"[], $parentId ? [
+                'parent' => $parentId
+            ] : []))
                 ->withMessage(
                     "Linkage request denied successfully",
                     "Success",
@@ -123,12 +139,14 @@ class ChildController
                 );
         }
 
-        return redirect(route("admin.child.linkage.requests"))
-            ->withMessage(
-                "Linkage request failed to deny",
-                "Error",
-                "error"
-            );
+        return redirect(route("admin.child.linkage.requests"[], $parentId ? [
+                'parent' => $parentId
+            ] : []))
+                ->withMessage(
+                    "Linkage request failed to deny",
+                    "Error",
+                    "error"
+                );
     }
 
     public function accessRequests(Request $request)
