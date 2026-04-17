@@ -58,7 +58,7 @@
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/profile-02.svg') }}"
                                         title="Parent ID"
-                                        info="P-{{ $request['parent']['id'] }}"
+                                        info="{{ display_entity_id('parent', $request['parent']['id']) }}"
                                     />
                                     <c-modal.viewitem
                                         icon="{{ asset('assets/icons/user.svg') }}"
@@ -109,7 +109,7 @@
                         </c-slot>
                     </c-dropdown.main>
                 </c-slot>
-                <p class="linkage-card-content">P-{{ $request["parent"]['id'] }} requested to link with child account</p>
+                <p class="linkage-card-content">{{ display_entity_id('parent', $request["parent"]['id']) }} requested to link with child account</p>
                 <c-slot name="footer">
                     <div class="linkage-card-btn-grp">
                         <c-modal size="sm">
@@ -130,7 +130,7 @@
 
                             <p>
                                 Approve request of <span class="approve-text">"{{ $request["parent"]["name"] }}"</span> with 
-                                id <span class="approve-text">P-{{ $request["parent"]["id"] }}</span> to link with child account
+                                id <span class="approve-text">{{ display_entity_id('parent', $request["parent"]["id"]) }}</span> to link with child account
                                 <span class="approve-text">"{{ $request["child"]["name"] }}"</span> of id <span class="approve-text">{{ display_entity_id('child', $request["child"]["id"]) }}</span>?
                             </p>
 
@@ -164,7 +164,7 @@
 
                             <p>
                                 Deny request of <span class="deny-text">"{{ $request["parent"]["name"] }}"</span> with 
-                                id <span class="deny-text">P-{{ $request["parent"]["id"] }}</span> to link with child account
+                                id <span class="deny-text">{{ display_entity_id('parent', $request["parent"]["id"]) }}</span> to link with child account
                                 <span class="deny-text">"{{ $request["child"]["name"] }}"</span> of id <span class="deny-text">{{ display_entity_id('child', $request["child"]["id"]) }}</span>?
                             </p>
                             
@@ -200,7 +200,7 @@
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                     title="Parent ID"
-                                    info="P-{{ $request['parent']['id'] }}"
+                                    info="{{ display_entity_id('parent', $request['parent']['id']) }}"
                                 />
                                 <c-modal.viewitem
                                     icon="{{ asset('assets/icons/user.svg') }}"

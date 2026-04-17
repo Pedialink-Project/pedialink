@@ -56,7 +56,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Profile"
-                                                    info="P-{{ $mother['id'] }}"
+                                                    info="{{ display_entity_id('maternal', $mother['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"

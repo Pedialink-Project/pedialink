@@ -173,7 +173,7 @@ Health Records  of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Record ID" info="REC-00{{ $record['id'] }}" />
+                                            title="Record ID" info="{{ display_entity_id('record', $record['id']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                             title="Recorded At" info="{{ $record['visit_date'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"

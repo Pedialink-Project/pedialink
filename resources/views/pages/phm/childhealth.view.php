@@ -166,7 +166,7 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/profile.svg') }}"
                                             title="Record ID"
-                                            info="{{'REC-00' . $record['id'] }}" />
+                                            info="{{ display_entity_id('record', $record['id']) }}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Height"

@@ -60,7 +60,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/profile-02.svg') }}"
                                                     title="Profile"
-                                                    info="P-{{ $child['id'] }}"
+                                                    info="{{ display_entity_id('child', $child['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user.svg') }}"
@@ -75,7 +75,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/user-add--01.svg') }}"
                                                     title="Created By"
-                                                    info="PHM-{{ $child['phm']['id'] }}"
+                                                    info="{{ display_entity_id('phm', $child['phm']['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/baby-01.svg') }}"

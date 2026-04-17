@@ -150,7 +150,7 @@ Admin Dashboard
                                         Approve Account
                                     </c-slot>
 
-                                    <p>Approve parent <span class="parent-name-approve">"{{ $request["name"] }}"</span> of id <span class="parent-id-approve">P-{{ $request["id"] }}</span>?</p>
+                                    <p>Approve parent <span class="parent-name-approve">"{{ $request["name"] }}"</span> of id <span class="parent-id-approve">{{ display_entity_id('parent', $request["id"]) }}</span>?</p>
 
                                     <form id="approve-account-{{ $reqKey }}" method="POST" action="{{ route('admin.user.parent.approve', ['id' => $request['id']], ['quick' => true])}}" class="hidden">
 
@@ -182,7 +182,7 @@ Admin Dashboard
                                         Deny Account
                                     </c-slot>
 
-                                    <p>Deny parent <span class="parent-name-deny">"{{ $request["name"] }}"</span> of id <span class="parent-id-deny">P-{{ $request["id"] }}</span>?</p>
+                                    <p>Deny parent <span class="parent-name-deny">"{{ $request["name"] }}"</span> of id <span class="parent-id-deny">{{ display_entity_id('parent', $request["id"]) }}</span>?</p>
 
                                     <form id="deny-account-{{ $reqKey }}" method="POST" action="{{ route('admin.user.parent.deny', ['id' => $request['id']], ['quick' => true])}}" class="hidden"></form>
 
