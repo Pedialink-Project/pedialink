@@ -5,7 +5,7 @@ PHM Growth Tracking
 @endsection
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/pages/parent/nutrition-tracking.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/phm/growthmonitoring.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 @endsection
@@ -31,153 +31,143 @@ PHM Growth Tracking
 @endsection
 
 @section('content')
-@if(empty($growthData))
-<c-emptytable
-    alt="No Growth Data"
-    title="No Growth Records Yet"
-    description="No growth tracking data available. Start recording your child's height, weight, and BMI measurements to view their growth progress here." />
-@else
-<main class="container">
+    @if(empty($growthData))
+        <c-emptytable
+            alt="No Growth Data"
+            title="No Growth Records Yet"
+            description="No growth tracking data available. Start recording your child's height, weight, and BMI measurements to view their growth progress here."
+        />
+    @else
+        <div class="container">
+            <!-- BMI Chart -->
+
+            <div class="left-col">
+
+                <c-card class="card bmi-card">
+                    <div class="header">
+                        <div class="title-section">
+                            <span class="card-title">Child BMI Tracking</span>
+                            <span id="bmiSubtitle" class="card-subtitle">
+                                Track All Children's BMI over time
+                            </span>
+                        </div>
 
 
+                        <c-select class="child-select-bmi" placeholder="Select Child">
+
+                            @if(!empty($childrenList))
+                                @foreach ($childrenList as $child)
+                                    <li class="select-item" data-value="{{ $child['id'] }}">
+                                        {{ $child['name'] }}
+                                    </li>
+                                @endforeach
+                                <li class="select-item" data-value="all-children">
+                                    All Children
+                                </li>
+                            @else
+                                <li class="select-item disabled">
+                                    No children available
+                                </li>
+                            @endif
+                        </c-select>
+                    </div>
+                    <hr class="divider">
+                    <div class="card-body">
+                        <canvas id="bmiChart">
+
+                        </canvas>
+                        <div class="no-data-message bmi-no-data" style="display:none;">
+                            No BMI records available for this child
+                        </div>
+
+                    </div>
+                </c-card>
+
+                <!-- Height Chart -->
+                <c-card class="card height-card">
+                    <div class="header">
+                        <div class="title-section">
+                            <span class="card-title">Child Height Tracking</span>
+                            <span class="card-subtitle" id="heightSubtitle">Track All Children Height over time</span>
+                        </div>
+                        <c-select class="child-select-height" placeholder="Select Child">
+
+                            @if(!empty($childrenList))
+                                @foreach ($childrenList as $child)
+                                    <li class="select-item" data-value="{{ $child['id'] }}">
+                                        {{ $child['name'] }}
+                                    </li>
+                                @endforeach
+                                <li class="select-item" data-value="all-children">
+                                    All Children
+                                </li>
+                            @else
+                                <li class="select-item disabled">
+                                    No children available
+                                </li>
+                            @endif
+                        </c-select>
+                    </div>
+                    <hr class="divider">
+                    <div class="card-body">
+                        <canvas id="heightChart">
 
 
-    <!-- BMI Chart -->
+                        </canvas>
+                        <div class="no-data-message height-no-data" style="display:none;">
+                            No height records available for this child
+                        </div>
 
-    <div class="left-col">
+                    </div>
+                </c-card>
 
-        <c-card class="card bmi-card">
-            <div class="header">
-                <div class="title-section">
-                    <span class="card-title">Child BMI Tracking</span>
-                    <span id="bmiSubtitle" class="card-subtitle">
-                        Track All Children's BMI over time
-                    </span>
-                </div>
-
-
-                <c-select class="child-select-bmi" placeholder="Select Child">
-
-                    @if(!empty($childrenList))
-                    @foreach ($childrenList as $child)
-                    <li class="select-item" data-value="{{ $child['id'] }}">
-                        {{ $child['name'] }}
-                    </li>
-                    @endforeach
-                    <li class="select-item" data-value="all-children">
-                        All Children
-                    </li>
-                    @else
-                    <li class="select-item disabled">
-                        No children available
-                    </li>
-                    @endif
-                </c-select>
             </div>
-            <hr class="divider">
-            <div class="card-body">
-                <canvas id="bmiChart">
 
-                </canvas>
-                <div class="no-data-message bmi-no-data" style="display:none;">
-                    No BMI records available for this child
-                </div>
+            <div class="right-col">
+                <!-- Weight Chart -->
+                <c-card class="card weight-card">
+                    <div class="header">
+                        <div class="title-section">
+                            <span class="card-title">Child Weight Tracking</span>
+                            <span class="card-subtitle" id="weightSubtitle">Track All Children Weight over time</span>
+                        </div>
+                        <c-select
+                            class="child-select-weight"
+                            placeholder="Select Child"
+                        >
+                            @if(!empty($childrenList))
+                                @foreach ($childrenList as $child)
+                                <li class="select-item" data-value="{{ $child['id'] }}">
+                                    {{ $child['name'] }}
+                                </li>
 
+                                @endforeach
+                                <li class="select-item" data-value="all-children">
+                                    All Children
+                                </li>
+                            @else
+                                <li class="select-item disabled">
+                                    No children available
+                                </li>
+                            @endif
+                        </c-select>
+                    </div>
+                    <hr class="divider">
+                    <div class="card-body">
+                        <canvas id="weightChart">
+
+                        </canvas>
+                        <div class="no-data-message weight-no-data" style="display:none;">
+                            No weight records available for this child
+                        </div>
+                    </div>
+                </c-card>
             </div>
-        </c-card>
-
-        <!-- Height Chart -->
-        <c-card class="card height-card">
-            <div class="header">
-                <div class="title-section">
-                    <span class="card-title">Child Height Tracking</span>
-                    <span class="card-subtitle" id="heightSubtitle">Track All Children Height over time</span>
-                </div>
-                <c-select class="child-select-height" placeholder="Select Child">
-
-                    @if(!empty($childrenList))
-                    @foreach ($childrenList as $child)
-                    <li class="select-item" data-value="{{ $child['id'] }}">
-                        {{ $child['name'] }}
-                    </li>
-                    @endforeach
-                    <li class="select-item" data-value="all-children">
-                        All Children
-                    </li>
-                    @else
-                    <li class="select-item disabled">
-                        No children available
-                    </li>
-                    @endif
-                </c-select>
-            </div>
-            <hr class="divider">
-            <div class="card-body">
-                <canvas id="heightChart">
-
-
-                </canvas>
-                <div class="no-data-message height-no-data" style="display:none;">
-                    No height records available for this child
-                </div>
-
-            </div>
-        </c-card>
-
-    </div>
-
-    <div class="right-col">
-
-
-        <!-- Weight Chart -->
-        <c-card class="card weight-card">
-            <div class="header">
-                <div class="title-section">
-                    <span class="card-title">Child Weight Tracking</span>
-                    <span class="card-subtitle" id="weightSubtitle">Track All Children Weight over time</span>
-                </div>
-                <c-select
-                    class="child-select-weight"
-                    placeholder="Select Child">
-
-                    @if(!empty($childrenList))
-                    @foreach ($childrenList as $child)
-                    <li class="select-item" data-value="{{ $child['id'] }}">
-                        {{ $child['name'] }}
-                    </li>
-
-                    @endforeach
-                    <li class="select-item" data-value="all-children">
-                        All Children
-                    </li>
-                    @else
-                    <li class="select-item disabled">
-                        No children available
-                    </li>
-                    @endif
-                </c-select>
-            </div>
-            <hr class="divider">
-            <div class="card-body">
-                <canvas id="weightChart">
-
-                </canvas>
-                <div class="no-data-message weight-no-data" style="display:none;">
-                    No weight records available for this child
-                </div>
-            </div>
-        </c-card>
-    </div>
-
-
-</main>
-@endif
+        </div>
+    @endif
 
 <script>
     const growthData = <?php echo json_encode($growthData); ?>;
-
-
-
 
     function createGradient(color, ctx) {
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
