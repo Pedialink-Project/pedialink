@@ -27,4 +27,10 @@ class MaternalProfileController
         foreach ($areas as $area) {
             $areaFilters[] = $area->code;
         }
+
+        $doctorId = auth()->user()->id;
+        [$maternals, $links] = $this->maternalService->getMaternalByDoctorId($doctorId, $search, $filters);
+
+        return view("doctor/maternalprofile", ['maternals' => $maternals, 'links' => $links, 'areaFilters' => $areaFilters]);
+    }
 }
