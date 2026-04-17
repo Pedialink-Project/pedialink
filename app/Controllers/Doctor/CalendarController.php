@@ -9,4 +9,9 @@ class CalendarController
 {
     private CalendarService $calendarService;
 
+    public function __construct()
+    {
+        
+    }
+
 }
