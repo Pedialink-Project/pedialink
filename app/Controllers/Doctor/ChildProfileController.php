@@ -12,6 +12,6 @@ class ChildProfileController
     
     public function __construct()
     {
-        
+        $this->childService = new ChildService();
     }
 }
