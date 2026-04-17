@@ -9,4 +9,9 @@ use Library\Framework\Http\Request;
 class ChildProfileController
 {
     private $childService;
+    
+    public function __construct()
+    {
+        
+    }
 }
