@@ -167,7 +167,7 @@ Doctor Appoinments Configure
                                                     type="time"
                                                     name="e_start_time"
                                                     label="Start Time"
-                                                    value="{{ flash('edit') == $availability['id'] ? old('e_start_time') ?? '' : $availability['start_time'] }}"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_start_time') ?? '' : formatAmPmToTime($availability['start_time']) }}"
                                                     error="{{ flash('edit') == $availability['id'] ? errors('e_start_time') ?? '' : '' }}"
                                                     required
                                                 />
@@ -175,7 +175,7 @@ Doctor Appoinments Configure
                                                     type="time"
                                                     name="e_end_time"
                                                     label="End Time"
-                                                    value="{{ flash('edit') == $availability['id'] ? old('e_end_time') ?? '' : $availability['end_time'] }}"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_end_time') ?? '' : formatAmPmToTime($availability['end_time']) }}"
                                                     error="{{ flash('edit') == $availability['id'] ? errors('e_end_time') ?? '' : '' }}"
                                                     required
                                                 />
