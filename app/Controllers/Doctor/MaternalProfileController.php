@@ -16,4 +16,15 @@ class MaternalProfileController
     {
         $this->maternalService = new MaternalService();
     }
+
+    public function index(Request $request)
+    {
+        $search = $request->input("search");
+        $filters = $request->input("filters");
+        $areas = Area::query()->orderBy('code', 'ASC')->get();
+        $areaFilters = [];
+
+        foreach ($areas as $area) {
+            $areaFilters[] = $area->code;
+        }
 }
