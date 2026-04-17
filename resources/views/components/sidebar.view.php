@@ -175,6 +175,7 @@ $menuItems = [
                 'name' => 'My Pregnancy',
                 'link' => route('parent.my.pregnancy'),
                 'icon' => asset('/assets/icons/mother.svg'),
+                'motherOnly' => true
                
             ],
             [
@@ -200,7 +201,7 @@ $menuItems = [
                 'link' => '#',
                 'icon' => asset('/assets/icons/profile.svg'),
                 'children' => [
-                    ['name' => 'My Appointments', 'link' => route('parent.appointments.my')],
+                    ['name' => 'My Appointments', 'link' => route('parent.appointments.my'), 'motherOnly' => true],
                     ['name' => 'Child Appointment', 'link' => route('parent.appointments.child')],
                 ]
             ],
@@ -324,9 +325,14 @@ function isCurrentParentItemOpen(array $item)
                         (auth()->user()->getRole()->getAdminType() === 'super') ||
                         (isset($item['admintype']) && $item['admintype'] === auth()->user()->getRole()->getAdminType())
                     )
-                )
+                );
+            
+            $mainSidebarParentCheck = !isset($item['motherOnly']) ||
+                ($type === 'parent') && (
+                    $item['motherOnly'] == true && auth()->user()?->getRole()->type === 'mother'
+                );
             ?>
-            @if ($mainSidebarAdminCheck) 
+            @if ($mainSidebarAdminCheck && $mainSidebarParentCheck) 
                 <div class="tab {{ isCurrentParentItemOpen($item) ? 'active open' : (route()->current() === $item['link'] ? 'active' : '') }} {{ !empty($item['children']) ? 'has-children' : '' }}">
                     <a href="{{ $item['link'] }}" class="menu-link">
                         <img src="{{ asset($item['icon'] ?? '') }}" /> 
@@ -344,9 +350,14 @@ function isCurrentParentItemOpen(array $item)
                                             (auth()->user()->getRole()->getAdminType() === 'super') ||
                                             (isset($child['admintype']) && $child['admintype'] === auth()->user()->getRole()->getAdminType())
                                         )
-                                    )
+                                    );
+
+                                $sideSidebarParentCheck = !isset($child['motherOnly']) ||
+                                    ($type === 'parent') && (
+                                        $child['motherOnly'] == true && auth()->user()?->getRole()->type === 'mother'
+                                    );
                                 ?>
-                                @if ($childSidebarAdminCheck)
+                                @if ($childSidebarAdminCheck && $sideSidebarParentCheck)
                                     <a href="{{ $child['link'] }}"
                                         class="submenu-link {{ route()->current() === $child['link'] ? 'active' : '' }}">
                                         {{ $child['name'] }}

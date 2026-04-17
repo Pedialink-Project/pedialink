@@ -92,3 +92,18 @@ body {
 .divider {
     border: 0.8px solid var(--border);
 }
+
+.phm-growth-container {
+    align-items: flex-start;
+}
+
+.phm-growth-filter {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.phm-growth-filter .select-wrapper {
+    max-width: 18rem;
+    width: 100%;
+}

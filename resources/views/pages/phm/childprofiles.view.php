@@ -39,7 +39,7 @@ PHM Child Profiles
 
 @section('content')
 
-<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['linked_status' => ['linked', 'not_linked']]">
+<c-table.controls action="{{ route('phm.child.profiles') }}" :filters="['linked_status' => ['linked', 'unlinked']]">
 
     <c-slot name="filter">
         <c-button variant="outline">

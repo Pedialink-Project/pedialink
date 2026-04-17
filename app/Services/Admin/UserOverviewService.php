@@ -38,6 +38,12 @@ class UserOverviewService
         }
 
         $results = $users
+            ->whereGroup(function ($query) {
+                $query->whereIn("role", ["doctor", "phm"])
+                    ->where("email_verified", "=", 1);
+            })
+            ->orWhere("role", "=", "admin")
+            ->orWhere("role", "=", "parent")
             ->orderBy('id', 'ASC')
             ->paginate(10)
             ->toArray();
@@ -71,7 +77,7 @@ class UserOverviewService
                     $additional = [
                         "nic" => $staff->nic,
                         "license_no" => $staff->license_no,
-                        "area" => $phm->getArea()->code,
+                        "area" => $phm->getArea()?->code,
                     ];
                     break;
                 case "doctor":

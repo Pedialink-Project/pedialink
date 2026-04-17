@@ -33,7 +33,7 @@ Parent - My Childern
       </defs>
    </svg>
 
-   <span>My Childern</span>
+   <span>My Children</span>
 </div>
 @endsection
 

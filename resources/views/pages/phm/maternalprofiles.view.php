@@ -4,6 +4,10 @@
 PHM Maternal Profiles
 @endsection
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/pages/phm/maternal-profile.css') }}">
+@endsection
+
 @section('header')
 <svg width="30" height="27" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_474_8661)">
@@ -60,15 +64,15 @@ Maternal Profiles - Overview
                     error="{{ errors('parent_id') ?? '' }}">
 
                     @if(!empty($unMaternalProfiles))
-                    @foreach ($unMaternalProfiles as $maternalProfile)
-                    <li class="select-item" data-value="{{ $maternalProfile['id'] }}">
-                        {{ $maternalProfile['name'] }} ({{ 'P-00'.$maternalProfile['id'] }})
-                    </li>
-                    @endforeach
+                        @foreach ($unMaternalProfiles as $maternalProfile)
+                            <li class="select-item" data-value="{{ $maternalProfile['id'] }}">
+                                {{ $maternalProfile['name'] }} ({{ 'P-00'.$maternalProfile['id'] }})
+                            </li>
+                        @endforeach
                     @else
-                    <li class="select-item disabled">
-                        No maternal profiles available
-                    </li>
+                        <li class="select-item disabled">
+                            No maternal profiles available
+                        </li>
                     @endif
                 </c-select>
                 <c-input type="number" label="Height (cm):" name="height" value="{{ old('height') ?? '' }}"
@@ -240,30 +244,30 @@ Maternal Profiles - Overview
                                 </c-modal>
                                 @endif
                                 @if ($maternal['type'] === "postnatal")
-                                <c-modal id="start-antenatal-profile" size="sm" :initOpen="flash('start') ? true : false">
-                                    <c-slot name="trigger">
-                                        <c-dropdown.item>Start Antenatal Profile</c-dropdown.item>
-                                    </c-slot>
-                                    <c-slot name="headerPrefix">
-                                        <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
-                                    </c-slot>
-                                    <c-slot name="header">
-                                        <div>Start Antenatal Profile</div>
-                                    </c-slot>
+                                    <c-modal id="start-antenatal-profile" size="sm" :initOpen="flash('start') ? true : false">
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>Start Antenatal Profile</c-dropdown.item>
+                                        </c-slot>
+                                        <c-slot name="headerPrefix">
+                                            <img src="{{ asset('assets/icons/user-add--01.svg' )}}" />
+                                        </c-slot>
+                                        <c-slot name="header">
+                                            <div>Start Antenatal Profile</div>
+                                        </c-slot>
 
-                                    <form id="start-antenatal-form" class="child-form" action="{{ route('phm.maternal.start', ['id' => $maternal['id']]) }}" method="POST">
-                                        <c-input type="date" label="LMP:" name="lmp" value="{{ old('lmp') ?? '' }}"
-                                            error="{{ errors('lmp') ?? ''}}" placeholder="Enter LMP Date" required />
-                                        <c-input type="number" label="Height (cm):" name="height" value="{{ old('height') ?? '' }}"
-                                            error="{{ errors('height') ?? ''}}" placeholder="Enter Height in cm" required />
-                                    </form>
-                                    <c-slot name="close">
-                                        Close
-                                    </c-slot>
-                                    <c-slot name="footer">
-                                        <c-button type="submit" form="start-antenatal-form" variant="primary">Start Antenatal Profile</c-button>
-                                    </c-slot>
-                                </c-modal>
+                                        <form id="start-antenatal-form" class="child-form" action="{{ route('phm.maternal.start', ['id' => $maternal['id']]) }}" method="POST">
+                                            <c-input type="date" label="LMP:" name="lmp" value="{{ old('lmp') ?? '' }}"
+                                                error="{{ errors('lmp') ?? ''}}" placeholder="Enter LMP Date" required />
+                                            <c-input type="number" label="Height (cm):" name="height" value="{{ old('height') ?? '' }}"
+                                                error="{{ errors('height') ?? ''}}" placeholder="Enter Height in cm" required />
+                                        </form>
+                                        <c-slot name="close">
+                                            Close
+                                        </c-slot>
+                                        <c-slot name="footer">
+                                            <c-button type="submit" form="start-antenatal-form" variant="primary">Start Antenatal Profile</c-button>
+                                        </c-slot>
+                                    </c-modal>
                                 @endif
                             </c-slot>
                         </c-dropdown.main>
@@ -271,14 +275,14 @@ Maternal Profiles - Overview
                 </c-table.tr>
                 @endforeach
                 @if(count($maternals) === 0)
-                <tr>
-                    <td colspan="5">
-                        <c-emptytable
-                            alt="No Maternals found"
-                            title="No Maternal Profiles Available"
-                            description="No maternal profiles match your current search or filters. Try adjusting them to see more results." />
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="5">
+                            <c-emptytable
+                                alt="No Maternals found"
+                                title="No Maternal Profiles Available"
+                                description="No maternal profiles match your current search or filters. Try adjusting them to see more results." />
+                        </td>
+                    </tr>
                 @endif
             </c-table.tbody>
         </c-table.main>
