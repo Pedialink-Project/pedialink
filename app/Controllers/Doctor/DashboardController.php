@@ -7,5 +7,5 @@ use Library\Framework\Http\Request;
 
 class DashboardController
 {
-
+    private DashboardService $dashboardService;
 }

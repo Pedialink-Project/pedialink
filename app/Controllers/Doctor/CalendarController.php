@@ -7,5 +7,6 @@ use Library\Framework\Http\Request;
 
 class CalendarController
 {
+    private CalendarService $calendarService;
 
 }

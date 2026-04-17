@@ -9,5 +9,6 @@ use App\Services\ChildRecordService;
 
 class ChildHealthController
 {
-
+    private $childRecordService;
+    private VaccinationService $vaccinationService;
 }

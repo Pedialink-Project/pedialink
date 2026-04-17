@@ -10,5 +10,5 @@ use App\Services\MaternalService;
 
 class MaternalProfileController
 {
-    
+    protected $maternalService;
 }
