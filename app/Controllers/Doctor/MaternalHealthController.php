@@ -125,4 +125,41 @@ class MaternalHealthController
                 ->with("edit", $recordId);
         }
 
+        $error =   $this->maternalRecordService->editHealthRecord(
+            $recordId,
+            $staffId,
+            $visitDate,
+            $bloodPressure,
+            $weight,
+            $hemoglobin,
+            $glucose,
+            $fetalHeartRate,
+            $fundalHeight,
+        );
+
+        if ($error) {
+            return redirect(route("doctor.maternal.health", ["id" => $id]))
+                ->withMessage($error, "Error", "error");
+        }
+
+        return redirect(route("doctor.maternal.health", ["id" => $id]))
+            ->withMessage("Health record updated successfully.", "Success", "success");
+    }
+
+    public function markAsInvalid(Request $request, int $id, int $recordId)
+    {
+        $staffId = auth()->user()->id;
+
+        $error = $this->maternalRecordService->markAsInvalidRecord($recordId, $staffId);
+
+        if ($error) {
+            return redirect(route("doctor.maternal.health", ["id" => $id]))
+                ->withMessage($error, "Error", "error");
+        }
+
+        return redirect(route("doctor.maternal.health", ["id" => $id]))
+            ->withMessage("Health record marked as invalid successfully.", "Success", "success");
+    }
+    
+
 }
