@@ -14,7 +14,8 @@ class ChildHealthController
 
     public function __construct()
     {
-        
+        $this->childRecordService = new ChildRecordService();
+        $this->vaccinationService = new VaccinationService();
     }
 
 }
