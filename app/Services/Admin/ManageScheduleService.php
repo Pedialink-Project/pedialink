@@ -12,7 +12,12 @@ class ManageScheduleService
     {
         # NOTE: implement search later
         $scheduledVaccines = ScheduledVaccine::query()
-            ->where("schedule_id", "=", $id)
+            ->join("vaccines", "vaccines.id", "=", "schedule_vaccines.vaccine_id")
+            ->where("schedule_vaccines.schedule_id", "=", $id)
+            ->whereGroup(function ($query) use ($search) {
+                $query->where("vaccines.code", "ILIKE", "{$search}%")
+                    ->orWhere("vaccines.name", "ILIKE", "{$search}%");
+            })
             ->orderBy("id", "ASC")
             ->paginate(10)
             ->toArray();
