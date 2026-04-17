@@ -165,7 +165,7 @@ Events & Campaigns
                                         <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
                                             info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile-02.svg') }}"
-                                            title="Event ID" info="{{ 'E-' . $event['id'] }}" />
+                                            title="Event ID" info="{{ display_entity_id('event', $event['id']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
                                             title="Location" info="{{ $event['event_location'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}"
@@ -277,11 +277,11 @@ Events & Campaigns
                                     </c-slot>
                                     <form id="edit-event-visible-form-{{$event['id']}}" action="{{ route('admin.event.edit.visible', ['id' => $event['id']]) }}" method="POST"></form>
                                     @if ($event["visible"])
-                                    <p>Do you want to hide <span class="event-visible-alert-highlight">Event ID E-{{
-                                            $event['id'] }}</span>?</p>
+                                        <p>Do you want to hide <span class="event-visible-alert-highlight">Event ID {{
+                                            display_entity_id('event', $event['id']) }}</span>?</p>
                                     @else
-                                    <p>Do you want to make <span class="event-visible-alert-highlight">Event ID E-{{
-                                            $event['id'] }}</span> visible?</p>
+                                        <p>Do you want to make <span class="event-visible-alert-highlight">Event ID {{
+                                            display_entity_id('event', $event['id']) }}</span> visible?</p>
                                     @endif
                                     <c-slot name="close">
                                         Cancel
@@ -323,8 +323,8 @@ Events & Campaigns
                                         action="{{ route('admin.event.cancel', ['id' => $event['id']]) }}" method="POST"
                                         novalidate>
                                         <p>
-                                            Do you want to cancel <span class="cancel-event-highlight">Event ID E-{{
-                                                $event['id'] }}</span>?
+                                            Do you want to cancel <span class="cancel-event-highlight">Event ID {{
+                                                display_entity_id('event', $event['id']) }}</span>?
                                         </p>
                                        
 
@@ -350,8 +350,8 @@ Events & Campaigns
                                     </c-slot>
 
                                     <p>
-                                        Do you want to delete <span class="delete-event-highlight">Event ID E-{{
-                                            $event['id'] }}</span>?
+                                        Do you want to delete <span class="delete-event-highlight">Event ID {{
+                                            display_entity_id('event', $event['id']) }}</span>?
                                     </p>
 
                                     <c-slot name="close">

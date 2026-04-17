@@ -131,7 +131,7 @@ Doctor Appoinments
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                                     title="Appointment ID"
-                                                    info="AP-00{{ $appointment['id'] }}"
+                                                    info="{{ display_entity_id('appointment', $appointment['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/location-05.svg') }}"
