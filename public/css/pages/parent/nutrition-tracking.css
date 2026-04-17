@@ -98,3 +98,18 @@ body {
     color:#6b7280;
     font-weight:500;
 }
+
+.parent-growth-container {
+    align-items: flex-start;
+}
+
+.parent-growth-filter {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.parent-growth-filter .select-wrapper {
+    max-width: 18rem;
+    width: 100%;
+}
