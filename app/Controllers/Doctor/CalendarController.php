@@ -11,7 +11,7 @@ class CalendarController
 
     public function __construct()
     {
-        
+        $this->calendarService = new CalendarService();
     }
 
 }
