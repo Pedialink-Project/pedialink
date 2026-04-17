@@ -9,4 +9,10 @@ use App\Models\ParentM;
 class MaternalHealthController
 {
     protected $maternalRecordService;
+
+    public function __construct()
+    {
+        
+    }
+
 }
