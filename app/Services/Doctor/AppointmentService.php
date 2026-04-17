@@ -100,6 +100,29 @@ class AppointmentService
         ];
     }
 
+    public function removeInvalidWeekdays()
+    {
+        $clinicWeekdays = ClinicWeeklyAvailability::query()
+            ->where("active", "=", 1)
+            ->get();
+
+        $clinicWeekdaysArray = [];
+        foreach ($clinicWeekdays as $clinicWeekday) {
+            $clinicWeekdaysArray[] = (int)$clinicWeekday->weekday;
+        }
+        
+        $doctorWeekdays = DoctorWeeklyAvailability::query()
+            ->get();
+
+        foreach ($doctorWeekdays as $doctorWeekday) {
+            if (!in_array((int)$doctorWeekday->weekday, $clinicWeekdaysArray)) {
+                $deleteWeekday = DoctorWeeklyAvailability::find($doctorWeekday->id);
+                $deleteWeekday->delete();
+            }
+        }
+        
+    }
+
     public function getAvailableWeekdays(): array
     {
         $availableWeekdays = [];
@@ -210,6 +233,7 @@ class AppointmentService
 
         $clinicAvailability = ClinicWeeklyAvailability::query()
             ->where("weekday", "=", $weekday)
+            ->where("active", "=", true)
             ->first();
 
         if (!$clinicAvailability) {
