@@ -6,6 +6,7 @@ date_default_timezone_set('Asia/Colombo');
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\NotificationService;
+use App\Services\VaccinationSchedulerService;
 use Library\Framework\Database\QueryBuilder;
 
 $app = require __DIR__ . '/../bootstrap/app.php';
@@ -177,6 +178,40 @@ register_shutdown_function(function () {
 });
 
 logMsg('Lock acquired — run started.');
+
+$schedulerService = new VaccinationSchedulerService();
+
+try {
+	$overdueRows = QueryBuilder::rawGet(
+		"
+		SELECT DISTINCT vr.child_id
+		FROM vaccination_reminders vr
+		WHERE vr.scheduled_date < :today
+		  AND NOT EXISTS (
+			  SELECT 1
+			  FROM vaccinations v
+			  WHERE v.child_id = vr.child_id
+				AND v.schedule_vaccine_id = vr.schedule_vaccine_id
+		  )
+		",
+		[':today' => (new DateTimeImmutable('today'))->format('Y-m-d')]
+	);
+
+	$reassignedChildren = 0;
+	foreach ($overdueRows as $row) {
+		$childId = (int)($row['child_id'] ?? 0);
+		if ($childId <= 0) {
+			continue;
+		}
+
+		$schedulerService->recalculateForChild($childId);
+		$reassignedChildren++;
+	}
+
+	logMsg("overdue reassignment completed: children_processed={$reassignedChildren}");
+} catch (Throwable $e) {
+	logMsg('overdue reassignment failed: ' . $e->getMessage());
+}
 
 $today = new DateTimeImmutable('today');
 $stage1Date = $today->modify('+7 days')->format('Y-m-d');
