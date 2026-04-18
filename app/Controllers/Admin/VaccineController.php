@@ -8,6 +8,7 @@ use App\Models\Vaccine;
 use App\Services\Admin\ManageScheduleService;
 use App\Services\Admin\ScheduleService;
 use App\Services\Admin\VaccineService;
+use App\Services\VaccinationSchedulerService;
 use Exception;
 use Library\Framework\Http\Request;
 
@@ -16,12 +17,14 @@ class VaccineController
     private VaccineService $vaccineService;
     private ScheduleService $scheduleService;
     private ManageScheduleService $manageScheduleService;
+    private VaccinationSchedulerService $vaccinationSchedulerService;
 
     public function __construct()
     {
         $this->vaccineService = new VaccineService();
         $this->scheduleService = new ScheduleService();
         $this->manageScheduleService = new ManageScheduleService();
+        $this->vaccinationSchedulerService = new VaccinationSchedulerService();
     }
 
     public function vaccines(Request $request)
@@ -367,6 +370,8 @@ class VaccineController
         $scheduledVaccine->additional_information = $data['additional_information'];
         $scheduledVaccine->save();
 
+        $this->vaccinationSchedulerService->recalculateForAllChildren($schedule_id);
+
         return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
             ->withMessage(
                 "Successfully added vaccine to schedule",
@@ -439,7 +444,7 @@ class VaccineController
             } catch (Exception $e) {
                 return redirect(route("admin.vaccination.schedule.manage", ["schedule_id" => $schedule_id]))
                     ->withMessage(
-                        "Failed to remove vaccine from schedule",
+                        "Vaccine already in use by the system schedule",
                         "Failed",
                         "error"
                     );

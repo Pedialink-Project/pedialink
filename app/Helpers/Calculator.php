@@ -89,40 +89,122 @@ class Calculator
         ?float $headCircumference,
         ?float $bmi
     ): string {
-
+        $ageMonths = max(0, $ageMonths);
         $riskScore = 0;
+        $severeFlags = 0;
+
+        $weightRange = self::resolveAgeRange($ageMonths, [
+            ['min' => 0, 'max' => 1, 'low' => 2.5, 'high' => 5.5],
+            ['min' => 2, 'max' => 3, 'low' => 4.0, 'high' => 7.5],
+            ['min' => 4, 'max' => 6, 'low' => 5.0, 'high' => 9.5],
+            ['min' => 7, 'max' => 12, 'low' => 6.0, 'high' => 11.5],
+            ['min' => 13, 'max' => 24, 'low' => 7.5, 'high' => 14.5],
+            ['min' => 25, 'max' => 36, 'low' => 10.0, 'high' => 16.5],
+            ['min' => 37, 'max' => 60, 'low' => 12.0, 'high' => 22.0],
+            ['min' => 61, 'max' => 96, 'low' => 16.0, 'high' => 31.0],
+            ['min' => 97, 'max' => 144, 'low' => 22.0, 'high' => 50.0],
+            ['min' => 145, 'max' => 216, 'low' => 35.0, 'high' => 90.0],
+        ]);
+
+        $heightRange = self::resolveAgeRange($ageMonths, [
+            ['min' => 0, 'max' => 1, 'low' => 46.0, 'high' => 58.0],
+            ['min' => 2, 'max' => 3, 'low' => 53.0, 'high' => 64.0],
+            ['min' => 4, 'max' => 6, 'low' => 58.0, 'high' => 70.0],
+            ['min' => 7, 'max' => 12, 'low' => 63.0, 'high' => 80.0],
+            ['min' => 13, 'max' => 24, 'low' => 72.0, 'high' => 92.0],
+            ['min' => 25, 'max' => 36, 'low' => 82.0, 'high' => 102.0],
+            ['min' => 37, 'max' => 60, 'low' => 95.0, 'high' => 116.0],
+            ['min' => 61, 'max' => 96, 'low' => 108.0, 'high' => 135.0],
+            ['min' => 97, 'max' => 144, 'low' => 128.0, 'high' => 160.0],
+            ['min' => 145, 'max' => 216, 'low' => 145.0, 'high' => 185.0],
+        ]);
+
+        $headRange = $ageMonths <= 60
+            ? self::resolveAgeRange($ageMonths, [
+                ['min' => 0, 'max' => 1, 'low' => 33.0, 'high' => 39.0],
+                ['min' => 2, 'max' => 3, 'low' => 36.0, 'high' => 42.0],
+                ['min' => 4, 'max' => 6, 'low' => 39.0, 'high' => 45.0],
+                ['min' => 7, 'max' => 12, 'low' => 42.0, 'high' => 48.0],
+                ['min' => 13, 'max' => 24, 'low' => 45.0, 'high' => 50.0],
+                ['min' => 25, 'max' => 36, 'low' => 46.0, 'high' => 51.0],
+                ['min' => 37, 'max' => 60, 'low' => 47.0, 'high' => 53.0],
+            ])
+            : null;
+
+        if ($weightRange !== null) {
+            self::applyRangeRisk($weightKg, $weightRange['low'], $weightRange['high'], $riskScore, $severeFlags);
+        }
+
+        if ($heightRange !== null) {
+            self::applyRangeRisk($heightCm, $heightRange['low'], $heightRange['high'], $riskScore, $severeFlags);
+        }
+
+        if ($headRange !== null) {
+            self::applyRangeRisk($headCircumference, $headRange['low'], $headRange['high'], $riskScore, $severeFlags);
+        }
 
         if ($bmi !== null) {
-            if ($bmi < 14 || $bmi > 25) {
-                $riskScore += 2;
-            } elseif ($bmi < 15 || $bmi > 23) {
-                $riskScore += 1;
-            }
-        }
+            if ($ageMonths >= 24) {
+                $bmiRange = self::resolveAgeRange($ageMonths, [
+                    ['min' => 24, 'max' => 59, 'low' => 14.0, 'high' => 18.5],
+                    ['min' => 60, 'max' => 119, 'low' => 13.5, 'high' => 21.0],
+                    ['min' => 120, 'max' => 216, 'low' => 14.0, 'high' => 25.0],
+                ]);
 
-        if ($weightKg !== null) {
-            if ($weightKg < 2 || $weightKg > 80) {
+                if ($bmiRange !== null) {
+                    self::applyRangeRisk($bmi, $bmiRange['low'], $bmiRange['high'], $riskScore, $severeFlags);
+                }
+            } elseif ($bmi < 10 || $bmi > 30) {
                 $riskScore += 2;
-            }
-        }
-
-        if ($heightCm !== null) {
-            if ($heightCm < 45 || $heightCm > 200) {
-                $riskScore += 2;
-            }
-        }
-
-        if ($ageMonths <= 60 && $headCircumference !== null) {
-            if ($headCircumference < 40 || $headCircumference > 55) {
-                $riskScore += 2;
+                $severeFlags++;
             }
         }
 
         return match (true) {
-            $riskScore >= 4 => 'critical',
-            $riskScore >= 2 => 'at_risk',
+            $severeFlags >= 2 || $riskScore >= 4 => 'critical',
+            $severeFlags >= 1 || $riskScore >= 2 => 'at_risk',
             default => 'good',
         };
+    }
+
+    private static function resolveAgeRange(int $ageMonths, array $ranges): ?array
+    {
+        foreach ($ranges as $range) {
+            if ($ageMonths >= $range['min'] && $ageMonths <= $range['max']) {
+                return $range;
+            }
+        }
+
+        return null;
+    }
+
+    private static function applyRangeRisk(
+        ?float $value,
+        float $low,
+        float $high,
+        int &$riskScore,
+        int &$severeFlags
+    ): void {
+        if ($value === null) {
+            return;
+        }
+
+        if ($value >= $low && $value <= $high) {
+            return;
+        }
+
+        $range = max(0.5, $high - $low);
+        $margin = max(0.5, $range * 0.15);
+
+        $isSevere = $value < ($low - $margin) || $value > ($high + $margin);
+
+        if ($isSevere) {
+            $riskScore += 2;
+            $severeFlags++;
+            return;
+        }
+
+        $riskScore += 1;
     }
 
     public static function  calculateEdd(string $lmp): string

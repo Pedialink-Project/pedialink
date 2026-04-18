@@ -1,0 +1,5 @@
+#add-maternal-form, #start-antenatal-form, #end-antenatal-form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 5);
+}

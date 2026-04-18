@@ -241,6 +241,7 @@ class ChildService
         }
 
         $results = $childrenQuery
+            ->where("area_id", "=", auth()->user()?->getRole()->area_id)
             ->orderBy('id', 'ASC')
             ->paginate(10)
             ->toArray();

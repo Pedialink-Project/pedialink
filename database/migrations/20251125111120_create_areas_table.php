@@ -23,16 +23,15 @@ class Migration_20251125111120_create_areas_table implements \Library\Framework\
 
         QueryBuilder::raw(
             "INSERT INTO areas (code) VALUES
-            ('Paraduwa'),
-            ('Mawawwa'),
-            ('Kiyaduwa'),
-            ('Galabadahena'),
-            ('Poraba'),
-            ('Iluppalla'),
-            ('Ibulgoda'),
-            ('Maraba'),
-            ('Hulandawa'),
-            ('Peddapitiya');"
+            ('Dehiwala East'),
+            ('Dehiwala West'),
+            ('Karagampitiya'),
+            ('Kalubowila'),
+            ('Galwala'),
+            ('Kohuwala'),
+            ('Udyana'),
+            ('Nedimala'),
+            ('Vilawala');"
         );
     }
 

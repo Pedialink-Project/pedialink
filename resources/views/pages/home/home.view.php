@@ -107,7 +107,7 @@ Home
           </c-slot>
 
           <c-slot name="header">
-            <span class="logout">Conform Logout</span>
+            <span class="logout">Confirm Logout</span>
           </c-slot>
 
           <span class="logout-msg"> Are you sure you want to logout?
@@ -119,7 +119,7 @@ Home
 
           <c-slot name="footer">
             <form action="{{ route('logout') }}" method="post">
-              <c-button varient="destructive" type="submit">Logout</c-button>
+              <c-button variant="destructive" type="submit">Logout</c-button>
             </form>
           </c-slot>
         </c-modal>

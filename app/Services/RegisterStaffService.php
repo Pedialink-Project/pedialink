@@ -172,7 +172,17 @@ class RegisterStaffService
         $error = null;
 
         if (!Validator::validateFieldExistence($license_no)) {
-            $error = "License no cannot be empty";
+            $error = "License Number cannot be empty";
+            return $error;
+        }
+
+        if (!Validator::validateFieldMinLength($license_no, 4)) {
+            $error = "License Number cannot be less than 4 digits";
+            return $error;
+        }
+
+        if (!Validator::validateFieldMaxLength($license_no, 6)) {
+            $error = "License Number cannot be greater than 6 digits";
             return $error;
         }
 
@@ -216,6 +226,19 @@ class RegisterStaffService
             if ($divisionError) {
                 $errors['division'] = $divisionError;
             }
+
+            if (!isset($errors['nic'])) {
+                $nicGenderError = $this->validateNicGender(
+                    $nic,
+                    'F',
+                    'PHM can only register with a female NIC'
+                );
+
+                if ($nicGenderError) {
+                    $errors['nic'] = $nicGenderError;
+                }
+            }
+
         }
 
         return $errors;

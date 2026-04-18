@@ -156,13 +156,11 @@ Vaccination Details of {{ $name . ' (' . display_entity_id('child', $id) . ')' }
                                             Close
                                         </c-slot>
                                     </c-modal>
-                                    @if (in_array(strtolower($item['status']), ['pending', 'overdue']))
+                                    @if (in_array(strtolower($item['status']), ['pending']))
                                         <c-modal id="accept-vaccination-{{ $key }}" size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 @if ($item['status'] == 'pending')
                                                     <c-dropdown.item>Mark as completed</c-dropdown.item>
-                                                @elseif ($item['status'] == 'overdue')
-                                                    <c-dropdown.item>Re-assign next session</c-dropdown.item> 
                                                 @endif
                                             </c-slot>
                                             <c-slot name="headerPrefix">
@@ -174,8 +172,6 @@ Vaccination Details of {{ $name . ' (' . display_entity_id('child', $id) . ')' }
 
                                             @if ($item['status'] == 'pending')
                                                 <p>Mark this vaccination as completed? This action cannot be undone.</p>
-                                            @elseif ($item['status'] == 'overdue')
-                                                <p>Mark this vaccination as not completed? This will attempt to reassign current overdue vaccination on future date!</p>
                                             @endif
 
 

@@ -8,6 +8,40 @@ use DateTime;
 
 trait NicValidator
 {
+    private function validateNicGender(
+        string $nic,
+        string $expectedGender,
+        ?string $errorMessage = null
+    )
+    {
+        $normalizedExpectedGender = strtoupper(trim($expectedGender));
+
+        if (
+            $normalizedExpectedGender !== 'M' &&
+            $normalizedExpectedGender !== 'F'
+        ) {
+            return "Invalid gender";
+        }
+
+        $nicExtractor = new NicExtractor($nic);
+        $extractedResults = $nicExtractor->getExtractedNic();
+
+        if (!$extractedResults["valid"]) {
+            return "Invalid NIC format";
+        }
+
+        $nicGender = strtoupper((string) ($extractedResults['gender'] ?? ''));
+        if ($nicGender !== 'M' && $nicGender !== 'F') {
+            return "Invalid NIC format";
+        }
+
+        if ($nicGender !== $normalizedExpectedGender) {
+            return $errorMessage ?? "NIC gender does not match required gender";
+        }
+
+        return null;
+    }
+
     /**
      * Validate NIC
      * 
