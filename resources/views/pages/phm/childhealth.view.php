@@ -67,17 +67,16 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
             </c-slot>
 
             <form id="add-health-record-form" class="child-health-form" action="{{route('phm.child.health.add', ['id' => $id])}}" method="POST">
-                <c-input type="text" name="height" label="Height" value="{{ old('height') ?? '' }}"
+                <c-input type="text" name="height" label="Height (cm)" value="{{ old('height') ?? '' }}"
                     error="{{ errors('height') ?? '' }}" placeholder="Enter Height of the Child (in cm)" />
-                <c-input type="text" name="weight" label="Weight" value="{{ old('weight') ?? '' }}"
+                <c-input type="text" name="weight" label="Weight (kg)" value="{{ old('weight') ?? '' }}"
                     error="{{ errors('weight') ?? '' }}" placeholder="Enter Weight of the Child (in kg)" />
-                <c-input type="text" name="head_circumference" label="Head Circumference" value="{{ old('head_circumference') ?? '' }}"
+                <c-input type="text" name="head_circumference" label="Head Circumference (cm)" value="{{ old('head_circumference') ?? '' }}"
                     error="{{ errors('head_circumference') ?? '' }}" placeholder="Enter Head Circumference of the Child (in cm)" />
                 <c-input type="date" name="visit_date" label="Visit Date" value="{{ old('visit_date') ?? '' }}"
                     error="{{ errors('visit_date') ?? '' }}" placeholder="Select the Visit Date" />
 
-                <c-textarea name="notes" label="Additional Notes" value="{{ old('notes') ?? '' }}"
-                    error="{{ errors('notes') ?? '' }}" placeholder="Enter any additional notes here" rows="4"></c-textarea>
+               
             </form>
             <c-slot name="close">
                 Close

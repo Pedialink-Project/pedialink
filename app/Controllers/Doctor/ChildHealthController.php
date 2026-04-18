@@ -41,7 +41,6 @@ class ChildHealthController
         $weight = $request->input('weight');
         $headCircumference = $request->input('head_circumference');
         $visitDate = $request->input('visit_date');
-        $notes = $request->input('notes');
 
 
         $errors = $this->childRecordService->validateRecordData(
@@ -58,7 +57,6 @@ class ChildHealthController
                     "weight" => $weight,
                     "head_circumference" => $headCircumference,
                     "visit_date" => $visitDate,
-                    "notes" => $notes,
                 ])
                 ->withErrors($errors)
                 ->with("add", true);
@@ -71,11 +69,25 @@ class ChildHealthController
             $height,
             $weight,
             $headCircumference,
-            $notes
         );
 
         return redirect(route("doctor.child.health", ["id" => $id]))
             ->withMessage("Health record added successfully.", "Success", "success");
+    }
+
+    public function addNotes(Request $request, int $id, int $recordId)
+    {
+        $notes = $request->input('notes');
+
+        $error = $this->childRecordService->addHealthRecordNotes($recordId, $notes);
+
+        if ($error) {
+            return redirect(route("doctor.child.health", ["id" => $id]))
+                ->withMessage($error, "Error", "error");
+        }
+
+        return redirect(route("doctor.child.health", ["id" => $id]))
+            ->withMessage("Health notes added successfully.", "Success", "success");
     }
 
     public function editHealthRecord(Request $request, int $id, int $recordId)

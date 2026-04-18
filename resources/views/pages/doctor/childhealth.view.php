@@ -211,36 +211,30 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                                         Close
                                     </c-slot>
                                 </c-modal>
-                                {{--
+                                
 
-                                <c-modal id="edit-health-record-{{ $key }}" size="sm" :initOpen="flash('edit') == $record['id'] ? true : false">
+                                <c-modal id="add-health-notes-{{ $key }}" size="sm" :initOpen="flash('add_notes') == $record['id'] ? true : false">
                                     <c-slot name="trigger">
-                                        <c-dropdown.item>Edit Health Records</c-dropdown.item>
+                                        <c-dropdown.item>Add Health Notes</c-dropdown.item>
                                     </c-slot>
                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/profile.svg' )}}" />
                                     </c-slot>
 
                                     <c-slot name="header">
-                                        <div>Edit Health Records</div>
+                                        <div>Add Health Notes</div>
                                     </c-slot>
 
-                                    <form id="edit-health-record-form-{{$record['id']}}" class="child-health-form" action="{{route('doctor.child.health.edit', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
-                                        <c-input type="text" name="e_height" label="Height" value="{{ flash('edit') == $record['id'] ? (old('e_height') ?? '') : $record['height'] }}"
-                                            error="{{ flash('edit') == $record['id'] ? (errors('e_height') ?? '') : '' }}" placeholder="Enter Height of the Child (in cm)" />
-                                        <c-input type="text" name="e_weight" label="Weight" value="{{ flash('edit') == $record['id'] ? (old('e_weight') ?? '') : $record['weight'] }}"
-                                            error="{{ flash('edit') == $record['id'] ? (errors('e_weight') ?? '') : '' }}" placeholder="Enter Weight of the Child (in kg)" />
-                                        <c-input type="text" name="e_head_circumference" label="Head Circumference" value="{{ flash('edit') == $record['id'] ? (old('e_head_circumference') ?? '') : $record['head_circumference'] }}"
-                                            error="{{ flash('edit') == $record['id'] ? (errors('e_head_circumference') ?? '') : '' }}" placeholder="Enter Head Circumference of the Child (in cm)" />
-                                        <c-input type="date" name="e_visit_date" label="Visit Date" value="{{ flash('edit') == $record['id'] ? (old('e_visit_date') ?? '') : $record['visit_date'] }}"
-                                            error="{{ errors('e_visit_date') ?? '' }}" placeholder="Select the Visit Date" />
+                                    <form id="add-health-notes-form-{{$record['id']}}" class="child-health-form" action="{{route('doctor.child.health.add.notes', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
+                                        <c-textarea name="notes" label="Health Notes" value="{{ old('notes') ?? '' }}"
+                    error="{{ errors('notes') ?? '' }}" placeholder="Enter Health notes here" rows="4"></c-textarea>
                                     </form>
 
                                     <c-slot name="close">
                                         Cancel
                                     </c-slot>
                                     <c-slot name="footer">
-                                        <c-button type="submit" form="edit-health-record-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
+                                        <c-button type="submit" form="add-health-notes-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
                                     </c-slot>
                                 </c-modal>
                                 <c-modal id="mark-as-invalid-record-{{ $key }}" size="sm" :initOpen="false">
@@ -267,7 +261,7 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                                         <c-button size="sm" type="submit" form="mark-as-invalid-record-form-{{$record['id']}}" variant="destructive">Mark</c-button>
                                     </c-slot>
                                 </c-modal> 
-                                --}}
+                                
                             </c-slot>
                            
                         </c-dropdown.main>

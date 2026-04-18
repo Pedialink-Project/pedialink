@@ -39,7 +39,6 @@ class MaternalHealthController
         $glucose = $request->input('glucose');
         $fetalHeartRate = $request->input('fetal_heart_rate');
         $fundalHeight = $request->input('fundal_height');
-        $notes = $request->input('notes');
 
         $errors = $this->maternalRecordService->validateMaternalHealthData(
             $visitDate,
@@ -61,7 +60,6 @@ class MaternalHealthController
                     "glucose" => $glucose,
                     "fetal_heart_rate" => $fetalHeartRate,
                     "fundal_height" => $fundalHeight,
-                    "notes" => $notes
                 ])
                 ->withErrors($errors)
                 ->with("add", true);
@@ -77,7 +75,6 @@ class MaternalHealthController
             $glucose,
             $fetalHeartRate,
             $fundalHeight,
-            $notes
         );
 
         return redirect(route("phm.maternal.health", ["id" => $id]))

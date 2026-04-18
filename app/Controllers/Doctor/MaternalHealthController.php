@@ -86,6 +86,21 @@ class MaternalHealthController
             ->withMessage("Health record added successfully.", "Success", "success");
     }
 
+    public function addNotes(Request $request, int $id, int $recordId)
+    {
+        $notes = $request->input('notes');
+
+        $error = $this->maternalRecordService->addHealthRecordNotes($recordId, $notes);
+
+        if ($error) {
+            return redirect(route("doctor.maternal.health", ["id" => $id]))
+                ->withMessage($error, "Error", "error");
+        }
+
+        return redirect(route("doctor.maternal.health", ["id" => $id]))
+            ->withMessage("Health notes added successfully.", "Success", "success");
+    }
+
     public function editHealthRecord(Request $request, int $id, int $recordId)
     {
         $visitDate = $request->input('e_visit_date');
