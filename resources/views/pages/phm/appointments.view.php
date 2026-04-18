@@ -43,7 +43,7 @@ if (!empty($history) && $history['status'] === true) {
     $actionRoute = route($actionRouteName, ['id' => $history['id'], 'type' => $history['type']]);
 }
 ?>
-<c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ $actionRoute }}">
+<c-table.controls :filters="['status' => [ 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ $actionRoute }}">
 
 </c-table.controls>
 
