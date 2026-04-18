@@ -204,7 +204,6 @@ class MaternalRecordService
         $glucose,
         $fetalHeartRate,
         $fundalHeight,
-        $notes
     ) {
 
         $parentId = Maternal::find($maternalId)->parent_id;
@@ -238,7 +237,6 @@ class MaternalRecordService
         $record->fundal_height = $fundalHeight;
 
         $record->bmi = $bmi;
-        $record->notes = $notes;
 
 
         $record->save();
