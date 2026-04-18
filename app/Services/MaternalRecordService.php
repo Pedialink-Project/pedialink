@@ -257,6 +257,36 @@ class MaternalRecordService
         return $record;
     }
 
+    public function addHealthRecordNotes($recordId, $notes)
+    {
+        $record = MaternalRecord::find($recordId);
+
+        if (!$record) {
+            return "Record not found.";
+        }
+
+        $record->notes = $notes;
+
+        $record->save();
+
+        $phmId = $record->staff_id;
+        $parentId = $record->parent_id;
+        $recipientIds = [$phmId, $parentId];
+        $maternalId = Maternal::query()->where('parent_id', '=', $parentId)->first()->id;
+
+        $this->notificationService->notifyMany(
+            $recipientIds,
+            "Health record notes added",
+            "Additional notes have been added to the health record of maternal M-00" . $maternalId . ".",
+            "maternal_record_updated",
+            $record->id . "" . $maternalId
+
+        );
+
+        return null;
+    }
+
+
     public function editHealthRecord(
         $recordId,
         $staffId,
