@@ -23,7 +23,8 @@ class DashboardController
         $weeklyAppointmentData = $this->dashboardService->getWeeklyAppointmentData();
         $latestHealthRecords = $this->dashboardService->getLatestHealthRecords();
         $patientRiskData = $this->dashboardService->getPatientRiskOverviewData();
-        return view("doctor/dashboard", [
+
+         return view("doctor/dashboard", [
             "patientsCount" => $patientsCount,
             "appointmentsCount" => $appointmentsCount,
             "urgentCasesCount" => $urgentCasesCount,

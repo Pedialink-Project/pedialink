@@ -86,7 +86,7 @@ class MaternalHealthController
             ->withMessage("Health record added successfully.", "Success", "success");
     }
 
-     public function editHealthRecord(Request $request, int $id, int $recordId)
+    public function editHealthRecord(Request $request, int $id, int $recordId)
     {
         $visitDate = $request->input('e_visit_date');
         $bloodPressure = $request->input('e_blood_pressure');
@@ -160,6 +160,6 @@ class MaternalHealthController
         return redirect(route("doctor.maternal.health", ["id" => $id]))
             ->withMessage("Health record marked as invalid successfully.", "Success", "success");
     }
-
+    
 
 }

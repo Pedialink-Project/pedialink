@@ -9,7 +9,6 @@ use App\Services\ChildRecordService;
 
 class ChildHealthController
 {
-
     private $childRecordService;
     private VaccinationService $vaccinationService;
 
@@ -25,7 +24,6 @@ class ChildHealthController
         $filters = $request->input("filters");
         [$records, $links] = $this->childRecordService->getChildRecordsByChildId($id, $search, $filters);
         $name = $this->childRecordService->getChildNameById($id);
-
 
         return view("doctor/childhealth", [
             "id" => $id,
@@ -141,7 +139,6 @@ class ChildHealthController
         return redirect(route("doctor.child.health", ["id" => $id]))
             ->withMessage("Health record marked as invalid successfully.", "Success", "success");
     }
-
 
     public function vaccinationIndex(Request $request, int $id)
     {

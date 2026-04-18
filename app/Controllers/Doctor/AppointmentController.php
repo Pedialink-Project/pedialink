@@ -31,7 +31,7 @@ class AppointmentController
             "links" => $links
         ]);
     }
-
+    
     public function viewHistory(Request $request, int $id, string $type)
     {
         $search = $request->query("search", "");
@@ -107,7 +107,7 @@ class AppointmentController
             "appointment_availability",
             (int)$doctorWeeklyAvailability->id
         );
-        
+
         return redirect(route("doctor.appointments.configure"))
             ->withMessage("Availability created successfully.", "Success", "success");
     }
