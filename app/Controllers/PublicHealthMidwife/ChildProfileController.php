@@ -69,7 +69,7 @@ class ChildProfileController
         $dob = $request->input('e_date_of_birth');
         $gender = $request->input('e_gender');
         $bloodType = $request->input('e_blood_type');
-        $errors = $this->childService->validateChildProfile($name, $dob, $gender, null, $bloodType, null, true);
+        $errors = $this->childService->validateChildProfile($name, $dob, $gender, null, $bloodType, null, null, true);
 
         if (count($errors) > 0) {
             return redirect(route('phm.child.profiles'))
@@ -114,4 +114,55 @@ class ChildProfileController
     //                 "success",
     //             );
     // }
+
+    public function ArchiveChild(Request $request, int $id)
+    {
+        $error = $this->childService->validateArchiveProfile($id);
+
+        if ($error !== NULL) {
+            return redirect(route('phm.child.profiles'))
+                ->withMessage(
+                    $error,
+                    "Error",
+                    "error",
+                );
+        }
+
+        $this->childService->archiveChildProfile($id);
+        return redirect(route('phm.child.profiles'))
+                ->withMessage(
+                    "Child profile archived successfully",
+                    "Success",
+                    "success",
+                );
+    }
+
+    public function viewArchivedChildren(Request $request)
+    {
+        $archivedChildren = $this->childService->getArchivedChildren();
+        
+        return view("phm/archive", ['children' => $archivedChildren]);
+    }
+
+    public function restoreChild(Request $request, int $id)
+    {
+        $error = $this->childService->validateUnarchiveProfile($id);
+
+        if ($error !== NULL) {
+            return redirect(route('phm.child.archived'))
+                ->withMessage(
+                    $error,
+                    "Error",
+                    "error",
+                );
+        }
+
+        $this->childService->unarchiveChildProfile($id);
+        return redirect(route('phm.child.archived'))
+                ->withMessage(
+                    "Child profile restored successfully",
+                    "Success",
+                    "success",
+                );
+    }
 }
