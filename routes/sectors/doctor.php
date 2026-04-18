@@ -22,6 +22,7 @@ return [
     // ['POST', '/doctor/childprofile/request-access', [ChildProfileController::class, 'requestAccess'], 'doctor.childprofile.requestAccess', ['doctor', 'verified']],
     // ['POST', '/doctor/childprofile/{id}/cancel-request-access', [ChildProfileController::class, 'cancelAccessRequest'], 'doctor.childprofile.cancel.requestAccess', ['doctor', 'verified']],
     ['GET', '/doctor/child-profiles/{id}/vaccination-records', [ChildHealthController::class, 'vaccinationIndex'], 'doctor.child.vaccination', ['doctor', 'verified']],
+    ['POST', '/doctor/child-profiles/{id}/health-records/{recordId}/add-notes', [ChildHealthController::class, 'addNotes'], 'doctor.child.health.add.notes', ['doctor', 'verified']],
 
     //Maternal profile routes
     ['GET', '/doctor/maternal-profiles', [MaternalProfileController::class, 'index'], 'doctor.maternal.profiles', ['doctor', 'verified']],
