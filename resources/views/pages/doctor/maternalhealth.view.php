@@ -282,6 +282,30 @@ Health Records of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
                                     </c-slot>
                                 </c-modal>
                                 --}}
+                                <c-modal id="add-health-notes-{{ $key }}" size="sm" :initOpen="flash('add_notes') == $record['id'] ? true : false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Add Health Notes</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Add Health Notes</div>
+                                    </c-slot>
+
+                                    <form id="add-health-notes-form-{{$record['id']}}" class="child-health-form" action="{{route('doctor.maternal.health.add.notes', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
+                                        <c-textarea name="notes" label="Health Notes" value="{{ old('notes') ?? '' }}"
+                    error="{{ errors('notes') ?? '' }}" placeholder="Enter Health notes here" rows="4"></c-textarea>
+                                    </form>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="add-health-notes-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
+                                    </c-slot>
+                                </c-modal>
                             </c-slot>
                         </c-dropdown.main>
                     </c-table.td>
