@@ -32,6 +32,8 @@ return [
     ['POST', '/doctor/maternal-profile/{id}/health-record/add', [MaternalHealthController::class, 'addHealthRecord'], 'doctor.maternal.health.add', ['doctor', 'verified']],
     ['POST', '/doctor/maternal-profiles/{id}/health-records/{recordId}/edit', [MaternalHealthController::class, 'editHealthRecord'], 'doctor.maternal.health.edit', ['doctor', 'verified']],
     ['POST', '/doctor/maternal-profiles/{id}/health-records/{recordId}/mark-as-invalid', [MaternalHealthController::class, 'markAsInvalid'], 'doctor.maternal.health.markinvalid', ['doctor', 'verified']],
+        ['POST', '/doctor/maternal-profiles/{id}/health-records/{recordId}/add-notes', [MaternalHealthController::class, 'addNotes'], 'doctor.maternal.health.add.notes', ['doctor', 'verified']],
+
     //Appointment rotues
     ['GET', '/doctor/appointments/overview', [AppointmentController::class, 'overview'], 'doctor.appointments.overview', ['doctor', 'verified']],
     ['GET', '/doctor/appointments/{id}/{type}/history', [AppointmentController::class, 'viewHistory'], 'doctor.appointments.history', ['doctor', 'verified']],
