@@ -76,8 +76,7 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                 <c-input type="date" name="visit_date" label="Visit Date" value="{{ old('visit_date') ?? '' }}"
                     error="{{ errors('visit_date') ?? '' }}" placeholder="Select the Visit Date" />
 
-                <c-textarea name="notes" label="Additional Notes" value="{{ old('notes') ?? '' }}"
-                    error="{{ errors('notes') ?? '' }}" placeholder="Enter any additional notes here" rows="4"></c-textarea>
+               
             </form>
             <c-slot name="close">
                 Close
