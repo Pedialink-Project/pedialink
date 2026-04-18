@@ -73,14 +73,15 @@ class ChildRecordService
         return [$resource, $links];
     }
 
-    public function getLatestHeathRecord($childId){
+    public function getLatestHeathRecord($childId)
+    {
 
-    $record = ChildRecord::query()
-        ->where('child_id', '=', $childId)
-        ->where('mark_as_invalid', '=', 'false')
-        ->orderBy('visit_date', 'DESC')
-        ->orderBy('created_at', 'DESC')
-        ->first();
+        $record = ChildRecord::query()
+            ->where('child_id', '=', $childId)
+            ->where('mark_as_invalid', '=', 'false')
+            ->orderBy('visit_date', 'DESC')
+            ->orderBy('created_at', 'DESC')
+            ->first();
 
         if (!$record) {
             return null;
@@ -98,8 +99,6 @@ class ChildRecordService
             'notes' => $record->notes,
             'created_at' => $record->created_at,
         ];
-
-
     }
 
 
@@ -261,6 +260,35 @@ class ChildRecordService
         return $record;
     }
 
+    public function addHealthRecordNotes($recordId, $notes)
+    {
+        $record = ChildRecord::find($recordId);
+
+        if (!$record) {
+            return "Record not found.";
+        }
+
+        $record->notes = $notes;
+
+        $record->save();
+
+        $phmId = $record->staff_id;
+        $parents = Child::find($record->child_id)->getParents();
+        $parentIds = array_map(fn($p) => $p->id, $parents);
+        $recipientIds = [$phmId, ...$parentIds];
+
+        $this->notificationService->notifyMany(
+            $recipientIds,
+            "Health record notes added",
+            "Additional notes have been added to the health record of child C-00" . $record->child_id . ".",
+            "child_record_updated",
+            $record->child_id . "" . $record->child_id
+
+        );
+
+        return null;
+    }
+
     public function editHealthRecord(
         $recordId,
         $staffId,
@@ -339,6 +367,4 @@ class ChildRecordService
 
         return $child->name;
     }
-
-    
 }
