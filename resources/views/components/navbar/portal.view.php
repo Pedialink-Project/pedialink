@@ -187,7 +187,7 @@ $unreadCount = $data['unreadCount'] ?? 0;
           </c-slot>
 
           <c-slot name="header">
-            <span class="logout">Conform Logout</span>
+            <span class="logout">Confirm Logout</span>
           </c-slot>
 
           <span class="logout-msg"> Are you sure you want to logout?

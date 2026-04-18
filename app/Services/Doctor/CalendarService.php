@@ -2,6 +2,7 @@
 
 namespace App\Services\Doctor;
 
+use App\Helpers\Calculator;
 use App\Models\Appointment;
 
 class CalendarService
@@ -38,7 +39,7 @@ class CalendarService
                     'color' => 'linear-gradient(90deg,#28bdf8,#3b82f6)',
                     'items' => [[
                         'child' => $child->name,
-                        'time' => $slot->start_time,
+                        'time' => Calculator::formatTimeToAmPm($slot->start_time),
                         'status' => ucfirst((string)$appointment->status),
                     ]],
                 ];
@@ -52,7 +53,7 @@ class CalendarService
                     'color' => 'linear-gradient(90deg,#f5a623,#f97316)',
                     'items' => [[
                         'maternal' => $maternal->getUser() ? $maternal->getUser()->name : 'Maternal',
-                        'time' => $slot->start_time,
+                        'time' => Calculator::formatTimeToAmPm($slot->start_time),
                         'status' => ucfirst((string)$appointment->status),
                     ]],
                 ];

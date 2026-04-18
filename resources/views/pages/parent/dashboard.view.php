@@ -16,7 +16,7 @@ Parent Dashboard
 <div class="top-section">
 
     <section class="greet">
-        <h1>Good Moring <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}}</span>
+        <h1>Welcome <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}}</span>
         </h1>
     </section>
     <section class="pill-container">
@@ -162,7 +162,7 @@ Parent Dashboard
                 <!-- Single appointment row  -->
                 <div class="row appoinment">
                     <div class="primary-details">
-                        <div class="name">{{$maternalAppointment['child']['name']}} <span>Appointment</span></div>
+                        <div class="name">{{$maternalAppointment['maternal']['name']}}</div>
                         @if($maternalAppointment['doctor'])
                         <div class="sub-details">
                             <!-- Doctor Icon -->

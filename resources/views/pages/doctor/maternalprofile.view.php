@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-doctor Maternal Profiles
+Doctor Maternal Profiles
 @endsection
 
 @section('header')
@@ -46,14 +46,14 @@ Maternal Profiles - Overview
                     <c-table.th sortable="0" width="200px">Age</c-table.th>
                     <c-table.th align="left" sortable="0" width="200px">Area</c-table.th>
                     <c-table.th align="left" sortable="0" width="220px">Maternal Type</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th align="center" class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
             <c-table.tbody>
                 @foreach ($maternals as $key => $maternal)
                 <c-table.tr>
-                    <c-table.td col="id">M-00{{ $maternal['id'] }}</c-table.td>
+                    <c-table.td col="id">{{ display_entity_id('maternal', $maternal['id']) }}</c-table.td>
                     <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
                     <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
                     <c-table.td col="area">{{ $maternal['area'] ?? '-' }}</c-table.td>
@@ -99,7 +99,7 @@ Maternal Profiles - Overview
 
                                     <c-modal.viewcard>
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="Maternal ID"
-                                            info="C-00{{ $maternal['id'] }}" />
+                                            info="{{ display_entity_id('maternal', $maternal['id']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
                                             info="{{ $maternal['name'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"

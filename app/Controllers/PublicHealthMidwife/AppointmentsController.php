@@ -73,17 +73,17 @@ class AppointmentsController
         }
 
         // add function to prevent marking as attended if the current date is before the appointment date
-        $slot = $appointment->getSlot();
-        $appointmentDateTime = new \DateTime($slot->slot_date . ' ' . $slot->start_time);
-        $now = new \DateTime();
-        if ($now < $appointmentDateTime) {
-            return redirect(route('phm.appointments'))
-                ->withMessage(  
-                    'Cannot mark appointment as attended before the appointment date and time',
-                    'Error',
-                    'error'
-                );
-        }
+        // $slot = $appointment->getSlot();
+        // $appointmentDateTime = new \DateTime($slot->slot_date . ' ' . $slot->start_time);
+        // $now = new \DateTime();
+        // if ($now < $appointmentDateTime) {
+        //     return redirect(route('phm.appointments'))
+        //         ->withMessage(  
+        //             'Cannot mark appointment as attended before the appointment date and time',
+        //             'Error',
+        //             'error'
+        //         );
+        // }
 
         if ($appointment->status === 'attended') {
             return redirect(route('phm.appointments'))
@@ -95,7 +95,7 @@ class AppointmentsController
         }
 
         $appointment->status = 'attended';
-        $appointment->attended_at = new \DateTime();
+        $appointment->attended_at = (new \DateTime())->format('Y-m-d H:i:sP');
         $appointment->save();
 
         return redirect(route('phm.appointments'))

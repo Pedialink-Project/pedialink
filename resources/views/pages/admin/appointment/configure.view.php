@@ -33,7 +33,7 @@
                         <c-table.th>End Time</c-table.th>
                         <c-table.th>Slot Length</c-table.th>
                         <c-table.th>Status</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
@@ -78,7 +78,7 @@
                                                     type="time"
                                                     name="e_start_time"
                                                     label="Start Time"
-                                                    value="{{ flash('edit') == $availability['id'] ? old('e_start_time') ?? '' : $availability['start_time'] }}"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_start_time') ?? '' : formatAmPmToTime($availability['start_time']) }}"
                                                     error="{{ flash('edit') == $availability['id'] ? errors('e_start_time') ?? '' : '' }}"
                                                     required
                                                 />
@@ -86,7 +86,7 @@
                                                     type="time"
                                                     name="e_end_time"
                                                     label="End Time"
-                                                    value="{{ flash('edit') == $availability['id'] ? old('e_end_time') ?? '' : $availability['end_time'] }}"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_end_time') ?? '' : formatAmPmToTime($availability['end_time']) }}"
                                                     error="{{ flash('edit') == $availability['id'] ? errors('e_end_time') ?? '' : '' }}"
                                                     required
                                                 />

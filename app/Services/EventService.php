@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Calculator;
 use App\Models\Events;
 use App\Models\EventRegistrations;
 use APP\Models\User;
@@ -85,8 +86,8 @@ class EventService
                 'purpose' => $event->purpose,
                 'notes' => $event->notes,
                 'event_date' => $event->event_date,
-                'start_time' => date('H:i', strtotime($event->start_time)),
-                'end_time' => date('H:i', strtotime($event->end_time)),
+                'start_time' => Calculator::formatTimeToAmPm($event->start_time),
+                'end_time' => Calculator::formatTimeToAmPm($event->end_time),
                 'event_status' => $this->getEventStatus($event->id),
                 'event_location' => $event->event_location,
                 'max_count' => $event->max_count,
@@ -132,8 +133,8 @@ class EventService
                     'purpose' => $event->purpose,
                     'notes' => $event->notes,
                     'event_date' => $event->event_date,
-                    'start_time' => date('H:i', strtotime($event->start_time)),
-                    'end_time' => date('H:i', strtotime($event->end_time)),
+                    'start_time' => Calculator::formatTimeToAmPm($event->start_time),
+                    'end_time' => Calculator::formatTimeToAmPm($event->end_time),
                     'event_status' => $this->getEventStatus($event->id),
                     'event_location' => $event->event_location,
                     'max_count' => $event->max_count,
@@ -168,8 +169,8 @@ class EventService
                 'id' => $event->id,
                 'title' => $event->title,
                 'event_date' => $event->event_date,
-                'start_time' => date('H:i', strtotime($event->start_time)),
-                'end_time' => date('H:i', strtotime($event->end_time)),
+                'start_time' => Calculator::formatTimeToAmPm($event->start_time),
+                'end_time' => Calculator::formatTimeToAmPm($event->end_time),
                 'event_status' => $this->getEventStatus($event->id),
                 'event_location' => $event->event_location,
                 'participants_count' => $event->participants_count,

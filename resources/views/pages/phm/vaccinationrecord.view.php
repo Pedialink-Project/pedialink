@@ -36,7 +36,8 @@ PHM Vaccination
     </defs>
 </svg>
 
-Vaccination Details : {{ ucwords($name) }}
+Vaccination Details of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
+
 @endsection
 
 @section('content')
@@ -57,7 +58,7 @@ Vaccination Details : {{ ucwords($name) }}
                     <c-table.th sortable="0" width="220px">Recorded Age</c-table.th>
                     <c-table.th align="left" sortable="0" width="220px">Vaccination Status</c-table.th>
                     <c-table.th align="left" sortable="0">Vaccination Date</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
@@ -70,15 +71,15 @@ Vaccination Details : {{ ucwords($name) }}
                         <c-table.td col="Vaccination Status">
                             @if (strtolower($item['status']) === "complete")
                                 <c-badge type="green">
-                                    {{ ucfirst($item['status'] )}}
+                                    {{ ucwords(str_replace('_', ' ',$item['status']))}}
                                 </c-badge>
                             @elseif (strtolower($item['status']) === "pending")
                                 <c-badge type="purple">
-                                    {{ ucfirst($item['status'] )}}
+                                    {{ ucwords(str_replace('_', ' ',$item['status']) )}}
                                 </c-badge>
                             @elseif (strtolower($item['status']) === "overdue")
-                                <c-badge type="destructive">
-                                    {{ ucfirst($item['status'] )}}
+                                <c-badge type="red">
+                                    {{ ucwords(str_replace('_', ' ',$item['status'] ))}}
                                 </c-badge>
                             @endif
                         </c-table.td>
@@ -155,13 +156,11 @@ Vaccination Details : {{ ucwords($name) }}
                                             Close
                                         </c-slot>
                                     </c-modal>
-                                    @if (in_array(strtolower($item['status']), ['pending', 'overdue']))
+                                    @if (in_array(strtolower($item['status']), ['pending']))
                                         <c-modal id="accept-vaccination-{{ $key }}" size="md" :initOpen="false">
                                             <c-slot name="trigger">
                                                 @if ($item['status'] == 'pending')
                                                     <c-dropdown.item>Mark as completed</c-dropdown.item>
-                                                @elseif ($item['status'] == 'overdue')
-                                                    <c-dropdown.item>Re-assign next session</c-dropdown.item> 
                                                 @endif
                                             </c-slot>
                                             <c-slot name="headerPrefix">
@@ -173,8 +172,6 @@ Vaccination Details : {{ ucwords($name) }}
 
                                             @if ($item['status'] == 'pending')
                                                 <p>Mark this vaccination as completed? This action cannot be undone.</p>
-                                            @elseif ($item['status'] == 'overdue')
-                                                <p>Mark this vaccination as not completed? This will attempt to reassign current overdue vaccination on future date!</p>
                                             @endif
 
 

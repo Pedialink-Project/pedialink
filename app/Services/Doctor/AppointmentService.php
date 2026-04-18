@@ -3,6 +3,7 @@
 namespace App\Services\Doctor;
 
 use App\Helpers\AppointmentConfigurationHelper;
+use App\Helpers\Calculator;
 use App\Helpers\IntToDayName;
 use App\Helpers\Validator;
 use App\Models\Appointment;
@@ -74,8 +75,8 @@ class AppointmentService
             $resource[] = [
                 "id" => $appointment->id,
                 "slot_date" => $slot->slot_date,
-                "start_time" => date('h:i A', strtotime($slot->start_time)),
-                "end_time" => date('h:i A', strtotime($slot->end_time)),
+                "start_time" => Calculator::formatTimeToAmPm($slot->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($slot->end_time),
                 "child" => $child ? [
                     "id" => $child->id,
                     "name" => $child->name,
@@ -97,6 +98,29 @@ class AppointmentService
             $resource,
             $links
         ];
+    }
+
+    public function removeInvalidWeekdays()
+    {
+        $clinicWeekdays = ClinicWeeklyAvailability::query()
+            ->where("active", "=", 1)
+            ->get();
+
+        $clinicWeekdaysArray = [];
+        foreach ($clinicWeekdays as $clinicWeekday) {
+            $clinicWeekdaysArray[] = (int)$clinicWeekday->weekday;
+        }
+        
+        $doctorWeekdays = DoctorWeeklyAvailability::query()
+            ->get();
+
+        foreach ($doctorWeekdays as $doctorWeekday) {
+            if (!in_array((int)$doctorWeekday->weekday, $clinicWeekdaysArray)) {
+                $deleteWeekday = DoctorWeeklyAvailability::find($doctorWeekday->id);
+                $deleteWeekday->delete();
+            }
+        }
+        
     }
 
     public function getAvailableWeekdays(): array
@@ -177,8 +201,8 @@ class AppointmentService
                 "id" => $availability->id,
                 "weekday" => IntToDayName::convert($availability->weekday),
                 "active" => $availability->active,
-                "start_time" =>   date('h:i A', strtotime($availability->start_time)),
-                "end_time" =>  date('h:i A', strtotime($availability->end_time)),
+                "start_time" => Calculator::formatTimeToAmPm($availability->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($availability->end_time),
                 "slot_length_minutes" => $availability->slot_length_minutes
             ];
         }
@@ -209,6 +233,7 @@ class AppointmentService
 
         $clinicAvailability = ClinicWeeklyAvailability::query()
             ->where("weekday", "=", $weekday)
+            ->where("active", "=", true)
             ->first();
 
         if (!$clinicAvailability) {

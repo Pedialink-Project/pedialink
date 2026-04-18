@@ -24,10 +24,10 @@ class Migration_20251125114052_insert_data_for_staffs_table implements \Library\
     public function up(): void
     {
         QueryBuilder::raw(
-            "INSERT INTO users (name, email, password_hash, role)
+            "INSERT INTO users (name, email, password_hash, role, email_verified)
                 VALUES
-                ('Nirmal', '{$this->phmName}', '{$this->commonPassword}', 'phm'),
-                ('Sarah', '{$this->doctorName}', '{$this->commonPassword}', 'doctor');"
+                ('Nirmal', '{$this->phmName}', '{$this->commonPassword}', 'phm', true),
+                ('Sarah', '{$this->doctorName}', '{$this->commonPassword}', 'doctor', true);"
         );
 
         QueryBuilder::raw(

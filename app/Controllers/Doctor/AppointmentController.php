@@ -60,6 +60,7 @@ class AppointmentController
         $search = $request->query("search", "");
         $filter = $request->query("filters", []);
 
+        $this->appointmentService->removeInvalidWeekdays();
         $clinicWeeklyAvailability = $this->appointmentService
             ->getAppointmentConfigurationData($search, $filter);
         $availableWeekdays = $this->appointmentService->getAvailableWeekdays();

@@ -1,13 +1,24 @@
 @extends('layout/portal')
 
 @section('title')
-Parent - Growth Tracking
+PHM - Growth Tracking
 @endsection
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/pages/parent/nutrition-tracking.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/phm/growthmonitoring.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+@endsection
+
+@section('back')
+	<c-link href="{{ $backUrl ?? 'javascript:history.back()' }}">
+		<c-slot name="icon">
+			<svg width="25px" height="25px" viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
+				<path d="M669.6 849.6c8.8 8 22.4 7.2 30.4-1.6s7.2-22.4-1.6-30.4l-309.6-280c-8-7.2-8-17.6 0-24.8l309.6-270.4c8.8-8 9.6-21.6 2.4-30.4-8-8.8-21.6-9.6-30.4-2.4L360.8 480.8c-27.2 24-28 64-0.8 88.8l309.6 280z" fill="" />
+			</svg>
+		</c-slot>
+		Go Back
+	</c-link>
 @endsection
 
 @section('header')
@@ -26,207 +37,203 @@ Parent - Growth Tracking
             stroke="#18181B" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
 
-Growth of {{ $name .' (C-00'.$id.')' }}
+Growth of {{ $child['name'] . ' (' . display_entity_id('child', $child['id']) . ')' }}
 </div>
 @endsection
 
 @section('content')
-@if(empty($growthData))
-<c-emptytable
-    alt="No Growth Data"
-    title="No Growth Records Yet"
-    description="No growth tracking data available. Start recording your child's height, weight, and BMI measurements to view their growth progress here." />
-@else
-<main class="container">
-    <div class="left-col">
+    @if(empty($growthData))
+        <c-emptytable
+            alt="No Growth Data"
+            title="No Growth Records Yet"
+            description="No growth tracking data available. Start recording your child's height, weight, and BMI measurements to view their growth progress here."
+        />
+    @else
+        <div class="container">
+            <div class="left-col">
 
-      <c-card class="card bmi-card">
-            <div class="header">
-                <div class="title-section">
-                    <span class="card-title">BMI Tracking</span>
-                    <span class="card-subtitle">Track {{$child['name']}}'s BMI over time</span>
-                </div>
-                <c-link type="secondary" size="sm" href="{{route('phm.growth.monitoring')}}">View All</c-link>
+                <c-card class="card bmi-card">
+                    <div class="header">
+                        <div class="title-section">
+                            <span class="card-title">BMI Tracking</span>
+                            <span class="card-subtitle">Track {{$child['name']}}'s BMI over time</span>
+                        </div>
+                        
 
-            </div>
-            <hr class="divider">
-            <div class="card-body">
-                <canvas id="bmiChart">
+                    </div>
+                    <hr class="divider">
+                    <div class="card-body">
+                        <canvas id="bmiChart">
 
-                </canvas>
-                 <div class="no-data-message bmi-no-data" style="display:none;">
-                    No BMI records available for this child
-                </div>
-            </div>
-        </c-card>
-        <!-- Height Chart -->
-        <c-card class="card height-card">
-            <div class="header">
-                <div class="title-section">
-                    <span class="card-title">Height Tracking</span>
-                    <span class="card-subtitle">Track {{$child['name']}}'s Height over time</span>
-                </div>
-                <c-link type="secondary" size="sm" href="{{route('phm.growth.monitoring')}}">View All</c-link>
+                        </canvas>
+                        <div class="no-data-message bmi-no-data" style="display:none;">
+                            No BMI records available for this child
+                        </div>
+                    </div>
+                </c-card>
+                <!-- Height Chart -->
+                <c-card class="card height-card">
+                    <div class="header">
+                        <div class="title-section">
+                            <span class="card-title">Height Tracking</span>
+                            <span class="card-subtitle">Track {{$child['name']}}'s Height over time</span>
+                        </div>
 
-            </div>
-            <hr class="divider">
-            <div class="card-body">
-                <canvas id="heightChart">
+                    </div>
+                    <hr class="divider">
+                    <div class="card-body">
+                        <canvas id="heightChart">
 
-                </canvas>
-                 <div class="no-data-message height-no-data" style="display:none;">
-                    No Height records available for this child
-                </div>
-            </div>
-        </c-card>
-
-
-    <div class="right-col">
-
-
-        <!-- Weight Chart -->
-          <c-card class="card weight-card">
-            <div class="header">
-                <div class="title-section">
-                    <span class="card-title">Weight Tracking</span>
-                    <span class="card-subtitle">Track {{$child['name']}}'s Weight over time</span>
-                </div>
-                <c-link type="secondary" size="sm" href="{{route('phm.growth.monitoring')}}">View All</c-link>
+                        </canvas>
+                        <div class="no-data-message height-no-data" style="display:none;">
+                            No Height records available for this child
+                        </div>
+                    </div>
+                </c-card>
 
             </div>
-            <hr class="divider">
-            <div class="card-body">
-                <canvas id="weightChart">
+            <div class="right-col">
 
-                </canvas>
-                 <div class="no-data-message weight-no-data" style="display:none;">
-                    No Weight records available for this child
-                </div>
+
+                <!-- Weight Chart -->
+                <c-card class="card weight-card">
+                    <div class="header">
+                        <div class="title-section">
+                            <span class="card-title">Weight Tracking</span>
+                            <span class="card-subtitle">Track {{$child['name']}}'s Weight over time</span>
+                        </div>
+                    </div>
+                    <hr class="divider">
+                    <div class="card-body">
+                        <canvas id="weightChart">
+
+                        </canvas>
+                        <div class="no-data-message weight-no-data" style="display:none;">
+                            No Weight records available for this child
+                        </div>
+                    </div>
+                </c-card>
             </div>
-        </c-card>
-    </div>
 
 
-</main>
-@endif
+        </div>
+    @endif
 
-<script>
+    <script>
 
-const growthData = <?php echo json_encode($growthData); ?>;
-
-
-
-function createGradient(ctx,color){
-    const gradient = ctx.createLinearGradient(0,0,0,400);
-    gradient.addColorStop(0,color.replace("1)","0.1)"));
-    gradient.addColorStop(1,color.replace("1)","0)"));
-    return gradient;
-}
-
-
-
-function handleNoData(chartId,messageClass,data){
-
-    if(!data || data.length === 0){
-
-        document.getElementById(chartId).style.display="none";
-        document.querySelector(messageClass).style.display="block";
-        return true;
-
-    }
-
-    return false;
-
-}
-
-
-
-if(!handleNoData("bmiChart",".bmi-no-data",growthData.bmi)){
-
-    const ctx = document.getElementById("bmiChart").getContext("2d");
-
-    new Chart(ctx,{
-        type:"line",
-        data:{
-            labels:growthData.labels,
-            datasets:[{
-                label:"BMI",
-                data:growthData.bmi,
-                borderColor:"rgba(168,85,247,1)",
-                backgroundColor:createGradient(ctx,"rgba(168,85,247,1)"),
-                tension:0.4,
-                fill:true,
-                pointRadius:4
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{legend:{display:false}},
-            scales:{y:{beginAtZero:true}}
+        const growthData = <?php echo json_encode($growthData); ?>;
+        
+        function createGradient(ctx,color){
+            const gradient = ctx.createLinearGradient(0,0,0,400);
+            gradient.addColorStop(0,color.replace("1)","0.1)"));
+            gradient.addColorStop(1,color.replace("1)","0)"));
+            return gradient;
         }
-    });
-
-}
 
 
 
-if(!handleNoData("heightChart",".height-no-data",growthData.height)){
+        function handleNoData(chartId,messageClass,data){
 
-    const ctx = document.getElementById("heightChart").getContext("2d");
+            if(!data || data.length === 0){
 
-    new Chart(ctx,{
-        type:"line",
-        data:{
-            labels:growthData.labels,
-            datasets:[{
-                label:"Height",
-                data:growthData.height,
-                borderColor:"rgba(59,130,246,1)",
-                backgroundColor:createGradient(ctx,"rgba(59,130,246,1)"),
-                tension:0.4,
-                fill:true,
-                pointRadius:4
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{legend:{display:false}},
-            scales:{y:{beginAtZero:true}}
+                document.getElementById(chartId).style.display="none";
+                document.querySelector(messageClass).style.display="block";
+                return true;
+
+            }
+
+            return false;
+
         }
-    });
-
-}
 
 
 
-if(!handleNoData("weightChart",".weight-no-data",growthData.weight)){
+        if(!handleNoData("bmiChart",".bmi-no-data",growthData.bmi)){
 
-    const ctx = document.getElementById("weightChart").getContext("2d");
+            const ctx = document.getElementById("bmiChart").getContext("2d");
 
-    new Chart(ctx,{
-        type:"line",
-        data:{
-            labels:growthData.labels,
-            datasets:[{
-                label:"Weight",
-                data:growthData.weight,
-                borderColor:"rgba(34,197,94,1)",
-                backgroundColor:createGradient(ctx,"rgba(34,197,94,1)"),
-                tension:0.4,
-                fill:true,
-                pointRadius:4
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{legend:{display:false}},
-            scales:{y:{beginAtZero:true}}
+            new Chart(ctx,{
+                type:"line",
+                data:{
+                    labels:growthData.labels,
+                    datasets:[{
+                        label:"BMI",
+                        data:growthData.bmi,
+                        borderColor:"rgba(168,85,247,1)",
+                        backgroundColor:createGradient(ctx,"rgba(168,85,247,1)"),
+                        tension:0.4,
+                        fill:true,
+                        pointRadius:4
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    plugins:{legend:{display:false}},
+                    scales:{y:{beginAtZero:true}}
+                }
+            });
+
         }
-    });
 
-}
 
-</script>
+
+        if(!handleNoData("heightChart",".height-no-data",growthData.height)){
+
+            const ctx = document.getElementById("heightChart").getContext("2d");
+
+            new Chart(ctx,{
+                type:"line",
+                data:{
+                    labels:growthData.labels,
+                    datasets:[{
+                        label:"Height",
+                        data:growthData.height,
+                        borderColor:"rgba(59,130,246,1)",
+                        backgroundColor:createGradient(ctx,"rgba(59,130,246,1)"),
+                        tension:0.4,
+                        fill:true,
+                        pointRadius:4
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    plugins:{legend:{display:false}},
+                    scales:{y:{beginAtZero:true}}
+                }
+            });
+
+        }
+
+
+
+        if(!handleNoData("weightChart",".weight-no-data",growthData.weight)){
+
+            const ctx = document.getElementById("weightChart").getContext("2d");
+
+            new Chart(ctx,{
+                type:"line",
+                data:{
+                    labels:growthData.labels,
+                    datasets:[{
+                        label:"Weight",
+                        data:growthData.weight,
+                        borderColor:"rgba(34,197,94,1)",
+                        backgroundColor:createGradient(ctx,"rgba(34,197,94,1)"),
+                        tension:0.4,
+                        fill:true,
+                        pointRadius:4
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    plugins:{legend:{display:false}},
+                    scales:{y:{beginAtZero:true}}
+                }
+            });
+
+        }
+
+    </script>
 
 
 @endsection

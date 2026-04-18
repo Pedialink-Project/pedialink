@@ -108,7 +108,7 @@ Events & Campaigns
                     <c-table.th sortable="0">Participants</c-table.th>
                     <c-table.th sortable="0">Visibility</c-table.th>
                     <c-table.th>Status</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
@@ -165,7 +165,7 @@ Events & Campaigns
                                         <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
                                             info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile-02.svg') }}"
-                                            title="Event ID" info="{{ 'E-' . $event['id'] }}" />
+                                            title="Event ID" info="{{ display_entity_id('event', $event['id']) }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}"
                                             title="Location" info="{{ $event['event_location'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}"
@@ -237,11 +237,11 @@ Events & Campaigns
                                                 error="{{ flash('edit') == $event['id'] ? (errors('e_date') ?? '') : '' }}"
                                                 placeholder="Select Date" required />
                                             <c-input label="Start Time" type="time" name="e_start_time"
-                                                value="{{ flash('edit') == $event['id'] ? (old('e_start_time') ?? '') : $event['start_time'] }}"
+                                                value="{{ flash('edit') == $event['id'] ? (old('e_start_time') ?? '') : formatAmPmToTime($event['start_time']) }}"
                                                 error="{{ flash('edit') == $event['id'] ? (errors('e_start_time') ?? '') : '' }}"
                                                 placeholder="Select Start Time" required />
                                             <c-input label="End Time" type="time" name="e_end_time"
-                                                value="{{ flash('edit') == $event['id'] ? (old('e_end_time') ?? '') : $event['end_time'] }}"
+                                                value="{{ flash('edit') == $event['id'] ? (old('e_end_time') ?? '') : formatAmPmToTime($event['end_time']) }}"
                                                 error="{{ flash('edit') == $event['id'] ? (errors('e_end_time') ?? '') : '' }}"
                                                 placeholder="Select End Time" required />
                                         </div>
@@ -277,11 +277,11 @@ Events & Campaigns
                                     </c-slot>
                                     <form id="edit-event-visible-form-{{$event['id']}}" action="{{ route('admin.event.edit.visible', ['id' => $event['id']]) }}" method="POST"></form>
                                     @if ($event["visible"])
-                                    <p>Do you want to hide <span class="event-visible-alert-highlight">Event ID E-{{
-                                            $event['id'] }}</span>?</p>
+                                        <p>Do you want to hide <span class="event-visible-alert-highlight">Event ID {{
+                                            display_entity_id('event', $event['id']) }}</span>?</p>
                                     @else
-                                    <p>Do you want to make <span class="event-visible-alert-highlight">Event ID E-{{
-                                            $event['id'] }}</span> visible?</p>
+                                        <p>Do you want to make <span class="event-visible-alert-highlight">Event ID {{
+                                            display_entity_id('event', $event['id']) }}</span> visible?</p>
                                     @endif
                                     <c-slot name="close">
                                         Cancel
@@ -323,8 +323,8 @@ Events & Campaigns
                                         action="{{ route('admin.event.cancel', ['id' => $event['id']]) }}" method="POST"
                                         novalidate>
                                         <p>
-                                            Do you want to cancel <span class="cancel-event-highlight">Event ID E-{{
-                                                $event['id'] }}</span>?
+                                            Do you want to cancel <span class="cancel-event-highlight">Event ID {{
+                                                display_entity_id('event', $event['id']) }}</span>?
                                         </p>
                                        
 
@@ -350,8 +350,8 @@ Events & Campaigns
                                     </c-slot>
 
                                     <p>
-                                        Do you want to delete <span class="delete-event-highlight">Event ID E-{{
-                                            $event['id'] }}</span>?
+                                        Do you want to delete <span class="delete-event-highlight">Event ID {{
+                                            display_entity_id('event', $event['id']) }}</span>?
                                     </p>
 
                                     <c-slot name="close">
@@ -375,16 +375,17 @@ Events & Campaigns
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
-                @if(count($events) === 0)
-                <tr>
-                    <td colspan="7">
-                        <div class="table-empty">No events found</div>
-                    </td>
-                </tr>
-                @endif
+               
             </c-table.tbody>
         </c-table.main>
     </div>
 </c-table.wrapper>
+ @if(count($events) === 0)
+                <c-emptytable
+            alt="No events or campaigns"
+            title="No Events or Campaigns Found"
+            description="There are currently no events or campaigns. Click the 'Add Events' button to create your first event or campaign."
+             />
+                @endif
 <c-table.pagination :links="$links" />
 @endsection

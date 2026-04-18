@@ -18,9 +18,9 @@ class Migration_20251125121834_insert_data_for_admin_table implements \Library\F
     {
         $commonPassword = password_hash("qwerty123", PASSWORD_DEFAULT);
         QueryBuilder::raw(
-            "INSERT INTO users (name, email, password_hash, role)
+            "INSERT INTO users (name, email, password_hash, role, email_verified)
             VALUES
-            ('Mani', '{$this->adminMail}', '{$commonPassword}', 'admin');"
+            ('Mani', '{$this->adminMail}', '{$commonPassword}', 'admin', true);"
         );
 
         QueryBuilder::raw(

@@ -92,14 +92,14 @@
                         <c-table.th sortable="0">ID</c-table.th>
                         <c-table.th sortable="0">Name</c-table.th>
                         <c-table.th sortable="0">Code</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
                 <c-table.tbody>
                     @foreach ($vaccines as $key => $vaccine)
                         <c-table.tr>
-                            <c-table.td col="id">{{ $vaccine['id'] }}</c-table.td>
+                            <c-table.td col="id">VA-00{{ $vaccine['id'] }}</c-table.td>
                             <c-table.td col="name">{{ $vaccine['name'] }}</c-table.td>
                             <c-table.td col="code">{{ $vaccine['code'] }}</c-table.td>
                             <c-table.td class="table-actions" align="center">
@@ -110,7 +110,6 @@
                                         </c-button>
                                     </c-slot>
                                     <c-slot name="menu">
-                                        <c-dropdown.item>Copy Vaccine Code</c-dropdown.item>
                                         <c-dropdown.sep />
                                         <c-modal size="md" :initOpen="flash('edit') === $vaccine['id'] ? true : false">
                                             <c-slot name="trigger">

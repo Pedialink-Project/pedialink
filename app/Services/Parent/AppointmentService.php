@@ -102,8 +102,8 @@ class AppointmentService
             $resource[] = [
                 "id" => $appointment->id,
                 "slot_date" => $slot->slot_date,
-                "start_time" => $slot->start_time,
-                "end_time" => $slot->end_time,
+                "start_time" => Calculator::formatTimeToAmPm($slot->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($slot->end_time),
                 "doctor" => $doctor ? [
                     "id" => $doctor->id,
                     "name" => $doctor->getUser()->name

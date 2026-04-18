@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Child Health Records
+Doctor Child Health Records
 @endsection
 
 @section('css')
@@ -42,7 +42,7 @@ Child Health Records
         </clipPath>
     </defs>
 </svg>
-Health Records of {{ $name .' (C-00'.$id.')' }}
+Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
 @endsection
 
 @section('content')
@@ -100,7 +100,7 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
                     <c-table.th sortable="0">Weight</c-table.th>
                     <c-table.th align="left" sortable="0">Head Circumference</c-table.th>
                     <c-table.th align="left">Health Status</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 
@@ -167,7 +167,7 @@ Health Records of {{ $name .' (C-00'.$id.')' }}
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/profile.svg') }}"
                                             title="Record ID"
-                                            info="{{'REC-00' . $record['id'] }}" />
+                                            info="{{ display_entity_id('record', $record['id']) }}" />
                                         <c-modal.viewitem
                                             icon="{{ asset('assets/icons/ruler.svg') }}"
                                             title="Height"

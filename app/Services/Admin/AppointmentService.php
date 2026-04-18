@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Helpers\AppointmentConfigurationHelper;
+use App\Helpers\Calculator;
 use App\Helpers\IntToDayName;
 use App\Helpers\Validator;
 use App\Models\Appointment;
@@ -34,8 +35,8 @@ class AppointmentService
             $resource[] = [
                 "id" => $appointment->id,
                 "slot_date" => $slot->slot_date,
-                "start_time" => $slot->start_time,
-                "end_time" => $slot->end_time,
+                "start_time" => Calculator::formatTimeToAmPm($slot->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($slot->end_time),
                 "doctor" => $doctor ? [
                     "id" => $doctor->id,
                     "name" => $doctor->getUser()->name
@@ -94,8 +95,8 @@ class AppointmentService
                 "id" => $availability->id,
                 "weekday" => IntToDayName::convert($availability->weekday),
                 "active" => $availability->active,
-                "start_time" => $availability->start_time,
-                "end_time" => $availability->end_time,
+                "start_time" => Calculator::formatTimeToAmPm($availability->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($availability->end_time),
                 "slot_length_minutes" => $availability->slot_length_minutes
             ];
         }

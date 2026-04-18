@@ -3,8 +3,8 @@
 namespace App\Services\PublicHealthMidwife;
 
 
+use App\Models\PublicHealthMidwife;
 use Library\Framework\Database\QueryBuilder;
-use App\Models\ChildAccessRequest;
 use App\Models\Child;
 
 class GrowthService
@@ -20,15 +20,13 @@ SELECT
     h.weight,
     h.bmi
 FROM children c
-JOIN children_access_requests car ON car.child_id = c.id
 JOIN child_records h ON h.child_id = c.id
-WHERE car.staff_id = :phmId
-AND car.accepted = true
+WHERE c.area_id = :phmAreaId
 ORDER BY h.visit_date
 ";
 
         $rows = QueryBuilder::rawGet($sql, [
-            ':phmId' => $phmId
+            ':phmAreaId' => PublicHealthMidwife::find($phmId)->area_id
         ]);
 
         $children = [];
@@ -104,21 +102,19 @@ ORDER BY h.visit_date
     public function getChildrenByPhmId(int $phmId,)
     {
 
-        $requests = ChildAccessRequest::query()
-            ->where('staff_id', '=', $phmId)
-            ->where('accepted', '=', true)
+        $children = Child::query()
+            ->where("area_id", "=", auth()->user()?->getRole()->area_id)
             ->get();
 
-        foreach ($requests as $child) {
+        $resource = [];
+        foreach ($children as $child) {
 
-
-            $childData = $child->getChild();
             $resource[] = [
-                'id' => $childData->id,
-                'name' => $childData->name,
+                'id' => $child->id,
+                'name' => $child->name,
             ];
-            return $resource;
         }
+        return $resource;
     }
 
     public function getChildById(int $childId)

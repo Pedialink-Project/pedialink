@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-Parent Dashboard
+PHM Dashboard
 @endsection
 
 @section('css')
@@ -16,7 +16,7 @@ Parent Dashboard
 <div class="top-section">
 
     <section class="greet">
-        <h1>Good Moring <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}}</span>
+        <h1>Welcome, <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}}</span>
         </h1>
     </section>
     <section class="pill-container">

@@ -32,7 +32,7 @@ Test Table
                     <c-table.th>Category</c-table.th>
                     <c-table.th align="center">Price</c-table.th>
                     <c-table.th align="center">Stock</c-table.th>
-                    <c-table.th class="table-actions"></c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
                 </c-table.tr>
             </c-table.thead>
 

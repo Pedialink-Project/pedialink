@@ -1,7 +1,7 @@
 @extends('layout/portal')
 
 @section('title')
-    Appoinments
+Doctor Appoinments
 @endsection
 
 @section('header')
@@ -43,7 +43,7 @@
         $actionRoute = route($actionRouteName, ['id' => $history['id'], 'type' => $history['type']]);
     }
     ?>
-    <c-table.controls :filters="['status' => ['confirmed', 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ $actionRoute }}">
+    <c-table.controls :filters="['status' => [ 'pending', 'attended', 'cancelled', 'no-show']]" action="{{ $actionRoute }}">
         <c-slot name="filter">
             <c-button variant="outline">
                 <img src="{{ asset('assets/icons/filter.svg') }}" />
@@ -62,7 +62,7 @@
                         <c-table.th sortable="0">Date</c-table.th>
                         <c-table.th sortable="0">Time</c-table.th>
                         <c-table.th>Status</c-table.th>
-                        <c-table.th class="table-actions"></c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
                     </c-table.tr>
                 </c-table.thead>
 
@@ -131,7 +131,7 @@
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/student-card.svg') }}"
                                                     title="Appointment ID"
-                                                    info="AP-00{{ $appointment['id'] }}"
+                                                    info="{{ display_entity_id('appointment', $appointment['id']) }}"
                                                 />
                                                 <c-modal.viewitem
                                                     icon="{{ asset('assets/icons/location-05.svg') }}"
