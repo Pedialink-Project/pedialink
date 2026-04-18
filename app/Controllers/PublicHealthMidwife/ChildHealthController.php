@@ -38,7 +38,6 @@ class ChildHealthController
         $weight = $request->input('weight');
         $headCircumference = $request->input('head_circumference');
         $visitDate = $request->input('visit_date');
-        $notes = $request->input('notes');
 
 
         $errors = $this->childRecordService->validateRecordData(
@@ -55,7 +54,6 @@ class ChildHealthController
                     "weight" => $weight,
                     "head_circumference" => $headCircumference,
                     "visit_date" => $visitDate,
-                    "notes" => $notes,
                 ])
                 ->withErrors($errors)
                 ->with("add", true);
@@ -68,7 +66,6 @@ class ChildHealthController
             $height,
             $weight,
             $headCircumference,
-            $notes
         );
 
         return redirect(route("phm.child.health", ["id" => $id]))
