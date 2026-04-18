@@ -290,7 +290,7 @@ function display_entity_id(string $entity, $id, int $padLength = 3): string
     return sprintf('%s-%0' . $padLength . 'd', $prefix, $number);
 }
 
- function formatAmPmToTime(?string $time): ?string
+  function formatAmPmToTime(?string $time): ?string
 {
     if (!$time) {
         return null;
@@ -302,5 +302,5 @@ function display_entity_id(string $entity, $id, int $padLength = 3): string
         return null; 
     }
 
-    return $dateTime->format('H:i:s');
+    return $dateTime->format('H:i');
 }

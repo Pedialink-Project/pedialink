@@ -27,7 +27,13 @@ Parent - My Appointments
 @endsection
 
 @section('content')
-<c-table.controls action="{{ route('parent.appointments.child') }}" :filters="['status' => ['attended', 'pending', 'confirmed', 'cancelled','no-show']]">
+
+
+
+<c-table.controls action="{{ route('parent.appointments.child') }}" :filters="['status' => ['attended', 'pending',  'cancelled','no-show']]">
+
+
+
 </c-table.controls>
 <c-table.wrapper card="1">
     <div class="table-wrapper" data-responsive="true">

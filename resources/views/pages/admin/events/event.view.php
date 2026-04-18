@@ -375,16 +375,17 @@ Events & Campaigns
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
-                @if(count($events) === 0)
-                <tr>
-                    <td colspan="7">
-                        <div class="table-empty">No events found</div>
-                    </td>
-                </tr>
-                @endif
+               
             </c-table.tbody>
         </c-table.main>
     </div>
 </c-table.wrapper>
+ @if(count($events) === 0)
+                <c-emptytable
+            alt="No events or campaigns"
+            title="No Events or Campaigns Found"
+            description="There are currently no events or campaigns. Click the 'Add Events' button to create your first event or campaign."
+             />
+                @endif
 <c-table.pagination :links="$links" />
 @endsection

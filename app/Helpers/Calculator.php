@@ -243,9 +243,9 @@ class Calculator
     }
 
     if ($glucose !== null) {
-        if ($glucose >= 11) {
+        if ($glucose >= 200) {
             $riskScore += 3; // Very high
-        } elseif ($glucose >= 7.8) {
+        } elseif ($glucose >= 140) {
             $riskScore += 2; // Borderline
         }
     }

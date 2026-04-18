@@ -30,7 +30,7 @@ Parent - Child Appointments
 
 
 
-<c-table.controls action="{{ route('parent.appointments.child') }}" :filters="['status' => ['attended', 'pending', 'confirmed', 'cancelled','no-show']]">
+<c-table.controls action="{{ route('parent.appointments.child') }}" :filters="['status' => ['attended', 'pending',  'cancelled','no-show']]">
 
 
 
