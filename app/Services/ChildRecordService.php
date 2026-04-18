@@ -204,7 +204,6 @@ class ChildRecordService
         $height,
         $weight,
         $headCircumference,
-        $notes
     ) {
 
         $bmi = Calculator::calculateBMI($height, $weight);
@@ -230,7 +229,6 @@ class ChildRecordService
         $record->weight = $weight;
         $record->bmi = $bmi;
         $record->head_circumference = $headCircumference;
-        $record->notes = $notes;
 
 
         $record->save();
