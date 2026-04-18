@@ -95,7 +95,7 @@ class AppointmentsController
         }
 
         $appointment->status = 'attended';
-        $appointment->attended_at = new \DateTime();
+        $appointment->attended_at = (new \DateTime())->format('Y-m-d H:i:sP');
         $appointment->save();
 
         return redirect(route('phm.appointments'))
