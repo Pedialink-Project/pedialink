@@ -176,3 +176,45 @@ Health Records of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
                                     <c-slot name="header">
                                         <div>Health Record</div>
                                     </c-slot>
+
+                                    <c-modal.viewcard>
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
+                                            title="Record ID" info="{{ display_entity_id('record', $record['id']) }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                            title="Recorded At" info="{{ $record['visit_date'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
+                                            title="BMI" info="{{ $record['bmi'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/body-weight.svg') }}"
+                                            title="Weight" info="{{ $record['weight'] }}kg" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                            title="Blood Pressure" info="{{ $record['blood_pressure'] }}mmHg" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                            title="Hemoglobin" info="{{ $record['hemoglobin'] }}g/dL" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                            title="Glucose" info="{{ $record['glucose'] }}mg/dL" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/filter.svg') }}"
+                                            title="Pregnancy Stage" info="{{ucwords($record['trimester']).' Trimester' }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
+                                            title="Fundal Height" info="{{ $record['fundal_height'] }}cm" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
+                                            title="Fetal Heart Rate" info="{{ $record['fetal_heart_rate'] }}bpm" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/doctor.svg') }}"
+                                            title="Recoreded Staff" info="{{ $record['staff']['name'] }}" />
+                                    </c-modal.viewcard>
+
+                                    <c-modal.viewlist title="Additional Information">
+                                        <c-slot name="list">
+                                            <li>
+                                                @if($record['notes'])
+                                                {{ $record['notes'] }}
+                                                @else
+                                                No additional information available.
+                                                @endif
+                                            </li>
+                                        </c-slot>
+                                    </c-modal.viewlist>
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+
+                                </c-modal>
