@@ -21,3 +21,26 @@ class CalendarService
             ->get();
 
         $events = [];
+
+        foreach ($appointments as $appointment) {
+            $slot = $appointment->getSlot();
+            if (!$slot || !$slot->slot_date) {
+                continue;
+            }
+
+            $child = $appointment->getChild();
+            $maternal = $appointment->getMaternal();
+
+            if ($child) {
+                $events[] = [
+                    'date' => $slot->slot_date,
+                    'type' => 'appointment',
+                    'title' => 'Child Appointment',
+                    'color' => 'linear-gradient(90deg,#28bdf8,#3b82f6)',
+                    'items' => [[
+                        'child' => $child->name,
+                        'time' => Calculator::formatTimeToAmPm($slot->start_time),
+                        'status' => ucfirst((string)$appointment->status),
+                    ]],
+                ];
+            }
