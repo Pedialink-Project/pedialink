@@ -220,3 +220,39 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                                     <c-slot name="headerPrefix">
                                         <img src="{{ asset('assets/icons/profile.svg' )}}" />
                                     </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Add Health Notes</div>
+                                    </c-slot>
+
+                                    <form id="add-health-notes-form-{{$record['id']}}" class="child-health-form" action="{{route('doctor.child.health.add.notes', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
+                                        <c-textarea name="notes" label="Health Notes" value="{{ old('notes') ?? '' }}"
+                    error="{{ errors('notes') ?? '' }}" placeholder="Enter Health notes here" rows="4"></c-textarea>
+                                    </form>
+
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
+                                    <c-slot name="footer">
+                                        <c-button type="submit" form="add-health-notes-form-{{$record['id']}}" variant="primary">Save Changes</c-button>
+                                    </c-slot>
+                                </c-modal>
+                                <c-modal id="mark-as-invalid-record-{{ $key }}" size="sm" :initOpen="false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Mark as Invalid</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Mark as Invalid</div>
+                                    </c-slot>
+
+                                    <form id="mark-as-invalid-record-form-{{$record['id']}}" class="child-health-form" action="{{route('doctor.child.health.markinvalid', ['id' => $id, 'recordId' => $record['id']])}}" method="POST">
+                                        <p>This action will mark the health record as invalid and it will no longer be considered in the child's health assessments.</p>
+                                        <p>Are you sure you want to mark this record as invalid?</p>
+                                    </form>
+                                    <c-slot name="close">
+                                        Cancel
+                                    </c-slot>
