@@ -356,3 +356,61 @@ Doctor Dashboard
     const barGradB = ctxBar.createLinearGradient(0,0,0,220);
     barGradB.addColorStop(0, 'rgba(255,145,135,0.95)');
     barGradB.addColorStop(1, 'rgba(255,145,135,0.75)');
+
+    const barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+        labels: days,
+        datasets: [
+            {
+            label: 'Completed',
+            data: weeklyData.completed,
+            backgroundColor: barGradA,
+            borderRadius: 8,
+            barPercentage: 0.48,
+            categoryPercentage: 0.7
+            },
+            {
+            label: 'Cancelled',
+            data: weeklyData.cancelled,
+            backgroundColor: barGradB,
+            borderRadius: 8,
+            barPercentage: 0.48,
+            categoryPercentage: 0.7
+            }
+        ]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10 } },
+            tooltip: {
+            backgroundColor: '#fff',
+            titleColor: '#111',
+            bodyColor: '#111',
+            borderColor: '#eee',
+            borderWidth: 1,
+            }
+        },
+        scales: {
+            x: {
+            grid: { display: false },
+            ticks: { color: '#6b7280' }
+            },
+            y: {
+            beginAtZero: true,
+            suggestedMax: 110,
+            grid: {
+                color: 'rgba(150,160,180,0.08)',
+                borderDash: [4,4],
+            },
+            ticks: { color: '#6b7280' }
+            }
+        }
+        }
+    });
+</script>
+
+
+@endsection
