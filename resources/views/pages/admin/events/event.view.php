@@ -66,7 +66,7 @@ Events & Campaigns
                     error="{{ errors('title') ?? '' }}" placeholder="Enter event title" required />
                 <c-textarea label="Description" name="description" value="{{ old('description') ?? '' }}"
                     error="{{ errors('description') ?? '' }}" placeholder="Enter description of the event"
-                    required></c-textarea>
+                    required>{{ old('description') ?? '' }}</c-textarea>
                 <div class="event-form-double-input">
                     <c-input label="Date" type="date" name="date" value="{{ old('date') ?? '' }}"
                         error="{{ errors('date') ?? '' }}" placeholder="Select Date" required />
@@ -184,7 +184,7 @@ Events & Campaigns
                                     <c-modal.viewlist title="Notes">
                                         <c-slot name="list">
 
-                                            <li>{{ $event['notes'] }}</li>
+                                            <li>{{ $event['notes'] ? ($event['notes'] === '' ? 'N/A' : $event['notes']) : 'N/A' }}</li>
 
                                         </c-slot>
                                     </c-modal.viewlist>
