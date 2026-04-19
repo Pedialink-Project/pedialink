@@ -218,3 +218,38 @@ class DashboardService
 
         return array_merge($maternalHealthRecord, $childHealthRecord);
     }
+
+    public function getPatientRiskOverviewData(): array
+    {
+        // Children risk data: Get latest child_record per child grouped by age
+        $childSql = "
+            SELECT
+                CASE
+                    WHEN EXTRACT(YEAR FROM AGE(c.date_of_birth)) >= 0 AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 1 THEN '0 - 1'
+                    WHEN EXTRACT(YEAR FROM AGE(c.date_of_birth)) >= 1 AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 2 THEN '1 - 2'
+                    WHEN EXTRACT(YEAR FROM AGE(c.date_of_birth)) >= 2 AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 3 THEN '2 - 3'
+                    WHEN EXTRACT(YEAR FROM AGE(c.date_of_birth)) >= 3 AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 4 THEN '3 - 4'
+                    ELSE '4+'
+                END as age_group,
+                latest.health_status,
+                COUNT(*) as count
+            FROM (
+                SELECT DISTINCT ON (cr.child_id) cr.child_id, cr.health_status
+                FROM child_records cr
+                ORDER BY cr.child_id, cr.created_at DESC
+            ) AS latest
+            JOIN children c ON c.id = latest.child_id
+            GROUP BY age_group, latest.health_status
+            ORDER BY age_group, latest.health_status
+        ";
+
+        $childResults = QueryBuilder::rawGet($childSql, []);
+
+        // Initialize children data structure
+        $childLabels = ['0 - 1', '1 - 2', '2 - 3', '3 - 4', '4+'];
+        $childData = [
+            'labels' => $childLabels,
+            'good' => array_fill(0, 5, 0),
+            'at_risk' => array_fill(0, 5, 0),
+            'critical' => array_fill(0, 5, 0),
+        ];
