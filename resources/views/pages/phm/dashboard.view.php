@@ -21,14 +21,14 @@ PHM Dashboard
     </section>
     <section class="pill-container">
         <c-pill>
-            <c-slot name="title">Linked Children</c-slot>
+            <c-slot name="title">Total Children</c-slot>
             <c-slot name="number">{{ $linkedChildrenCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/baby-01.svg')}}">
             </c-slot>
         </c-pill>
         <c-pill>
-            <c-slot name="title">Appointments</c-slot>
+            <c-slot name="title">Total Appointments</c-slot>
             <c-slot name="number">{{ $appointmentsCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/profile.svg')}}">
