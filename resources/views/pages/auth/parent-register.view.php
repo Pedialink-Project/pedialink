@@ -39,10 +39,6 @@
                 <div>
                     @if (!empty($final) && $final)
                         <form id="parent-register-final" method="POST" action="{{ route('parent.register.final.submit') }}">
-                            <c-select name="type" label="Account Type:" value="{{ old('type') ?? ''}}" error="{{ errors('type') ?? '' }}">
-                                <li class="select-item" data-value="mother">Mother</li>
-                                <li class="select-item" data-value="father">Father</li>
-                            </c-select>
                             <c-input id="nic" name="nic" type="text" label="NIC:" placeholder="Enter your NIC number" value="{{ old('nic') ?? ''}}" error="{{ errors('nic') ?? '' }}" />
                             <c-textarea id="address" name="address" label="Address:" error="{{ errors('address') ?? '' }}">{{ old('address') ?? '' }}</c-textarea>
                             <c-select name="division" label="GS Division:" value="{{ old('division') ?? '' }}" error="{{ errors('division') ?? '' }}">
