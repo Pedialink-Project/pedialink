@@ -10,19 +10,22 @@ use Library\Framework\Database\QueryBuilder;
 
 class AdminUserService
 {
-    private function applySearch(QueryBuilder $admins, string $search)
-    {
-        $admins->where('name', 'ILIKE', "{$search}%");
-        return $admins;
-
-    }
     public function getAdminDetails(?string $search, ?array $filters)
     {
         $admins = User::query()->where("role", "=", "admin");
 
-        // if ($search) {
-        //     $admins = $this->applySearch($admins, $search);
-        // }
+        if ($search) {
+            $admins->whereGroup(function ($query) use ($search) {
+                 $query->where("name", "ILIKE", "%$search%")
+                    ->orWhere("email", "ILIKE", "%$search%");
+            });
+        }
+        
+        if ($filters && isset($filters["type"]) && is_array($filters["type"])) {
+            $admins->join("admins", "users.id", "=", "admins.id")
+                ->join("admin_types", "admins.admin_type_id", "=", "admin_types.id")
+                ->whereIn("admin_types.type", $filters["type"]);
+        }
 
         // TODO: Implement nested where for filters like this to function
         // if ($filters) {
