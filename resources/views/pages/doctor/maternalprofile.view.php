@@ -51,3 +51,40 @@ Maternal Profiles - Overview
             </c-table.thead>
 
             <c-table.tbody>
+                 @foreach ($maternals as $key => $maternal)
+                <c-table.tr>
+                    <c-table.td col="id">{{ display_entity_id('maternal', $maternal['id']) }}</c-table.td>
+                    <c-table.td col="name">{{ $maternal['name'] }}</c-table.td>
+                    <c-table.td col="age">{{ $maternal['age'] }}</c-table.td>
+                    <c-table.td col="area">{{ $maternal['area'] ?? '-' }}</c-table.td>
+                    <c-table.td col="type">{{ ucfirst($maternal['type']) }}</c-table.td>
+                    <c-table.td class="table-actions" align="center">
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
+                                <c-modal id="view-maternal-{{ $key }}" size="md" :initOpen="false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>View Maternal Profile</c-dropdown.item>
+                                    </c-slot>
+
+                                    <c-slot name="headerSuffix">
+                                        @if( $maternal['record'])
+                                        @if (strtolower($maternal['record']['health_status']) === "good")
+                                        <c-badge type="green">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($maternal['record']['health_status']) === "at_risk")
+                                        <c-badge type="yellow">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($maternal['record']['health_status']) === "critical")
+                                        <c-badge type="red">
+                                            {{ ucwords(str_replace('_', ' ', $maternal['record']['health_status'])) }}
+                                        </c-badge>
+                                        @endif
+                                        @endif
+                                    </c-slot>
