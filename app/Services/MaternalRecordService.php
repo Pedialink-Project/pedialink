@@ -105,7 +105,7 @@ class MaternalRecordService
                 'health_status' => $record->health_status,
                 'fetal_heart_rate' => $record->fetal_heart_rate,
                 'fundal_height' => $record->fundal_height,
-                'notes' => json_decode($record->notes),
+                'notes' => $record->notes ? $record->notes : '',
             ];
         }
 
