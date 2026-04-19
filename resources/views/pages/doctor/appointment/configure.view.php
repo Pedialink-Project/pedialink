@@ -100,3 +100,56 @@ Doctor Appoinments Configure
                         required
                     />
                 </form>
+
+                <c-slot name="close">
+                    Cancel
+                </c-slot>
+
+                <c-slot name="footer">
+                    <c-button type="submit" form="add-weekday" variant="primary">Create Weekday</c-button>
+                </c-slot>
+            </c-modal>
+        </c-slot>
+    </c-table.controls>
+
+    <c-table.wrapper card="1">
+        <div class="table-wrapper" data-responsive="true">
+            <c-table.main sticky="1" size="comfortable">
+                <c-table.thead>
+                    <c-table.tr>
+                        <c-table.th sortable="0">Weekday</c-table.th>
+                        <c-table.th>Start Time</c-table.th>
+                        <c-table.th>End Time</c-table.th>
+                        <c-table.th>Slot Length</c-table.th>
+                        <c-table.th>Status</c-table.th>
+                        <c-table.th class="table-actions">Actions</c-table.th>
+                    </c-table.tr>
+                </c-table.thead>
+
+                <c-table.tbody>
+                    @foreach ($clinicWeeklyAvailability as $key => $availability)
+                        <c-table.tr>
+                            <c-table.td class="weekday-tdata" col="name">{{ $availability['weekday'] }}</c-table.td>
+                            <c-table.td class="weekday-tdata" col="date">{{ $availability['start_time'] }}</c-table.td>
+                            <c-table.td class="weekday-tdata" col="location">{{ $availability['end_time'] }}</c-table.td>
+                            <c-table.td class="weekday-tdata" col="staff">{{ $availability['slot_length_minutes'] }} minutes</c-table.td>
+                            <c-table.td class="weekday-tdata" col="status">
+                                @if ($availability['active'])
+                                    <c-badge class="status-weekday" type="green">Active</c-badge>
+                                @else
+                                    <c-badge class="status-weekday" type="red">Inactive</c-badge>                                 
+                                @endif
+                            </c-table.td>
+                            <c-table.td class="table-actions" align="center">
+                                <c-dropdown.main>
+                                    <c-slot name="trigger">
+                                        <c-button variant="ghost" class="dropdown-trigger">
+                                            <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                        </c-button>
+                                    </c-slot>
+                                    <c-slot name="menu">
+                                        <c-dropdown.sep />
+                                        <c-modal size="md" :initOpen="flash('edit') == $availability['id'] ? true : false">
+                                            <c-slot name="trigger">
+                                                <c-dropdown.item>Edit Details</c-dropdown.item>
+                                            </c-slot>
