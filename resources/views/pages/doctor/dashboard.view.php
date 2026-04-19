@@ -161,3 +161,25 @@ Doctor Dashboard
                         </div>
                     </div>
                 @endforeach
+            </div>
+        </c-card>
+
+        <!-- Growth Chart Card -->
+        <c-card class="card growth-card">
+            <div class="header">
+                <div class="title-section">
+                    <span class="card-title">Weekly Appointment Trends</span>
+                    <span class="card-subtitle">Appointment scheduling and completion rates by day</span>
+                </div>
+                
+            </div>
+            <hr class="divider">
+            <div class="card-body growth-card">
+                <canvas id="barChart">
+
+                </canvas>
+            </div>
+        </c-card>
+    </div>
+
+</main>
