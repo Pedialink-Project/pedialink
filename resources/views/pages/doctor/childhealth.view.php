@@ -194,3 +194,29 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                                             title="Head Circumference"
                                             info="{{ $record['head_circumference'] }}cm" />
                                     </c-modal.viewcard>
+
+                                    <c-modal.viewlist title="Additional Information">
+                                        <c-slot name="list">
+                                            <li>
+                                                @if($record['notes'])
+                                                {{ $record['notes'] }}
+                                                @else
+                                                No additional information available.
+                                                @endif
+                                            </li>
+                                        </c-slot>
+                                    </c-modal.viewlist>
+
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                </c-modal>
+                                
+
+                                <c-modal id="add-health-notes-{{ $key }}" size="sm" :initOpen="flash('add_notes') == $record['id'] ? true : false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>Add Health Notes</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                    </c-slot>
