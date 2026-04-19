@@ -171,81 +171,83 @@
                                             </c-slot>
                                         </c-modal>
                                         
-                                        <c-modal id="edit-account-{{ $key }}" size="sm" :initOpen="flash('edit') === $admin['id'] ? true : false">
-                                            <c-slot name="trigger">
-                                                <c-dropdown.item>Edit Account</c-dropdown.item>
-                                            </c-slot>
+                                        @if (auth()->user()?->id !== $admin['id'])
+                                            <c-modal id="edit-account-{{ $key }}" size="sm" :initOpen="flash('edit') === $admin['id'] ? true : false">
+                                                <c-slot name="trigger">
+                                                    <c-dropdown.item>Edit Account</c-dropdown.item>
+                                                </c-slot>
 
-                                            <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/edit-01.svg' )}}" />
-                                            </c-slot>
+                                                <c-slot name="headerPrefix">
+                                                    <img src="{{ asset('assets/icons/edit-01.svg' )}}" />
+                                                </c-slot>
 
-                                            <c-slot name="header">
-                                                <div>Edit Account</div>
-                                            </c-slot>
+                                                <c-slot name="header">
+                                                    <div>Edit Account</div>
+                                                </c-slot>
 
-                                            <form id="admin-edit-form-{{ $admin['id'] }}" class="admin-form" action="{{ route('admin.user.admin.edit', ['id' => $admin['id']]) }}" method="POST">
-                                                <c-input
-                                                    type="text"
-                                                    name="e_name"
-                                                    label="Name"
-                                                    placeholder="Enter name"
-                                                    value="{{ flash('edit') === $admin['id'] ? (old('e_name') ?? '') : $admin['name'] }}"
-                                                    error="{{ flash('edit') === $admin['id'] ? (errors('e_name') ?? '') : '' }}"
-                                                />
-                                                <c-input
-                                                    type="email"
-                                                    name="e_email"
-                                                    label="Email"
-                                                    placeholder="Enter email"
-                                                    value="{{ flash('edit') === $admin['id'] ? (old('e_email') ?? '') : $admin['email'] }}"
-                                                    error="{{ flash('edit') === $admin['id'] ? (errors('e_email') ?? '') : '' }}"
-                                                />
-                                                <c-select label="Role:" name="e_type" value="{{ $admin['type'] }}" error="{{ flash('edit') === $admin['id'] ? (errors('e_type') ?? '') : '' }}" >
-                                                    <li class="select-item" data-value="super">Super Admin</li>
-                                                    <li class="select-item" data-value="data">Data Admin</li>
-                                                    <li class="select-item" data-value="user">User Admin</li>
-                                                </c-select>
-                                            </form>
+                                                <form id="admin-edit-form-{{ $admin['id'] }}" class="admin-form" action="{{ route('admin.user.admin.edit', ['id' => $admin['id']]) }}" method="POST">
+                                                    <c-input
+                                                        type="text"
+                                                        name="e_name"
+                                                        label="Name"
+                                                        placeholder="Enter name"
+                                                        value="{{ flash('edit') === $admin['id'] ? (old('e_name') ?? '') : $admin['name'] }}"
+                                                        error="{{ flash('edit') === $admin['id'] ? (errors('e_name') ?? '') : '' }}"
+                                                    />
+                                                    <c-input
+                                                        type="email"
+                                                        name="e_email"
+                                                        label="Email"
+                                                        placeholder="Enter email"
+                                                        value="{{ flash('edit') === $admin['id'] ? (old('e_email') ?? '') : $admin['email'] }}"
+                                                        error="{{ flash('edit') === $admin['id'] ? (errors('e_email') ?? '') : '' }}"
+                                                    />
+                                                    <c-select label="Role:" name="e_type" value="{{ $admin['type'] }}" error="{{ flash('edit') === $admin['id'] ? (errors('e_type') ?? '') : '' }}" >
+                                                        <li class="select-item" data-value="super">Super Admin</li>
+                                                        <li class="select-item" data-value="data">Data Admin</li>
+                                                        <li class="select-item" data-value="user">User Admin</li>
+                                                    </c-select>
+                                                </form>
 
-                                            <c-slot name="close">
-                                                Cancel
-                                            </c-slot>                                     
+                                                <c-slot name="close">
+                                                    Cancel
+                                                </c-slot>                                     
 
-                                            <c-slot name="footer">
-                                                <c-button type="submit" form="admin-edit-form-{{ $admin['id'] }}" variant="primary">Save Changes</c-button>
-                                            </c-slot>
-                                        </c-modal>
+                                                <c-slot name="footer">
+                                                    <c-button type="submit" form="admin-edit-form-{{ $admin['id'] }}" variant="primary">Save Changes</c-button>
+                                                </c-slot>
+                                            </c-modal>
 
-                                        <c-modal id="delete-account-{{ $key }}" size="sm" :initOpen="false">
-                                            <c-slot name="trigger">
-                                                <c-dropdown.item>Delete Account</c-dropdown.item>
-                                            </c-slot>
+                                            <c-modal id="delete-account-{{ $key }}" size="sm" :initOpen="false">
+                                                <c-slot name="trigger">
+                                                    <c-dropdown.item>Delete Account</c-dropdown.item>
+                                                </c-slot>
 
-                                            <c-slot name="headerPrefix">
-                                                <img src="{{ asset('assets/icons/Trash.svg' )}}" />
-                                            </c-slot>
+                                                <c-slot name="headerPrefix">
+                                                    <img src="{{ asset('assets/icons/Trash.svg' )}}" />
+                                                </c-slot>
 
-                                            <c-slot name="header">
-                                                <div>Delete Account</div>
-                                            </c-slot>
+                                                <c-slot name="header">
+                                                    <div>Delete Account</div>
+                                                </c-slot>
 
-                                            <p class="delete-content">
-                                                Do you want to delete <span class="admin-type">{{ ucfirst($admin['type']) }} Admin</span> account of user <span class="admin-id">A-{{ $admin['id'] }}</span>?
-                                            </p>
+                                                <p class="delete-content">
+                                                    Do you want to delete <span class="admin-type">{{ ucfirst($admin['type']) }} Admin</span> account of user <span class="admin-id">A-{{ $admin['id'] }}</span>?
+                                                </p>
 
-                                            <form id="delete-form-{{ $admin['id'] }}" action="{{ route('admin.user.admin.delete', ['id' => $admin['id']]) }}" class="hidden" method="POST"></form>
-                                            
-                                            <form id="admin-delete-form" action="" class="hidden"></form>
-                                            <c-slot name="close">
-                                                Cancel
-                                            </c-slot>
+                                                <form id="delete-form-{{ $admin['id'] }}" action="{{ route('admin.user.admin.delete', ['id' => $admin['id']]) }}" class="hidden" method="POST"></form>
+                                                
+                                                <form id="admin-delete-form" action="" class="hidden"></form>
+                                                <c-slot name="close">
+                                                    Cancel
+                                                </c-slot>
 
-                                            <c-slot name="footer">
-                                                <c-button type="submit" form="delete-form-{{ $admin['id'] }}" variant="destructive">Delete Account</c-button>
+                                                <c-slot name="footer">
+                                                    <c-button type="submit" form="delete-form-{{ $admin['id'] }}" variant="destructive">Delete Account</c-button>
 
-                                            </c-slot>
-                                        </c-modal>
+                                                </c-slot>
+                                            </c-modal>
+                                        @endif
                                     </c-slot>
                                 </c-dropdown.main>
                             </c-table.td>
