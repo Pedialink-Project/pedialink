@@ -192,3 +192,29 @@ class DashboardService
                 "health_status" => $record->health_status,
             ];
         }
+
+        $childRecord = ChildRecord::query()
+            ->orderBy("created_at", "DESC")
+            ->limit(2)
+            ->get();
+
+        $childHealthRecord = [];
+        foreach ($childRecord as $record) {
+            $child = $record->getChild();
+            $childHealthRecord[] = [
+                "id" => $record->id,
+                "patient" => [
+                    "id" => $child ? $child->id : null,
+                    "name" => $child ? $child->name : null,
+                ],
+                "staff" => [
+                    "id" => $record->staff_id,
+                    "name" => $record->getStaff() ? $record->getStaff()->getUser()->name : null,
+                ],
+                "type" => "Child",
+                "health_status" => $record->health_status,
+            ];
+        }
+
+        return array_merge($maternalHealthRecord, $childHealthRecord);
+    }
