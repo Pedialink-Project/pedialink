@@ -255,3 +255,21 @@ class AppointmentService
             $error = ["type" => "end", "error" => "End time is required"];
             return $error;
         }
+
+        // if (!Validator::validateTimeFormat($startTime)) {
+        //     $error = ["type" => "start", "error" => "Invalid start time format"];
+        //     return $error;
+        // }
+
+        // if (!Validator::validateTimeFormat($endTime)) {
+        //     $error = ["type" => "end", "error" => "Invalid end time format"];
+        //     return $error;
+        // }
+        if (strtotime($startTime) >= strtotime($endTime)) {
+            $error = ["type" => "start", "error" => "Start time must be before end time"];
+            return $error;
+        }
+
+        return $error;
+    }
+    
