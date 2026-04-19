@@ -320,3 +320,39 @@ Doctor Dashboard
             }
         }
     };
+
+    new Chart(riskCtxMother, riskConfigMother);
+
+    // Toggle between charts
+    const riskChartCanvas = document.getElementById('riskChart');
+    const riskChartMotherCanvas = document.getElementById('riskChartMother');
+    const selectChildrenChart = document.getElementById('select-children-chart');
+    const selectMotherChart = document.getElementById('select-mother-chart');
+
+    // Default: show children chart, hide mother chart
+    riskChartMotherCanvas.style.display = 'none';
+
+    selectChildrenChart.addEventListener('click', function() {
+        riskChartCanvas.style.display = 'block';
+        riskChartMotherCanvas.style.display = 'none';
+    });
+
+    selectMotherChart.addEventListener('click', function() {
+        riskChartCanvas.style.display = 'none';
+        riskChartMotherCanvas.style.display = 'block';
+    });
+
+    // --- Data for the right chart (weekly) ---
+    const weeklyData = <?php echo json_encode($weeklyAppointmentData); ?>;
+    const days = ['Mon','Tue','Wed','Thu','Fri'];
+
+    const ctxBar = document.getElementById('barChart').getContext('2d');
+
+    // small gradient for bars (optional subtle)
+    const barGradA = ctxBar.createLinearGradient(0,0,0,220);
+    barGradA.addColorStop(0, 'rgba(88,116,255,0.95)');
+    barGradA.addColorStop(1, 'rgba(88,116,255,0.75)');
+
+    const barGradB = ctxBar.createLinearGradient(0,0,0,220);
+    barGradB.addColorStop(0, 'rgba(255,145,135,0.95)');
+    barGradB.addColorStop(1, 'rgba(255,145,135,0.75)');
