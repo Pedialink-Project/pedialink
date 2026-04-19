@@ -98,3 +98,45 @@ Health Records of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
 
 
     --}}
+
+    </c-table.controls>
+
+<c-table.wrapper card="1">
+    <div class="table-wrapper" data-responsive="true">
+        <c-table.main sticky="1" size="comfortable">
+            <c-table.thead>
+                <c-table.tr>
+                    <c-table.th sortable="0">Recorded at</c-table.th>
+                    <c-table.th sortable="0">BMI</c-table.th>
+                    <c-table.th sortable="0">Blood Pressure</c-table.th>
+                    <c-table.th sortable="0">Glucose</c-table.th>
+                    <c-table.th sortable="0">Trimester</c-table.th>
+                    <c-table.th sortable="0">Fetal Heart Rate</c-table.th>
+                    <c-table.th>Health Status</c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
+                </c-table.tr>
+            </c-table.thead>
+
+            <c-table.tbody>
+                @foreach ($records as $key=>$record)
+                <c-table.tr>
+                    <c-table.td col="Recorded at">{{ $record['visit_date'] }}</c-table.td>
+                    <c-table.td col="BMI">{{ $record['bmi'] }}</c-table.td>
+                    <c-table.td col="Blood Pressure">{{ $record['blood_pressure'].' mmHg' }}</c-table.td>
+                    <c-table.td col="Glucose">{{ $record['glucose'].' mg/dL' }}</c-table.td>
+                    <c-table.td col="Trimester">{{ ucwords($record['trimester']).' Trimester' }}</c-table.td>
+                    <c-table.td col="Fetal Heart Rate">{{ $record['fetal_heart_rate'].' bpm'  }}</c-table.td>
+                    <c-table.td col="Health Status">
+                        @if (strtolower($record['health_status']) === "good")
+                        <c-badge type="green">
+                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                        </c-badge>
+                        @elseif (strtolower($record['health_status']) === "at_risk")
+                        <c-badge type="yellow">
+                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                        </c-badge>
+                        @elseif (strtolower($record['health_status']) === "critical")
+                        <c-badge type="red">
+                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                        </c-badge>
+                        @endif
