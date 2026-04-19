@@ -296,11 +296,6 @@ Home
 
     <!-- Footer -->
     <div class="section footer">
-      <div class="footer-links">
-        <a href="">Privacy Policy</a>
-        <a href="">Terms of Service</a>
-        <a href="">Contact Us</a>
-      </div>
       <p>&copy; 2026 PediaLink. All rights reserved.</p>
     </div>
   </div>
