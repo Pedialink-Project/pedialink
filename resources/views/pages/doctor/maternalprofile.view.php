@@ -88,3 +88,51 @@ Maternal Profiles - Overview
                                         @endif
                                         @endif
                                     </c-slot>
+
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/mother.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Maternal Profile Details</div>
+                                    </c-slot>
+
+                                    <c-modal.viewcard>
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="Maternal ID"
+                                            info="{{ display_entity_id('maternal', $maternal['id']) }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}" title="Name"
+                                            info="{{ $maternal['name'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
+                                            title="Age" info="{{ $maternal['age'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/mother.svg') }}"
+                                            title="Maternal Type" info="{{ ucfirst($maternal['type'] )}}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/ruler.svg') }}"
+                                            title="Height" info="{{ $maternal['height'] }} cm" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/blood-type.svg') }}"
+                                            title="Blood Type" info="{{ $maternal['blood_type'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}" title="LMP"
+                                            info="{{ $maternal['lmp'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-01.svg') }}"
+                                            title="EDD" info="{{ $maternal['edd'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                            title="Gravida" info="{{ $maternal['gravida'] }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                            title="Para" info="{{ $maternal['para'] }}" />
+                                    </c-modal.viewcard>
+
+
+                                    <c-modal.viewlist title="Latest Medical Records">
+                                        <c-slot name="list">
+                                            @if($maternal['record'] == NULL)
+                                                <li>No medical records found.</li>
+                                            @else
+                                                    <li>Fundal Height: {{ $maternal['record']['fundal_height'] ?? '' }} cm</li>
+                                                    <li>Weight: {{ $maternal['record']['weight'] ?? '' }} kg</li>
+                                                    <li>BMI Value: {{ $maternal['record']['bmi'] ?? '' }}</li>
+                                                    <li>Fetal Heart Rate: {{ $maternal['record']['fetal_heart_rate'] ?? '' }} bpm</li>
+                                                    <li>Glucose: {{ $maternal['record']['glucose'] ?? '' }} mg/dL</li>
+                                                    <li>Hemoglobin: {{ $maternal['record']['hemoglobin'] ?? '' }} g/dL</li>
+                                                    <li>Blood Pressure: {{ $maternal['record']['blood_pressure'] ?? '' }} mmHg</li>
+                                            @endif
+                                        </c-slot>
+                                    </c-modal.viewlist>
