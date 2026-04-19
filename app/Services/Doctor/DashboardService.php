@@ -146,3 +146,49 @@ class DashboardService
                     $canc = isset($r['cancelled']) ? (int)$r['cancelled'] : 0;
                     $book = isset($r['booked']) ? (int)$r['booked'] : 0;
                 }
+
+                 // Map DOW 1-5 (Mon-Fri) to array index 0-4
+                if ($dow !== null && $dow >= 1 && $dow <= 5) {
+                    $idx = $dow - 1;
+                    $booked[$idx] = $book;
+                    $completed[$idx] = $comp;
+                    $cancelled[$idx] = $canc;
+                }
+            }
+        }
+
+        return [
+            'booked' => $booked,
+            'completed' => $completed,
+            'cancelled' => $cancelled,
+        ];
+    }
+
+    public function getLatestHealthRecords()
+    {
+        $maternalRecord = MaternalRecord::query()
+            ->orderBy("created_at", "DESC")
+            ->limit(2)
+            ->get();
+
+        $maternalHealthRecord = [];
+        foreach ($maternalRecord as $record) {
+            $parent = $record->getParent();
+            $user = $parent ? $parent->getUser() : null;
+            $maternal = Maternal::query()
+                ->where("parent_id", "=", $record->parent_id)
+                ->first();
+            $maternalHealthRecord[] = [
+                "id" => $record->id,
+                "patient" => [
+                    "id" => $maternal ? $maternal->id : null,
+                    "name" => $user ? $user->name : null,
+                ],
+                "staff" => [
+                    "id" => $record->staff_id,
+                    "name" => $record->getStaff() ? $record->getStaff()->getUser()->name : null,
+                ],
+                "type" => "Mother",
+                "health_status" => $record->health_status,
+            ];
+        }
