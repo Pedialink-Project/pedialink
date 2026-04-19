@@ -16,3 +16,33 @@ Doctor Appoinments Configure
     </svg>
     Appointments Configure
 @endsection
+
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/pages/doctor/configure.css') }}">
+@endsection
+
+@section('content')
+
+    <c-table.controls :filters="['status' => ['active', 'inactive']]" action="{{ route('doctor.appointments.configure')}}">
+        <c-slot name="filter">
+            <c-button variant="outline">
+                <img src="{{ asset('assets/icons/filter.svg') }}" />
+                Status
+            </c-button>
+        </c-slot>
+        <c-slot name="extrabtn">
+            <c-modal id="add-configure-modal" size="sm" :initOpen="flash('add') ? true : false">
+                <c-slot name="trigger">
+                    <c-button class="add-vaccine-btn" variant="primary">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_967_38088)">
+                                <path d="M10.0001 6.66602V13.3327M13.3334 9.99935L6.66675 9.99935" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M18.3334 9.99967C18.3334 5.3973 14.6025 1.66634 10.0001 1.66634C5.39771 1.66634 1.66675 5.3973 1.66675 9.99967C1.66675 14.602 5.39771 18.333 10.0001 18.333C14.6025 18.333 18.3334 14.602 18.3334 9.99967Z" stroke="#FAFAFA" stroke-width="1.5"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_967_38088">
+                                    <rect width="20" height="20" fill="white"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                        <span>Add Weekday</span>
