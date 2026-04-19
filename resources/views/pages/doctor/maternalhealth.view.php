@@ -140,3 +140,39 @@ Health Records of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
                             {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
                         </c-badge>
                         @endif
+                    </c-table.td>
+                    <c-table.td class="table-actions" align="center">
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
+                                <c-modal id="view-health-record-{{ $key }}" size="sm" :initOpen="false">
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>View Record</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerSuffix">
+                                        @if (strtolower($record['health_status']) === "good")
+                                        <c-badge type="green">
+                                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($record['health_status']) === "at_risk")
+                                        <c-badge type="yellow">
+                                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($record['health_status']) === "critical")
+                                        <c-badge type="red">
+                                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                                        </c-badge>
+                                        @endif
+                                    </c-slot>
+
+                                     <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Health Record</div>
+                                    </c-slot>
