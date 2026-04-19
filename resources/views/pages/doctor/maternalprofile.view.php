@@ -136,3 +136,33 @@ Maternal Profiles - Overview
                                             @endif
                                         </c-slot>
                                     </c-modal.viewlist>
+
+
+
+                                    <c-slot name="close">
+                                        Close
+                                    </c-slot>
+                                </c-modal>
+                                <c-dropdown.item href="{{ route('doctor.maternal.health', ['id' => $maternal['id']])}}">
+                                    View Health Records
+                                </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('doctor.appointments.history', ['id' => $maternal['id'], 'type' => 'maternal'])}}">
+                                    View Appointments History
+                                </c-dropdown.item>
+
+                            </c-slot>
+                        </c-dropdown.main>
+
+                    </c-table.td>
+                </c-table.tr>
+                @endforeach
+                @if(count($maternals) === 0)
+                <tr>
+                    <td colspan="6">
+                        <c-emptytable
+                            alt="No Maternals found"
+                            title="No Maternal Profiles Available"
+                            description="No maternal profiles match your current search or filters. Try adjusting them to see more results." />
+                    </td>
+                </tr>
+                @endif

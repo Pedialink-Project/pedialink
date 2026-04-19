@@ -143,3 +143,35 @@ Vaccination Details of {{ $name . ' (' . display_entity_id('maternal', $id) . ')
                                                 <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
                                                     title="Overdue date" info="{{ $item['scheduled_date'] }}" />
                                             @endif
+                                        </c-modal.viewcard>
+
+                                        <c-modal.viewlist title="Additional Information">
+                                            <c-slot name="list">
+                                                <li>{{ $item['schedule_vaccine']['additional_information'] ?? 'N/A' }}</li>
+                                            </c-slot>
+                                        </c-modal.viewlist>
+
+                                        <c-slot name="close">
+                                            Close
+                                        </c-slot>
+                                    </c-modal>
+                                </c-slot>
+                            </c-dropdown.main>
+                        </c-table.td>
+                    </c-table.tr>
+                @endforeach
+            </c-table.tbody>
+        </c-table.main>
+    </div>
+</c-table.wrapper>
+
+ @if (count($vaccinations) === 0)
+    <c-emptytable
+        alt="Empty vaccination history"
+        title="No Vaccination Records"
+        description="There are no vaccination records available for this patient."
+    />
+@endif
+
+<c-table.pagination :links="$links" />
+@endsection

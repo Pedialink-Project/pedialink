@@ -153,3 +153,45 @@ Doctor Appoinments Configure
                                             <c-slot name="trigger">
                                                 <c-dropdown.item>Edit Details</c-dropdown.item>
                                             </c-slot>
+
+                                            <c-slot name="headerPrefix">
+                                                <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                            </c-slot>
+
+                                            <c-slot name="header">
+                                                <div>Edit Available Appointment day</div>
+                                            </c-slot>
+
+                                            <form id="edit-availability-{{ $key }}" class="edit-availability-form" action="{{ route('doctor.appointments.configure.edit', ['id' => $availability['id']]) }}" method="POST">
+                                                <c-input
+                                                    type="time"
+                                                    name="e_start_time"
+                                                    label="Start Time"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_start_time') ?? '' : formatAmPmToTime($availability['start_time']) }}"
+                                                    error="{{ flash('edit') == $availability['id'] ? errors('e_start_time') ?? '' : '' }}"
+                                                    required
+                                                />
+                                                <c-input
+                                                    type="time"
+                                                    name="e_end_time"
+                                                    label="End Time"
+                                                    value="{{ flash('edit') == $availability['id'] ? old('e_end_time') ?? '' : formatAmPmToTime($availability['end_time']) }}"
+                                                    error="{{ flash('edit') == $availability['id'] ? errors('e_end_time') ?? '' : '' }}"
+                                                    required
+                                                />
+                                            </form>
+                                            
+                                            <c-slot name="close">
+                                                Cancel
+                                            </c-slot>
+
+                                            <c-slot name="footer">
+                                                <c-button form="edit-availability-{{ $key }}" type="submit" variant="primary">Save</c-button>
+                                            </c-slot>
+                                        </c-modal>
+                                        
+                                        @if ($availability['active'])
+                                            <c-modal size="md" :initOpen="false">
+                                                <c-slot name="trigger">
+                                                    <c-dropdown.item>Disable Day</c-dropdown.item>
+                                                </c-slot>
