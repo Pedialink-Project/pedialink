@@ -103,3 +103,49 @@ Doctor Child Profiles
                                         @endif
                                         @endif
                                     </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Child Profile Details</div>
+                                    </c-slot>
+
+                                    <c-modal.viewcard>
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/profile.svg') }}"
+                                            title="Child ID"
+                                            info="{{ display_entity_id('child', $child['id']) }}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/baby-01.svg') }}"
+                                            title="Name"
+                                            info="{{ $child['name'] }}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/vaccine.svg') }}"
+                                            title="Blood Type"
+                                            info="{{$child['blood_type']}}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
+                                            title="Age"
+                                            info="{{ $child['age'] }}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/location-05.svg') }}"
+                                            title="GS Division"
+                                            info="{{$child['area']}}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/user-add--01.svg') }}"
+                                            title="Assigned PHM"
+                                            info="{{ $child['phm']['name'] }}" />
+                                    </c-modal.viewcard>
+
+                                    @if(!empty($child['parents']))
+
+                                    <div class="parent-link-group">
+                                        @foreach($child['parents'] as $parent)
+                                        <div class="parent-link-card">
+                                            <div class="name-group">
+                                                <span class="parent-title">{{$parent['name']}}</span>
+                                                <span class="parent-type">{{ucfirst($parent['type'])}}</span>
+                                            </div>
+
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @else
