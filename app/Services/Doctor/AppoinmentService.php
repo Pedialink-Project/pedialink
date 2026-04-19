@@ -272,4 +272,31 @@ class AppointmentService
 
         return $error;
     }
-    
+
+    public function validateAvailabilityData(array $data, $edit = false)
+    {
+        $errors = [];
+
+        $prefix = '';
+        if ($edit) {
+            $prefix = 'e_';
+        } else {
+            // Only for create weekday form
+            $weekdayError = $this->validateWeekday($data['weekday']);
+            if ($weekdayError) {
+                $errors['weekday'] = $weekdayError;
+            }
+        }
+
+        $startAndEndTimeError = $this->validateStartAndEndTime($data[$prefix . 'start_time'], $data[$prefix . 'end_time']);
+        if ($startAndEndTimeError) {
+            if ($startAndEndTimeError['type'] === "start") {
+                $errors[$prefix . 'start_time'] = $startAndEndTimeError['error'];
+            } else if ($startAndEndTimeError['type'] === "end") {
+                $errors[$prefix . 'end_time'] = $startAndEndTimeError['error'];
+            }
+        }
+
+        return $errors;
+    }
+}
