@@ -304,3 +304,16 @@ class DashboardService
             $ageGroup = $row['age_group'];
             $healthStatus = $row['health_status'];
             $count = (int) $row['count'];
+
+            if (isset($maternalAgeGroupIndex[$ageGroup]) && isset($maternalData[$healthStatus])) {
+                $index = $maternalAgeGroupIndex[$ageGroup];
+                $maternalData[$healthStatus][$index] = $count;
+            }
+        }
+
+        return [
+            'children' => $childData,
+            'maternal' => $maternalData,
+        ];
+    }
+}
