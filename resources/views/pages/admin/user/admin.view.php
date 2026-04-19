@@ -255,7 +255,7 @@
             </c-table.main>
         </div>
     </c-table.wrapper>
-    @if(count($admin) === 0)
+    @if(count($admins) === 0)
         <c-emptytable
             alt="empty"
             title="No data available"
