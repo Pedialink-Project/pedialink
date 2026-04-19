@@ -21,7 +21,7 @@ $menuItems = [
                 'children' => [
                     ['name' => 'Overview', 'link' => route('admin.user.overview')],
                     ['name' => 'Parent Account Approval', 'link' => route('admin.user.parent')],
-                    ['name' => 'Admin', 'link' => route('admin.user.admin')],
+                    ['name' => 'Admin', 'link' => route('admin.user.admin'), 'admintype' => 'super'],
                 ]
             ],
             [
