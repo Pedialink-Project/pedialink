@@ -44,3 +44,38 @@ Doctor Child Health Records
 </svg>
 Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
 @endsection
+
+@section('content')
+
+
+<c-table.controls action="{{route('doctor.child.health',['id' => $id])}}" :filters="['health_status' => ['good', 'at_risk', 'critical']]">
+{{--
+    <c-slot name="extrabtn">
+        <c-modal id="add-health-record-modal" size="sm" :initOpen="flash('add') ? true : false">
+            <c-slot name="trigger">
+                <c-button variant="primary">
+                    Add Record
+                </c-button>
+            </c-slot>
+
+            <c-slot name="headerPrefix">
+                <img src="{{ asset('assets/icons/profile.svg' )}}" />
+            </c-slot>
+
+            <c-slot name="header">
+                <div>Add Health Records</div>
+            </c-slot>
+
+            <form id="add-health-record-form" class="child-health-form" action="{{route('doctor.child.health.add', ['id' => $id])}}" method="POST">
+                <c-input type="text" name="height" label="Height (cm)" value="{{ old('height') ?? '' }}"
+                    error="{{ errors('height') ?? '' }}" placeholder="Enter Height of the Child (in cm)" />
+                <c-input type="text" name="weight" label="Weight (kg)" value="{{ old('weight') ?? '' }}"
+                    error="{{ errors('weight') ?? '' }}" placeholder="Enter Weight of the Child (in kg)" />
+                <c-input type="text" name="head_circumference" label="Head Circumference (cm)" value="{{ old('head_circumference') ?? '' }}"
+                    error="{{ errors('head_circumference') ?? '' }}" placeholder="Enter Head Circumference of the Child (in cm)" />
+                <c-input type="date" name="visit_date" label="Visit Date" value="{{ old('visit_date') ?? '' }}"
+                    error="{{ errors('visit_date') ?? '' }}" placeholder="Select the Visit Date" />
+
+                <c-textarea name="notes" label="Additional Notes" value="{{ old('notes') ?? '' }}"
+                    error="{{ errors('notes') ?? '' }}" placeholder="Enter any additional notes here" rows="4"></c-textarea>
+            </form>
