@@ -253,3 +253,36 @@ class DashboardService
             'at_risk' => array_fill(0, 5, 0),
             'critical' => array_fill(0, 5, 0),
         ];
+
+        $childAgeGroupIndex = array_flip($childLabels);
+
+        foreach ($childResults as $row) {
+            $ageGroup = $row['age_group'];
+            $healthStatus = $row['health_status'];
+            $count = (int) $row['count'];
+
+            if (isset($childAgeGroupIndex[$ageGroup]) && isset($childData[$healthStatus])) {
+                $index = $childAgeGroupIndex[$ageGroup];
+                $childData[$healthStatus][$index] = $count;
+            }
+        }
+
+        // Maternal risk data: Similar to PHM dashboard
+        $maternalSql = "
+            SELECT
+                CASE
+                    WHEN EXTRACT(YEAR FROM AGE(p.date_of_birth)) >= 18 AND EXTRACT(YEAR FROM AGE(p.date_of_birth)) < 25 THEN '18 - 25'
+                    WHEN EXTRACT(YEAR FROM AGE(p.date_of_birth)) >= 25 AND EXTRACT(YEAR FROM AGE(p.date_of_birth)) < 30 THEN '25 - 30'
+                    WHEN EXTRACT(YEAR FROM AGE(p.date_of_birth)) >= 30 AND EXTRACT(YEAR FROM AGE(p.date_of_birth)) < 40 THEN '30 - 40'
+                    WHEN EXTRACT(YEAR FROM AGE(p.date_of_birth)) >= 40 AND EXTRACT(YEAR FROM AGE(p.date_of_birth)) < 50 THEN '40 - 50'
+                    ELSE '50+'
+                END as age_group,
+                mr.health_status,
+                COUNT(*) as count
+            FROM maternal_records mr
+            JOIN parents p ON mr.parent_id = p.id
+            JOIN maternal m ON m.parent_id = p.id
+            WHERE m.type = 'antenatal'
+            GROUP BY age_group, mr.health_status
+            ORDER BY age_group, mr.health_status
+        ";
