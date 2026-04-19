@@ -151,3 +151,47 @@ class AppointmentService
 
         return array_values($availableWeekdays);
     }
+
+    public function getAvailableClinicWeekdays()
+    {
+        $clinicWeeklyAvailability = ClinicWeeklyAvailability::query()
+            ->where("active", "=", 1)
+            ->orderBy('weekday', 'ASC')
+            ->get();
+
+        $weekday = [];
+
+        foreach ($clinicWeeklyAvailability as $availability) {
+            $weekday[] = [
+                "value" => $availability->weekday,
+                "name" => IntToDayName::convert($availability->weekday),
+            ];
+        }
+
+        return $weekday;
+    }
+
+    public function getAppointmentConfigurationData(string $search, array $filters)
+    {
+        $clinicWeeklyAvailability = DoctorWeeklyAvailability::query();
+
+        if ($search !== "") {
+            $weekday = AppointmentConfigurationHelper::weekdaySearch($search);
+            if ($weekday !== -1) {
+                $clinicWeeklyAvailability = $clinicWeeklyAvailability
+                    ->where("weekday", "=", $weekday);
+            }
+        }
+
+        if (isset($filters['status'])) {
+            $value = AppointmentConfigurationHelper::statusFilter($filters['status']);
+            $clinicWeeklyAvailability = $clinicWeeklyAvailability
+                ->whereIn("active", $value);
+        }
+
+        $clinicWeeklyAvailability = $clinicWeeklyAvailability
+            ->where("doctor_id", "=", auth()->user()?->id)
+            ->orderBy('weekday', 'ASC')
+            ->get();
+
+        $resource = [];
