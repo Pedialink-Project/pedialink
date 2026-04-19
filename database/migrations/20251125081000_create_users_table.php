@@ -22,6 +22,7 @@ class Migration_20251125081000_create_users_table implements \Library\Framework\
                 email TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
                 role user_role NOT NULL,
+                email_verified BOOLEAN NOT NULL DEFAULT FALSE,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
             );"
         );
