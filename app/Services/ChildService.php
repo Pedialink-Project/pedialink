@@ -14,6 +14,7 @@ use App\Models\ParentM;
 use App\Rules\NameRule;
 use App\Rules\DivisionRule;
 use App\Rules\DateRule;
+use App\Rules\TextRule;
 use App\Helpers\BirthCertificateValidator;
 use App\Helpers\NicValidator;
 use App\Models\VaccinationReminder;
@@ -26,7 +27,7 @@ use DateTime;
 class ChildService
 {
 
-    use NameRule, DivisionRule, DateRule, BirthCertificateValidator, NicValidator;
+    use NameRule, DivisionRule, DateRule, TextRule, BirthCertificateValidator, NicValidator;
     private  $notificationService;
     private ChildRecordService $childRecordService;
     private VaccinationSchedulerService $vaccinationSchedulerService;
@@ -642,8 +643,6 @@ class ChildService
         if ($bloodTypeError) {
             $errors["{$suffix}blood_type"] = $bloodTypeError;
         }
-
-
         $genderError = $this->validateGender($gender);
         if ($genderError) {
             $errors["{$suffix}gender"] = $genderError;
@@ -775,7 +774,23 @@ class ChildService
         }
     }
 
-    public function validateArchiveProfile(int $id)
+    private function validateArchiveReason(string $reason)
+    {
+        $normalizedReason = strtolower(trim($reason));
+        $allowedReasons = ['dead', 'change_gs_division'];
+
+        if (!Validator::validateFieldExistence($normalizedReason)) {
+            return "Archive reason is required";
+        }
+
+        if (!in_array($normalizedReason, $allowedReasons, true)) {
+            return "Invalid archive reason";
+        }
+
+        return null;
+    }
+
+    public function validateArchiveProfile(int $id, string $reason)
     {
         $error = null;
 
@@ -788,6 +803,12 @@ class ChildService
 
         if ($child->archived_at !== null) {
             $error = "This child profile is already archived";
+            return $error;
+        }
+
+        $reasonError = $this->validateArchiveReason($reason);
+        if ($reasonError !== null) {
+            return $reasonError;
         }
 
         return $error;
@@ -809,8 +830,15 @@ class ChildService
             return $error;
         }
 
-        if ($child->date_of_birth && $this->hasReachedEighteen($child->date_of_birth)) {
+        $archiveReason = strtolower(trim((string)($child->archive_reason ?? '')));
+
+        if ($child->date_of_birth && $this->hasReachedEighteen($child->date_of_birth) && $archiveReason !== 'change_gs_division') {
             $error = "This child profile cannot be restored because the child is 18 years or older";
+            return $error;
+        }
+
+        if ((bool)($child->is_deceased ?? false) === true) {
+            $error = "This child profile cannot be restored because the child is marked as deceased";
         }
 
         return $error;
@@ -960,12 +988,15 @@ class ChildService
     //     $child->delete();
     // }
 
-    public function archiveChildProfile(int $id)
+    public function archiveChildProfile(int $id, string $reason)
     {
         $child = Child::find($id);
 
         if ($child) {
+            $normalizedReason = strtolower(trim($reason));
             $child->archived_at = date('Y-m-d H:i:s');
+            $child->archive_reason = $normalizedReason;
+            $child->is_deceased = $normalizedReason === 'dead';
             $child->save();
         }
     }
@@ -976,6 +1007,7 @@ class ChildService
 
         if ($child) {
             $child->archived_at = null;
+            $child->archive_reason = null;
             $child->save();
         }
     }
@@ -1028,6 +1060,8 @@ class ChildService
                 'parent' => $parentResource,
                 'latest_health_record' => $latestHealthRecord,
                 'archived_at' => $child->archived_at,
+                'archive_reason' => $child->archive_reason,
+                'is_deceased' => (bool)($child->is_deceased ?? false),
             ];
         }
 
