@@ -81,3 +81,65 @@ Vaccination Details of {{ $name . ' (' . display_entity_id('maternal', $id) . ')
                                     {{ ucfirst($item['status'] )}}
                                 </c-badge>
                             @endif
+                        </c-table.td>
+                        <c-table.td col="Vaccination Date">{{ $item['scheduled_date'] }}</c-table.td>
+                        <c-table.td class="table-actions" align="center">
+                            <c-dropdown.main>
+                                <c-slot name="trigger">
+                                    <c-button variant="ghost" class="dropdown-trigger">
+                                        <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                    </c-button>
+                                </c-slot>
+                                <c-slot name="menu">
+                                    <c-modal id="view-vaccination-{{ $key }}" size="sm" :initOpen="false">
+                                        <c-slot name="trigger">
+                                            <c-dropdown.item>View Vaccination Details</c-dropdown.item>
+                                        </c-slot>
+
+                                        <c-slot name="headerPrefix">
+                                            <img src="{{ asset('assets/icons/vaccine.svg' )}}" />
+                                        </c-slot>
+
+
+                                        <c-slot name="headerSuffix">
+                                            @if (strtolower($item['status']) === "complete")
+                                                <c-badge type="green">
+                                                    {{ ucfirst($item['status'] )}}
+                                                </c-badge>
+                                            @elseif (strtolower($item['status']) === "pending")
+                                                <c-badge type="purple">
+                                                    {{ ucfirst($item['status'] )}}
+                                                </c-badge>
+                                            @elseif (strtolower($item['status']) === "overdue")
+                                                <c-badge type="red">
+                                                    {{ ucfirst($item['status'] )}}
+                                                </c-badge>
+                                            @endif
+
+                                        </c-slot>
+
+                                        <c-slot name="header">
+                                            <div>Vaccination Details</div>
+                                        </c-slot>
+
+                                        <c-modal.viewcard>
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}" title="ID"
+                                                info="V-00{{ $item['id'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/chart-evaluation.svg') }}"
+                                                title="Recorded Age" info="{{ $item['recorded_age'] }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/vaccine.svg') }}"
+                                                title="Vaccine Name" info="{{ $item['vaccine']['code'] ?? '' }}" />
+                                            <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                                title="Dose Numbers" info="{{ $item['schedule_vaccine']['dose_number'] ?? 'N/A' }}" />
+                                            @if (strtolower($item['status']) === "complete")
+                                                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                                    title="Administered date" info="{{ $item['scheduled_date'] }}" />
+                                                <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}"
+                                                    title="Administered Time" info="{{ $item['administered_at'] ?? 'N/A' }}" />
+                                            @elseif (strtolower($item['status']) === "pending")
+                                                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                                    title="Upcoming Date" info="{{ $item['scheduled_date'] }}" />
+                                            @elseif (strtolower($item['status']) === "overdue")
+                                                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                                    title="Overdue date" info="{{ $item['scheduled_date'] }}" />
+                                            @endif
