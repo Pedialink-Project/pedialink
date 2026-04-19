@@ -311,3 +311,22 @@ Health Records of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
                     </c-table.td>
                 </c-table.tr>
                 @endforeach
+
+                @if(count($records) === 0)
+                <tr>
+                    <td colspan="8">
+                        <c-emptytable
+                            alt="No Health Records found"
+                            title="No Health Records Available"
+                            description="No health records match your current search or filters. Try adjusting them to see more results." />
+
+                    </td>
+                </tr>
+                @endif
+            </c-table.tbody>
+        </c-table.main>
+    </div>
+</c-table.wrapper>
+
+<c-table.pagination :links="$links" />
+@endsection
