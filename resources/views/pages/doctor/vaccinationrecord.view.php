@@ -35,3 +35,49 @@ Doctor Vaccination
         </clipPath>
     </defs>
 </svg>
+
+Vaccination Details of {{ $name . ' (' . display_entity_id('maternal', $id) . ')' }}
+@endsection
+
+@section('content')
+<c-table.controls action="{{ route('phm.child.vaccinations', ['id' => $id]) }}" :filters="['status' => ['complete', 'pending', 'overdue']]">
+    <c-slot name="extrabtn">
+        <c-link href="{{ route('vaccination.child.card', ['id' => $id]) }}" type="primary">
+            View Vaccination Card
+        </c-link>
+    </c-slot>
+</c-table.controls>
+<c-table.wrapper card="1">
+    <div class="table-wrapper" data-responsive="true">
+        <c-table.main sticky="1" size="comfortable">
+            <c-table.thead>
+                <c-table.tr>
+                    <c-table.th sortable="0" width="200px">ID</c-table.th>
+                    <c-table.th sortable="0" width="220px">Vaccine</c-table.th>
+                    <c-table.th sortable="0" width="220px">Recorded Age</c-table.th>
+                    <c-table.th align="left" sortable="0" width="220px">Vaccination Status</c-table.th>
+                    <c-table.th align="left" sortable="0">Vaccination Date</c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
+                </c-table.tr>
+            </c-table.thead>
+
+            <c-table.tbody>
+                @foreach ($vaccinations as $key => $item)
+                    <c-table.tr>
+                        <c-table.td col="id">V-00{{ $item['id'] }}</c-table.td>
+                        <c-table.td col="name">{{ $item['vaccine']['code'] }}</c-table.td>
+                        <c-table.td col="Recorded Age">{{ $item['recorded_age'] }}</c-table.td>
+                        <c-table.td col="Vaccination Status">
+                            @if (strtolower($item['status']) === "complete")
+                                <c-badge type="green">
+                                    {{ ucfirst($item['status'] )}}
+                                </c-badge>
+                            @elseif (strtolower($item['status']) === "pending")
+                                <c-badge type="purple">
+                                    {{ ucfirst($item['status'] )}}
+                                </c-badge>
+                            @elseif (strtolower($item['status']) === "overdue")
+                                <c-badge type="red">
+                                    {{ ucfirst($item['status'] )}}
+                                </c-badge>
+                            @endif
