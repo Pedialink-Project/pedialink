@@ -44,3 +44,18 @@ class CalendarService
                     ]],
                 ];
             }
+
+            if ($maternal) {
+                $events[] = [
+                    'date' => $slot->slot_date,
+                    'type' => 'maternal',
+                    'title' => 'Maternal Appointment',
+                    'color' => 'linear-gradient(90deg,#f5a623,#f97316)',
+                    'items' => [[
+                        'maternal' => $maternal->getUser() ? $maternal->getUser()->name : 'Maternal',
+                        'time' => Calculator::formatTimeToAmPm($slot->start_time),
+                        'status' => ucfirst((string)$appointment->status),
+                    ]],
+                ];
+            }
+        }
