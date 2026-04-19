@@ -203,5 +203,16 @@ Archived Child Profiles
     </div>
 </c-table.wrapper>
 
-<c-table.pagination />
+<?php
+$linkPagination = [
+    'total' => 0,
+    'per_page' => 0,
+    'current_page' => null,
+    'last_page' => null,
+    'from' => 0,
+    'to' => 0,
+]
+?>
+
+<c-table.pagination :links="$linkPagination" />
 @endsection
