@@ -6,6 +6,7 @@ use App\Helpers\NicExtractor;
 use App\Helpers\NicValidator;
 use App\Helpers\Validator;
 use App\Models\ParentM;
+use App\Models\Staff;
 use App\Models\User;
 use App\Rules\DivisionRule;
 use App\Rules\EmailRule;
@@ -129,7 +130,26 @@ class AuthService
         $nicError = $this->validateNic($nic);
         if ($nicError) {
             $errors["nic"] = $nicError;
+        } else {
+            $parents = ParentM::query()
+                ->where("nic", "=", $nic)
+                ->get();
+    
+            if (count($parents) > 0) {
+                $errors['nic'] = "Nic already used in system";
+            }
+    
+            $staff = Staff::query()
+                ->where("nic", "=", $nic)
+                ->get();
+
+            if (count($staff) > 0) {
+                $errors['nic'] = "Nic already used in system";
+            }
+
         }
+
+
 
         $addressError = $this->validateAddress($address);
         if ($addressError) {
