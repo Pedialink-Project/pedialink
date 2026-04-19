@@ -168,28 +168,28 @@ Home
     <!-- About Section -->
     <div id="about" class="section">
       <h2>About PediaLink</h2>
-      <p>PediaLink is a web application designed to support parents and PHM doctors in providing the best possible care
-        for children. We offer a range of tools and resources to help you monitor your child's health, communicate
-        effectively, and access expert guidance.</p>
+      <p>PediaLink is a child and maternal healthcare management platform for parents, PHMs, doctors, and administrators.
+        It supports profile management, health records, growth tracking, vaccination workflows, appointments,
+        events, notifications, and role-based access control in one secure system.</p>
       <!-- Card Container -->
       <div class="cards-container">
         <!-- Card-1 -->
         <div class="card">
           <img src="assets/icons/favourite.svg" class="icon" alt="">
-          <h3>Comprehensive Health Monitoring</h3>
-          <p>Track your child's growth, development, and milestones with our intuitive monitoring tools.</p>
+          <h3>Child and Maternal Health Records</h3>
+          <p>Maintain structured child and maternal profiles with trackable health records and medical history updates.</p>
         </div>
         <!-- Card-2 -->
         <div class="card">
           <img src="assets/icons/user-multiple.svg" class="icon" alt="">
-          <h3>Expert PHM Doctor Network</h3>
-          <p>Connect with a network of experienced PHM doctors specializing in child and maternal care.</p>
+          <h3>Role-Based Care Coordination</h3>
+          <p>Enable parents, PHMs, doctors, and admins to work with secure access, approvals, and controlled visibility.</p>
         </div>
         <!-- Card-3 -->
         <div class="card">
           <img src="assets/icons/bubble-chat.svg" class="icon" alt="">
-          <h3>Seamless Communication & Support</h3>
-          <p>Communicate with your PHM doctor, schedule appointments, and access support resources easily.</p>
+          <h3>Appointments, Events, and Alerts</h3>
+          <p>Manage appointments, join health campaigns, and stay updated with in-app notifications and reminders.</p>
         </div>
       </div>
     </div>
@@ -197,26 +197,26 @@ Home
     <!-- For Parents Section -->
     <div id="for-parents" class="section">
       <h2>For Parents</h2>
-      <p>Manage your child's health, connect with PHM doctors, and access personalized support.</p>
+      <p>Track family health information, monitor progress, and stay organized with appointments and schedules.</p>
       <!-- Card Container -->
       <div class="cards-container">
         <!-- Card-1 -->
         <div class="image-card">
           <img src="assets/home/parent-01.png" class="icon" alt="">
-          <h3>Health Monitoring</h3>
-          <p>Track growth, development, and milestones with easy-to-use tools.</p>
+          <h3>Child and Pregnancy Tracking</h3>
+          <p>View child profiles, monitor growth, and manage maternal/pregnancy-related records.</p>
         </div>
         <!-- Card-2 -->
         <div class="image-card">
           <img src="assets/home/parent-02.png" alt="">
-          <h3>PHM Doctor Consultations</h3>
-          <p>Schedule virtual consultations with experienced PHM doctors.</p>
+          <h3>Vaccinations and Appointments</h3>
+          <p>Check vaccination status and manage parent or child appointment bookings in one place.</p>
         </div>
         <!-- Card-3 -->
         <div class="image-card">
           <img src="assets/home/parent-03.png" class="" alt="">
-          <h3>Personalized Support</h3>
-          <p>Receive tailored advice and support for your child's specific needs.</p>
+          <h3>Calendar, Events, and Notifications</h3>
+          <p>Follow upcoming schedules, register for events/campaigns, and receive important system alerts.</p>
         </div>
       </div>
     </div>
@@ -224,26 +224,26 @@ Home
     <!-- For PHM & Doctor Section -->
     <div id="for-doctors" class="section">
       <h2>For PHM & Doctors</h2>
-      <p>Provide expert care, manage patient information, and collaborate effectively.</p>
+      <p>Maintain care workflows with profile management, health records, monitoring tools, and appointment handling.</p>
       <!-- Card Container -->
       <div class="cards-container">
         <!-- Card-1 -->
         <div class="image-card">
           <img src="assets/home/phm-doc-01.png" alt="">
           <h3>Patient Management</h3>
-          <p>Access and manage patient health information securely.</p>
+          <p>Access child and maternal profiles with secure, role-based record visibility.</p>
         </div>
         <!-- Card-2 -->
         <div class="image-card">
           <img src="assets/home/phm-doc-02.png" alt="">
-          <h3>Virtual Consultations</h3>
-          <p>Conduct virtual consultations with parents and provide expert guidance.</p>
+          <h3>Health Record Management</h3>
+          <p>Add, edit, and validate child and maternal health records and review vaccination records.</p>
         </div>
         <!-- Card-3 -->
         <div class="image-card">
           <img src="assets/home/phm-doc-03.png" alt="">
-          <h3>Collaboration Tools</h3>
-          <p>Collaborate with other healthcare professionals for comprehensive care.</p>
+          <h3>Scheduling and Monitoring</h3>
+          <p>Use appointment workflows, calendar views, and growth monitoring for continuous follow-up care.</p>
         </div>
       </div>
     </div>
@@ -253,26 +253,26 @@ Home
     <!-- How It Works-->
     <div id="hiw" class="section">
       <h2>How It Works</h2>
-      <p>Get started with PediaLink in a few simple steps.</p>
+      <p>Use a role-based flow to register, verify, and manage child/maternal healthcare activities.</p>
       <!-- Card Container -->
       <div class="cards-container">
         <!-- Card-1 -->
         <div class="image-card">
           <img src="assets/home/hiw-01.png" alt="">
-          <h3>Sign Up</h3>
-          <p>Create your account and complete your profile.</p>
+          <h3>Create Your Account</h3>
+          <p>Parents and staff create accounts, sign in securely, and complete required profile details.</p>
         </div>
         <!-- Card-2 -->
         <div class="image-card">
           <img src="assets/home/hiw-02.png" alt="">
-          <h3>Connect with a PHM Doctor</h3>
-          <p>Choose a PHM doctor from our network or get matched with one.</p>
+          <h3>Complete Verification and Access</h3>
+          <p>Email and document verification unlock protected dashboards and role-specific system modules.</p>
         </div>
         <!-- Card-3 -->
         <div class="image-card">
           <img src="assets/home/hiw-03.png" alt="">
-          <h3>Start Monitoring</h3>
-          <p>Begin tracking your child's health and accessing support.</p>
+          <h3>Manage Care Activities</h3>
+          <p>Track records, handle vaccinations, manage appointments/events, and follow updates from notifications.</p>
         </div>
       </div>
     </div>
@@ -281,7 +281,7 @@ Home
     <!-- Call to Action -->
     <div class="section cta">
       <h2>Ready to Get Started?</h2>
-      <p>Join PediaLink today and experience the difference in child and mother care.</p>
+      <p>Join PediaLink to streamline child and maternal healthcare with connected role-based tools.</p>
       @if(!auth()->check())
       <c-link href="{{ route('parent.register') }}" class="cta-btn" $type="primary">
         Get Started
@@ -296,12 +296,7 @@ Home
 
     <!-- Footer -->
     <div class="section footer">
-      <div class="footer-links">
-        <a href="">Privacy Policy</a>
-        <a href="">Terms of Service</a>
-        <a href="">Contact Us</a>
-      </div>
-      <p>&copy; 2023 PediaLink. All rights reserved.</p>
+      <p>&copy; 2026 PediaLink. All rights reserved.</p>
     </div>
   </div>
 </div>

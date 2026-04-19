@@ -199,12 +199,48 @@ $overdueRecords = $statusTotals['overdue'] ?? 0;
 			<p>There are no vaccination records available for this child yet.</p>
 		</div>
 	@else
+		<section class="vaccination-filters" aria-label="Vaccination filters">
+			<div class="vaccination-filters__group">
+				<label class="vaccination-filters__label" for="vaccination-search">Search vaccine</label>
+				<input
+					id="vaccination-search"
+					type="search"
+					class="vaccination-filters__input"
+					placeholder="Search by vaccine name, code, or additional info"
+					autocomplete="off"
+				>
+			</div>
+
+			<div class="vaccination-filters__group vaccination-filters__group--status">
+				<label class="vaccination-filters__label" for="vaccination-status-filter">Status</label>
+				<select id="vaccination-status-filter" class="vaccination-filters__select">
+					<option value="all">All statuses</option>
+					<option value="complete">Complete</option>
+					<option value="pending">Pending</option>
+					<option value="overdue">Overdue</option>
+				</select>
+			</div>
+
+			<div class="vaccination-filters__actions">
+				<button type="button" id="vaccination-filter-reset" class="vaccination-filters__reset">Clear</button>
+				<span id="vaccination-filter-result" class="vaccination-filters__result" aria-live="polite">
+					Showing {{ $totalRecords }} of {{ $totalRecords }}
+				</span>
+			</div>
+		</section>
+
+		<div id="vaccination-filter-empty" class="vaccination-empty-state vaccination-empty-state--filtered is-hidden">
+			<div class="vaccination-empty-state__icon">?</div>
+			<h3>No matching vaccines</h3>
+			<p>Try a different search term or status filter.</p>
+		</div>
+
 		<section class="vaccination-timeline">
 			<div class="vaccination-timeline__rail"></div>
 
 			@foreach ($timelineGroups as $group)
 
-				<article class="vaccination-milestone">
+				<article class="vaccination-milestone" data-milestone>
 					<div class="vaccination-milestone__marker"></div>
 					<div class="vaccination-milestone__panel">
 						<div class="vaccination-milestone__header">
@@ -235,9 +271,16 @@ $overdueRecords = $statusTotals['overdue'] ?? 0;
 								$recordedAge = $item['recorded_age'] ?? 'N/A';
 								$scheduledDate = $item['scheduled_date'] ?? 'N/A';
 								$administeredTime = $item['administered_at'] ?? 'N/A';
+								$searchText = strtolower(trim(implode(' ', [
+									(string) $vaccineCode,
+									(string) $vaccineName,
+									(string) $scheduleInfo,
+									(string) $recordedAge,
+									(string) $scheduledDate,
+								])));
 								?>
 
-								<div class="vaccination-tile vaccination-tile--{{ $status }}">
+								<div class="vaccination-tile vaccination-tile--{{ $status }}" data-vaccination-item data-status="{{ $status }}" data-search="{{ $searchText }}">
 									<div class="vaccination-tile__top">
 										<div>
 											<div class="vaccination-tile__code">{{ $vaccineCode }}</div>
@@ -283,4 +326,73 @@ $overdueRecords = $statusTotals['overdue'] ?? 0;
 		</section>
 	@endif
 </div>
+@endsection
+
+@section('scripts')
+<script>
+	(function () {
+		const searchInput = document.getElementById('vaccination-search');
+		const statusSelect = document.getElementById('vaccination-status-filter');
+		const resetButton = document.getElementById('vaccination-filter-reset');
+		const resultLabel = document.getElementById('vaccination-filter-result');
+		const filteredEmpty = document.getElementById('vaccination-filter-empty');
+		const milestones = Array.from(document.querySelectorAll('[data-milestone]'));
+		const items = Array.from(document.querySelectorAll('[data-vaccination-item]'));
+
+		if (!searchInput || !statusSelect || !resetButton || !resultLabel || milestones.length === 0 || items.length === 0) {
+			return;
+		}
+
+		const total = items.length;
+
+		const updateFilter = function () {
+			const searchTerm = searchInput.value.trim().toLowerCase();
+			const selectedStatus = statusSelect.value;
+			let visibleCount = 0;
+
+			items.forEach(function (item) {
+				const itemStatus = item.getAttribute('data-status') || '';
+				const itemSearch = item.getAttribute('data-search') || '';
+
+				const matchesStatus = selectedStatus === 'all' || itemStatus === selectedStatus;
+				const matchesSearch = searchTerm === '' || itemSearch.indexOf(searchTerm) !== -1;
+				const isVisible = matchesStatus && matchesSearch;
+
+				item.classList.toggle('is-hidden', !isVisible);
+				if (isVisible) {
+					visibleCount++;
+				}
+			});
+
+			milestones.forEach(function (milestone) {
+				const visibleInMilestone = milestone.querySelectorAll('[data-vaccination-item]:not(.is-hidden)').length;
+				milestone.classList.toggle('is-hidden', visibleInMilestone === 0);
+			});
+
+			const hasMatches = visibleCount > 0;
+			const timeline = document.querySelector('.vaccination-timeline');
+
+			if (timeline) {
+				timeline.classList.toggle('is-hidden', !hasMatches);
+			}
+
+			if (filteredEmpty) {
+				filteredEmpty.classList.toggle('is-hidden', hasMatches);
+			}
+
+			resultLabel.textContent = 'Showing ' + visibleCount + ' of ' + total;
+		};
+
+		searchInput.addEventListener('input', updateFilter);
+		statusSelect.addEventListener('change', updateFilter);
+		resetButton.addEventListener('click', function () {
+			searchInput.value = '';
+			statusSelect.value = 'all';
+			updateFilter();
+			searchInput.focus();
+		});
+
+		updateFilter();
+	})();
+</script>
 @endsection

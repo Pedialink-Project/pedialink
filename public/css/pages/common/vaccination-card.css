@@ -159,6 +159,92 @@
 	max-width: 32rem;
 }
 
+.vaccination-filters {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 14rem auto;
+	gap: 0.9rem;
+	align-items: end;
+	padding: 1rem;
+	border: 1px solid #eadff6;
+	border-radius: 1rem;
+	background: #ffffff;
+}
+
+.vaccination-filters__group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+
+.vaccination-filters__group--status {
+	max-width: 14rem;
+}
+
+.vaccination-filters__label {
+	font-size: var(--text-xs);
+	font-weight: var(--font-weight-semibold);
+	color: var(--text-muted);
+	text-transform: uppercase;
+}
+
+.vaccination-filters__input,
+.vaccination-filters__select {
+	height: 2.7rem;
+	padding: 0 0.8rem;
+	border: 1px solid #dfd5ee;
+	border-radius: 0.75rem;
+	background: #fff;
+	color: var(--text-primary);
+	font-size: var(--text-sm);
+	outline: none;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vaccination-filters__input:focus,
+.vaccination-filters__select:focus {
+	border-color: #8b5cf6;
+	box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.14);
+}
+
+.vaccination-filters__actions {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	justify-content: flex-end;
+	min-height: 2.7rem;
+}
+
+.vaccination-filters__reset {
+	height: 2.4rem;
+	padding: 0 0.85rem;
+	border-radius: 0.7rem;
+	border: 1px solid #d9d1e8;
+	background: #f7f3fd;
+	color: #4b5563;
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-semibold);
+	cursor: pointer;
+}
+
+.vaccination-filters__reset:hover {
+	background: #efe8fa;
+}
+
+.vaccination-filters__result {
+	font-size: var(--text-xs);
+	font-weight: var(--font-weight-semibold);
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.vaccination-empty-state--filtered {
+	padding: 2rem 1.25rem;
+}
+
+.is-hidden {
+	display: none !important;
+}
+
 .vaccination-timeline {
 	position: relative;
 	display: flex;
@@ -315,6 +401,15 @@
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
+	.vaccination-filters {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	}
+
+	.vaccination-filters__actions {
+		grid-column: 1 / -1;
+		justify-content: space-between;
+	}
+
 	.vaccination-milestone__header {
 		flex-direction: column;
 	}
@@ -323,6 +418,18 @@
 @media (max-width: 720px) {
 	.vaccination-hero {
 		padding: 1rem;
+	}
+
+	.vaccination-filters {
+		grid-template-columns: 1fr;
+	}
+
+	.vaccination-filters__group--status {
+		max-width: none;
+	}
+
+	.vaccination-filters__actions {
+		justify-content: space-between;
 	}
 
 	.vaccination-hero__identity {
