@@ -286,3 +286,21 @@ class DashboardService
             GROUP BY age_group, mr.health_status
             ORDER BY age_group, mr.health_status
         ";
+
+        $maternalResults = QueryBuilder::rawGet($maternalSql, []);
+
+        // Initialize maternal data structure
+        $maternalLabels = ['18 - 25', '25 - 30', '30 - 40', '40 - 50', '50+'];
+        $maternalData = [
+            'labels' => $maternalLabels,
+            'good' => array_fill(0, 5, 0),
+            'at_risk' => array_fill(0, 5, 0),
+            'critical' => array_fill(0, 5, 0),
+        ];
+
+        $maternalAgeGroupIndex = array_flip($maternalLabels);
+
+        foreach ($maternalResults as $row) {
+            $ageGroup = $row['age_group'];
+            $healthStatus = $row['health_status'];
+            $count = (int) $row['count'];
