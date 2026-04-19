@@ -79,3 +79,49 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                 <c-textarea name="notes" label="Additional Notes" value="{{ old('notes') ?? '' }}"
                     error="{{ errors('notes') ?? '' }}" placeholder="Enter any additional notes here" rows="4"></c-textarea>
             </form>
+            <c-slot name="close">
+                Close
+            </c-slot>
+            <c-slot name="footer">
+                <c-button type="submit" form="add-health-record-form" variant="primary">Add Record</c-button>
+            </c-slot>
+        </c-modal>
+    </c-slot>
+    --}}
+</c-table.controls>
+
+<c-table.wrapper card="1">
+    <div class="table-wrapper" data-responsive="true">
+        <c-table.main sticky="1" size="comfortable">
+            <c-table.thead>
+                <c-table.tr>
+                    <c-table.th sortable="0">Recorded at</c-table.th>
+                    <c-table.th sortable="0">Height</c-table.th>
+                    <c-table.th sortable="0">Weight</c-table.th>
+                    <c-table.th align="left" sortable="0">Head Circumference</c-table.th>
+                    <c-table.th align="left">Health Status</c-table.th>
+                    <c-table.th class="table-actions">Actions</c-table.th>
+                </c-table.tr>
+            </c-table.thead>
+
+            <c-table.tbody>
+                @foreach ($records as $key=>$record)
+                <c-table.tr>
+                    <c-table.td col="Recorded at">{{ $record['visit_date'] }}</c-table.td>
+                    <c-table.td col="Height">{{ $record['height'] }}cm</c-table.td>
+                    <c-table.td col="Weight">{{ $record['weight'] }}kg</c-table.td>
+                    <c-table.td col="Head Circumference">{{ $record['head_circumference'] }}cm</c-table.td>
+                    <c-table.td col="Health Status">
+                        @if (strtolower($record['health_status']) === "good")
+                        <c-badge type="green">
+                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                        </c-badge>
+                        @elseif (strtolower($record['health_status']) === "at_risk")
+                        <c-badge type="yellow">
+                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                        </c-badge>
+                        @elseif (strtolower($record['health_status']) === "critical")
+                        <c-badge type="red">
+                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                        </c-badge>
+                        @endif
