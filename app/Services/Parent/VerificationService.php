@@ -5,9 +5,18 @@ namespace App\Services\Parent;
 use App\Helpers\FileHandler;
 use App\Helpers\FileValidator;
 use App\Models\ParentM;
+use App\Services\NotificationService;
 
 class VerificationService
 {
+
+    private NotificationService $notificationService;
+
+    public function __construct()
+    {
+        $this->notificationService = new NotificationService();
+    }
+
     private function commonFileValidation(array $file)
     {
         $error = null;
@@ -105,6 +114,20 @@ class VerificationService
                 $parent->marriage_certificate = $data['marriage_certificate']['fileName'];
                 $parent->nic_copy = $data['nic_copy']['fileName'];
                 $parent->save();
+
+
+                $this->notificationService->notify(
+                    $user->id,
+                    "Your verification documents have been submitted successfully and are pending review. We will notify you once the review process is complete.",
+                    "Verification Documents Submitted",
+                    "info"
+                );
+
+                $this->notificationService->notifyAdmins(
+                    "Parent {$user->name} has submitted their verification documents for review.",
+                    "New Verification Documents Submitted",
+                    "info"
+                );
             }
             
         }
