@@ -62,6 +62,7 @@ Archived Child Profiles
                     <c-table.th sortable="1">Name</c-table.th>
                     <c-table.th sortable="1">Age</c-table.th>
                     <c-table.th align="left" sortable="1">Status</c-table.th>
+                    <c-table.th align="left">Archive Reason</c-table.th>
                     <c-table.th align="left">Archived Date</c-table.th>
                     <c-table.th class="table-actions"></c-table.th>
                 </c-table.tr>
@@ -74,9 +75,10 @@ Archived Child Profiles
                         <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
                         <c-table.td col="Age" class="child-col">{{ $child['age'] }}</c-table.td>
                         <c-table.td col="Status">
-                            <!-- <c-badge class="status-vaccination" type="gray"> -->
-                                Archived
-                            <!-- </c-badge> -->
+                            Archived
+                        </c-table.td>
+                        <c-table.td col="archive_reason">
+                            {{ $child['archive_reason'] ? ucwords(str_replace('_', ' ', $child['archive_reason'])) : 'N/A' }}
                         </c-table.td>
                         <c-table.td col="archived_at">{{ $child['archived_at'] ? date('Y-m-d', strtotime($child['archived_at'])) : 'N/A' }}</c-table.td>
                         <c-table.td class="table-actions" align="center">
@@ -96,7 +98,11 @@ Archived Child Profiles
                                         </c-slot>
 
                                         <c-slot name="headerSuffix">
-                                            <c-badge type="purple">Archived</c-badge>
+                                            @if($child['is_deceased'])
+                                                <c-badge type="red">Deceased</c-badge>
+                                            @else
+                                                <c-badge type="purple">Archived</c-badge>
+                                            @endif
                                         </c-slot>
 
                                         <c-slot name="header">
@@ -134,6 +140,11 @@ Archived Child Profiles
                                                 title="Archived Date"
                                                 info="{{ $child['archived_at'] ? date('Y-m-d', strtotime($child['archived_at'])) : 'N/A' }}"
                                             />
+                                            <c-modal.viewitem
+                                                icon="{{ asset('assets/icons/document-validation.svg') }}"
+                                                title="Archive Reason"
+                                                info="{{ $child['archive_reason'] ? ucwords(str_replace('_', ' ', $child['archive_reason'])) : 'N/A' }}"
+                                            />
                                         </c-modal.viewcard>
 
                                         @if($child['parent'])
@@ -161,13 +172,21 @@ Archived Child Profiles
                                     <c-dropdown.sep/>
                                     <c-modal>
                                     <c-slot name="trigger">
-                                        <c-dropdown.item>Restore Child Profile</c-dropdown.item>
+                                        @if($child['is_deceased'])
+                                            <c-dropdown.item class="disabled-delete-btn" disabled>Restore Child Profile</c-dropdown.item>
+                                        @else
+                                            <c-dropdown.item>Restore Child Profile</c-dropdown.item>
+                                        @endif
                                     </c-slot>
                                     <c-slot name="header">
                                         <div>Restore Child Profile</div>
                                     </c-slot>
 
-                                    <p>Do you want to restore this child profile?</p>
+                                    @if($child['is_deceased'])
+                                        <p>This child is marked as deceased and cannot be restored as an active profile.</p>
+                                    @else
+                                        <p>Do you want to restore this child profile?</p>
+                                    @endif
                                     <form id="restore-profile-{{ $child['id'] }}" class="hidden"
                                         action="{{ route('phm.child.restore',['id'=>$child['id']]) }}" method="POST">
                                     </form>
@@ -190,7 +209,7 @@ Archived Child Profiles
                 @endforeach
                 @if(count($children) === 0)
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <c-emptytable
                             alt="No children found"
                             title="No Child Profiles Available"
