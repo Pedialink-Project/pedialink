@@ -253,3 +253,70 @@ Doctor Dashboard
             }
         }
     };
+
+    new Chart(riskCtx, riskConfig);
+
+    // Mother Risk Chart
+    const riskCtxMother = document.getElementById('riskChartMother').getContext('2d');
+    const motherRiskData = {
+        labels: patientRiskData.maternal.labels,
+        datasets: [
+            {
+                label: 'Normal',
+                data: patientRiskData.maternal.good,
+                backgroundColor: '#10B981', // green
+                borderRadius: 6,
+                barThickness: 28
+            },
+            {
+                label: 'Moderate',
+                data: patientRiskData.maternal.at_risk,
+                backgroundColor: '#F59E0B', // amber
+                borderRadius: 6,
+                barThickness: 28
+            },
+            {
+                label: 'High',
+                data: patientRiskData.maternal.critical,
+                backgroundColor: '#EF4444', // red
+                borderRadius: 6,
+                barThickness: 28
+            }
+        ]
+    };
+
+    const riskConfigMother = {
+        type: 'bar',
+        data: motherRiskData,
+        options: {
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: { boxWidth: 12, boxHeight: 12, padding: 12 }
+                },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    grid: { display: false },
+                    ticks: { color: '#374151', font: { size: 12 } }
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    max: 50,
+                    ticks: {
+                        stepSize: 10,
+                        color: '#6b7280',
+                        font: { size: 12 }
+                    },
+                    grid: {
+                        borderDash: [4, 4],
+                        color: 'rgba(15, 23, 42, 0.06)'
+                    }
+                }
+            }
+        }
+    };
