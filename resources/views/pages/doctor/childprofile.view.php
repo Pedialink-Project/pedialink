@@ -62,3 +62,44 @@ Doctor Child Profiles
 
 
             <c-table.tbody>
+
+            @foreach ($children as $key => $child)
+                <c-table.tr>
+                    <c-table.td col="id">{{ display_entity_id('child', $child['id']) }}</c-table.td>
+                    <c-table.td col="name" class="child-col">{{ $child['name'] }}</c-table.td>
+                    <c-table.td col="age" class="child-col">{{ $child['age'] }}</c-table.td>
+                    <c-table.td col="area">{{ $child['area'] ?? '-' }}</c-table.td>
+
+                    <c-table.td col="assigned_phm">{{ $child['phm']['name'] }}</c-table.td>
+                    <c-table.td class="table-actions" align="center">
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
+                                <c-modal id="View-Child-{{ $key }}" size="md" :initOpen="false">
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/baby-01.svg' )}}" />
+                                    </c-slot>
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>View Child Profile</c-dropdown.item>
+                                    </c-slot>
+                                    <c-slot name="headerSuffix">
+                                        @if($child['record'])
+                                        @if (strtolower($child['record']['health_status']) === "good")
+                                        <c-badge type="green">
+                                            {{ ucwords(str_replace('_', ' ', $child['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($child['record']['health_status']) === "at_risk")
+                                        <c-badge type="yellow">
+                                            {{ ucwords(str_replace('_', ' ', $child['record']['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($child['record']['health_status']) === "critical")
+                                        <c-badge type="red">
+                                            {{ ucwords(str_replace('_', ' ', $child['record']['health_status'])) }}
+                                        </c-badge>
+                                        @endif
+                                        @endif
+                                    </c-slot>
