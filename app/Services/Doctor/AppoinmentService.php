@@ -21,3 +21,23 @@ class AppointmentService
             'id' => null
         ]
     )
+    {
+        $appointments = Appointment::query();
+
+        if (isset($filters['status'])) {
+            $appointments = $appointments
+                ->whereIn("appointments.status", $filters['status']);
+        }
+
+        $appointments
+            ->join('appointment_slots', 'appointments.slot_id', '=', 'appointment_slots.id')
+            ->whereNotNull("appointment_slots.doctor_id")
+            ->where("appointment_slots.doctor_id", "=", auth()->user()?->id);
+
+        if ($history) {
+            $appointments
+                ->whereIn("appointments.status", ["confirmed", "attended", "no-show", "cancelled"])
+                ->where($info['type'] === 'child' ? "appointments.child_id" : "appointments.maternal_id", "=", $info['id'])
+                ->orderBy("appointment_slots.slot_date", "DESC")
+                ->orderBy("appointment_slots.start_time", "DESC");
+        } else {
