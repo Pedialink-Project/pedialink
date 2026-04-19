@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\NicExtractor;
 use App\Models\Child;
 use App\Models\ChildMisc;
 use App\Models\PublicHealthMidwife;
@@ -347,12 +348,30 @@ class ChildService
             ];
 
             if ($isPhmCreated) {
-                $childMisc = ChildMisc::query()->where('children_id', '=', $child->id)->first();
+                $childMisc = ChildMisc::query()->where('children_id', '=', $child->id)->get();
+
+                $motherNic = null;
+                $fatherNic = null;
+
+                foreach ($childMisc as $misc) {
+                    $nicExtractor = new NicExtractor($misc->parent_nic);
+                    $extractedNic = $nicExtractor->getExtractedNic();
+                    if (isset($extractedNic['gender'])) {
+                        $gender = $extractedNic['gender'];
+
+                        if ($gender === 'M') {
+                            $fatherNic = $misc->parent_nic;
+                        } elseif ($gender === 'F') {
+                            $motherNic = $misc->parent_nic;
+                        }
+                    }
+                }
                 $childData = array_merge($childData, [
                     'blood_type' => $child->blood_type,
                     'birth_certificate' => $child->birth_certificate,
                     'date_of_birth' => $child->date_of_birth,
-                    'parent_nic' => $childMisc->parent_nic,
+                    'mother_nic' => $motherNic,
+                    'father_nic' => $fatherNic,
                     'parents' => $parents,
                 ]);
             }

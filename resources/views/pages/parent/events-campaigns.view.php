@@ -157,7 +157,7 @@ Parent - Event & Campaigns
             <c-modal.viewlist title="Notes">
                <c-slot name="list">
 
-                  <li>{{ $event['notes'] }}</li>
+                  <li>{{ $event['notes'] ? ($event['notes'] === '' ? 'N/A' : $event['notes']) : 'N/A' }}</li>
 
                </c-slot>
             </c-modal.viewlist>

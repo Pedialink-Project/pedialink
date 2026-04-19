@@ -189,7 +189,9 @@ PHM Child Profiles
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
                                             title="Birth Certificate No" info="{{ $child['birth_certificate'] }}" />
                                         <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
-                                            title="Parent NIC" info="{{ $child['parent_nic'] }}" />
+                                            title="Mother NIC" info="{{ $child['mother_nic'] ?? 'N/A' }}" />
+                                        <c-modal.viewitem icon="{{ asset('assets/icons/profile.svg') }}"
+                                            title="Father NIC" info="{{ $child['father_nic'] ?? 'N/A' }}" />
                                         @endif
 
                                     </c-modal.viewcard>

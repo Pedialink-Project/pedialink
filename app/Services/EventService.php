@@ -305,7 +305,7 @@ class EventService
     {
         $errors = [];
 
-        $titleError = $this->validateName($title, "Event Title");
+        $titleError = $this->validateText($title, "Event Title");
         if ($titleError) {
             $errors['title'] = $titleError;
         }
@@ -349,7 +349,7 @@ class EventService
 
         $event = Events::find($evetId);
 
-        $titleError = $this->validateName($title, "Event Title");
+        $titleError = $this->validateText($title, "Event Title");
         if ($titleError) {
             $errors['e_title'] = $titleError;
         }
