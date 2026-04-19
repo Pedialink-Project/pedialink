@@ -230,3 +230,28 @@ class AppointmentService
         if ($doctorAvailability) {
             return "Weekday is already configured";
         }
+
+        $clinicAvailability = ClinicWeeklyAvailability::query()
+            ->where("weekday", "=", $weekday)
+            ->where("active", "=", true)
+            ->first();
+
+        if (!$clinicAvailability) {
+            return "Weekday is not available according to clinic configuration";
+        }
+
+        return null;
+    }
+
+    private function validateStartAndEndTime(string $startTime, string $endTime)
+    {
+        $error = null;
+        if (!Validator::validateFieldExistence($startTime)) {
+            $error = ["type" => "start", "error" => "Start time is required"];
+            return $error;
+        }
+
+        if (!Validator::validateFieldExistence($endTime)) {
+            $error = ["type" => "end", "error" => "End time is required"];
+            return $error;
+        }
