@@ -11,7 +11,7 @@ class VaccinationService
     public function fetchVaccinationRecordsByChildId(int $childId, string $search = "", array $filters = [], $card = false): array
     {
         $date = new \DateTime(); // Defaults to "now"
-        $date->modify('+14 days');
+        $date->modify('+30 days');
 
         $query = VaccinationReminder::query()
             ->where("child_id", "=", $childId)

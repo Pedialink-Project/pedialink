@@ -11,20 +11,20 @@ use Library\Framework\Database\QueryBuilder;;
  */
 class Migration_20260207155436_insert_data_for_parents_table implements \Library\Framework\Database\Migration
 {
-    private string $parentMail = "keeththi2003@gmail.com";
+    private string $parentMail = "nimesha@gmail.com";
     public function up(): void
     {
         $commonPassword = password_hash("qwerty123", PASSWORD_DEFAULT);
         QueryBuilder::raw(
-            "INSERT INTO users (name, email, password_hash, role)
+            "INSERT INTO users (name, email, password_hash, role, email_verified)
             VALUES
-            ('Keeththi', '{$this->parentMail}', '{$commonPassword}', 'parent');"
+            ('Nimesha', '{$this->parentMail}', '{$commonPassword}', 'parent', true);"
         );
 
         QueryBuilder::raw(
-            "INSERT INTO parents (id, type, nic, address, date_of_birth, area_id)
+            "INSERT INTO parents (id, type, nic, address, date_of_birth, area_id, verified)
             VALUES
-            ((SELECT id FROM users WHERE email = '{$this->parentMail}'),'mother', '200315300887', 'Jaffna', '2003-03-15', 1 );"
+            ((SELECT id FROM users WHERE email = '{$this->parentMail}'),'mother', '200315300887', 'B 23, Kl Rd', '2003-03-15', 1, true);"
         );
     }
 
