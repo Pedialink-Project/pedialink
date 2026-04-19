@@ -12,7 +12,7 @@ use Library\Framework\Database\QueryBuilder;
  */
 class Migration_20251125114052_insert_data_for_staffs_table implements \Library\Framework\Database\Migration
 {
-    private string $phmName = "nirmal@gmail.com";
+    private string $phmName = "vinuji@gmail.com";
     private string $doctorName = "sarah@gmail.com";
     private string $commonPassword;
 
@@ -26,7 +26,7 @@ class Migration_20251125114052_insert_data_for_staffs_table implements \Library\
         QueryBuilder::raw(
             "INSERT INTO users (name, email, password_hash, role, email_verified)
                 VALUES
-                ('Nirmal', '{$this->phmName}', '{$this->commonPassword}', 'phm', true),
+                ('Vinuji', '{$this->phmName}', '{$this->commonPassword}', 'phm', true),
                 ('Sarah', '{$this->doctorName}', '{$this->commonPassword}', 'doctor', true);"
         );
 
@@ -43,8 +43,8 @@ class Migration_20251125114052_insert_data_for_staffs_table implements \Library\
         QueryBuilder::raw(
             "INSERT INTO staffs (id, nic, license_no)
             VALUES
-            ((SELECT id FROM users WHERE email = '{$this->phmName}' LIMIT 1), '198510212346', 'PHM-00543'),
-            ((SELECT id FROM users WHERE email = '{$this->doctorName}' LIMIT 1), '199070134567', 'REG-DR-2025-0123');"
+            ((SELECT id FROM users WHERE email = '{$this->phmName}' LIMIT 1), '199264105678', '0054'),
+            ((SELECT id FROM users WHERE email = '{$this->doctorName}' LIMIT 1), '198050101234', '0909');"
         );
     }
 
