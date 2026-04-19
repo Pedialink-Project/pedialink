@@ -226,7 +226,11 @@ PHM Dashboard
                 x: {
                     stacked: true,
                     grid: { display: false },
-                    ticks: { color: '#374151', font: { size: 12 } }
+                    ticks: { color: '#374151', font: { size: 12 } },
+                    title: {
+                        display: true,
+                        text: 'Age Group'
+                    },
                 },
                 y: {
                     stacked: true,
@@ -236,6 +240,10 @@ PHM Dashboard
                         stepSize: 10,
                         color: '#6b7280',
                         font: { size: 12 }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of Cases'
                     },
                     grid: {
                         borderDash: [4, 4],
