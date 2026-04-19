@@ -21,6 +21,7 @@ use Library\Framework\Database\QueryBuilder;
 use App\Helpers\Calculator;
 use App\Services\VaccinationSchedulerService;
 use App\Services\AppointmentSchedulerService;
+use DateTime;
 
 class ChildService
 {
@@ -38,6 +39,17 @@ class ChildService
         $this->vaccinationSchedulerService = new VaccinationSchedulerService();
         $this->appointmentSchedulerService = new AppointmentSchedulerService();
     }
+    private function autoArchiveAdults(): void
+    {
+        QueryBuilder::rawExec(
+            "UPDATE children
+             SET archived_at = NOW()
+             WHERE archived_at IS NULL
+               AND date_of_birth IS NOT NULL
+               AND date_of_birth <= CURRENT_DATE - INTERVAL '18 years'"
+        );
+    }
+
 
     private function applyChildSearch(QueryBuilder $children, string $search)
     {
@@ -74,6 +86,34 @@ class ChildService
         }
         return $resource;
     }
+
+    private function calculateAge($dob): string
+    {
+        $dobDt = $dob instanceof DateTime ? clone $dob : new DateTime($dob);
+        $now = new DateTime();
+
+        if ($dobDt > $now) {
+            return "Date of birth is in the future"; // simple handling for future dates
+        }
+
+        $diff = $now->diff($dobDt);
+
+        if ($diff->y >= 1) {
+            $y = $diff->y;
+            return $y . ' year' . ($y === 1 ? '' : 's');
+        }
+
+        if ($diff->m >= 1) {
+            $m = $diff->m;
+            return $m . ' month' . ($m === 1 ? '' : 's');
+        }
+
+        $d = $diff->d;
+        return $d . ' day' . ($d === 1 ? '' : 's');
+
+
+    }
+
 
     public function getAllChildren()
     {
@@ -166,7 +206,10 @@ class ChildService
         ?array $filters = null
     ) {
 
-        $childrenQuery = Child::query();
+        $this->autoArchiveAdults();
+
+        $childrenQuery = Child::query()
+            ->whereNull('archived_at');
 
         if ($search) {
             $childrenQuery = $this->applyChildSearch($childrenQuery, $search);
@@ -234,6 +277,8 @@ class ChildService
         ?array $filters = null
     ) {
 
+        $this->autoArchiveAdults();
+
         $childrenQuery = Child::query();
 
         if ($search) {
@@ -249,6 +294,9 @@ class ChildService
         $resource = [];
 
         foreach ($results['items'] as $child) {
+            if ($child->archived_at !== null) {
+                continue;
+            }
 
             $linkedStatus = 'unlinked';
             $parentLinks = ParentChild::query()->where('child_id', '=', $child->id)->get();
@@ -690,6 +738,87 @@ class ChildService
         );
     }
 
+    private function validateDateOfBirth(string $dob)
+    {
+        $error = null;
+        
+        if (!Validator::validateFieldExistence($dob)) {
+            $error = "Date of Birth field cannot be empty";
+            return $error;
+        }
+        
+        try {
+            $dobDt = new DateTime($dob);
+            $now = new DateTime();
+            
+            if ($dobDt > $now) {
+                $error = "Date of Birth cannot be in the future";
+                return $error;
+            }
+        } catch (\Exception $e) {
+            $error = "Invalid Date of Birth format";
+            return $error;
+        }
+        
+        return $error;
+    }
+
+    private function hasReachedEighteen(string $dob): bool
+    {
+        try {
+            $dobDt = new DateTime($dob);
+            $today = new DateTime('today');
+            $eighteenthBirthday = (clone $dobDt)->modify('+18 years');
+
+            return $eighteenthBirthday <= $today;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function validateArchiveProfile(int $id)
+    {
+        $error = null;
+
+        $child = Child::find($id);
+
+        if (!$child) {
+            $error = "Child profile not found";
+            return $error;
+        }
+
+        if ($child->archived_at !== null) {
+            $error = "This child profile is already archived";
+        }
+
+        return $error;
+    }
+
+    public function validateUnarchiveProfile(int $id)
+    {
+        $error = null;
+
+        $child = Child::find($id);
+
+        if (!$child) {
+            $error = "Child profile not found";
+            return $error;
+        }
+
+        if ($child->archived_at === null) {
+            $error = "This child profile is not archived";
+            return $error;
+        }
+
+        if ($child->date_of_birth && $this->hasReachedEighteen($child->date_of_birth)) {
+            $error = "This child profile cannot be restored because the child is 18 years or older";
+        }
+
+        return $error;
+    }
+
+
+
     public function editChildProfile(int $childId, string $name, string $dob, string $gender, string $bloodType)
     {
         $child = Child::find($childId);
@@ -831,4 +960,79 @@ class ChildService
 
     //     $child->delete();
     // }
+
+    public function archiveChildProfile(int $id)
+    {
+        $child = Child::find($id);
+
+        if ($child) {
+            $child->archived_at = date('Y-m-d H:i:s');
+            $child->save();
+        }
+    }
+
+    public function unarchiveChildProfile(int $id)
+    {
+        $child = Child::find($id);
+
+        if ($child) {
+            $child->archived_at = null;
+            $child->save();
+        }
+    }
+
+    public function getArchivedChildren()
+    {
+        $this->autoArchiveAdults();
+
+        // Get only archived children using raw query
+        $children = QueryBuilder::rawGet(
+            "SELECT * FROM children WHERE archived_at IS NOT NULL ORDER BY archived_at DESC"
+        );
+
+        // Convert to Child models
+        $childModels = [];
+        foreach ($children as $row) {
+            $child = new Child();
+            $child->hydrate($row);
+            $childModels[] = $child;
+        }
+
+        $childRecordService = new ChildRecordService();
+
+        $resource = [];
+        foreach ($childModels as $child) {
+
+            $parent = ParentM::find($child->parent_id);
+
+            $parentResource = NULL;
+            if ($parent) {
+                $parentResource = [
+                    'id' => $parent->id,
+                    'name' => User::find($parent->id)->name,
+                    'type' => $parent->type,
+                ];
+            }
+
+            $latestHealthRecord = $childRecordService->getLatestHeathRecord($child->id);
+
+            $resource[] = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'age' => $this->calculateAge($child->date_of_birth),
+                'date_of_birth' => $child->date_of_birth,
+                'gender' => $child->gender,
+                'health_status' => $child->health_status,
+                'area' => $child->getArea()?->code ?? 'Unknown',
+                'birth_certificate' => $child->birth_certificate,
+                'notes' => $child->notes,
+                'parent' => $parentResource,
+                'latest_health_record' => $latestHealthRecord,
+                'archived_at' => $child->archived_at,
+            ];
+        }
+
+        return $resource;
+    }
+
 }

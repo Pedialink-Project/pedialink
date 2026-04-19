@@ -117,10 +117,14 @@ $menuItems = [
             ],
             [
                 'name' => 'Child Profiles',
-                'link' => route('phm.child.profiles'),
+                'link' => '#',
                 'icon' => asset('/assets/icons/baby-01.svg'),
-               
+               'children' => [
+                    ['name' => 'Active Child Profiles', 'link' => route('phm.child.profiles')],
+                    ['name' => 'Archived Child Profiles', 'link' => route('phm.child.archived')],
+                ]
             ],
+
             [
                 'name' => 'Maternal Profiles',
                 'link' => route('phm.maternal.profiles'),

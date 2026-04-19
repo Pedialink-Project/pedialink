@@ -24,7 +24,12 @@ return [
     ['GET', '/phm/child-profiles', [ChildProfileController::class, 'index'], 'phm.child.profiles', ['phm', 'verified']],
     ['POST', '/phm/child-profile/create', [ChildProfileController::class, 'createChild'], 'phm.child.create', ['phm', 'verified']],
     ['POST', '/phm/child-profile/{id}/edit', [ChildProfileController::class, 'editChild'], 'phm.child.edit', ['phm', 'verified']],
-    ['POST', '/phm/child-profile/{id}/delete', [ChildProfileController::class, 'deleteChild'], 'phm.child.delete', ['phm', 'verified']],
+    // ['POST', '/phm/child-profile/{id}/delete', [ChildProfileController::class, 'deleteChild'], 'phm.child.delete', ['phm', 'verified']],
+    ['GET', '/phm/child-profiles/archived', [ChildProfileController::class, 'viewArchivedChildren'], 'phm.child.archived', ['phm']],
+    ['POST', '/phm/child-profile/{id}/restore', [ChildProfileController::class, 'restoreChild'], 'phm.child.restore', ['phm']],
+    ['POST', '/phm/child-profile/{id}/archive', [ChildProfileController::class, 'ArchiveChild'], 'phm.child.archive', ['phm']],
+
+
 
     // Child Health Record Routes
     ['GET', '/phm/child-profiles/{id}/health-records', [ChildHealthController::class, 'index'], 'phm.child.health', ['phm', 'verified']],
