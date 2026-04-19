@@ -195,3 +195,49 @@ Doctor Appoinments Configure
                                                 <c-slot name="trigger">
                                                     <c-dropdown.item>Disable Day</c-dropdown.item>
                                                 </c-slot>
+
+                                                <c-slot name="headerPrefix">
+                                                    <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                                </c-slot>
+
+                                                <c-slot name="header">
+                                                    <div>Disable Appointment day</div>
+                                                </c-slot>
+
+                                                <p>
+                                                    Do you want to disable {{ $availability['weekday'] }} from available appointment days? This will make all appointments on this day unavailable for booking.
+                                                </p>
+                                                
+                                                <form id="disable-day-{{ $key }}" action="{{ route('doctor.appointments.configure.disable', ['id' => $availability['id']]) }}" method="post"></form>
+
+                                                <c-slot name="close">
+                                                    Close
+                                                </c-slot>
+
+                                                <c-slot name="footer">
+                                                    <c-button form="disable-day-{{ $key }}" type="submit" variant="destructive">Disable</c-button>
+                                                </c-slot>
+                                            </c-modal>  
+                                        @elseif (!$availability['active'])
+                                            <c-modal size="md" :initOpen="false">
+                                                <c-slot name="trigger">
+                                                    <c-dropdown.item>Enable Day</c-dropdown.item>
+                                                </c-slot>
+
+                                                <c-slot name="headerPrefix">
+                                                    <img src="{{ asset('assets/icons/profile-02.svg' )}}" />
+                                                </c-slot>
+
+                                                <c-slot name="header">
+                                                    <div>Enable Appointment day</div>
+                                                </c-slot>
+
+                                                <p>
+                                                    Do you want to enable {{ $availability['weekday'] }} as an active day for appointments with time from {{ $availability['start_time'] }} to {{ $availability['end_time'] }} and slot length of {{ $availability['slot_length_minutes'] }} minutes?
+                                                </p>
+                                                
+                                                <form id="enable-day-{{ $key }}" action="{{ route('doctor.appointments.configure.enable', ['id' => $availability['id']]) }}" method="post"></form>
+
+                                                <c-slot name="close">
+                                                    Close
+                                                </c-slot>
