@@ -166,3 +166,10 @@ Maternal Profiles - Overview
                     </td>
                 </tr>
                 @endif
+            </c-table.tbody>
+        </c-table.main>
+    </div>
+</c-table.wrapper>
+
+<c-table.pagination :links="$links" />
+@endsection
