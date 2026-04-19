@@ -6,6 +6,7 @@ use App\Helpers\NicValidator;
 use App\Helpers\SignedToken;
 use App\Helpers\Validator;
 use App\Models\Doctor;
+use App\Models\ParentM;
 use App\Models\PublicHealthMidwife;
 use App\Models\Staff;
 use App\Models\User;
@@ -209,6 +210,23 @@ class RegisterStaffService
         $nicError = $this->validateNic($nic);
         if ($nicError) {
             $errors['nic'] = $nicError;
+        } else {
+            $parents = ParentM::query()
+                ->where("nic", "=", $nic)
+                ->get();
+    
+            if (count($parents) > 0) {
+                $errors['nic'] = "Nic already used in system";
+            }
+    
+            $staff = Staff::query()
+                ->where("nic", "=", $nic)
+                ->get();
+
+            if (count($staff) > 0) {
+                $errors['nic'] = "Nic already used in system";
+            }
+
         }
 
         $licenseError = $this->validateLicenseNo($license_no);
