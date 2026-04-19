@@ -69,6 +69,7 @@ class ChildProfileController
         $dob = $request->input('e_date_of_birth');
         $gender = $request->input('e_gender');
         $bloodType = $request->input('e_blood_type');
+       
         $errors = $this->childService->validateChildProfile($name, $dob, $gender, null, $bloodType, null, null, true);
 
         if (count($errors) > 0) {
@@ -117,7 +118,9 @@ class ChildProfileController
 
     public function ArchiveChild(Request $request, int $id)
     {
-        $error = $this->childService->validateArchiveProfile($id);
+        $archiveReason = $request->input('archive_reason') ?? '';
+
+        $error = $this->childService->validateArchiveProfile($id, $archiveReason);
 
         if ($error !== NULL) {
             return redirect(route('phm.child.profiles'))
@@ -128,7 +131,7 @@ class ChildProfileController
                 );
         }
 
-        $this->childService->archiveChildProfile($id);
+        $this->childService->archiveChildProfile($id, $archiveReason);
         return redirect(route('phm.child.profiles'))
                 ->withMessage(
                     "Child profile archived successfully",
