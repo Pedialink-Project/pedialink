@@ -125,3 +125,72 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                             {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
                         </c-badge>
                         @endif
+                    </c-table.td>
+                    <c-table.td class="table-actions" align="center">
+                        <c-dropdown.main>
+                            <c-slot name="trigger">
+                                <c-button variant="ghost" class="dropdown-trigger">
+                                    <img src="{{ asset('assets/icons/horizontal-more.svg')}}" />
+                                </c-button>
+                            </c-slot>
+                            <c-slot name="menu">
+                                <c-modal id="Health-Record-{{ $key }}" size="sm" :initOpen="false">
+                                    <c-slot name="headerPrefix">
+                                        <img src="{{ asset('assets/icons/profile.svg' )}}" />
+                                    </c-slot>
+
+                                    <c-slot name="trigger">
+                                        <c-dropdown.item>View Record</c-dropdown.item>
+                                    </c-slot>
+
+                                    <c-slot name="headerSuffix">
+                                        @if (strtolower($record['health_status']) === "good")
+                                        <c-badge type="green">
+                                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($record['health_status']) === "at_risk")
+                                        <c-badge type="yellow">
+                                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                                        </c-badge>
+                                        @elseif (strtolower($record['health_status']) === "critical")
+                                        <c-badge type="red">
+                                            {{ ucwords(str_replace('_', ' ', $record['health_status'])) }}
+                                        </c-badge>
+                                        @endif
+                                    </c-slot>
+
+                                    <c-slot name="header">
+                                        <div>Health Record</div>
+                                    </c-slot>
+
+                                    <c-modal.viewcard>
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/profile.svg') }}"
+                                            title="Record ID"
+                                            info="{{ display_entity_id('record', $record['id']) }}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/ruler.svg') }}"
+                                            title="Height"
+                                            info="{{ $record['height'] }}cm" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/vaccine.svg') }}"
+                                            title="Age Recorded At"
+                                            info="{{$record['age_recorded_at']}} Months" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/body-weight.svg') }}"
+                                            title="Weight"
+                                            info="{{ $record['weight'] }}kg" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/calendar-02.svg') }}"
+                                            title="Visit Date"
+                                            info="{{ $record['visit_date'] }}" />
+                                        <c-modal.viewitem
+                                            icon="{{ asset('assets/icons/ruler.svg') }}"
+                                            title="BMI"
+                                            info="{{ $record['bmi'] }}" />
+                                        <c-modal.viewitem
+
+                                            icon="{{ asset('assets/icons/ruler.svg') }}"
+                                            title="Head Circumference"
+                                            info="{{ $record['head_circumference'] }}cm" />
+                                    </c-modal.viewcard>
