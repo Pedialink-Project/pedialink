@@ -41,3 +41,31 @@ class AppointmentService
                 ->orderBy("appointment_slots.slot_date", "DESC")
                 ->orderBy("appointment_slots.start_time", "DESC");
         } else {
+             $today = new \DateTime();
+
+            // Clone today and subtract 5 days
+            $startDate = (clone $today)->modify('-5 days')->format('Y-m-d');
+
+            // Clone today and add 14 days
+            $endDate = (clone $today)->modify('+14 days')->format('Y-m-d');
+
+            $appointments
+                ->where("appointment_slots.slot_date", ">=", $startDate)
+                ->where("appointment_slots.slot_date", "<=", $endDate)
+                ->orderBy("appointment_slots.slot_date", "DESC")
+                ->orderBy("appointment_slots.start_time", "ASC");
+        }
+            
+
+        $appointments = $appointments
+            ->paginate(10)
+            ->toArray();
+
+        $resource = [];
+        foreach ($appointments['items'] as $appointment) {
+            $slot = $appointment->getSlot();
+            $doctor = $slot->getDoctor();
+
+            if ($doctor == null || ($doctor && $doctor->id !== auth()->user()?->id)) {
+                continue; // Skip appointments that don't belong to the logged-in doctor
+            }
