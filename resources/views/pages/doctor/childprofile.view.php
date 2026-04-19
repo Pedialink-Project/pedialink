@@ -178,3 +178,40 @@ Doctor Child Profiles
                                     <c-slot name="close">
                                         Close
                                     </c-slot>
+
+
+                                </c-modal>
+                                <c-dropdown.item href="{{ route('doctor.child.health', ['id' => $child['id']])}}">
+                                    View Health Records
+                                </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('doctor.appointments.history', ['id' => $child['id'], 'type' => 'child']) }}">
+                                    View Appointment History
+                                </c-dropdown.item>
+                                <c-dropdown.item href="{{ route('doctor.child.vaccination', ['id' => $child['id']]) }}">
+                                    View Vaccination Records
+                                </c-dropdown.item>
+                            </c-slot>
+                        </c-dropdown.main>
+                    </c-table.td>
+                </c-table.tr>
+                @endforeach
+                @if(count($children) === 0)
+                <tr>
+                    <td colspan="6">
+                        <c-emptytable
+                            alt="No children found"
+                            title="No Child Profiles Available"
+                            description="No child profiles match your current search or filters. Try adjusting them to see more results." />
+
+
+                    </td>
+                </tr>
+                @endif
+
+            </c-table.tbody>
+        </c-table.main>
+    </div>
+</c-table.wrapper>
+
+<c-table.pagination :links="$links" />
+@endsection
