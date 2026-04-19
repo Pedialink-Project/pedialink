@@ -241,3 +241,27 @@ Doctor Appoinments Configure
                                                 <c-slot name="close">
                                                     Close
                                                 </c-slot>
+
+                                                <c-slot name="footer">
+                                                    <c-button form="enable-day-{{ $key }}" type="submit" variant="primary">Enable</c-button>
+                                                </c-slot>
+                                            </c-modal>  
+                                        @endif                          
+                                    </c-slot>
+                                </c-dropdown.main>
+                            </c-table.td>
+                        </c-table.tr>
+                    @endforeach
+                </c-table.tbody>
+            </c-table.main>
+        </div>
+    </c-table.wrapper>
+
+    @if(count($clinicWeeklyAvailability) === 0)
+        <c-emptytable
+            alt="No info"
+            title="No Appointment Slots"
+            description="There are currently no appointment slots available. Please check back later."
+        />
+    @endif
+@endsection
