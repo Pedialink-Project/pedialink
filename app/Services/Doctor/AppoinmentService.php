@@ -195,3 +195,38 @@ class AppointmentService
             ->get();
 
         $resource = [];
+
+        foreach ($clinicWeeklyAvailability as $availability) {
+            $resource[] = [
+                "id" => $availability->id,
+                "weekday" => IntToDayName::convert($availability->weekday),
+                "active" => $availability->active,
+                "start_time" => Calculator::formatTimeToAmPm($availability->start_time),
+                "end_time" => Calculator::formatTimeToAmPm($availability->end_time),
+                "slot_length_minutes" => $availability->slot_length_minutes
+            ];
+        }
+
+        return $resource;
+    }
+
+    private function validateWeekday(string $weekday)
+    {
+        if (!Validator::validateFieldExistence($weekday)) {
+            return "Weekday is required";
+        }
+
+        $weekday = $weekday !== '' ? (int)$weekday : -1;
+
+        if (IntToDayName::convert($weekday) === "Unknown") {
+            return "Invalid weekday";
+        }
+
+        $doctorAvailability = DoctorWeeklyAvailability::query()
+            ->where("weekday", "=", $weekday)
+            ->where("doctor_id", "=", auth()->user()?->id)
+            ->first();
+
+        if ($doctorAvailability) {
+            return "Weekday is already configured";
+        }
