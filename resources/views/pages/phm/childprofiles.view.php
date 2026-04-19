@@ -75,7 +75,7 @@ PHM Child Profiles
                     error="{{ errors('birth_certificate') ?? ''}}" placeholder="Enter Birth Certificate No" required/>
                 <c-input type="text" label="Mother NIC:" name="mother_nic" value="{{ old('mother_nic') ?? '' }}"
                     error="{{ errors('mother_nic') ?? ''}}" placeholder="Enter Mother NIC" required/>
-                    <c-input type="text" label="Father NIC:" name="father_nic" value="{{ old('father_nic') ?? '' }}"
+                <c-input type="text" label="Father NIC:" name="father_nic" value="{{ old('father_nic') ?? '' }}"
                     error="{{ errors('father_nic') ?? ''}}" placeholder="Enter Father NIC" />
                 <c-select label="Gender" name="gender" value="{{ old('gender') ?? '' }}"
                     error="{{ errors('gender') ?? ''}}" placeholder="Select Gender" required>
@@ -304,7 +304,7 @@ PHM Child Profiles
                                 <c-dropdown.item href="{{ route('phm.child.vaccinations',['id'=>$child['id']])}}">
                                     View Vaccination Records
                                 </c-dropdown.item>
-                                <c-dropdown-sep />
+                                <c-dropdown.sep />
                                 @if ($child['is_created'])
                                 <c-modal>
                                     <c-slot name="trigger">
@@ -318,9 +318,13 @@ PHM Child Profiles
                                         <div>Archive Child Profile</div>
                                     </c-slot>
 
-                                    <p>Do you want to archive this child profile?</p>
-                                    <form id="archive-profile-{{ $child['id'] }}" class="hidden"
+                                    <form id="archive-profile-{{ $child['id'] }}"
                                         action="{{ route('phm.child.archive',['id'=>$child['id']]) }}" method="POST">
+                                        <p>Please select a valid reason before archiving this child profile.</p>
+                                        <c-select label="Archive Reason" name="archive_reason" placeholder="Select Reason" required>
+                                            <li class="select-item" data-value="dead">Dead</li>
+                                            <li class="select-item" data-value="change_gs_division">Change GS Division</li>
+                                        </c-select>
                                     </form>
                                     <c-slot name="close">
                                         Close
