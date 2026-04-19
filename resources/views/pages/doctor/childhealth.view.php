@@ -256,3 +256,34 @@ Health Records of {{ $name . ' (' . display_entity_id('child', $id) . ')' }}
                                     <c-slot name="close">
                                         Cancel
                                     </c-slot>
+
+                                    <c-slot name="footer">
+                                        <c-button size="sm" type="submit" form="mark-as-invalid-record-form-{{$record['id']}}" variant="destructive">Mark</c-button>
+                                    </c-slot>
+                                </c-modal> 
+                                
+                            </c-slot>
+                           
+                        </c-dropdown.main>
+                    </c-table.td>
+                </c-table.tr>
+                @endforeach
+
+                @if(count($records) === 0)
+                <tr>
+                    <td colspan="6">
+                        <c-emptytable
+                            alt="No Health Records found"
+                            title="No Health Records Available"
+                            description="No health records match your current search or filters. Try adjusting them to see more results." />
+
+                    </td>
+                </tr>
+                @endif
+            </c-table.tbody>
+        </c-table.main>
+    </div>
+</c-table.wrapper>
+
+<c-table.pagination :links="$links" />
+@endsection
