@@ -83,7 +83,6 @@ class AuthController
     public function parentVerifyFinal(Request $request)
     {
         $data = [
-            "type" => htmlspecialchars(trim($request->input("type"))),
             "nic" => htmlspecialchars(trim($request->input("nic"))),
             "address" => htmlspecialchars(trim($request->input("address"))),
             "division" => htmlspecialchars(trim($request->input("division"))),

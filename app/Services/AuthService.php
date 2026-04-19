@@ -115,17 +115,12 @@ class AuthService
      */
     public function validateFinalForm(array $data)
     {
-        $type = $data["type"];
         $nic = $data["nic"];
         $address = $data["address"];
         $division = $data["division"];
 
         $errors = [];
 
-        $typeError = $this->validateType($type);
-        if ($typeError) {
-            $errors["type"] = $typeError;
-        }
 
         $nicError = $this->validateNic($nic);
         if ($nicError) {
@@ -178,7 +173,7 @@ class AuthService
 
         $parent = new ParentM();
         $parent->id = $userId;
-        $parent->type = $data["type"];
+        $parent->type = $extractedResults["gender"] === "M" ? "father" : "mother";
         $parent->address = $data["address"];
         $parent->date_of_birth = $extractedResults["dob"];
         $parent->nic = $data["nic"];
