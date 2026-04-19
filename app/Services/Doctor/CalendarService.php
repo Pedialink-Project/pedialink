@@ -59,3 +59,7 @@ class CalendarService
                 ];
             }
         }
+
+        return $events;
+    }
+}
