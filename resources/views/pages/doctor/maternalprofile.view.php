@@ -26,3 +26,28 @@ Doctor Maternal Profiles
         </clipPath>
     </defs>
 </svg>
+
+Maternal Profiles - Overview
+@endsection
+
+@section('content')
+
+
+<c-table.controls action="{{ route('doctor.maternal.profiles') }}" :filters="['type' => ['antenatal', 'postnatal'], 'area' => $areaFilters]">
+</c-table.controls>
+
+<c-table.wrapper card="1">
+    <div class="table-wrapper" data-responsive="true">
+        <c-table.main sticky="1" size="comfortable">
+            <c-table.thead>
+                <c-table.tr>
+                    <c-table.th sortable="0" width="160px">ID</c-table.th>
+                    <c-table.th sortable="0" width="210px">Name</c-table.th>
+                    <c-table.th sortable="0" width="200px">Age</c-table.th>
+                    <c-table.th align="left" sortable="0" width="200px">Area</c-table.th>
+                    <c-table.th align="left" sortable="0" width="220px">Maternal Type</c-table.th>
+                    <c-table.th align="center" class="table-actions">Actions</c-table.th>
+                </c-table.tr>
+            </c-table.thead>
+
+            <c-table.tbody>
