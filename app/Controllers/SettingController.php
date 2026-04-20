@@ -97,7 +97,7 @@ class SettingController
 
             return redirect(route($redirectRoutePrefix . '.settings') . '#update-password')
                 ->withMessage(
-                    'Passwprd Updated!',
+                    'Password Updated!',
                     'Success',
                     'success'
                 );
