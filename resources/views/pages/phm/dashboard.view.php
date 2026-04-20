@@ -16,12 +16,12 @@ PHM Dashboard
 <div class="top-section">
 
     <section class="greet">
-        <h1>Welcome, <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Parent Name'}}</span>
+        <h1>Welcome, <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'PHM Name'}}</span>
         </h1>
     </section>
     <section class="pill-container">
         <c-pill>
-            <c-slot name="title">Linked Children</c-slot>
+            <c-slot name="title">Total Children</c-slot>
             <c-slot name="number">{{ $linkedChildrenCount }}</c-slot>
             <c-slot name="icon">
                 <img src="{{asset('assets/icons/baby-01.svg')}}">
