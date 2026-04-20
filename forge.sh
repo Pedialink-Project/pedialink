@@ -1,18 +1,4 @@
 #!/usr/bin/env bash
-# forge - lightweight project CLI shim (artisan-like)
-# Place at project root and run e.g.:
-#   ./forge make:migration create_users_table
-#   ./forge migrate
-#   ./forge createdb
-#
-# Configure (optional):
-#   Export FORGE_DOCKER_SERVICE to run commands inside that docker-compose service.
-#   Export PROJECT_PATH_IN_CONTAINER to where your project lives inside the container (default: /var/www/html).
-#
-# Example to run inside container:
-#   export FORGE_DOCKER_SERVICE=app
-#   export PROJECT_PATH_IN_CONTAINER=/var/www/html
-#   ./forge migrate
 
 set -euo pipefail
 
