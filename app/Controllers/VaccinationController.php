@@ -28,14 +28,7 @@ class VaccinationController
         }
 
         if (auth()->user()->isPublicHealthMidwife()) {
-            // if ($child->phm_id !== auth()->user()->id) {
-            //     return redirect(route("home"))
-            //         ->withMessage(
-            //             "You do not have permission to view this child's vaccination card",
-            //             "Error",
-            //             "error"
-            //         );
-            // }
+            // empty
         } else if (auth()->user()->isParent()) {
             $parents = $child->getParents();
             $allow = false;
