@@ -13,15 +13,7 @@ use App\Rules\EmailRule;
 use App\Rules\NameRule;
 use App\Rules\PasswordRule;
 
-/**
- * Service class that encapsulates logic
- * related to authentication such as register and login.
- * 
- * NOTE: Also contains specific validation built on top of
- * Validator class.
- * 
- * SELF NOTE: Can be extracted to other classes when needed!
- */
+
 class AuthService
 {
     use NameRule, EmailRule, PasswordRule, DivisionRule, NicValidator;

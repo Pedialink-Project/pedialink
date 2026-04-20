@@ -77,13 +77,13 @@ function getChildTypeFromAge(string $dob): string
     $months = $diff->m;
     $days   = $diff->d;
 
-    // Configurable thresholds (tweak as needed)
-    $NEWBORN_MAX_DAYS      = 28;   // less than 28 days => newborn
-    $INFANT_MAX_MONTHS     = 12;   // < 12 months => infant
-    $TODDLER_MAX_YEARS     = 3;    // < 3 years => toddler
-    $PRESCHOOL_MAX_YEARS   = 6;    // < 6 years => preschool
-    $CHILD_MAX_YEARS       = 13;   // < 13 years => child
-    $TEEN_MAX_YEARS        = 18;   // < 18 years => teen
+    // Configurable thresholds
+    $NEWBORN_MAX_DAYS      = 28;  
+    $INFANT_MAX_MONTHS     = 12;   
+    $TODDLER_MAX_YEARS     = 3;    
+    $PRESCHOOL_MAX_YEARS   = 6;    
+    $CHILD_MAX_YEARS       = 13;   
+    $TEEN_MAX_YEARS        = 18;   
 
     // Determine category; check the most-specific conditions first
     if ($years === 0 && $months === 0 && $days < $NEWBORN_MAX_DAYS) {
@@ -128,11 +128,9 @@ function calculateAge(string $dob, ?\DateTimeImmutable $asOf = null): string
         throw new \InvalidArgumentException('Date of birth is in the future.');
     }
 
-    // $diff->y, ->m, ->d are the canonical components
     $diff = $now->diff($birth);
 
     // DateInterval::days gives total days as an integer when available
-    // (DateTimeImmutable::diff always sets days when both operands are DateTimeImmutable)
     $totalDays = $diff->days ?? (int) floor(($now->getTimestamp() - $birth->getTimestamp()) / 86400);
 
     $age = "0 years";
