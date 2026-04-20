@@ -1,5 +1,4 @@
 <?php
-// checkbox.view.php
     $id = isset($id) && is_string($id) ? $id : ('chk_' . bin2hex(random_bytes(5)));
     $name = isset($name) ? $name : null;
     $value = isset($value) ? $value : '1';

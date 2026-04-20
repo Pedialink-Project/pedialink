@@ -10,7 +10,6 @@ class ManageScheduleService
 {
     public function getScheduleVaccineData(int $id, string $search)
     {
-        # NOTE: implement search later
         $scheduledVaccines = ScheduledVaccine::query()
             ->join("vaccines", "vaccines.id", "=", "schedule_vaccines.vaccine_id")
             ->where("schedule_vaccines.schedule_id", "=", $id)
@@ -30,20 +29,6 @@ class ManageScheduleService
             $vaccine = $scheduledVaccine->getVaccine();
             $schedule = $scheduledVaccine->getSchedule();
 
-            // track vaccine index to remove
-            // $vaccineIndexToRemove = [];
-            // foreach ($vaccines as $key => $existingVaccine) {
-            //     if ($vaccine->id == $existingVaccine->id) {
-            //         $vaccineIndexToRemove[] = $key;
-            //     }
-            // }
-
-            // unset tracked vaccine index from array
-            // foreach ($vaccineIndexToRemove as $vaccineIndex) {
-            //     unset($vaccines[$vaccineIndex]);
-            // }
-
-            // remove gaps from array
             array_values($vaccines);
 
             $resource[] = [
@@ -83,16 +68,6 @@ class ManageScheduleService
             $error = "Selected vaccine does not exist.";
             return $error;
         }
-
-        // $schedule = ScheduledVaccine::query()
-        //     ->where("vaccine_id", "=", $vaccine_id)
-        //     ->where("schedule_id", "=", $schedule_id)
-        //     ->first();
-
-        // if ($schedule) {
-        //     $error = "Selected vaccine is already added to this schedule.";
-        //     return $error;
-        // }
 
         return $error;
     }

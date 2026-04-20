@@ -1,5 +1,4 @@
 <?php
-// resources/views/components/dropdown.item.view.php
 // Attributes: $href (optional), $class, $disabled (bool), $variant ('default'|'danger'|'muted'), $type ('button'|'submit') for button
 $uid = 'dditem_' . bin2hex(random_bytes(5));
 $classes = 'dropdown-item';

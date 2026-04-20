@@ -1,5 +1,4 @@
 <?php
-// resources/views/components/td.view.php
 // attributes: $class, $align ('left'|'center'|'right'), $col (optional data-col)
 $uid = 'td_' . bin2hex(random_bytes(6));
 $classes = 'table__td';

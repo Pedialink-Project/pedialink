@@ -1,5 +1,4 @@
 <?php
-// resources/views/components/tr.view.php
 $uid = 'tr_' . bin2hex(random_bytes(5));
 $classes = 'table__tr';
 if (!empty($class)) $classes .= ' ' . $class;

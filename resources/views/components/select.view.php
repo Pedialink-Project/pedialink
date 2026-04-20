@@ -1,22 +1,5 @@
 <?php
 
-/** 
- * Select Component:
- * 
- * Component for drop down box. Please read this before using the component!
- * 
- * Features:
- *  1. Single select
- *  2. Multi Select 
- *  3. Built-in Search bar (optional)
- *  4. Options parsing:
- *    a. Attribute options parsing (not working currently)
- *    b. Component option parsing
- *  5. Default select values
- *  6. Label (optional)
- * 
-*/
-
 $uid = 'select_' . bin2hex(random_bytes(6)); // unique id per component
 
 // Normalize options into array of ['value'=>'', 'label'=>'']

@@ -144,12 +144,14 @@ abstract class Model
 
             if ($existing) {
                 // existing -> update (don't try to insert)
-                // remove the pk from update payload
-                unset($this->attributes[$primaryKey]);
+                // remove the pk from update payload while preserving local model state
+                $updatePayload = $this->attributes;
+                unset($updatePayload[$primaryKey]);
                 $affected = static::query()
                     ->where($primaryKey, '=', $id)
-                    ->update($this->attributes);
+                    ->update($updatePayload);
 
+                $this->attributes[$primaryKey] = $id;
                 return (int)$id;
             }
 

@@ -17,7 +17,6 @@ class EmailVerificationService
     public function createVerificationUrl(User $user, string $secret): string
     {
         $token = SignedToken::createSignedVerificationToken($user, $secret, 3600);
-        // Example: https://example.com/verify-email?token=...
         return rtrim(
             config('app.url'), '/') . '/verify-email?token=' . urlencode($token
         );

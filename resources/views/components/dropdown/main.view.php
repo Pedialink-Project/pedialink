@@ -1,8 +1,7 @@
 <?php
-// resources/views/components/dropdown.view.php
 // Slots:
-//  - @slot('trigger')  -> user provides the trigger HTML (3-dot icon, button, etc).
-//  - @slot('menu')     -> optional: full custom menu markup. If absent, default slot content is used.
+//  - @slot('trigger')
+//  - @slot('menu')
 
 $uid = 'dropdown_' . bin2hex(random_bytes(6));
 $placement = !empty($placement) && in_array($placement, ['left','right']) ? 

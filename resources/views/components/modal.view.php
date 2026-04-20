@@ -1,13 +1,4 @@
 <?php
-// resources/views/components/modal.view.php
-// Attributes:
-//  - $id (optional string) : if you pass an id string it will be used (useful for reopening via ?modal=appointments)
-//  - $class (optional) additional classes for .modal
-//  - $size = 'md' | 'sm' | 'lg' (default 'md')
-//  - $scrollable = true|false (default true) -> whether .modal-body is scrollable
-//  - $closeOnOverlay = true|false (default true)
-//  - $initOpen = true|false (open on initial render)
-//
 
 $id = isset($id) && is_string($id) ? $id : ('modal_' . bin2hex(random_bytes(5)));
 $class = isset($class) ? $class : '';
@@ -29,8 +20,7 @@ if (isset($_GET['modal']) && $_GET['modal'] === $id) {
 $initAttr = $initOpen ? 'true' : 'false';
 ?>
 
-<!-- Optional inline trigger slot. If provided it will be bound to open the modal.
-     If you want an external trigger (button elsewhere), give that element data-modal-trigger="{{ $id }}" -->
+
 @if (!empty($slots['trigger']))
   <div class="modal-trigger-wrapper {{ $hideClass }}" data-modal-trigger-wrapper="{{ $id }}">
     {{ $slots['trigger'] }}

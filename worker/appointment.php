@@ -1,8 +1,4 @@
 <?php
-// worker/appointment.php
-//
-// Single-run worker: mark overdue appointments as no-show and trigger
-// next-appointment recalculation.
 
 declare(strict_types=1);
 
@@ -18,14 +14,11 @@ use App\Models\Maternal;
 use App\Services\AppointmentSchedulerService;
 use App\Services\NotificationService;
 
-// bootstrap app (must call QueryBuilder::init(...) in bootstrap)
 $app = require __DIR__ . '/../bootstrap/app.php';
 
-// Config / tuning values
-const LOCK_KEY = 987654321;        // unique numeric key for pg advisory lock
+const LOCK_KEY = 987654321; // unique numeric key for pg advisory lock
 const LOG_PREFIX = '[worker ' . __FILE__ . '] ';
 
-// Utility: log line
 function logMsg(string $msg): void {
     echo date('Y-m-d H:i:s') . ' ' . LOG_PREFIX . $msg . PHP_EOL;
 }
@@ -59,8 +52,7 @@ $now = new DateTimeImmutable('now');
 $currentDate = $now->format('Y-m-d');
 $currentTime = $now->format('H:i:s');
 
-// Update appointments where the slot date has passed, or slot date is today but end_time has passed
-// Return updated appointment ids so we can trigger follow-up scheduling.
+
 $noShowUpdateSql = "
     UPDATE appointments 
     SET status = 'no-show'

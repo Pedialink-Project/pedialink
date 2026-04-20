@@ -1,5 +1,4 @@
 <?php
-// resources/views/components/table.controls.view.php
 $uid = 'tablectrl_' . bin2hex(random_bytes(5));
 $class = isset($class) ? $class : '';
 $columns = isset($columns) ? $columns : null;
