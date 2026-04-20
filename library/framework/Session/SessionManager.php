@@ -28,6 +28,7 @@ class SessionManager
 
         session_start([
             'cookie_lifetime' => 86400,
+            'gc_maxlifetime'  => 86400,
             'cookie_httponly' => true,
             'use_strict_mode' => true,
         ]);
