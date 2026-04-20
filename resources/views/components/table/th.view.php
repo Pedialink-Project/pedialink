@@ -1,5 +1,4 @@
 <?php
-// resources/views/components/th.view.php
 // attributes accepted: $class, $align ('left'|'center'|'right'), $sortable (bool), $width
 $uid = 'th_' . bin2hex(random_bytes(5));
 $classes = 'table__th';

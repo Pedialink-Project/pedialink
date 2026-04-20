@@ -1,5 +1,4 @@
 <?php
-// resources/views/components/navbar.view.php
 // Attributes: $class (extra), $brand (logo path or HTML)
 $uid = 'navbar_' . bin2hex(random_bytes(6));
 $class = $class ?? '';

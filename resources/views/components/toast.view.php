@@ -1,5 +1,4 @@
 <?php
-// resources/views/components/toast.view.php
 $uid = 'toast_' . bin2hex(random_bytes(6));
 $initToasts = $initToasts ?? []; // array of toasts passed from server
 // sanitize/prepare JSON for data attribute

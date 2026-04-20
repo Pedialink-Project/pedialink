@@ -1,5 +1,4 @@
 <?php
-// resources/views/components/table.view.php
 // Attributes: $class, $striped, $sticky, $size ('compact'|'comfortable')
 $uid = 'table_' . bin2hex(random_bytes(6));
 $classes = 'table';

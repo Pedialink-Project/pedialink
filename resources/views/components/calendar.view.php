@@ -1,24 +1,5 @@
 <?php
 
-/**
- * calendar.view.php
- *
- * Attributes:
- *  - $month (1-12) optional; default = current month
- *  - $year optional; default = current year
- *  - $events optional; array or JSON string. each event object:
- *       ['date' => 'YYYY-MM-DD', 'title' => 'Vaccine A', 'items' => [ ... ], 'color' => 'success' , 'meta'=>...]
- *     Multiple events can share the same date.
- *  - $modalId optional; id of an existing modal component to open on date click. If not provided the component will dispatch an event.
- *  - $startWeekOn optional: 0=Sunday (default) or 1=Monday
- *  - $locale optional: e.g. 'en-US' or 'si-LK' (default: browser)
- *
- * Example events for testing:
- * $events = [
- *   ['date'=>'2025-10-19','title'=>'MMR Dose 1','items'=>[['child'=>'Kumara','time'=>'09:00','vaccine'=>'MMR']]],
- *   ['date'=>'2025-10-20','title'=>'DTaP','items'=>[['child'=>'Nimal','time'=>'10:30']]],
- * ];
- */
 $now = new DateTimeImmutable('now', new DateTimeZone('Asia/Colombo'));
 $month = isset($month) ? (int)$month : (int)$now->format('n');
 $year = isset($year) ? (int)$year : (int)$now->format('Y');
