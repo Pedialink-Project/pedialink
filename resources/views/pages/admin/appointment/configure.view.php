@@ -90,12 +90,11 @@
                                                     error="{{ flash('edit') == $availability['id'] ? errors('e_end_time') ?? '' : '' }}"
                                                     required
                                                 />
-                                                <c-input
+                                                <input
                                                     type="number"
+                                                    class="hidden"
                                                     name="e_slot_length_minutes"
-                                                    label="Slot Length (minutes)"
                                                     value="{{ flash('edit') == $availability['id'] ? old('e_slot_length_minutes') ?? '' : $availability['slot_length_minutes'] }}"
-                                                    error="{{ flash('edit') == $availability['id'] ? errors('e_slot_length_minutes') ?? '' : '' }}"
                                                     required
                                                 />
                                             </form>
