@@ -87,7 +87,7 @@ class SettingController
             if ($user) {
                 $time = (new \DateTime('now', new \DateTimeZone('Asia/Colombo')))->format('Y-m-d H:i');
                 $this->notificationService->notify(
-                    (int)$user->id,
+                    $user->id,
                     'Password changed',
                     "Your account password was changed on {$time}.",
                     'user_security',
