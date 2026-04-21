@@ -188,12 +188,12 @@ $menuItems = [
                 'icon' => asset('/assets/icons/baby-01.svg'),
                
             ],
-            [
-                'name' => 'Vaccination',
-                'link' => route('parent.vaccination'),
-                'icon' => asset('/assets/icons/vaccine.svg'),
+            // [
+            //     'name' => 'Vaccination',
+            //     'link' => route('parent.vaccination'),
+            //     'icon' => asset('/assets/icons/vaccine.svg'),
                
-            ],
+            // ],
             [
                 'name' => 'Growth Tracking',
                 'link' => route('parent.growth.tracking'),
