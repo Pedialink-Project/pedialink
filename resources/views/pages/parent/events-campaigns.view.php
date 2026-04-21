@@ -57,19 +57,44 @@ Parent - Event & Campaigns
    <p>Try adjusting your filters or check back later for new events and campaigns.</p>
 </div>
 @endif
+
+@if(!empty($events))
+<section class="event-filters" aria-label="Event filters">
+   <div class="event-filters__group">
+      <label class="event-filters__label" for="event-status-filter">Status</label>
+      <select id="event-status-filter" class="event-filters__select">
+         <option value="all">All statuses</option>
+         <option value="upcoming">Upcoming</option>
+         <option value="ongoing">Ongoing</option>
+         <option value="completed">Completed</option>
+         <option value="cancelled">Cancelled</option>
+      </select>
+   </div>
+
+   <div class="event-filters__actions">
+      <button type="button" id="event-filter-reset" class="event-filters__reset">Clear</button>
+      <span id="event-filter-result" class="event-filters__result" aria-live="polite">
+         Showing {{ count($events) }} of {{ count($events) }}
+      </span>
+   </div>
+</section>
+@endif
+
 <div class="card-container">
    @foreach ($events as $key => $event)
-   {{
+   <?php
+   $eventStatus = strtolower((string) ($event['event_status'] ?? 'unknown'));
    $badgeType = '';
-   if(strtolower($event['event_status']) == 'completed') {
-   $badgeType = 'red';
-   } elseif (strtolower($event['event_status']) == 'upcoming') {
-   $badgeType = 'purple';}
-   else {
-   $badgeType = 'green';
+   if ($eventStatus === 'completed') {
+      $badgeType = 'red';
+   } elseif ($eventStatus === 'upcoming') {
+      $badgeType = 'purple';
+   } else {
+      $badgeType = 'green';
    }
-   }}
+   ?>
 
+   <div class="event-item" data-event-item data-status="{{ $eventStatus }}">
    <c-card class="event-card">
       <div class="card-header">
          <span class="event-title">
@@ -342,6 +367,52 @@ Parent - Event & Campaigns
          @endif
       </div>
    </c-card>
+   </div>
    @endforeach
 </div>
+@endsection
+
+@section('scripts')
+<script>
+   (function () {
+      const statusFilter = document.getElementById('event-status-filter');
+      const resetButton = document.getElementById('event-filter-reset');
+      const resultLabel = document.getElementById('event-filter-result');
+      const cardContainer = document.querySelector('.card-container');
+      const eventItems = Array.from(document.querySelectorAll('[data-event-item]'));
+
+      if (!statusFilter || !resetButton || !resultLabel || !cardContainer || eventItems.length === 0) {
+         return;
+      }
+
+      const total = eventItems.length;
+
+      const updateFilter = function () {
+         const selectedStatus = statusFilter.value;
+         let visibleCount = 0;
+
+         eventItems.forEach(function (item) {
+            const eventStatus = (item.getAttribute('data-status') || '').toLowerCase();
+            const isVisible = selectedStatus === 'all' || selectedStatus === eventStatus;
+            item.classList.toggle('is-hidden', !isVisible);
+
+            if (isVisible) {
+               visibleCount++;
+            }
+         });
+
+         cardContainer.classList.toggle('is-hidden', visibleCount === 0);
+         resultLabel.textContent = 'Showing ' + visibleCount + ' of ' + total;
+      };
+
+      statusFilter.addEventListener('change', updateFilter);
+
+      resetButton.addEventListener('click', function () {
+         statusFilter.value = 'all';
+         updateFilter();
+      });
+
+      updateFilter();
+   })();
+</script>
 @endsection
