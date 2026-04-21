@@ -38,7 +38,7 @@ Parent - Event & Campaigns
 @section('header_right')
 
 
-<c-table.controls action="{{ route('parent.events.campaigns') }}"  >
+<!-- <c-table.controls action="{{ route('parent.events.campaigns') }}"> -->
 
 
 
@@ -70,6 +70,15 @@ Parent - Event & Campaigns
          <option value="cancelled">Cancelled</option>
       </select>
    </div>
+   <div class="event-filters__group">
+      <label class="event-filters__label" for="event-search">Search events</label>
+      <input
+         id="event-search"
+         type="search"
+         class="event-filters__input"
+         placeholder="Search by title, description, location, date"
+         autocomplete="off">
+   </div>
 
    <div class="event-filters__actions">
       <button type="button" id="event-filter-reset" class="event-filters__reset">Clear</button>
@@ -92,70 +101,37 @@ Parent - Event & Campaigns
    } else {
       $badgeType = 'green';
    }
+
+   $eventSearch = strtolower(trim(implode(' ', [
+      (string) ($event['title'] ?? ''),
+      (string) ($event['description'] ?? ''),
+      (string) ($event['event_location'] ?? ''),
+      (string) ($event['event_date'] ?? ''),
+      (string) ($event['admin']['name'] ?? ''),
+   ])));
    ?>
 
-   <div class="event-item" data-event-item data-status="{{ $eventStatus }}">
-   <c-card class="event-card">
-      <div class="card-header">
-         <span class="event-title">
-            {{$event['title']}}
+   <div class="event-item" data-event-item data-status="{{ $eventStatus }}" data-search="{{ $eventSearch }}">
+      <c-card class="event-card">
+         <div class="card-header">
+            <span class="event-title">
+               {{$event['title']}}
+            </span>
+
+            <c-badge type="{{ $badgeType}}">
+               {{ucfirst($event['event_status'])}}
+            </c-badge>
+         </div>
+
+         <hr>
+
+
+         <span class="event-subtitle">
+            {{$event['description']}}
          </span>
 
-         <c-badge type="{{ $badgeType}}">
-            {{ucfirst($event['event_status'])}}
-         </c-badge>
-      </div>
-
-      <hr>
-
-
-      <span class="event-subtitle">
-         {{$event['description']}}
-      </span>
-
-      <div class="card-body">
-         <c-modal.viewcard>
-            <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-               info="{{ $event['event_date'] }}" />
-            <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-               info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
-            <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
-               info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
-            <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
-               info="{{ $event['event_location'] }}" />
-         </c-modal.viewcard>
-
-      </div>
-
-      <div class="card-footer">
-
-         <c-modal id="view-event-{{$key}}" size="md" :initOpen="false">
-            <c-slot name="trigger">
-               <c-button variant="secondary">
-                  View Details
-               </c-button>
-            </c-slot>
-
-            <c-slot name="headerPrefix">
-               <img src="{{ asset('assets/icons/megaphone-02.svg' )}}" />
-            </c-slot>
-
-            <c-slot name="header">
-               <div>Event Details</div>
-            </c-slot>
-
-            <c-slot name="headerSuffix">
-
-               <c-badge type="{{ $badgeType }}">
-                  {{ucfirst($event['event_status'])}}
-               </c-badge>
-            </c-slot>
-
-
-
+         <div class="card-body">
             <c-modal.viewcard>
-               <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
-                  info="{{ $event['title'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
                   info="{{ $event['event_date'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
@@ -164,209 +140,250 @@ Parent - Event & Campaigns
                   info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
                <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
                   info="{{ $event['event_location'] }}" />
-               <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
-                  info="{{ $event['admin']['name'] }}" />
             </c-modal.viewcard>
 
+         </div>
 
+         <div class="card-footer">
 
-
-
-
-            <c-modal.viewlist title="Purpose">
-               <c-slot name="list">
-                  <li>{{ $event['purpose'] }}</li>
+            <c-modal id="view-event-{{$key}}" size="md" :initOpen="false">
+               <c-slot name="trigger">
+                  <c-button variant="secondary">
+                     View Details
+                  </c-button>
                </c-slot>
-            </c-modal.viewlist>
 
-            <c-modal.viewlist title="Notes">
-               <c-slot name="list">
-
-                  <li>{{ $event['notes'] ? ($event['notes'] === '' ? 'N/A' : $event['notes']) : 'N/A' }}</li>
-
+               <c-slot name="headerPrefix">
+                  <img src="{{ asset('assets/icons/megaphone-02.svg' )}}" />
                </c-slot>
-            </c-modal.viewlist>
 
-            <c-slot name="close">
-               Close
-            </c-slot>
+               <c-slot name="header">
+                  <div>Event Details</div>
+               </c-slot>
+
+               <c-slot name="headerSuffix">
+
+                  <c-badge type="{{ $badgeType }}">
+                     {{ucfirst($event['event_status'])}}
+                  </c-badge>
+               </c-slot>
 
 
-         </c-modal>
-
-         @if($event['booking_status'] == NULL && $event['participants_count'] < $event['max_count'] && strtolower($event['event_status']) == 'upcoming')
-         <c-modal id="book-event-{{$key}}" size="md" :initOpen="flash('booked') == $event['id'] ? true : false">
-            <c-slot name="trigger">
-               <c-button variant="primary">
-                  Book Now
-               </c-button>
-
-            </c-slot>
-
-            <c-slot name="headerPrefix">
-               <img src="{{ asset('assets/icons/megaphone-02.svg' )}}" />
-            </c-slot>
-
-            <c-slot name="header">
-               <div>Book Event </div>
-            </c-slot>
-
-            <c-slot name="headerSuffix">
-
-               <c-badge type="{{ $badgeType }}">
-                  {{ucfirst($event['event_status'])}}
-               </c-badge>
-            </c-slot>
-
-            <div class="info-card">
-               <span class="title">
-                  Event Details
-               </span>
 
                <c-modal.viewcard>
-
                   <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
                      info="{{ $event['title'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-                     info="{{ $event['event_date'] }} " />
+                     info="{{ $event['event_date'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
                      info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
+                  <c-modal.viewitem icon="{{ asset('assets/icons/user-group.svg') }}" title="Registered Participants"
+                     info="{{ $event['participants_count'] .'/' .$event['max_count'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
                      info="{{ $event['event_location'] }}" />
                   <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
                      info="{{ $event['admin']['name'] }}" />
-
-
-
                </c-modal.viewcard>
 
 
-            </div>
 
 
 
 
-            <form id="book-event-form-{{$key}}" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}} " method="POST" novalidate>
-               <div class="msg">
-               Are you sure you want to  booking of this Event?
-            </div>
+               <c-modal.viewlist title="Purpose">
+                  <c-slot name="list">
+                     <li>{{ $event['purpose'] }}</li>
+                  </c-slot>
+               </c-modal.viewlist>
 
-            </form>
+               <c-modal.viewlist title="Notes">
+                  <c-slot name="list">
+
+                     <li>{{ $event['notes'] ? ($event['notes'] === '' ? 'N/A' : $event['notes']) : 'N/A' }}</li>
+
+                  </c-slot>
+               </c-modal.viewlist>
+
+               <c-slot name="close">
+                  Close
+               </c-slot>
 
 
-            <c-slot name="close">
-               Cancel
-            </c-slot>
+            </c-modal>
 
-            <c-slot name="footer">
+            @if($event['booking_status'] == NULL && $event['participants_count'] < $event['max_count'] && strtolower($event['event_status'])=='upcoming' )
+               <c-modal id="book-event-{{$key}}" size="md" :initOpen="flash('booked') == $event['id'] ? true : false">
+               <c-slot name="trigger">
+                  <c-button variant="primary">
+                     Book Now
+                  </c-button>
 
-               <c-button variant="primary" type="submit" form="book-event-form-{{$key}}">
-                  Book Now
-               </c-button>
-            </c-slot>
-         </c-modal>
-         @elseif ($event['booking_status'] == 'booked' && strtolower($event['event_status']) == 'upcoming')
-         <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="flash('cancelBooking') == $event['id'] ? true : false">
-            <c-slot name="trigger">
-               <c-button variant="destructive">
-                  Cancel Booking
-               </c-button> </c-slot>
+               </c-slot>
 
-            <c-slot name="headerPrefix">
-               <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                     d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
-                     stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
-                  <path
-                     d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
-                     stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
-                  <path
-                     d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
-                     stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" stroke-linecap="round"
-                     stroke-linejoin="round" />
-                  <path
-                     d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
-                     stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" stroke-linecap="round"
-                     stroke-linejoin="round" />
-                  <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" />
-               </svg>
-            </c-slot>
+               <c-slot name="headerPrefix">
+                  <img src="{{ asset('assets/icons/megaphone-02.svg' )}}" />
+               </c-slot>
 
-            <c-slot name="header">
-               <span class="cancel">Cancel Event</span>
+               <c-slot name="header">
+                  <div>Book Event </div>
+               </c-slot>
 
-            </c-slot>
+               <c-slot name="headerSuffix">
 
-            <div class="info-card">
-               <span class="title">
-                  Current Event
-               </span>
+                  <c-badge type="{{ $badgeType }}">
+                     {{ucfirst($event['event_status'])}}
+                  </c-badge>
+               </c-slot>
 
-               <c-modal.viewcard>
+               <div class="info-card">
+                  <span class="title">
+                     Event Details
+                  </span>
 
-                  <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
-                     info="{{ $event['title'] }}" />
-                  <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
-                     info="{{ $event['event_date'] }} " />
-                  <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
-                     info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
-                  <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
-                     info="{{ $event['event_location'] }}" />
-                  <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
-                     info="{{ $event['admin']['name'] }}" />
+                  <c-modal.viewcard>
+
+                     <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
+                        info="{{ $event['title'] }}" />
+                     <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
+                        info="{{ $event['event_date'] }} " />
+                     <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
+                        info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
+                     <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
+                        info="{{ $event['event_location'] }}" />
+                     <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
+                        info="{{ $event['admin']['name'] }}" />
 
 
 
-</c-modal.viewcard>
+                  </c-modal.viewcard>
 
-            </div>
 
-            <div class="msg">
-               Are you sure you want to cancel booking of this Event? This action cannot be undone.
-            </div>
+               </div>
 
 
 
-            <form id="cancel-event-form-{{ $key }}" action="{{route('parent.events.campaigns.cancel', ['id' => $event['id']])}}" method="POST" novalidate>
-               <c-input type="text" name="reason" label="Reason for Cancellation" placeholder="Enter your reason" value="{{ old('reason') ?? '' }}"
+
+               <form id="book-event-form-{{$key}}" action="{{route('parent.events.campaigns.book', ['id' => $event['id']])}} " method="POST" novalidate>
+                  <div class="msg">
+                     Are you sure you want to booking of this Event?
+                  </div>
+
+               </form>
+
+
+               <c-slot name="close">
+                  Cancel
+               </c-slot>
+
+               <c-slot name="footer">
+
+                  <c-button variant="primary" type="submit" form="book-event-form-{{$key}}">
+                     Book Now
+                  </c-button>
+               </c-slot>
+               </c-modal>
+               @elseif ($event['booking_status'] == 'booked' && strtolower($event['event_status']) == 'upcoming')
+               <c-modal id="cancel-event-{{$key}}" size="md" :initOpen="flash('cancelBooking') == $event['id'] ? true : false">
+                  <c-slot name="trigger">
+                     <c-button variant="destructive">
+                        Cancel Booking
+                     </c-button> </c-slot>
+
+                  <c-slot name="headerPrefix">
+                     <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                           d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
+                           stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
+                        <path
+                           d="M4.43484 8.56878C6.44624 5.00966 7.45193 3.2301 8.83197 2.77202C9.59117 2.52 10.409 2.52 11.1682 2.77202C12.5482 3.2301 13.5539 5.00966 15.5653 8.56878C17.5767 12.1279 18.5824 13.9075 18.2807 15.3575C18.1148 16.1552 17.7059 16.8787 17.1126 17.4244C16.0343 18.4163 14.0229 18.4163 10.0001 18.4163C5.97729 18.4163 3.96589 18.4163 2.88755 17.4244C2.29431 16.8787 1.88541 16.1552 1.71943 15.3575C1.41774 13.9075 2.42344 12.1279 4.43484 8.56878Z"
+                           stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" />
+                        <path
+                           d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
+                           stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" stroke-linecap="round"
+                           stroke-linejoin="round" />
+                        <path
+                           d="M10.2017 14.6667V11.3333C10.2017 10.9405 10.2017 10.7441 10.0797 10.622C9.95766 10.5 9.76125 10.5 9.36841 10.5"
+                           stroke="#DC2626" stroke-opacity="0.9" stroke-width="1.5" stroke-linecap="round"
+                           stroke-linejoin="round" />
+                        <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9" stroke-width="2"
+                           stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M9.99325 8H10.0007" stroke="#DC2626" stroke-opacity="0.9" stroke-width="2"
+                           stroke-linecap="round" stroke-linejoin="round" />
+                     </svg>
+                  </c-slot>
+
+                  <c-slot name="header">
+                     <span class="cancel">Cancel Event</span>
+
+                  </c-slot>
+
+                  <div class="info-card">
+                     <span class="title">
+                        Current Event
+                     </span>
+
+                     <c-modal.viewcard>
+
+                        <c-modal.viewitem icon="{{ asset('assets/icons/megaphone-02.svg') }}" title="Event"
+                           info="{{ $event['title'] }}" />
+                        <c-modal.viewitem icon="{{ asset('assets/icons/calendar-03.svg') }}" title="Date"
+                           info="{{ $event['event_date'] }} " />
+                        <c-modal.viewitem icon="{{ asset('assets/icons/clock-01.svg') }}" title="Time"
+                           info="{{ $event['start_time'] }} - {{ $event['end_time'] }}" />
+                        <c-modal.viewitem icon="{{ asset('assets/icons/location-05.svg') }}" title="Location"
+                           info="{{ $event['event_location'] }}" />
+                        <c-modal.viewitem icon="{{ asset('assets/icons/user.svg') }}" title="Organizer"
+                           info="{{ $event['admin']['name'] }}" />
+
+
+
+                     </c-modal.viewcard>
+
+                  </div>
+
+                  <div class="msg">
+                     Are you sure you want to cancel booking of this Event? This action cannot be undone.
+                  </div>
+
+
+
+                  <form id="cancel-event-form-{{ $key }}" action="{{route('parent.events.campaigns.cancel', ['id' => $event['id']])}}" method="POST" novalidate>
+                     <c-input type="text" name="reason" label="Reason for Cancellation" placeholder="Enter your reason" value="{{ old('reason') ?? '' }}"
                         error="{{ errors('reason') ?? '' }}"
-                  required />
-            </form>
+                        required />
+                  </form>
 
-            <c-slot name="close">
-               Close
-            </c-slot>
+                  <c-slot name="close">
+                     Close
+                  </c-slot>
 
-            <c-slot name="footer">
-               <c-button variant="destructive" type="submit" form="cancel-event-form-{{$key}}">
-                  Cancel Booking
-               </c-button>
+                  <c-slot name="footer">
+                     <c-button variant="destructive" type="submit" form="cancel-event-form-{{$key}}">
+                        Cancel Booking
+                     </c-button>
 
 
-            </c-slot>
-         </c-modal>
-         @elseif (strtolower($event['event_status']) == 'completed')
-         <!-- <c-button variant="disabled">
+                  </c-slot>
+               </c-modal>
+               @elseif (strtolower($event['event_status']) == 'completed')
+               <!-- <c-button variant="disabled">
             Event Completed
          </c-button> -->
-         @elseif (strtolower($event['event_status']) == 'ongoing')
-         <c-button variant="disabled">
-            Event Ongoing
-         </c-button>
-          @elseif (strtolower($event['booking_status']) == 'cancelled')
-         <c-button variant="disabled">
-            Booking Cancelled
-         </c-button>
-         @else
-         <c-button variant="disabled">
-            Cancelled
-         </c-button>
-         @endif
-      </div>
-   </c-card>
+               @elseif (strtolower($event['event_status']) == 'ongoing')
+               <c-button variant="disabled">
+                  Event Ongoing
+               </c-button>
+               @elseif (strtolower($event['booking_status']) == 'cancelled')
+               <c-button variant="disabled">
+                  Booking Cancelled
+               </c-button>
+               @else
+               <c-button variant="disabled">
+                  Cancelled
+               </c-button>
+               @endif
+         </div>
+      </c-card>
    </div>
    @endforeach
 </div>
@@ -374,26 +391,31 @@ Parent - Event & Campaigns
 
 @section('scripts')
 <script>
-   (function () {
+   (function() {
       const statusFilter = document.getElementById('event-status-filter');
       const resetButton = document.getElementById('event-filter-reset');
       const resultLabel = document.getElementById('event-filter-result');
       const cardContainer = document.querySelector('.card-container');
       const eventItems = Array.from(document.querySelectorAll('[data-event-item]'));
+      const searchInput = document.getElementById('event-search');
 
-      if (!statusFilter || !resetButton || !resultLabel || !cardContainer || eventItems.length === 0) {
+      if (!statusFilter || !searchInput || !resetButton || !resultLabel || !cardContainer || eventItems.length === 0) {
          return;
       }
 
       const total = eventItems.length;
 
-      const updateFilter = function () {
+      const updateFilter = function() {
          const selectedStatus = statusFilter.value;
+         const searchTerm = searchInput.value.trim().toLowerCase();
+
          let visibleCount = 0;
 
-         eventItems.forEach(function (item) {
+         eventItems.forEach(function(item) {
             const eventStatus = (item.getAttribute('data-status') || '').toLowerCase();
-            const isVisible = selectedStatus === 'all' || selectedStatus === eventStatus;
+            const itemSearch = (item.getAttribute('data-search') || '').toLowerCase();
+            const matchesSearch = searchTerm === '' || itemSearch.indexOf(searchTerm) !== -1;
+            const isVisible = (selectedStatus === 'all' || selectedStatus === eventStatus) && matchesSearch;
             item.classList.toggle('is-hidden', !isVisible);
 
             if (isVisible) {
@@ -406,10 +428,13 @@ Parent - Event & Campaigns
       };
 
       statusFilter.addEventListener('change', updateFilter);
+		searchInput.addEventListener('input', updateFilter);
 
-      resetButton.addEventListener('click', function () {
+      resetButton.addEventListener('click', function() {
+         searchInput.value = '';
          statusFilter.value = 'all';
          updateFilter();
+         searchInput.focus();
       });
 
       updateFilter();

@@ -48,6 +48,21 @@
     padding: 0 0.75rem;
 }
 
+.event-filters__input {
+    min-width: 20rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-primary);
+    padding: 0 0.75rem;
+    outline: none;
+}
+
+.event-filters__input:focus {
+    border-color: var(--color-zinc-500);
+}
+
 .event-filters__actions {
     display: flex;
     align-items: center;
@@ -173,6 +188,10 @@ form {
     }
 
     .event-filters__select {
+        min-width: 100%;
+    }
+
+    .event-filters__input {
         min-width: 100%;
     }
 
